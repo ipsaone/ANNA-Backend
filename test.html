@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ANNA backend test page</title>
+</head>
+<body>
+	<div id="tests">
+		<h1>Test page</h1>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	/* CONNECTION */
+	$.ajax({url: "https://localhost:8080/", 
+	success: function(result){
+		$("#tests").append('<span class="success">Connection OK</span>');
+	}, 
+	error: function(result) {
+		$("#tests").append('<span class="failure">Connection FAIL</span>');
+	}});
+	
+	/* LOGIN */
+	$.ajax({url: "https://localhost:8080/login", type: "POST",
+	data: {
+		" 
+	} 
+	success: function(result){
+		$("#tests").append('<span class="success">Login OK</span>');
+	}, 
+	error: function(result) {
+		$("#tests").append('<span class="failure">Login FAIL</span>');
+	}});
+	
+	
+	/* BLOG LIST */
+	$.ajax({url: "https://localhost:8080/blog", type: "POST",
+	data: {
+		"type": "list"
+		"limit": 10
+	} 
+	success: function(result){
+		$("#tests").append('<span class="success">Blog list OK</span>');
+	}, 
+	error: function(result) {
+		$("#tests").append('<span class="failure">Blog list FAIL</span>');
+	}});
+	
+	/* BLOG DETAILS */
+	$.ajax({url: "https://localhost:8080/blog", type: "POST",
+	data: {
+		"type": "details"
+		"id": 1
+	} 
+	success: function(result){
+		$("#tests").append('<span class="success">Blog details OK</span>');
+	}, 
+	error: function(result) {
+		$("#tests").append('<span class="failure">Blog details FAIL</span>');
+	}});
+	</script>
+</body>
+</html>
+
