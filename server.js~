@@ -31,7 +31,7 @@ connection.connect(function(err) {
     return;
   }
  
-  console.log('connected to mysql ');
+  console.log('connected as id ' + connection.threadId);
 });
 // Routing
 	/* test */
