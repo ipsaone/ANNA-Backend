@@ -3,6 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<title>ANNA backend test page</title>
+	
+	<style>
+		.success { color: #006400; }
+		.failure { color: #8B0000; }
+	</style>
 </head>
 <body>
 	<div id="tests">
@@ -12,52 +17,68 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript">
 	/* CONNECTION */
-	$.ajax({url: "https://localhost:8080/", 
+	$.ajax({url: "http://localhost:8080/", 
 	success: function(result){
-		$("#tests").append('<span class="success">Connection OK</span>');
+		$("#tests").append('<span class="success">Connection OK</span><br/>');
 	}, 
 	error: function(result) {
-		$("#tests").append('<span class="failure">Connection FAIL</span>');
+		$("#tests").append('<span class="failure">Connection FAIL</span><br/>');
 	}});
 	
 	/* LOGIN */
 	$.ajax({url: "https://localhost:8080/login", type: "POST",
 	data: {
-		" 
-	} 
+		login: "root",
+		password: "OneServ_2017"
+	},
 	success: function(result){
-		$("#tests").append('<span class="success">Login OK</span>');
+		$("#tests").append('<span> class="success">Login OK</span><br/>');
 	}, 
 	error: function(result) {
-		$("#tests").append('<span class="failure">Login FAIL</span>');
+		$("#tests").append('<span class="failure">Login FAIL</span><br/>');
 	}});
 	
 	
 	/* BLOG LIST */
 	$.ajax({url: "https://localhost:8080/blog", type: "POST",
 	data: {
-		"type": "list"
-		"limit": 10
-	} 
+		type: "list",
+		limit: 10
+	},
 	success: function(result){
-		$("#tests").append('<span class="success">Blog list OK</span>');
+		$("#tests").append('<span class="success">Blog list OK</span><br/>');
 	}, 
 	error: function(result) {
-		$("#tests").append('<span class="failure">Blog list FAIL</span>');
+		$("#tests").append('<span class="failure">Blog list FAIL</span><br/>');
 	}});
 	
 	/* BLOG DETAILS */
 	$.ajax({url: "https://localhost:8080/blog", type: "POST",
 	data: {
-		"type": "details"
-		"id": 1
-	} 
+		type: "details",
+		id: 1
+	},
 	success: function(result){
-		$("#tests").append('<span class="success">Blog details OK</span>');
+		$("#tests").append('<span class="success">Blog details OK</span><br/>');
 	}, 
 	error: function(result) {
-		$("#tests").append('<span class="failure">Blog details FAIL</span>');
+		$("#tests").append('<span class="failure">Blog details FAIL</span><br/>');
 	}});
+	
+	/* GANTT LIST */
+	$.ajax({url: "https://localhost:8080/gantt", type: "POST",
+	data: {
+		board: "dev",
+		limit: "-1"
+	},
+	success: function(result){
+		$("#tests").append('<span class="success">Gantt  list OK</span><br/>');
+	}, 
+	error: function(result) {
+		$("#tests").append('<span class="failure">Gantt list FAIL</span><br/>');
+	}});
+	
+	
 	</script>
 </body>
 </html>

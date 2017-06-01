@@ -2,19 +2,31 @@
 var express = require('express');
 var fs      = require('fs');
 var https   = require('https');
+var http   = require('http');
 var mysql   = require('mysql');
 var bodyParser = require('body-parser');
 var mysql      = require('mysql');
 
-// HTTPS
-var privateKey  = fs.readFileSync('sslcert/key.pem', 'utf8');
-var certificate = fs.readFileSync('sslcert/cert.pem', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
+// Configuration
+var https = false;
+var port  = 8080;
 
+// HTTPS
+if( https ){
+	var privateKey  = fs.readFileSync('sslcert/key.pem', 'utf8');
+	var certificate = fs.readFileSync('sslcert/cert.pem', 'utf8');
+	var credentials = {key: privateKey, cert: certificate};
+}
 
 // Initialization
 var app = express()
-var server = https.createServer(credentials, app);
+
+if( https ){
+	var server = https.createServer(credentials, app);
+} else {
+	var server = http.createServer(app);
+}
+
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -43,16 +55,24 @@ app.use(function(req, res, next) {
 // Routing
 	/* test */
 app.get('/', function (req, res) {
+  console.log("Test request received");
   res.send('Hello World!');
 });
 
 	/* blog */
 app.post('/blog', function(req, res) {
 	var post_data = req.body;
-	console.log(post_data);
+});
+
+app.post('/log', function(req, res) {
+	var post_data = req.body;
+	
+	
 });
 
 
-server.listen(8080, function () {
-  console.log('Backend server listening on port 8080');
+
+
+server.listen(port, function () {
+  console.log('Backend server listening on port '+port);
 });
