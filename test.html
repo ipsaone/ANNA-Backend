@@ -14,71 +14,41 @@
 		<h1>Test page</h1>
 	</div>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript">
-	/* CONNECTION */
-	$.ajax({url: "http://localhost:8080/", 
-	success: function(result){
-		$("#tests").append('<span class="success">Connection OK</span><br/>');
-	}, 
-	error: function(result) {
-		$("#tests").append('<span class="failure">Connection FAIL</span><br/>');
-	}});
-	
-	/* LOGIN */
-	$.ajax({url: "https://localhost:8080/login", type: "POST",
-	data: {
-		login: "root",
-		password: "OneServ_2017"
-	},
-	success: function(result){
-		$("#tests").append('<span> class="success">Login OK</span><br/>');
-	}, 
-	error: function(result) {
-		$("#tests").append('<span class="failure">Login FAIL</span><br/>');
-	}});
-	
-	
-	/* BLOG LIST */
-	$.ajax({url: "https://localhost:8080/blog", type: "POST",
-	data: {
-		type: "list",
-		limit: 10
-	},
-	success: function(result){
-		$("#tests").append('<span class="success">Blog list OK</span><br/>');
-	}, 
-	error: function(result) {
-		$("#tests").append('<span class="failure">Blog list FAIL</span><br/>');
-	}});
-	
-	/* BLOG DETAILS */
-	$.ajax({url: "https://localhost:8080/blog", type: "POST",
-	data: {
-		type: "details",
-		id: 1
-	},
-	success: function(result){
-		$("#tests").append('<span class="success">Blog details OK</span><br/>');
-	}, 
-	error: function(result) {
-		$("#tests").append('<span class="failure">Blog details FAIL</span><br/>');
-	}});
-	
-	/* GANTT LIST */
-	$.ajax({url: "https://localhost:8080/gantt", type: "POST",
-	data: {
-		board: "dev",
-		limit: "-1"
-	},
-	success: function(result){
-		$("#tests").append('<span class="success">Gantt  list OK</span><br/>');
-	}, 
-	error: function(result) {
-		$("#tests").append('<span class="failure">Gantt list FAIL</span><br/>');
-	}});
-	
-	
+	function test(pages, protocol = "http", host = "localhost", port = 8080) {
+		pages.forEach(function(curpage) {
+			$("#tests").append('<span id="'+curpage.name+'">'+curpage.name+' : <span class="status">sending request</span></span><br>')
+		
+			var xhr = $.ajax({url : protocol+"://"+host+":"+port+curpage.url, method: curpage.method, data: curpage.params});
+			xhr.testPage = curpage;
+
+			xhr.done(function(data, status, jqxhr) {
+				$("#"+jqxhr.testPage.name+" .status").text("response received");
+				var test_result = jqxhr.testPage.test(data);
+				if( test_result == true ){
+					$("#"+jqxhr.testPage.name+" .status").text("OK");
+				} else {
+					$("#"+jqxhr.testPage.name+" .status").text("failed with return value : "+test_result);
+				}
+					
+			});
+
+			xhr.fail(function(data, status, error) {
+				$("#"+xhr.testPage.name+" .Status").text("request failed : "+error);
+			});
+		});
+	};
+			
+	pages = [
+		{url : "/", name: "Connection", method: "GET", test: function(res){return true}},
+		{url : "/login", name: "Login", method: "GET", params: {},  test: function(res){return true}},
+		{url : "/blog", name: "Blog-list", method: "POST", params: {}, test: function(res){return true}},
+		{url : "/blog", name: "Blog-details", method: "POST", params: {}, test: function(res){return true}}
+		]
+
+	test(pages);
+
 	</script>
 </body>
 </html>

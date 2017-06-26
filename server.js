@@ -1,3 +1,4 @@
+
 // Dependencies
 var express = require('express');
 var fs      = require('fs');
@@ -55,21 +56,31 @@ app.use(function(req, res, next) {
 // Routing
 	/* test */
 app.get('/', function (req, res) {
-  console.log("Test request received");
-  res.send('Hello World!');
+  	console.log("Test request received");
+  	res.send('This server actually works');
+});
+
+	/* login */
+app.get('/login', function(req, res) {
+	var post_data = req.body;
+	var timeout = Date.now() + 1000*60*60*4
+	var sessid = 0;
+	var accept = true;
+	var response = {accept: accept, sessid: sessid, timeout: timeout} 
+	res.send(JSON.stringify(response));
 });
 
 	/* blog */
 app.post('/blog', function(req, res) {
 	var post_data = req.body;
+	res.send(true);
 });
 
 app.post('/log', function(req, res) {
 	var post_data = req.body;
-	
+	res.send(true);	
 	
 });
-
 
 
 
