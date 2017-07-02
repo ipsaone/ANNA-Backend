@@ -76,16 +76,17 @@ app.post('/login', function(req, res) {
 
 	// response creation
 	if( accept ) {
-		var validity = 60*4;
-		var sesstoken = crypto.randomBytes(64).toString('hex');
+		var validity = 60*4; // in minutes
+		var sesstoken = crypto.randomBytes(64).toString('hex'); // see https://stackoverflow.com/questions/8855687
+
+		// mysql session token saving
+		// TODO
+
 	} else {
 		var validity = 0;
 		var sesstoken = "";
 	}
 
-	// mysql session token saving
-	// TODO
-	
 	// response sending
 	var response = {accept: accept, token: sesstoken, validity: validity} 
 	res.send(JSON.stringify(response));
