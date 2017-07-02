@@ -16,7 +16,7 @@
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript">
-	function test(pages, protocol = "http", host = "localhost", port = 8080) {
+	function test(pages, protocol = "https", host = "localhost", port = 8080) {
 		pages.forEach(function(curpage) {
 			$("#tests").append('<span id="'+curpage.name+'">'+curpage.name+' : <span class="status">sending request</span></span><br>')
 		
@@ -44,7 +44,10 @@
 		{url : "/", name: "Connection", method: "GET", test: function(res){return true}},
 		{url : "/login", name: "Login", method: "GET", params: {},  test: function(res){return true}},
 		{url : "/blog", name: "Blog-list", method: "POST", params: {}, test: function(res){return true}},
-		{url : "/blog", name: "Blog-details", method: "POST", params: {}, test: function(res){return true}}
+		{url : "/blog", name: "Blog-details", method: "POST", params: {}, test: function(res){return true}},
+		{url : "/log", name: "Log", method: "POST", params: {}, test: function(res){return true}}
+		
+	
 		]
 
 	test(pages);

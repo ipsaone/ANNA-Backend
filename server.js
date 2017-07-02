@@ -9,24 +9,26 @@ var bodyParser = require('body-parser');
 var mysql      = require('mysql');
 
 // Configuration
-var https = false;
+var https_enabled = true;
+var localhost = true;
 var port  = 8080;
 
 // HTTPS
-if( https ){
-	var privateKey  = fs.readFileSync('sslcert/key.pem', 'utf8');
-	var certificate = fs.readFileSync('sslcert/cert.pem', 'utf8');
-	var credentials = {key: privateKey, cert: certificate};
+if( !localhost ) {
+	var privateKey  = fs.readFileSync('sslcert/private.key', 'utf8');
+	var certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
+} else {
+	var privateKey  = fs.readFileSync('sslcert/localhost.key', 'utf8');
+	var certificate = fs.readFileSync('sslcert/localhost.crt', 'utf8');
 }
+
+var credentials = {key: privateKey, cert: certificate};
+
 
 // Initialization
 var app = express()
 
-if( https ){
-	var server = https.createServer(credentials, app);
-} else {
-	var server = http.createServer(app);
-}
+var server = https.createServer(credentials, app);
 
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -56,7 +58,6 @@ app.use(function(req, res, next) {
 // Routing
 	/* test */
 app.get('/', function (req, res) {
-  	console.log("Test request received");
   	res.send('This server actually works');
 });
 
