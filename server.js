@@ -7,6 +7,7 @@ var http   = require('http');
 var mysql   = require('mysql');
 var bodyParser = require('body-parser');
 var mysql      = require('mysql');
+var crypto = require('crypto')
 
 // Configuration
 var https_enabled = true;
@@ -62,12 +63,16 @@ app.get('/', function (req, res) {
 });
 
 	/* login */
-app.get('/login', function(req, res) {
+app.post('/login', function(req, res) {
 	var post_data = req.body;
-	var timeout = Date.now() + 1000*60*60*4
-	var sessid = 0;
+	var username = post_data.username;
+	var password = post_data.password;
+	console.log("Connexion requested : ",req.body)
+
+	var validity = 60*4;
+	var sesstoken = crypto.randomBytes(64).toString('hex');;
 	var accept = true;
-	var response = {accept: accept, sessid: sessid, timeout: timeout} 
+	var response = {accept: accept, token: sesstoken, validity: validity} 
 	res.send(JSON.stringify(response));
 });
 
