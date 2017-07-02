@@ -82,6 +82,9 @@ app.post('/login', function(req, res) {
 		var validity = 0;
 		var sesstoken = "";
 	}
+
+	// mysql session token saving
+	// TODO
 	
 	// response sending
 	var response = {accept: accept, token: sesstoken, validity: validity} 
