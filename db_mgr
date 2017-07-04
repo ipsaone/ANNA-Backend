@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+var mysql = require("mysql")
+var cmd = require("commander")
+var input = require("input")
+
+
+var mode = "unknown"
+cmd
+  .version('1.0.0')
+  .option('-u, --user <u>', 'Database user')
+  .parse(process.argv);
+
+
+
+var user = cmd.user;
+
+
+async function run() {
+
+  if (!user) {
+    user = "root"
+  }
+
+  var password = await input.password("Please specify database password : ")
+
+
+  var connection = mysql.createConnection({
+    host: "localhost",
+    user: user,
+    password: password
+  })
+
+  connection.connect(async function(err) {
+    if (err) {
+      console.log("couldn't connect to mysql database.\n\nPlease check the credentials or install it as follows :")
+      console.log("sudo apt install mysql-server");
+    } else {
+      console.log('connected to mysql server');
+
+      // Check username / password 
+
+
+      // Check database
+a
+
+      
+    }
+   
+    
+  });
+}
+
+run();

@@ -11,7 +11,7 @@ var crypto = require('crypto')
 
 // Configuration
 var https_enabled = true;
-var localhost = true;
+var localhost = false;
 var port  = 8080;
 
 // HTTPS
