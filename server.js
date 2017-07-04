@@ -8,7 +8,8 @@ var http   = require('http');
 var mysql   = require('mysql');
 var bodyParser = require('body-parser');
 var mysql      = require('mysql');
-var crypto = require('crypto')
+var crypto = require('crypto');
+var bcrypt = require('bcrypt')
 
 
 // Configuration
@@ -38,7 +39,8 @@ var server = https.createServer(credentials, app);
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : 'OneServ_2017'
+  password : 'OneServ_2017',
+  database : 'ipsaone'
 });
 
 connection.connect(function(err) {
@@ -73,11 +75,55 @@ app.post('/login', function(req, res) {
 	var post_data = req.body;
 	var username = post_data.username;
 	var password = post_data.password;
+	var userID = -1;
+	var accept = false
 
 	// mysql user/pwd checking
 	// TODO
-	var accept = true;
+	//connection.query('SELECT password FROM users WHERE username = ')
+	var sql = 'SELECT ID,password FROM users WHERE LOWER(username) = LOWER(?)'
+	var inserts = [username]
+	sql = mysql.format(sql, inserts);
+	connection.query(sql, function(err,res,fields){
+		if (err) {
+			console.error('error connecting: ' + err.stack);
+    			return;
+		}
+		if(res.length == 0) {
+		
+			accept = false		
+		}
+		
+		else if(res.length == 1){
+			var hash = res[0].password
 
+	//compare hash
+			bcrypt.compare(password, hash, function(err2, res2) {
+			
+				if (err) {
+					console.error('error connecting: ' + err.stack);
+    					return;
+				}
+
+				if (res2 == true) {
+					accept = true
+					userID = res[0].ID;
+				}
+				
+				else {
+					accept = false
+
+				}
+			})
+		}
+		
+
+		else {
+			accept = false
+		}
+	})
+	
+	
 	// response creation
 	if( accept ) {
 		var validity = 60*4; // in minutes

@@ -1,12 +1,14 @@
 var express = require('express');
+var http = require("http")
 
-var app = express()
+var app = express();
+var server = http.createServer(app);
 
-app.post('/carnet_de_bord.html', function(req,res) {
+app.get('/carnet_de_bord', function(req,res) {
 
 	res.send('carnet_de_bord')
 })
 
-app.listen(81, function() {
+server.listen(8080, function() {
 	console.log('Backend server listening on port 81')
-)}
+});
