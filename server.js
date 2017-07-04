@@ -45,7 +45,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) {
-    console.error('error connecting: ' + err.stack);
+    console.error('error connecting to MySQL: ' + err.stack);
     return;
   }
  
@@ -84,30 +84,50 @@ app.post('/login', function(req, res) {
 	var sql = 'SELECT ID,password FROM users WHERE LOWER(username) = LOWER(?)'
 	var inserts = [username]
 	sql = mysql.format(sql, inserts);
-	connection.query(sql, function(err,res,fields){
-		if (err) {
-			console.error('error connecting: ' + err.stack);
+	connection.query(sql, function(err1,res1,fields1){
+		if (err1) {
+			console.error('SQL query error : ' + err.stack);
     			return;
 		}
-		if(res.length == 0) {
+
+
+		if(res1.length == 0) {
 		
 			accept = false		
 		}
 		
-		else if(res.length == 1){
-			var hash = res[0].password
+		else if(res1.length == 1){
+			var hash = res1[0].password
 
-	//compare hash
+		//compare hash
 			bcrypt.compare(password, hash, function(err2, res2) {
 			
-				if (err) {
-					console.error('error connecting: ' + err.stack);
+				if (err2) {
+					console.error('error comparing BCrypt : ' + err.stack);
     					return;
 				}
 
-				if (res2 == true) {
+				if (res2) {
 					accept = true
-					userID = res[0].ID;
+					userID = res1[0].ID;
+
+					// response creation
+					if( accept ) {
+						var validity = 60*4; // in minutes
+						var sesstoken = crypto.randomBytes(64).toString('hex'); // see https://stackoverflow.com/questions/8855687
+
+						// mysql session token saving
+						// TODO
+
+					} else {
+						var validity = 0;
+						var sesstoken = "";
+					}
+
+					// response sending
+					var response = {accept: accept, token: sesstoken, validity: validity} 
+					res.send(JSON.stringify(response));
+
 				}
 				
 				else {
@@ -119,27 +139,10 @@ app.post('/login', function(req, res) {
 		
 
 		else {
+			console.error("SQL Query error : too many results !!")
 			accept = false
 		}
 	})
-	
-	
-	// response creation
-	if( accept ) {
-		var validity = 60*4; // in minutes
-		var sesstoken = crypto.randomBytes(64).toString('hex'); // see https://stackoverflow.com/questions/8855687
-
-		// mysql session token saving
-		// TODO
-
-	} else {
-		var validity = 0;
-		var sesstoken = "";
-	}
-
-	// response sending
-	var response = {accept: accept, token: sesstoken, validity: validity} 
-	res.send(JSON.stringify(response));
 });
 
 	/* blog */
