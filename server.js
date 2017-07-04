@@ -9,18 +9,21 @@ var bodyParser = require('body-parser');
 var mysql      = require('mysql');
 var crypto = require('crypto')
 
+
 // Configuration
 var https_enabled = true;
-var localhost = false;
+var localhost = (process.argv[2] != "prod");
 var port  = 8080;
 
 // HTTPS
 if( !localhost ) {
 	var privateKey  = fs.readFileSync('sslcert/private.key', 'utf8');
 	var certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
+	console.log("Using one.ipsa.fr certificate")
 } else {
 	var privateKey  = fs.readFileSync('sslcert/localhost.key', 'utf8');
 	var certificate = fs.readFileSync('sslcert/localhost.crt', 'utf8');
+	console.log("Using localhost certificate")
 }
 
 var credentials = {key: privateKey, cert: certificate};
