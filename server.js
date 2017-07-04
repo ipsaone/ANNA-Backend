@@ -9,9 +9,10 @@ var bodyParser = require('body-parser');
 var mysql      = require('mysql');
 var crypto = require('crypto')
 
+
 // Configuration
 var https_enabled = true;
-var localhost = false;
+var localhost = (process.argv[2] == "prod");
 var port  = 8080;
 
 // HTTPS
