@@ -9,7 +9,11 @@ Response codes :
 		11 : bad password
 		12 : not allowed
 	20-29 : request error
+		21 : missing field
+		22 : bad field type
 	30-39 : internal error
+		31 : database error
+		32 : processing error
 
 
 */
@@ -170,7 +174,10 @@ app.post('/blog', function(req, res) {
 
 	BLOG RESPONSE FIELDS :
 		- code [int] : the response code (see header)
-		- posts [arr(obj)] : the blog posts
+		- posts [arr(obj)] : the blog posts (type="LIST" only)
+			object fields : id [int], public [bool], title [str], img_path [str], timestamp [int], publisher_name [str]
+		- post [obj] : the blog post (type="DETAILS" only)
+			object fields : to be decided
 
 
 	*/
@@ -188,8 +195,23 @@ app.post('/blog', function(req, res) {
 app.post('/log', function(req, res) {
 	/*
 	LOG REQUEST POST PARAMETERS :
+		- type [str] :
+			"TASKS", to get current tasks data
+			"MSG", to get the Message of the Day
+			"UPDTS", to get latest updates
+			"STATS", to get today's tasks statistics
 
 	LOG RESPONSE FIELDS :
+		- code [int] : the response code (see header)
+		- tasks [arr(obj)] : the currents tasks (type="TASKS" only)
+			object fields :  name [str], percentage [int]
+		- message [obj] : the Message of the Day (type="MSG" only)
+			object fields : msg [str], publisher_name [str], timestamp [int], publisher_groups [arr(str)]
+		- updates [arr(obj)] : the latest updates (type="UPDTS" only)
+			object fields : action [str], timestamp [int], publisher_name [str], publisher_groups [arr(str)]
+		- stats [obj] : the tasks statistics (type="STATS" only)
+			object fields : tasks_per_day [int], tasks_objective [int], tasks_data [arr(obj)]
+				tasks_data object fields : month [int], day [int], tasks [int]
 
 	*/
 	var post_data = req.body;
@@ -207,16 +229,20 @@ app.post('/drive', function(req, res) {
 	/*
 	DRIVE REQUEST POST PARAMETERS :
 		- type [str] : 
-			"LIST", to list all files and directories in a folder
+			"LIST", to list all files (and directories) in a folder
 			"DWNL", to download the contents of a file
 			"UPL", to upload a new file
 			"EDIT", to change the contents of a file or its metadata
 			"META", to get the file metadata
 		- target [nbr] : the file or directory ID, 0 for root (/)
+		- changes [obj] : the attributes to edit
+			object fields : to be determined
 
 	DRIVE RESPONSE FIELDS :
 		- code [int] : the response code (see header)
-		-
+		- files [arr(obj)] : the list of files (type="LIST" only)
+		- file [obj] : the file to download (type="DWNL" only)
+			object fields : to be determined
 
 	*/
 	var post_data = req.body;
