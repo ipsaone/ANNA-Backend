@@ -23,7 +23,7 @@ var mysql   = require('mysql');
 var bodyParser = require('body-parser');
 var mysql      = require('mysql');
 var crypto = require('crypto');
-var bcrypt = require('bcrypt')
+var bcrypt = require('bcrypt-nodejs')
 
 
 // Configuration
