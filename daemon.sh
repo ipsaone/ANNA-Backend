@@ -13,7 +13,7 @@
 # Process name ( For display )
 NAME="ANNA Server"
 # Daemon name, where is the actual executable
-DAEMON="node /data/www/anna-backend/server.js prod"
+DAEMON="/data/www/anna-backend/server.sh"
 # pid file for the daemon
 PIDFILE=/var/run/my_daemon.pid
 
