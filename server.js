@@ -66,13 +66,19 @@ connection.connect(function(err) {
 });
 
 // Middleware
+	// POST parser
 app.use(bodyParser.urlencoded({extended: true}));
+	// CORS headers
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
+	// Authentication check
+app.use(checkToken)
+function checkToken(req, res, next) {
+	next()
+}
 
 
 // Routing
@@ -164,6 +170,7 @@ app.post('/login', function(req, res) {
 app.post('/blog', function(req, res) {
 	/*
 	BLOG REQUEST POST PARAMETERS :
+		- token [str] : the login token
 		- type [str] :
 			"LIST", to list all blog posts with basic information
 			"DETAILS", to get all information about a blog post
@@ -195,6 +202,7 @@ app.post('/blog', function(req, res) {
 app.post('/log', function(req, res) {
 	/*
 	LOG REQUEST POST PARAMETERS :
+		- token [str] : the login token
 		- type [str] :
 			"TASKS", to get current tasks data
 			"MSG", to get the Message of the Day
@@ -228,19 +236,25 @@ app.post('/log', function(req, res) {
 app.post('/drive', function(req, res) {
 	/*
 	DRIVE REQUEST POST PARAMETERS :
+		- token [str] : the login token
 		- type [str] : 
 			"LIST", to list all files (and directories) in a folder
 			"DWNL", to download the contents of a file
 			"UPL", to upload a new file
 			"EDIT", to change the contents of a file or its metadata
 			"META", to get the file metadata
+			"MOVE", to move a file
 		- target [nbr] : the file or directory ID, 0 for root (/)
-		- changes [obj] : the attributes to edit
+		- changes [obj] : the attributes to edit (type="EDIT" only)
 			object fields : to be determined
+		- destination [int] : the directory ID of the destination (type="MOVE" only)
 
 	DRIVE RESPONSE FIELDS :
 		- code [int] : the response code (see header)
 		- files [arr(obj)] : the list of files (type="LIST" only)
+			object fields : to be determined
+		- dirtree [arr(obj)] : the current position in the directory tree (type="LIST" only)
+			object fields : dir_id [int], dir_name [str]
 		- file [obj] : the file to download (type="DWNL" only)
 			object fields : to be determined
 
@@ -256,9 +270,40 @@ app.post('/drive', function(req, res) {
 	res.send(true);	
 });
 
-function checkToken(req) {
-	return true;
-}
+	/*
+	USERPAGE REQUEST POST PARAMETERS :
+		- token [str] : the login token
+
+	USERPAGE RESPONSE FIELDS :
+
+	*/
+app.post('/userpage', function(req, res) {
+
+});
+
+	/*
+	NOTIFICATIONS REQUEST POST PARAMETERS :
+		- token [str] : the login token
+
+	NOTIFICATIONS RESPONSE FIELDS :
+	
+	*/
+app.post('/notifications', function(req, res) {
+
+});
+
+	/*
+	DISCONNECT REQUEST POST PARAMETERS :
+		- token [str] : the login token
+
+	DISCONNECT RESPONSE FIELDS :
+	
+	*/
+app.post('/disconnect', function(req, res) {
+
+})
+
+
 
 
 
