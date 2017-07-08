@@ -1,0 +1,1 @@
+nodejs /data/www/anna-backend/server.js prod
