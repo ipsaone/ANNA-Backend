@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ### BEGIN INIT INFO
 # Provides:          ANNA Server
 # Required-Start:    mysql networking
@@ -8,7 +10,7 @@
 # Description:       ANNA NodeJS Server
 ### END INIT INFO
 
-DAEMON="/data/www/anna-backend/anna-server.sh" #ligne de commande du programme, attention à l'extension .py.
+DAEMON="/data/www/anna-backend/anna-server.sh" #ligne de commande du programme
 daemon_OPT=""  #argument à utiliser par le programme
 DAEMONUSER="ipsaone" #utilisateur du programme
 daemon_NAME="anna-server.sh" #Nom du programme (doit être identique à l'exécutable).
