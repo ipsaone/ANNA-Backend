@@ -8,77 +8,54 @@
 # Description:       ANNA NodeJS Server
 ### END INIT INFO
 
-# Using the lsb functions to perform the operations.
+DAEMON="/data/www/anna-backend/anna-server.sh" #ligne de commande du programme, attention à l'extension .py.
+daemon_OPT=""  #argument à utiliser par le programme
+DAEMONUSER="ipsaone" #utilisateur du programme
+daemon_NAME="anna-server.sh" #Nom du programme (doit être identique à l'exécutable).
+#Attention le script est un script bash, le script ne portera donc pas l'extension .py mais .sh.
+ 
+PATH="/sbin:/bin:/usr/sbin:/usr/bin" #Ne pas toucher
+ 
+test -x $DAEMON || exit 0
+ 
 . /lib/lsb/init-functions
-# Process name ( For display )
-NAME="ANNA Server"
-# Daemon name, where is the actual executable
-DAEMON="/data/www/anna-backend/server.sh"
-# pid file for the daemon
-PIDFILE=/var/run/my_daemon.pid
-
-# If the daemon is not there, then exit.
-test -x $DAEMON || exit 5
-
-case $1 in
- start)
-  # Checked the PID file exists and check the actual status of process
-  if [ -e $PIDFILE ]; then
-   status_of_proc -p $PIDFILE $DAEMON "$NAME process" && status="0" || status="$?"
-   # If the status is SUCCESS then don't need to start again.
-   if [ $status = "0" ]; then
-    exit # Exit
-   fi
-  fi
-  # Start the daemon.
-  log_daemon_msg "Starting the process" "$NAME"
-  # Start the daemon with the help of start-stop-daemon
-  # Log the message appropriately
-  if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --exec $DAEMON ; then
-   log_end_msg 0
-  else
-   log_end_msg 1
-  fi
-  ;;
- stop)
-  # Stop the daemon.
-  if [ -e $PIDFILE ]; then
-   status_of_proc -p $PIDFILE $DAEMON "Stoppping the $NAME process" && status="0" || status="$?"
-   if [ "$status" = 0 ]; then
-    start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
-    /bin/rm -rf $PIDFILE
-   fi
-  else
-   log_daemon_msg "$NAME process is not running"
-   log_end_msg 0
-  fi
-  ;;
- restart)
-  # Restart the daemon.
-  $0 stop && sleep 2 && $0 start
-  ;;
- status)
-  # Check the status of the process.
-  if [ -e $PIDFILE ]; then
-   status_of_proc -p $PIDFILE $DAEMON "$NAME process" && exit 0 || exit $?
-  else
-   log_daemon_msg "$NAME Process is not running"
-   log_end_msg 0
-  fi
-  ;;
- reload)
-  # Reload the process. Basically sending some signal to a daemon to reload
-  # it configurations.
-  if [ -e $PIDFILE ]; then
-   start-stop-daemon --stop --signal USR1 --quiet --pidfile $PIDFILE --name $NAME
-   log_success_msg "$NAME process reloaded successfully"
-  else
-   log_failure_msg "$PIDFILE does not exists"
-  fi
-  ;;
- *)
-  # For invalid arguments, print the usage message.
-  echo "Usage: $0 {start|stop|restart|reload|status}"
-  exit 2
-  ;;
+ 
+d_start () {
+        log_daemon_msg "Starting system $daemon_NAME Daemon"
+  start-stop-daemon --background --name $daemon_NAME --start --quiet --chuid $DAEMONUSER --exec $DAEMON -- $daemon_OPT
+        log_end_msg $?
+}
+ 
+d_stop () {
+        log_daemon_msg "Stopping system $daemon_NAME Daemon"
+        start-stop-daemon --name $daemon_NAME --stop --retry 5 --quiet --name $daemon_NAME
+  log_end_msg $?
+}
+ 
+case "$1" in
+ 
+        start|stop)
+                d_${1}
+                ;;
+ 
+        restart|reload|force-reload)
+                        d_stop
+                        d_start
+                ;;
+ 
+        force-stop)
+               d_stop
+                killall -q $daemon_NAME || true
+                sleep 2
+                killall -q -9 $daemon_NAME || true
+                ;;
+ 
+        status)
+                status_of_proc "$daemon_NAME" "$DAEMON" "system-wide $daemon_NAME" && exit 0 || exit $?
+                ;;
+        *)
+                echo "Usage: /etc/init.d/$daemon_NAME {start|stop|force-stop|restart|reload|force-reload|status}"
+                exit 1
+                ;;
 esac
+exit 0
