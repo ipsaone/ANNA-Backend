@@ -10,10 +10,10 @@
 # Description:       ANNA NodeJS Server
 ### END INIT INFO
 
-DAEMON="/data/www/anna-backend/anna-server.sh" #ligne de commande du programme
-daemon_OPT=""  #argument à utiliser par le programme
+DAEMON="/data/www/anna-backend/server.js" #ligne de commande du programme
+daemon_OPT="prod"  #argument à utiliser par le programme
 DAEMONUSER="ipsaone" #utilisateur du programme
-daemon_NAME="anna-server.sh" #Nom du programme (doit être identique à l'exécutable).
+daemon_NAME="server.js" #Nom du programme (doit être identique à l'exécutable).
 #Attention le script est un script bash, le script ne portera donc pas l'extension .py mais .sh.
  
 PATH="/sbin:/bin:/usr/sbin:/usr/bin" #Ne pas toucher
