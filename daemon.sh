@@ -24,7 +24,7 @@ test -x $DAEMON || exit 0
  
 d_start () {
         log_daemon_msg "Starting system $daemon_NAME Daemon"
-  start-stop-daemon --background --name $daemon_NAME --start --quiet --chuid $DAEMONUSER --exec $DAEMON -- $daemon_OPT
+  start-stop-daemon --background --name $daemon_NAME --start --quiet --chuid $DAEMONUSER --startas /bin/bash -- -c exec "$DAEMON $daemon_OPT > /var/log/daemon.log 2>&1"
         log_end_msg $?
 }
  
