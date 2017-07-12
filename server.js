@@ -103,16 +103,16 @@ app.get('/', function (req, res) {
 });
 
 	/* Internal dependencies */
-var login_js = require('./server_login')(pool)
-var drive_js = require('./server_drive')(pool)
-var blog_js = require('./server_blog')(pool)
-var log_js = require('./server_log')(pool)
+var handleLogin = require('./server_login')(pool)
+var handleDrive = require('./server_drive')(pool)
+var handleBlog = require('./server_blog')(pool)
+var handleLog = require('./server_log')(pool)
 
 	/* backend */
-app.post('/login', login_js.handleRequest);
-app.post('/blog', blog_js.handleRequest);
-app.post('/log', log_js.handleRequest);
-app.post('/drive', drive_js.handleRequest);
+app.post('/login', handleLogin);
+app.post('/blog', handleBlog);
+app.post('/log', handleBlog);
+app.post('/drive', handleLog);
 
 // Listening
 server.listen(port, function () {

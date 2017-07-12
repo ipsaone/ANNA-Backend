@@ -26,7 +26,7 @@
 var pool = 0;
 module.exports = function(pool_glob) {
 	pool = pool_glob;
-	return {handleRequest}
+	return handleRequest
 }
 
 var handleRequest = function(req, res) {
