@@ -3,7 +3,10 @@
 
 /*
 Response codes :
+	-1  : unknown
 	0-9 : success
+		0 : authentication success
+		1 : request success
 	10-19 : authentication error
 		10 : bad username
 		11 : bad password
@@ -19,15 +22,15 @@ Response codes :
 */
 
 // Dependencies
-var express = require('express');
-var fs      = require('fs');
-var https   = require('https');
-var http   = require('http');
-var mysql   = require('mysql');
-var bodyParser = require('body-parser');
-var mysql      = require('mysql');
-var crypto = require('crypto');
-var bcrypt = require('bcrypt-nodejs')
+var express = require('express');        // Web server
+var fs      = require('fs');             // File system
+var https   = require('https');          // Secure HTTP protocol
+var mysql   = require('mysql');          // Database interface
+var bodyParser = require('body-parser'); // X-form-data decoder
+var crypto = require('crypto');          // Cryptography 
+var bcrypt = require('bcrypt-nodejs')    // BCrypt algorithm for password management
+var helmet = require('helmet')           // Web server safety
+var session = require('express-session') // Session management
 
 
 // Configuration
@@ -74,11 +77,12 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-	// Authentication check
-app.use(checkToken)
-function checkToken(req, res, next) {
-	next()
-}
+	// Session
+app.use(session({
+	secret: "HYlFhWoHBGPxVnHqP45K",
+	resave : false,
+	saveUninitialized : false
+}));
 
 
 // Routing
@@ -88,7 +92,6 @@ app.get('/', function (req, res) {
 });
 
 	/* login */
-	// TODO : update response to accomodate specifications
 app.post('/login', function(req, res) {
 	/*
 	LOGIN REQUEST POST PARAMETERS :
@@ -97,31 +100,29 @@ app.post('/login', function(req, res) {
 
 	LOGIN RESPONSE FIELDS :
 		- code [int] : the response code (see header)
-		- token [str] : the unique login token to use for each request
-		- validity [nbr] : the timestamp at which the token is considered outdated
+		- accept [bool] : whether the login request is accepted
 	*/
 
 	// data gathering
 	var post_data = req.body;
 	var username = post_data.username;
 	var password = post_data.password;
-	var userID = -1;
-	var accept = false
-	var validity = 0;
-	var sesstoken = ""
+
 
 	// mysql user/pwd checking
 	var sql = 'SELECT ID,password FROM users WHERE LOWER(username) = LOWER(?)'
 	var inserts = [username]
 	sql = mysql.format(sql, inserts);
 	connection.query(sql, function(err1,res1,fields1){
-		if (err1) {console.error('SQL query error : ' + err.stack); return;}
+		if (err1) {
+			console.error('SQL query error : ' + err.stack);
+			res.json({accept: false, code: 31});
+			return;
+		}
 
 		// User not found
 		if(res1.length == 0) { 
-			accept = false; 
-			var response = {accept: accept, token: sesstoken, validity: validity} 
-			res.send(JSON.stringify(response));
+			res.json({accept: false, code: 10});
 		}
 		
 		// User found
@@ -129,39 +130,34 @@ app.post('/login', function(req, res) {
 			var hash = res1[0].password
 			bcrypt.compare(password, hash, function(err2, res2) {
 			
-				if (err2) {console.error('error comparing BCrypt : ' + err.stack); return;}
+				if (err2) {
+					console.error('error comparing BCrypt : ' + err.stack);
+					res.json({accept: false, code: 32});
+					return;
+				}
 
 				// Hashes match
 				if (res2) {
-					accept = true
-					userID = res1[0].ID;
-
-					if( accept ) {
-						validity = 60*4; // in minutes
-						sesstoken = crypto.randomBytes(64).toString('hex'); // see https://stackoverflow.com/questions/8855687
-
-						// save session token in DB
-						// TODO
-
-					}
+					req.session.userID = res1[0].ID;
 
 					// response sending
-					var response = {accept: accept, token: sesstoken, validity: validity} 
-					res.send(JSON.stringify(response));
-
+					res.json({accept: true, code: 0});
+					return;
 				}
 				
 				// Hashes doesn't match
-				else { accept = false }
+				else {
+					res.json({accept: false, code: 11});
+					return;
+				}
 			})
 		}
 		
 		// Multiple users found
 		else {
 			console.error("SQL Query error : too many results !!")
-			accept = false
-			var response = {accept: accept, token: sesstoken, validity: validity} 
-			res.send(JSON.stringify(response));
+			res.json({accept: false, code: 31});
+			return;
 		}
 	})
 });
@@ -170,7 +166,6 @@ app.post('/login', function(req, res) {
 app.post('/blog', function(req, res) {
 	/*
 	BLOG REQUEST POST PARAMETERS :
-		- token [str] : the login token
 		- type [str] :
 			"LIST", to list all blog posts with basic information
 			"DETAILS", to get all information about a blog post
@@ -182,16 +177,17 @@ app.post('/blog', function(req, res) {
 	BLOG RESPONSE FIELDS :
 		- code [int] : the response code (see header)
 		- posts [arr(obj)] : the blog posts (type="LIST" only)
-			object fields : id [int], public [bool], title [str], img_path [str], timestamp [int], publisher_name [str]
+			object fields : id [int], public [bool], title [str], banner_img_url [str], timestamp [int], publisher_name [str]
 		- post [obj] : the blog post (type="DETAILS" only)
-			object fields : to be decided
+			object fields : id [int], public [bool], title [str], timestamp [int], contents [str], publisher_id [int], img_ulrs [obj]
+				images object fields : list_banner [str], post_banner [str]
+
 
 
 	*/
 	var post_data = req.body;
-	if(!checkToken(req)) {
-		res.send(JSON.stringify({success: false, errcode: 10}))
-		return;
+	if (!req.session.userID) {
+		res.json({code : 12})
 	}
 
 
@@ -202,7 +198,6 @@ app.post('/blog', function(req, res) {
 app.post('/log', function(req, res) {
 	/*
 	LOG REQUEST POST PARAMETERS :
-		- token [str] : the login token
 		- type [str] :
 			"TASKS", to get current tasks data
 			"MSG", to get the Message of the Day
@@ -236,7 +231,6 @@ app.post('/log', function(req, res) {
 app.post('/drive', function(req, res) {
 	/*
 	DRIVE REQUEST POST PARAMETERS :
-		- token [str] : the login token
 		- type [str] : 
 			"LIST", to list all files (and directories) in a folder
 			"DWNL", to download the contents of a file
@@ -252,11 +246,11 @@ app.post('/drive', function(req, res) {
 	DRIVE RESPONSE FIELDS :
 		- code [int] : the response code (see header)
 		- files [arr(obj)] : the list of files (type="LIST" only)
-			object fields : to be determined
+			object fields : filename [str], rights [int], filetype [str], filesize [int], publisher_name [str]
 		- dirtree [arr(obj)] : the current position in the directory tree (type="LIST" only)
 			object fields : dir_id [int], dir_name [str]
 		- file [obj] : the file to download (type="DWNL" only)
-			object fields : to be determined
+			object fields : filename [str], rights [int], filetype [str], filesize [int], publisher_id [int], contents [str]
 
 	*/
 	var post_data = req.body;
@@ -272,9 +266,10 @@ app.post('/drive', function(req, res) {
 
 	/*
 	USERPAGE REQUEST POST PARAMETERS :
-		- token [str] : the login token
+
 
 	USERPAGE RESPONSE FIELDS :
+		- 
 
 	*/
 app.post('/userpage', function(req, res) {
@@ -283,7 +278,6 @@ app.post('/userpage', function(req, res) {
 
 	/*
 	NOTIFICATIONS REQUEST POST PARAMETERS :
-		- token [str] : the login token
 
 	NOTIFICATIONS RESPONSE FIELDS :
 	
@@ -294,7 +288,6 @@ app.post('/notifications', function(req, res) {
 
 	/*
 	DISCONNECT REQUEST POST PARAMETERS :
-		- token [str] : the login token
 
 	DISCONNECT RESPONSE FIELDS :
 	
