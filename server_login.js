@@ -54,6 +54,7 @@ var handleRequest = function(req, res) {
 				// Hashes match
 				if (res2) {
 					req.session.userID = res1[0].ID;
+					console.log(req.session.userID)
 
 					// response sending
 					res.json({accept: true, code: 0});
