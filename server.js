@@ -77,7 +77,12 @@ var pool = mysql.createPool({
 	// POST parser
 app.use(bodyParser.urlencoded({extended: true}));
 	// CORS headers
-app.use(cors())
+var whitelist = ['http://localhost', 'https://one.ipsa.fr']
+function getOrigin(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {callback(null, true)}
+    else {callback(new Error('Not allowed by CORS'))}
+  }
+app.use(cors({origin : getOrigin}))
 	// Session management
 app.use(session({
 		// This is to secure cookies and make sure they're not tampered with
@@ -85,11 +90,14 @@ app.use(session({
 		// Don't save a session again if it hasn't been modified
 	resave : false,
 		// Only save sessions in which data is stored
-	saveUninitialized : false
+	saveUninitialized : false,
+
+	cookie: {secure: false, HttpOnly: false}
 }));
 	// Session check
-/*
 app.use(function(req, res, next) {
+
+	res.header('Access-Control-Allow-Credentials', 'true');
 	if(req.url != "/" && req.url != "/login") {
 		
 		if(!req.session.userID) {
@@ -97,20 +105,33 @@ app.use(function(req, res, next) {
 			return;
 		}
 		
-		console.log(req.session)
 	} 
 
 	next();
 });
-*/
 
 
 // Routing
 	/* test */
 app.get('/', function (req, res) {
-  	res.send('This server actually works');
+  	res.send("This server works !")
   	return;
 });
+
+
+app.post('/', function(req, res) {
+	var sess = req.session
+	if (sess.views) {
+		sess.views++
+		sess.save()
+		res.header('Access-Control-Allow-Credentials', 'true');
+		res.json({test: true, views: sess.views})
+	} else {
+		sess.views = 1
+		sess.save()
+		res.end('welcome to the session demo. refresh!')
+	}
+})
 
 	/* Internal dependencies */
 var handleLogin = require('./server_login')(pool)
