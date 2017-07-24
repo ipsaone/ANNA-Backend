@@ -1,5 +1,5 @@
 {
-  "name": "ANNA-backend",
+  "name": "ANNA-BACKEND-PACKAGE",
   "version": "1.0.0",
   "description": "Backend for ANNA intranet",
   "main": "server.js",
