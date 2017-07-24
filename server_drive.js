@@ -8,6 +8,7 @@
 			"EDIT", to change the contents of a file or its metadata
 			"META", to get the file metadata
 			"MOVE", to move a file
+			"MKDR", to create a new directory
 		- target [nbr] : the file or directory ID, 1 for root (/)
 		- changes [obj] : the attributes to edit (type="EDIT" only)
 			object fields : to be determined

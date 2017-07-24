@@ -55,7 +55,8 @@ var handleRequest = function(req, res) {
 				if (res2) {
 					
 					// response sending
-					req.session.userID = res1[0].ID;					res.json({accept: true, code: 0});
+					req.session.userID = res1[0].ID;					
+					res.json({accept: true, code: 0});
 					return;
 				}
 				
