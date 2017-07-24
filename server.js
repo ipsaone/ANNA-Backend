@@ -134,10 +134,10 @@ app.post('/', function(req, res) {
 })
 
 	/* Internal dependencies */
-var handleLogin = require('./server_login')(pool)
-var handleDrive = require('./server_drive')(pool)
-var handleBlog = require('./server_blog')(pool)
-var handleLog = require('./server_log')(pool)
+var handleLogin = require('./server/server_login')(pool)
+var handleDrive = require('./server/server_drive')(pool)
+var handleBlog = require('./server/server_blog')(pool)
+var handleLog = require('./server/server_log')(pool)
 
 	/* backend */
 app.post('/login', handleLogin);
