@@ -34,6 +34,7 @@ var crypto = require('crypto');            // Cryptography
 var helmet = require('helmet');            // Web server safety
 var session = require('express-session');  // Session management
 var cors = require('cors')                 // Cross Origin Resource Sharing
+var rateLimit = require("express-rate-limit"); // Rate limiter (DDOS security)
 
 // Configuration
 	// Check if the executable has been started with the "prod" argument
@@ -74,6 +75,13 @@ var pool = mysql.createPool({
 
 
 // Middleware
+	// Rate limit
+app.use(new rateLimit({
+		// 100 requests per minute
+	windowMs: 1*60*1000,
+	max: 100,
+	delayMs: 0
+}))
 	// POST parser
 app.use(bodyParser.urlencoded({extended: true}));
 	// CORS headers

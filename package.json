@@ -11,7 +11,8 @@
     "body-parser": "^1.17.2",
     "helmet": "^3.8.0",
     "express-session": "^1.15.4",
-    "cors": "^2.8.4"
+    "cors": "^2.8.4",
+    "express-rate-limit": "^2.8.0"
   },
   "devDependencies": {}
 }
