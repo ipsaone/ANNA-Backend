@@ -41,7 +41,6 @@ var rateLimit = require("express-rate-limit"); // Rate limiter (DDOS security)
 	// Like this : "node server.js prod" or "./server.js prod"
 var localhost = (process.argv[2] != "prod");
 var port  = 8080;
-
 // HTTPS
 	// Choose the right certificate depending on the evironment
 if( !localhost ) {
@@ -87,10 +86,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 	// CORS headers
 var whitelist = ['http://localhost', 'https://one.ipsa.fr']
 function getOrigin(origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {callback(null, true)}
-    else {callback(new Error('Not allowed by CORS'))}
+    //if (whitelist.indexOf(origin) !== -1) {callback(null, true)}
+    //else {callback(new Error('Not allowed by CORS'))}
+    callback(null, true)
   }
-app.use(cors({origin : getOrigin}))
+app.use(cors({origin : getOrigin, credentials : true}))
 	// Session management
 app.use(session({
 		// This is to secure cookies and make sure they're not tampered with
@@ -141,6 +141,8 @@ app.post('/', function(req, res) {
 	}
 })
 
+app.options('*', cors({origin : getOrigin, credentials: true})) // Pre-flight
+
 	/* Internal dependencies */
 var handleLogin = require('./server/server_login')(pool)
 var handleDrive = require('./server/server_drive')(pool)
@@ -151,7 +153,7 @@ var handleLog = require('./server/server_log')(pool)
 app.post('/login', handleLogin);
 app.post('/blog', handleBlog);
 app.post('/log', handleLog);
-app.post('/drive', handleDrive);
+app.all('/drive', handleDrive);
 
 // Listening
 server.listen(port, function () {

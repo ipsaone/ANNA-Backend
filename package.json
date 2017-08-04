@@ -13,7 +13,11 @@
     "express-session": "^1.15.4",
     "cors": "^2.8.4",
     "express-rate-limit": "^2.8.0",
-    "init": "^0.1.2"
+    "get-folder-size": "^1.0.0",
+    "formidable": "^1.1.1",
+    "mv": "^2.1.1",
+    "mime-types": "^2.1.16",
+    "async": "^2.5.0"
   },
   "devDependencies": {},
   "node_deb": {
