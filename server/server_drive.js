@@ -9,6 +9,7 @@
 			"MOVE", to move a file
 			"MKDR", to create a new directory
 			"DWNL", to download a file
+			"DEL", to delete a file or directory
 		- target [nbr] : the file or directory ID, 1 for root (/)
 		- changes [obj] : the attributes to edit (type="EDIT" only)
 			object fields : to be determined
@@ -39,6 +40,8 @@ var util = require('util');
 var mv = require('mv');
 var mime = require("mime-types");
 var async = require('async');
+var BackendError = require('./error').BackendError;
+var handleError = require('./error').parse;
 
 module.exports = function(pool_glob) {
 	pool = pool_glob;
@@ -46,17 +49,17 @@ module.exports = function(pool_glob) {
 	
 }
 
-var handleRequest= function(req, res) {
+function handleRequest(req, res) {
 	if (req.method == "POST") {
-		handlePost(req, res);
+		handlePost(req, res, handleError);
 	}
 
 	else if (req.method == "GET") {
-		handleGet(req, res);
+		handleGet(req, res, handleError);
 	}
 }
 
-function handleGet (req, res) {
+function handleGet (req, res, errHandler) {
 	 if (typeof(req.query.fileid) == "undefined") {
 	 	res.json({code: 21});
 	 	return;
@@ -66,41 +69,26 @@ function handleGet (req, res) {
 
 	 // Check read permissions
 		checkPermissions(req.session.user_ID, fileid, rights.READ, function(err, accept) {
-			if (err) {
-				console.error(err);
-				res.json({code : 31})
-				return;
-			}
-
-			if (accept) {
+			errHandler(err, req, res, function() {
+				if (accept) {
 				// Get needed data
 				var sql = "SELECT drive_files.filename, drive_edits.archive_path, drive_edits.edition_time FROM drive_files INNER JOIN drive_edits ON drive_files.ID = drive_edits.file_ID WHERE drive_files.ID = ? AND drive_edits.archive_exists = 1 ORDER BY drive_edits.edition_time DESC";
 				pool.query(sql, [fileid], function(err1, res1, fields1) {
-					if (err1) {
-						console.error(err1),
-						res.json({code: 31});
-						return;
-					}
+					errHandler(err1, req, res, function() {
+						if (res1.length == 0) {
+							errHandler(new BackendError(23), req, res);
+						}
 
-					if (res1.length == 0) {
-						res.json({code: 23});
-						return;
-					}
+						else {
+							var file = res1[0];
+							var path = require('path').join(process.cwd(), '..', 'drive', file.archive_path);
 
-					else {
-						var file = res1[0];
-						var path = require('path').join(process.cwd(), '..', 'drive', file.archive_path);
-
-						// Stream file
-						res.download(path, file.filename, function(err2) {
-							if (err2) {
-								console.error(err2);
-								return;
-							}
-						})
-					}	
-
-					
+							// Stream file
+							res.download(path, file.filename, function(err2) {
+								errHandler(err2, req, res);
+							})
+						}	
+					})					
 				})
 
 
@@ -109,89 +97,74 @@ function handleGet (req, res) {
 
 			else {
 				// Send an error
-				res.json({code: 12})
+				errHandler(new BackendError(12), req, res);
 			}
-
+			})
 		});
 
 }
 
 
-function handlePost (req, res) {
+function handlePost (req, res, errHandler) {
 	var post_data = req.body;
 
 
 	var form = new formidable.IncomingForm();
 	form.multiples = true;
 	form.parse(req, function(err2, fields, files) {
-		 if (err2) {
-            console.log(err2);
-            return;
-        }
-
-        if (typeof fields.target !== "string") {
-        	// TODO : custom error
-        	console.log("Bad target type");
-        	res.json({code: 22})
-        	return;
-        }
-        
-        // Get data
-        var folder = parseInt(fields.target)
+		errHandler(err2, req, res, function() {
+			if (typeof fields.target !== "string") {
+				errHandler(new BackendError(22), req, res);
+	        }
+	        
+	        // Get data
+	        var folder = parseInt(fields.target)
 
 
 
-        // Check rights
-        checkPermissions(req.session.user_ID, folder, rights.READ, function(err, accept) {
-        	if (err) {
-        		console.error(err);
-				res.json({code : 32});
-				return;
-        	}
-
-        	if (accept) {
+	        // Check rights
+	        checkPermissions(req.session.user_ID, folder, rights.READ, function(err3, accept) {
+	        	errHandler(err3, req, res, function() {
+	        		if (accept) {
 
 
-        		var wrappers = [];
-        		
-        		if (files.upload instanceof Array ) {
-	        		for (var i = 0; i < files.upload.length; i++) {
-	        			wrappers.push({
-	        				userID : req.session.userID,
-	        				targetFolder : folder,
-	        				file: files.upload[i]
-	        			});
-	        		}
-	        	} else {
-	        		wrappers.push({
-	        			userID : req.session.userID,
-        				targetFolder : folder,
-        				file: files.upload
-	        		})
-	        	}
+		        		var wrappers = [];
+		        		
+		        		if (files.upload instanceof Array ) {
+			        		for (var i = 0; i < files.upload.length; i++) {
+			        			wrappers.push({
+			        				userID : req.session.userID,
+			        				targetFolder : folder,
+			        				file: files.upload[i]
+			        			});
+			        		}
+			        	} else {
+			        		wrappers.push({
+			        			userID : req.session.userID,
+		        				targetFolder : folder,
+		        				file: files.upload
+			        		})
+			        	}
 
-        		async.each(wrappers, handleUpload, function(err) {
-        			if(err) {
-        				console.log(err);
-        				res.json({code: 32});
-        				return;
-        			}
+		        		async.each(wrappers, handleUpload, function(err4) {
+		        			errHandler(err4, req, res, function() {
+			        			res.json({code: 1});
+			        			return;
+		        			})
+		        		})
+			        	
+		        		
+		        	}
 
-        			res.json({code: 1});
-        			return;
-        			
-        		})
-	        	
-        		
-        	}
-
-        	else {
-
-        	}
-        	
+		        	else {
+		        		errHandler(new BackendError(12), req, res);
+		        		return;
+		        	}
+	        	});        	
 
 
-        });
+	        });
+		})
         
         	
       
@@ -203,27 +176,25 @@ function handlePost (req, res) {
 		case "LIST" :
 			// Authorization check
 			checkPermissions(req.session.user_ID, post_data.target, rights.READ, function(err, accept) {
-				if (err) {
-					console.error(err);
-					res.json({code : 31})
-					return;
-				}
-
-				if (accept) {
-					getDirectoryListing(post_data.target, function(err, files) {
-						// Get directory tree
-						var dirtree = [];
-						getDirectoryTree(post_data.target, dirtree, function(err) {
-							// Send the answer
-							res.json({code : 1, files : files, dirtree : dirtree})
-							return;
+				errHandler(err, req, res, function() {
+					if (accept) {
+						getDirectoryListing(post_data.target, function(err, files) {
+							// Get directory tree
+							var dirtree = [];
+							getDirectoryTree(post_data.target, dirtree, function(err) {
+								// Send the answer
+								res.json({code : 1, files : files, dirtree : dirtree})
+								return;
+							});
 						});
-					});
-				}
-				else {
-					res.json({code : 12})
-					return;
-				}
+					}
+					else {
+						res.json({code : 12})
+						return;
+					}
+				})
+
+				
 				
 			});
 
