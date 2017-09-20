@@ -10,7 +10,10 @@
 	*/
 
 
-var bcrypt = require('bcrypt-nodejs');
+let bcrypt = require('bcrypt-nodejs');
+let assert = require('assert');
+let handleError = require('./error').parse;
+let BackendError = require('./error').BackendError;
 var pool = 0;
 
 module.exports = function(pool_glob) {
@@ -20,9 +23,9 @@ module.exports = function(pool_glob) {
 
 var handleRequest = function(req, res) {
 	// data gathering
-	var post_data = req.body;
-	var username = post_data.username;
-	var password = post_data.password;
+	let post_data = req.body;
+	let username = post_data.username;
+	let password = post_data.password;
 
 
 	// mysql user/pwd checking

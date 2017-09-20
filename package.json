@@ -17,7 +17,10 @@
     "formidable": "1.1.1",
     "mv": "2.1.1",
     "mime-types": "2.1.16",
-    "async": "2.5.0"
+    "async": "2.5.0",
+    "mmmagic": "0.4.5",
+    "connect-redis": "3.3.0",
+    "bcrypt-nodejs": "0.0.3"
   },
   "devDependencies": {},
   "node_deb": {

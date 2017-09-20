@@ -32,12 +32,12 @@ module.exports = function(pool_glob) {
 }
 
 var handleRequest = function(req, res) {
-		var post_data = req.body;
-		if (!req.session.userID) {
-			res.json({code : 12})
-		}
-
-
-
-		res.send(true);
+	var post_data = req.body;
+	if (!req.session.userID) {
+		res.json({code : 12})
 	}
+
+
+
+	res.send(true);
+}

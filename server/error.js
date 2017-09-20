@@ -34,8 +34,6 @@ require('util').inherits(module.exports.error, Error);
 
 function handleError(err, req, res, cb) {
 	if (err) {
-		
-		console.log("error type : "+err.constructor)
 		console.log(err);
 
 		if (!res.headersSent) {

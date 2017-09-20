@@ -25,16 +25,17 @@ Response codes :
 */
 
 // External dependencies
-var express = require('express');          // Web server
-var fs      = require('fs');               // File system
-var https   = require('https');            // Secure HTTP protocol
-var mysql   = require('mysql');            // Database interface
-var bodyParser = require('body-parser');   // X-form-data decoder
-var crypto = require('crypto');            // Cryptography 
-var helmet = require('helmet');            // Web server safety
-var session = require('express-session');  // Session management
-var cors = require('cors')                 // Cross Origin Resource Sharing
-var rateLimit = require("express-rate-limit"); // Rate limiter (DDOS security)
+var express = require('express');          		// Web server
+var fs      = require('fs');               		// File system
+var https   = require('https');            		// Secure HTTP protocol
+var mysql   = require('mysql');            		// Database interface
+var bodyParser = require('body-parser');   		// X-form-data decoder
+var crypto = require('crypto');            		// Cryptography 
+var helmet = require('helmet');            		// Web server safety
+var session = require('express-session');  		// Session management
+var redis = require('connect-redis')(session); 	// Session store
+var cors = require('cors')                 		// Cross Origin Resource Sharing
+var rateLimit = require("express-rate-limit"); 	// Rate limiter (DDOS security)
 
 // Configuration
 	// Check if the executable has been started with the "prod" argument
@@ -69,7 +70,8 @@ var pool = mysql.createPool({
   user     : 'root',
   password : 'OneServ_2017',
   database : 'ipsaone',
-  queueLimit : 20
+  waitForConnections: true,
+  connectionLimit: 500
 });
 
 
@@ -84,15 +86,18 @@ app.use(new rateLimit({
 	// POST parser
 app.use(bodyParser.urlencoded({extended: true}));
 	// CORS headers
-var whitelist = ['http://localhost', 'https://one.ipsa.fr']
-function getOrigin(origin, callback) {
-    //if (whitelist.indexOf(origin) !== -1) {callback(null, true)}
-    //else {callback(new Error('Not allowed by CORS'))}
-    callback(null, true)
-  }
+function getOrigin(origin, cb) {
+	cb(null, true)
+}
 app.use(cors({origin : getOrigin, credentials : true}))
 	// Session management
 app.use(session({
+		// This is a very widely-used, efficient session store
+	 store: new redis({
+	 		// Session store options
+	 		socket: "/var/run/redis/redis.sock",
+	 		logErrors: true
+	 }),
 		// This is to secure cookies and make sure they're not tampered with
 	secret: "HYlFhWoHBGPxVnHqP45K", 
 		// Don't save a session again if it hasn't been modified
@@ -100,15 +105,12 @@ app.use(session({
 		// Only save sessions in which data is stored
 	saveUninitialized : false,
 
-	cookie: {secure: false, HttpOnly: false}
+	cookie: {secure: true, httpOnly: false},
 }));
 	// Session check
 app.use(function(req, res, next) {
-
-	res.header('Access-Control-Allow-Credentials', 'true');
 	if(req.url != "/" && req.url != "/login") {
-		
-		if(!req.session.userID) {
+		if(typeof(req.session.userID) == "undefined") {
 			res.json({code: 13})
 			return;
 		}
@@ -117,7 +119,7 @@ app.use(function(req, res, next) {
 
 	next();
 });
-
+app.set('trust proxy', 1) // trust first proxy
 
 // Routing
 	/* test */
@@ -132,7 +134,6 @@ app.post('/', function(req, res) {
 	if (sess.views) {
 		sess.views++
 		sess.save()
-		res.header('Access-Control-Allow-Credentials', 'true');
 		res.json({test: true, views: sess.views})
 	} else {
 		sess.views = 1
@@ -144,10 +145,10 @@ app.post('/', function(req, res) {
 app.options('*', cors({origin : getOrigin, credentials: true})) // Pre-flight
 
 	/* Internal dependencies */
-var handleLogin = require('./server/server_login')(pool)
-var handleDrive = require('./server/server_drive')(pool)
-var handleBlog = require('./server/server_blog')(pool)
-var handleLog = require('./server/server_log')(pool)
+let handleLogin = require('./server/server_login')(pool)
+let handleDrive = require('./server/server_drive')(pool)
+let handleBlog = require('./server/server_blog')(pool)
+let handleLog = require('./server/server_log')(pool)
 
 	/* backend */
 app.post('/login', handleLogin);
