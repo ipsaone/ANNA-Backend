@@ -86,10 +86,8 @@ app.use(new rateLimit({
 	// POST parser
 app.use(bodyParser.urlencoded({extended: true}));
 	// CORS headers
-function getOrigin(origin, cb) {
-	cb(null, true)
-}
-app.use(cors({origin : getOrigin, credentials : true}))
+function getOrigin(origin, cb) {cb(null, true);}
+app.use(cors({origin : getOrigin, credentials : true}));
 	// Session management
 app.use(session({
 		// This is a very widely-used, efficient session store
@@ -104,7 +102,7 @@ app.use(session({
 	resave : false,
 		// Only save sessions in which data is stored
 	saveUninitialized : false,
-
+		// Secure cookies !
 	cookie: {secure: true, httpOnly: false},
 }));
 	// Session check
@@ -152,7 +150,7 @@ let handleLog = require('./server/server_log')(pool)
 
 	/* backend */
 app.post('/login', handleLogin);
-app.post('/blog', handleBlog);
+app.all('/blog', handleBlog);
 app.post('/log', handleLog);
 app.all('/drive', handleDrive);
 

@@ -40,7 +40,7 @@ let util = require('util');
 let mv = require('mv');
 let mime = require("mime-types");
 let async = require('async');
-let BackendError = require('./error').BackendError;
+let BackendError = require('./error').error;
 let handleError = require('./error').parse;
 let assert = require('assert')
 
@@ -158,8 +158,6 @@ function handlePost (req, res, errHandler) {
         	
       
 	});
-	
-	
 	
 
 	switch (post_data.type) {
