@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Check permissions
+if [ "$EUID" -ne 0 ]
+  then echo "Please run this script as root"
+  exit
+fi
+
+
+# install and configure dependencies
+	# apache2
+echo "Installing apache2..."
+apt install -y apache2
+
+	# mysql
+echo "Installing MySQL..."
+apt install -y mysql-server
+
+	# redis
+echo "Installing Redis..."
+apt install -y redis-server
+cp -f ./redis.conf /etc/redis/redis.conf
+service redis restart
+
+	# phpmyadmin
+echo "Installing PHPmyAdmin..."
+apt install -y phpmyadmin
+
+	# nodejs
+echo "Installing NodeJS..."
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+apt install -y nodejs build-essential
+
+	# dependencies
+echo "Installing dependencies..."
+npm install
+
+	# test
+echo "Testing setup..."
+if hash nodejs 2>/dev/null; then
+	echo "NodeJS : OK"
+	node test/setup-test.js
+else
+	echo "NodeJS : failed"
+fi
+echo "Install script is terminating"

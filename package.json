@@ -20,7 +20,8 @@
     "async": "2.5.0",
     "mmmagic": "0.4.5",
     "connect-redis": "3.3.0",
-    "bcrypt-nodejs": "0.0.3"
+    "bcrypt-nodejs": "0.0.3",
+    "request": "2.82.0"
   },
   "devDependencies": {},
   "node_deb": {
