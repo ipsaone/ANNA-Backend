@@ -32,7 +32,7 @@ var handleRequest = function(req, res) {
 	var sql = 'SELECT * FROM users WHERE LOWER(username) = LOWER(?)'
 	pool.query(sql, [username], function(err1,res1,fields1){
 		if (err1) {
-			console.error('SQL query error : ' + err.stack);
+			console.error('SQL query error : ' + err1.stack);
 			res.json({accept: false, code: 31});
 			return;
 		}
