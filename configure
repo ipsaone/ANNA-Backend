@@ -15,6 +15,7 @@ apt install -y apache2
 	# mysql
 echo "Installing MySQL..."
 apt install -y mysql-server
+mysql -u root -pOneServ_2017 -e "CREATE DATABASE ipsaone; source database.sql"
 
 	# redis
 echo "Installing Redis..."
