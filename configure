@@ -10,22 +10,23 @@ fi
 # install and configure dependencies
 	# apache2
 echo "Installing apache2..."
-apt install -y apache2
+apt install -qy apache2
 
 	# mysql
 echo "Installing MySQL..."
-apt install -y mysql-server
-mysql -u root -pOneServ_2017 -e "CREATE DATABASE ipsaone; source database.sql"
+apt install -qy mysql-server
+mysql -u root -pOneServ_2017 -e "CREATE DATABASE ipsaone"
+mysql -u root -pOneServ_2017 -e "source database.sql"
 
 	# redis
 echo "Installing Redis..."
-apt install -y redis-server
+apt install -qy redis-server
 cp -f ./redis.conf /etc/redis/redis.conf
 service redis restart
 
 	# phpmyadmin + fix (askubuntu.com/questions/387062)
 echo "Installing PHPmyAdmin..."
-apt install -y phpmyadmin
+apt install -qy phpmyadmin
 sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
 sudo a2enconf phpmyadmin.conf
 sudo service apache2 reload
@@ -33,7 +34,7 @@ sudo service apache2 reload
 	# nodejs
 echo "Installing NodeJS..."
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt install -y nodejs build-essential
+apt install -qy nodejs build-essential
 
 	# dependencies
 echo "Installing dependencies..."
