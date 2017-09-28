@@ -117,7 +117,7 @@ app.use(function(req, res, next) {
 
 	next();
 });
-app.set('trust proxy', 1) // trust first proxy
+app.set('trust proxy', 1); // trust first proxy
 
 // Routing
 	/* test */

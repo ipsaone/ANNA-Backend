@@ -59,31 +59,39 @@ function handlePost(req, res, errHandler) {
 				}
 
 				// Query database
-				let sql = "SELECT ID, publisher_id, title, publication_time FROM blog ORDER BY publication_time DESC LIMIT ? OFFSET ?"
-				pool.query(sql, [limit, start], function(err2, res2, fields) {
+				let sql_posts = "SELECT ID, publisher_id, title, publication_time FROM blog ORDER BY publication_time DESC LIMIT ? OFFSET ?"
+				pool.query(sql_posts, [limit, start], function(err2, res2, fields) {
 					errHandler(err2, req, res, function() {
 						if(res.length == 0) {
 							errHandler(new BackendError(21), req, res);
 						}
 
 						else {
-
 							let posts = [];
-							for (post in res2) {
-								posts.push({
-									id: post.ID,
-									public: true,       // TODO
-									title: post.title,
-									timestamp: publication_time,
-									banner_img_url: "", // TODO
-									publisher_name: ""  // TODO
-								});
-							}
+							for (let post of res2) {
+								let sql_publisher = "SELECT username FROM users WHERE ID = ?"
+								pool.query(sql_publisher, [post.publisher_id], function(err3, res3, fields) {
+									errHandler(err3, req, res, function() {
+										if(res3.length != 1) {
+											errHandler(new BackendError(21), req, res);
+										}
 
+										posts.push({
+											id: post.ID,
+											public: true,       // TODO
+											title: post.title,
+											timestamp: post.publication_time,
+											banner_img_url: "", // TODO
+											publisher_name: res3[0].username
+										});
 
-
-							res.json({code: 1, posts: posts});
-						}
+										if(posts.length == res2.length) {	
+											res.json({code: 1, posts: posts});
+										}
+									})
+								})
+							};
+						};
 					});
 				});
 
