@@ -28,5 +28,9 @@
     "entrypoints": {
       "daemon": "server.js prod"
     }
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "prod": "node server.js prod"
   }
 }
