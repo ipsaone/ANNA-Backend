@@ -1,1 +1,12 @@
+.idea/
+.cache/
+.config/
+.npm/
+
+.bash_history
+.rnd
+.sudo_as_admin_successful
+
 node_modules/
+
+package-lock.json
