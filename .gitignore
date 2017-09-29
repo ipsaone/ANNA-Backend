@@ -6,5 +6,5 @@
 
 node_modules/
 
-vm_build.log
+*.log
 package-lock.json
