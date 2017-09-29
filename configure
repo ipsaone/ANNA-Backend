@@ -3,7 +3,7 @@
 export DEBIAN_FRONTEND=noninteractive
 
 # Remove old log
-rm /vagrant/vm_build.log
+[[ -f /vagrant/vm_build.log ]] && rm /vagrant/vm_build.log
 
 # Put date in provision log
 date > /vagrant/vm_build.log
@@ -64,12 +64,13 @@ cp -f /home/vagrant/Anna/redis.conf /etc/redis/redis.conf >> /vagrant/vm_build.l
 service redis restart >> /vagrant/vm_build.log 2>&1
 
 
+echo -e "\n--- Adding ip to hosts ---\n"
+echo "192.168.50.5 anna.local.dev" >> /etc/hosts >> /vagrant/vm_build.log 2>&1
+
+
 echo -e "\n--- Installing dependencies via NPM ---\n"
 cd /home/vagrant/Anna
 sudo npm install --no-bin-links >> /vagrant/vm_build.log 2>&1
-
-echo -e "\n--- Configuring iptables ---\n"
-sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT >> /vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Testing setup ---\n"
 if hash nodejs 2>/dev/null; then

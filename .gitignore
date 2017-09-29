@@ -2,11 +2,9 @@
 .cache/
 .config/
 .npm/
-
-.bash_history
-.rnd
-.sudo_as_admin_successful
+.vagrant/
 
 node_modules/
 
+vm_build.log
 package-lock.json

@@ -41,14 +41,16 @@ var rateLimit = require("express-rate-limit"); 	// Rate limiter (DDOS security)
 	// Check if the executable has been started with the "prod" argument
 	// Like this : "node server.js prod" or "./server.js prod"
 var localhost = (process.argv[2] != "prod");
-var port  = 8080;
+var port = 8080;
 // HTTPS
 	// Choose the right certificate depending on the evironment
 if( !localhost ) {
+	var host = "127.0.0.1";
 	var privateKey  = fs.readFileSync('sslcert/private.key', 'utf8');
 	var certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
 	console.log("Using one.ipsa.fr certificate")
 } else {
+	var host = "192.168.50.5";
 	var privateKey  = fs.readFileSync('sslcert/localhost.key', 'utf8');
 	var certificate = fs.readFileSync('sslcert/localhost.crt', 'utf8');
 	console.log("Using localhost certificate")
@@ -155,6 +157,6 @@ app.post('/log', handleLog);
 app.all('/drive', handleDrive);
 
 // Listening
-server.listen(port, function () {
-  console.log('Backend server listening on port '+port);
+server.listen(port, host, function () {
+  console.log('Backend server listening on ' + host + ':' + port);
 });
