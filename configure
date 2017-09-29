@@ -1,51 +1,82 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
-# Check permissions
-if [ "$EUID" -ne 0 ]
-  then echo "Please run this script as root"
-  exit
-fi
+export DEBIAN_FRONTEND=noninteractive
+
+# Remove old log
+rm /vagrant/vm_build.log
+
+# Put date in provision log
+date > /vagrant/vm_build.log
+
+# Variables
+DBHOST=localhost
+DBNAME=ipsaone
+DBUSER=root
+DBPASSWD=OneServ_2017
+
+echo -e "\n--- Provisioning OneOS ---"
+echo -e "Warning: be patient\n"
 
 
-# install and configure dependencies
-	# apache2
-echo "Installing apache2..."
-apt install -qy apache2
+echo -e "\n--- Updating packages list ---\n"
+apt-get -qy update >> /vagrant/vm_build.log 2>&1
 
-	# mysql
-echo "Installing MySQL..."
-apt install -qy mysql-server || echo "Installation failed" && exit
-mysql -u root -pOneServ_2017 -e "CREATE DATABASE ipsaone"
-mysql -u root -pOneServ_2017 -e "source database.sql" ipsaone
 
-	# redis
-echo "Installing Redis..."
-apt install -qy redis-server || echo "Installation failed" && exit
-cp -f ./redis.conf /etc/redis/redis.conf
-service redis restart
+echo -e "\n--- Installing base packages ---\n"
+apt-get -qy install curl build-essential git >> /vagrant/vm_build.log 2>&1
 
-	# phpmyadmin + fix (askubuntu.com/questions/387062)
-echo "Installing PHPmyAdmin..."
-apt install -qy phpmyadmin || echo "Installation failed" && exit
-sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
-sudo a2enconf phpmyadmin.conf
-sudo service apache2 reload
 
-	# nodejs
-echo "Installing NodeJS..."
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt install -qy nodejs build-essential || echo "Installation failed" && exit
+echo -e "\n--- Installing NodeJS ---\n"
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - >> /vagrant/vm_build.log 2>&1
+apt-get -qy install nodejs >> /vagrant/vm_build.log 2>&1
 
-	# dependencies
-echo "Installing dependencies..."
-npm install
 
-	# test
-echo "Testing setup..."
+echo -e "\n--- Installing Apache ---\n"
+apt-get -qy apache2 >> /vagrant/vm_build.log 2>&1
+
+
+echo -e "\n--- Installing MySQL specific packages and settings ---\n"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
+debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true" >> /vagrant/vm_build.log 2>&1
+debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
+debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
+debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
+debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" >> /vagrant/vm_build.log 2>&1
+apt-get -qy install mysql-server phpmyadmin >> /vagrant/vm_build.log 2>&1
+
+
+echo -e "\n--- Setting up our MySQL user and db ---\n"
+mysql -u $DBUSER -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
+mysql -u $DBUSER -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" >> /vagrant/vm_build.log 2>&1
+mysql -u $DBUSER -p$DBPASSWD -e "source /home/vagrant/Anna/database.sql" $DBNAME  >> /vagrant/vm_build.log 2>&1
+
+
+echo -e "\n--- Setting up PHPmyAdmin ---\n"
+# sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+sudo a2enconf phpmyadmin.conf >> /vagrant/vm_build.log 2>&1
+sudo service apache2 reload >> /vagrant/vm_build.log 2>&1
+
+
+echo -e "\n--- Installing Redis ---\n"
+apt-get -qy install redis-server >> /vagrant/vm_build.log 2>&1
+cp -f /home/vagrant/Anna/redis.conf /etc/redis/redis.conf >> /vagrant/vm_build.log 2>&1
+service redis restart >> /vagrant/vm_build.log 2>&1
+
+
+echo -e "\n--- Installing dependencies via NPM ---\n"
+cd /home/vagrant/Anna
+sudo npm install --no-bin-links >> /vagrant/vm_build.log 2>&1
+
+echo -e "\n--- Configuring iptables ---\n"
+sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT >> /vagrant/vm_build.log 2>&1
+
+echo -e "\n--- Testing setup ---\n"
 if hash nodejs 2>/dev/null; then
-	echo "NodeJS : OK"
+	echo -e "NodeJS : OK"
 	node test/setup-test.js
 else
-	echo "NodeJS : failed"
+	echo -e "NodeJS : failed">&1
 fi
-echo "Install script is terminating"
+
+echo -e "\n--- OneOS is ready ---"
