@@ -47,9 +47,8 @@ apt-get -qy install mysql-server phpmyadmin >> /vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Setting up our MySQL user and db ---\n"
-mysql -u $DBUSER -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
+mysql -u $DBUSER -p$DBPASSWD -e "CREATE DATABASE $DBNAME DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" >> /vagrant/vm_build.log 2>&1
 mysql -u $DBUSER -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" >> /vagrant/vm_build.log 2>&1
-mysql -u $DBUSER -p$DBPASSWD -e "source /home/vagrant/Anna/database.sql" $DBNAME  >> /vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Setting up PHPmyAdmin ---\n"
@@ -71,6 +70,10 @@ echo "192.168.50.5 anna.local.dev" >> /etc/hosts >> /vagrant/vm_build.log 2>&1
 echo -e "\n--- Installing dependencies via NPM ---\n"
 cd /home/vagrant/Anna
 sudo npm install --no-bin-links >> /vagrant/vm_build.log 2>&1
+
+echo -e "\n--- Migrating $DNAME database ---\n"
+cd /home/vagrant/Anna
+node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Testing setup ---\n"
 if hash nodejs 2>/dev/null; then

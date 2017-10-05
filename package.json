@@ -4,33 +4,39 @@
   "description": "Backend for ANNA intranet",
   "main": "server.js",
   "author": "IpsaOne DevTeam",
+  "private": true,
   "license": "ISC",
   "dependencies": {
-    "express": "4.15.2",
-    "mysql": "2.13.0",
-    "body-parser": "1.17.2",
-    "helmet": "3.8.0",
-    "express-session": "1.15.4",
-    "cors": "2.8.4",
-    "express-rate-limit": "2.8.0",
-    "get-folder-size": "1.0.0",
-    "formidable": "1.1.1",
-    "mv": "2.1.1",
-    "mime-types": "2.1.16",
-    "async": "2.5.0",
-    "mmmagic": "0.4.5",
-    "connect-redis": "3.3.0",
-    "bcrypt-nodejs": "0.0.3",
-    "request": "2.82.0"
+    "async": "^2.5.0",
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.17.2",
+    "connect-redis": "^3.3.0",
+    "cors": "^2.8.4",
+    "express": "^4.15.2",
+    "express-rate-limit": "^2.8.0",
+    "express-session": "^1.15.4",
+    "express-validator": "^4.2.1",
+    "formidable": "^1.1.1",
+    "get-folder-size": "^1.0.0",
+    "helmet": "^3.8.0",
+    "marked": "^0.3.6",
+    "mime-types": "^2.1.16",
+    "mmmagic": "^0.4.5",
+    "mv": "^2.1.1",
+    "mysql2": "^1.4.2",
+    "request": "^2.82.0",
+    "sequelize": "^4.13.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "sequelize-cli": "^3.0.0"
+  },
   "node_deb": {
     "entrypoints": {
-      "daemon": "server.js prod"
+      "daemon": "./bin/wwww.js prod"
     }
   },
   "scripts": {
-    "dev": "node server.js",
-    "prod": "node server.js prod"
+    "start": "node ./bin/www.js",
+    "debug": "DEBUG=express:* node ./bin/www.js"
   }
 }
