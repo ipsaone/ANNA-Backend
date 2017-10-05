@@ -1,3 +1,0 @@
-#!/bin/bash
-
-mysqldump -u root -pOneServ_2017 -h localhost --no-data ipsaone > database.sql
