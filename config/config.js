@@ -28,5 +28,9 @@ module.exports = {
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
+    },
+
+    storage: {
+        folder: 'storage',
     }
 };
