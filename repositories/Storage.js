@@ -3,8 +3,8 @@
 const fs = require('fs');
 const config = require('../config/config');
 const _path = require('path');
-
 const mime = require('mime-types');
+
 
 class Storage {
     static get root() {
@@ -18,8 +18,16 @@ class Storage {
             return 'https://' + config.env.dev.host + ':' + config.env.dev.port + '/storage';
     }
 
+    /**
+     * Returns an object describing the request.
+     * GET /bar/foo.txt returns a file object
+     * GET /bar/foo/ returns a folder object (with all its children)
+     *
+     * @param url example : /bar/foo.txt or /bar/foo/
+     * @param cb
+     */
     static getObject(url, cb) {
-        url = url.replace(/\/$/, "");
+        url = url.replace(/\/$/, '');
         this._guessType(url, (err, type) => {
             if (err) return cb(err);
 
@@ -35,8 +43,29 @@ class Storage {
         });
     }
 
+
+    static _getDirectoryTree(url) {
+        let dir = this._getDirectory(url);
+
+        const dirData = this._safeReadDirSync(dir.path);
+        if (dirData === null) return null;
+
+        dir.children = dirData.map(child => {
+            const stats = fs.statSync(_path.join(dir.path, child));
+            if (stats.isDirectory()) {
+                return this._getDirectory(url + '/' + child);
+            }
+            else {
+                return this._getFile(url + '/' + child, stats);
+            }
+        });
+
+        return dir;
+    }
+
+
     static _getFile(url, stats) {
-        const path = _path.join(this.root, url)
+        const path = _path.join(this.root, url);
         const path_parsed = _path.parse(path);
 
         return {
@@ -52,6 +81,7 @@ class Storage {
         };
     }
 
+
     static _getDirectory(url) {
         const path = _path.join(this.root, url);
 
@@ -60,27 +90,7 @@ class Storage {
             name: _path.basename(path),
             url: this.url + url,
             path: path,
-        }
-    }
-
-
-    static _getDirectoryTree(url) {
-        let dir = this._getDirectory(url);
-
-        const dirData = this._safeReadDirSync(dir.path);
-        if (dirData === null) return null;
-
-        dir.children = dirData.map(child => {
-            const stats = fs.statSync(_path.join(dir.path, child));
-            if (stats.isDirectory()) {
-                return this._getDirectory(url + '/' + child);
-            }
-            else {
-                return this._getFile(url + '/' + child, stats)
-            }
-        });
-
-        return dir;
+        };
     }
 
 
