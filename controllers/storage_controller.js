@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-
+const Storage = require('../repositories/Storage');
 
 exports.index = function (req, res) {
     const path = req.body.path;
