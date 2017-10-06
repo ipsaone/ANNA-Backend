@@ -35,7 +35,7 @@ class Storage {
                 return cb(null, this._getDirectoryTree(url));
             }
             else if (type === 'file') {
-                return cb(null, this._getFile(url));
+                return cb(null, this._getFile(url, fs.statSync(_path.join(this.root, url))));
             }
             else {
                 return cb(null, type);
@@ -65,6 +65,7 @@ class Storage {
 
 
     static _getFile(url, stats) {
+        if (!stats) return undefined;
         const path = _path.join(this.root, url);
         const path_parsed = _path.parse(path);
 

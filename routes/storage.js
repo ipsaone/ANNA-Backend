@@ -3,7 +3,7 @@
 const router = require('express').Router();
 const storage_controller = require('../controllers/storage_controller');
 
-router.route('/:url')
+router.route('/*')
     .get(storage_controller.index)
     .post(storage_controller.store);
 
