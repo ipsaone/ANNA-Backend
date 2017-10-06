@@ -15,6 +15,7 @@ module.exports = {
             },
             path: {
                 allowNull: false,
+                unique: true,
                 type: Sequelize.STRING
             },
             authorId: {

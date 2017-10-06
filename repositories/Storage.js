@@ -1,9 +1,10 @@
 'use strict';
 
 const fs = require('fs');
-const config = require('../config/config');
 const _path = require('path');
 const mime = require('mime-types');
+const db = require('../models');
+const config = require('../config/config');
 
 
 class Storage {
@@ -68,6 +69,8 @@ class Storage {
         if (!stats) return undefined;
         const path = _path.join(this.root, url);
         const path_parsed = _path.parse(path);
+
+
 
         return {
             type: 'file',
