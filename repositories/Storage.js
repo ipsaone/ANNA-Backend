@@ -121,8 +121,4 @@ class Storage {
     }
 }
 
-// TESTS
-// Storage.getObject('/bar/', (err, result) => {
-//     if (err) console.log(err);
-//     else console.log(result);
-// });
+module.exports = Storage;
