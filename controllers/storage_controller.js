@@ -1,13 +1,24 @@
 'use strict';
 
-const fs = require('fs');
 const Storage = require('../repositories/Storage');
 
 exports.index = function (req, res) {
-    Storage.getObject(req.params[0], (err, obj) => {
-        if (err) res.json(err);
-        else res.json(obj);
-    });
+    if (req.query.download && req.query.download === 'true')
+        Storage.getFileForDownload(req.params[0])
+            .then(file => {
+                res.download(file.path);
+            })
+            .catch(err => {
+                res.json(err);
+            });
+    else
+        Storage.getObject(req.params[0])
+            .then(object => {
+                res.json(object);
+            })
+            .catch(err => {
+                res.json(err);
+            });
 };
 
 exports.store = function (req, res) {

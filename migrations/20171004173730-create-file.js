@@ -14,7 +14,7 @@ module.exports = {
                 unique: true,
                 type: Sequelize.STRING
             },
-            authorId: {
+            ownerId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',

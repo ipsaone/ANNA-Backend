@@ -6,7 +6,6 @@ const mime = require('mime-types');
 const db = require('../models');
 const config = require('../config/config');
 
-
 class Storage {
     static get root() {
         return _path.join(__dirname, '..', config.storage.folder);
@@ -25,104 +24,121 @@ class Storage {
      * GET /bar/foo/ returns a folder object (with all its children)
      *
      * @param url example : /bar/foo.txt or /bar/foo/
-     * @param cb
      */
-    static getObject(url, cb) {
-        url = url.replace(/\/$/, '');
-        this._guessType(url, (err, type) => {
-            if (err) return cb(err);
-
-            if (type === 'directory') {
-                return cb(null, this._getDirectoryTree(url));
-            }
-            else if (type === 'file') {
-                return cb(null, this._getFile(url, fs.statSync(_path.join(this.root, url))));
-            }
-            else {
-                return cb(null, type);
-            }
+    static getObject(url) {
+        return new Promise((resolve, reject) => {
+            Storage._getStats(url)
+                .then(stats => {
+                    if (stats.isDirectory())
+                        Storage._getDirectoryTree(url)
+                            .then(tree => {
+                                return resolve(tree);
+                            });
+                    else if (stats.isFile())
+                        Storage._getFile(url, stats)
+                            .then(file => {
+                                return resolve(file);
+                            })
+                            .catch(err => {
+                                return reject(err);
+                            });
+                    else
+                        reject(Error('Storage.getObject error, not a file or a directory.'));
+                })
+                .catch(err => reject(err));
         });
-    }
+    };
+
+
+    static getFileForDownload(url) {
+        return new Promise((resolve, reject) => {
+            const path = _path.join(Storage.root, url);
+
+            fs.stat(path, (err, stats) => {
+                if (err) return reject(err);
+
+                if (stats.isFile())
+                    return resolve({path: path});
+                else
+                    return reject(Error('Not a file'));
+            });
+        });
+    };
 
 
     static _getDirectoryTree(url) {
-        let dir = this._getDirectory(url);
+        return new Promise(resolve => {
+            let dir = Storage._getDirectory(url);
+            const dirData = fs.readdirSync(dir.path);
 
-        const dirData = this._safeReadDirSync(dir.path);
-        if (dirData === null) return null;
+            let promises = [];
 
-        dir.children = dirData.map(child => {
-            const stats = fs.statSync(_path.join(dir.path, child));
-            if (stats.isDirectory()) {
-                return this._getDirectory(url + '/' + child);
+            if (dirData !== null) {
+                promises = dirData.map(child => {
+                    const child_url = url + '/' + child;
+
+                    return Storage._getStats(child_url)
+                        .then(stats => {
+                            if (stats.isDirectory())
+                                return Storage._getDirectory(child_url);
+                            else
+                                return Storage._getFile(child_url, stats);
+                        });
+                });
             }
-            else {
-                return this._getFile(url + '/' + child, stats);
-            }
+
+            Promise.all(promises).then((res) => {
+                dir.children = res;
+                return resolve(dir);
+            });
         });
-
-        return dir;
-    }
+    };
 
 
     static _getFile(url, stats) {
-        if (!stats) return undefined;
-        const path = _path.join(this.root, url);
+        const path = _path.join(Storage.root, url);
         const path_parsed = _path.parse(path);
 
+        return db.File.findOne({where: {path: path}, include: ['owner', 'group']})
+            .then(file => {
+                file.type = 'file';
+                file.url = Storage.url + url;
+                file.base = path_parsed.base;
+                file.name = path_parsed.name;
+                file.ext = path_parsed.ext;
+                file.size = stats.size;
+                file.mime = mime.lookup(path_parsed.ext);
 
-
-        return {
-            type: 'file',
-            path: path,
-            url: this.url + url,
-            base: path_parsed.base,
-            name: path_parsed.name,
-            ext: path_parsed.ext,
-            size: stats.size,
-            mime: mime.lookup(path_parsed.ext),
-            charset: mime.charset(path)
-        };
-    }
+                return file;
+            })
+            .catch(err => Error(`File '${path}' is not registered in the database.`));
+    };
 
 
     static _getDirectory(url) {
-        const path = _path.join(this.root, url);
+        const path = _path.join(Storage.root, url);
 
         return {
             type: 'directory',
             name: _path.basename(path),
-            url: this.url + url,
+            url: Storage.url + '/' + url,
             path: path,
         };
-    }
+    };
 
 
-    static _safeReadDirSync(path) {
-        let dirData = {};
-        try {
-            dirData = fs.readdirSync(path);
-        } catch (ex) {
-            if (ex.code === 'EACCES') return null; //User does not have permissions, ignore directory
-            else throw ex;
-        }
-        return dirData;
-    }
+    static _getStats(url) {
+        return new Promise((resolve, reject) => {
+            fs.stat(_path.join(Storage.root, url), (err, stats) => {
+                if (err) return reject(err);
 
-
-    static _guessType(url, cb) {
-        fs.stat(_path.join(this.root, url), (err, stats) => {
-            if (err) return cb(err);
-
-            if (stats.isDirectory())
-                return cb(null, 'directory');
-            else if (stats.isFile()) {
-                return cb(null, 'file');
-            }
-            else
-                return cb(Error('Unknown type'));
+                if (stats.isDirectory() || stats.isFile())
+                    return resolve(stats);
+                else
+                    return reject(Error('Unknown type'));
+            });
         });
-    }
+    };
 }
 
 module.exports = Storage;

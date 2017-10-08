@@ -2,15 +2,22 @@
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
-        name: {allowNull: false, type: DataTypes.STRING},
-        path: {allowNull: false, type: DataTypes.STRING},
-        authorId: {allowNull: false, type: DataTypes.INTEGER},
-        groupId: DataTypes.INTEGER // Group is optional
+        path: {allowNull: false, unique: true, type: DataTypes.STRING},
+        ownerId: {allowNull: false, type: DataTypes.INTEGER},
+        groupId: DataTypes.INTEGER, // Group is optional
+
+        // Additional properties, filled by the Storage class, not saved on the database
+        type: DataTypes.VIRTUAL,
+        base: DataTypes.VIRTUAL,
+        name: DataTypes.VIRTUAL,
+        ext: DataTypes.VIRTUAL,
+        size: DataTypes.VIRTUAL,
+        mime: DataTypes.VIRTUAL,
     });
 
     File.associate = function (models) {
         File.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'});
-        File.belongsTo(models.Group, {foreignKey: 'groupIDd', as: 'group'});
+        File.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
     };
 
     return File;
