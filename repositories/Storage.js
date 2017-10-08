@@ -67,30 +67,28 @@ class Storage {
 
 
     static _getDirectoryTree(url) {
-        return new Promise(resolve => {
-            let dir = Storage._getDirectory(url);
-            const dirData = fs.readdirSync(dir.path);
+        let dir = Storage._getDirectory(url);
+        const dirData = fs.readdirSync(dir.path);
 
-            let promises = [];
+        let promises = [];
 
-            if (dirData !== null) {
-                promises = dirData.map(child => {
-                    const child_url = url + '/' + child;
+        if (dirData !== null) {
+            promises = dirData.map(child => {
+                const child_url = url + '/' + child;
 
-                    return Storage._getStats(child_url)
-                        .then(stats => {
-                            if (stats.isDirectory())
-                                return Storage._getDirectory(child_url);
-                            else
-                                return Storage._getFile(child_url, stats);
-                        });
-                });
-            }
-
-            Promise.all(promises).then((res) => {
-                dir.children = res;
-                return resolve(dir);
+                return Storage._getStats(child_url)
+                    .then(stats => {
+                        if (stats.isDirectory())
+                            return Storage._getDirectory(child_url);
+                        else
+                            return Storage._getFile(child_url, stats);
+                    });
             });
+        }
+
+        return Promise.all(promises).then((res) => {
+            dir.children = res;
+            return dir;
         });
     };
 
