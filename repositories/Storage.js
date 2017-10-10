@@ -66,6 +66,63 @@ class Storage {
     };
 
 
+    static createFolder(path, name) {
+        return new Promise((resolve, reject) => {
+            const complete_path = _path.join(Storage.root, path, name);
+            if (!fs.existsSync(complete_path)) {
+                fs.mkdirSync(complete_path);
+                return resolve();
+            }
+            else
+                return reject(Error('Folder already exists.'));
+        });
+    }
+
+
+    static saveDataFile(path, name, ownerId) {
+        return new Promise((resolve, reject) => {
+            const complete_path = _path.join(Storage.root, path, name);
+
+            if (fs.existsSync(_path.join(complete_path, name)))
+                return reject(Error('File already exists.'));
+            else {
+                db.File.create({path: complete_path, ownerId: ownerId})
+                    .then(fileData => {
+                        return resolve({url: Storage.url + path, method: 'PUT'});
+                    })
+                    .catch(err => {
+                        return reject(err);
+                    });
+            }
+        });
+    }
+
+
+    static saveFile(path, file) {
+        return new Promise((resolve, reject) => {
+            path = _path.join(Storage.root, path, file.originalname);
+
+            db.File.count({where: {path: path}})
+                .then(count => {
+                    if (count !== 0) {
+                        fs.rename(file.path, path, (err) => {
+                            if (err)
+                                return reject(err);
+                            else
+                                return resolve();
+                        });
+                    }
+                    else {
+                        return reject(Error('File is not in the database.'));
+                    }
+                })
+                .catch(err => {
+                    return reject(err);
+                });
+        });
+    }
+
+
     static _getDirectoryTree(url) {
         let dir = Storage._getDirectory(url);
         const dirData = fs.readdirSync(dir.path);

@@ -22,5 +22,47 @@ exports.index = function (req, res) {
 };
 
 exports.store = function (req, res) {
-    res.json({message: 'Store the file'});
+    if (req.query && req.query.type === 'directory') {
+        Storage.createFolder(req.body.path, req.body.name)
+            .then(() => {
+                res.json({});
+            })
+            .catch(err => {
+                res.json(err.message);
+            });
+    }
+    else if (req.query && req.query.type === 'file') {
+        Storage.saveDataFile(req.body.path, req.body.name, req.body.ownerId)
+            .then(data => {
+                res.json(data);
+            })
+            .catch(err => {
+                res.json(err.message);
+            });
+    }
+    else {
+        res.json({message: 'Unknown type.'});
+    }
+};
+
+exports.put = function (req, res) {
+    if (!req.file)
+        return res.json({message: 'No valid files.'});
+    else {
+        Storage.saveFile(req.params[0], req.file)
+            .then(file => {
+                res.json(file);
+            })
+            .catch(err => {
+                res.json(err.message);
+            });
+    }
+};
+
+exports.move = function (req, res) {
+
+};
+
+exports.delete = function (req, res) {
+
 };
