@@ -1,17 +1,14 @@
 'use strict';
 
-describe('Testing the installation', () => {
+describe('Test the installation', () => {
     const chai = require('chai');
-    const chaiHttp = require('chai-http');
-    const config = require('./config');
-    const mysql = require('mysql2');
-    const fs = require('fs');
-
     const expect = chai.expect;
-    chai.use(chaiHttp);
+
+    chai.use(require('chai-http'));
 
     describe('PHPMyAdmin connection', () => {
         it('expect no errors and to have the status code 200', done => {
+
             chai.request('http://127.0.0.1/phpmyadmin')
                 .get('/')
                 .end((err, res) => {
@@ -24,6 +21,9 @@ describe('Testing the installation', () => {
 
     describe('MySQL connection', () => {
         it('expect no errors', done => {
+            const mysql = require('mysql2');
+            const config = require('./config');
+
             mysql.createConnection({
                 host: config.sequelize.host,
                 user: config.sequelize.username,
@@ -39,7 +39,9 @@ describe('Testing the installation', () => {
     });
 
     describe('Redis connection', () => {
-        it('expect the redis.sock and redis-server.pid files to exist', done => {
+        const fs = require('fs');
+
+        it('expect redis.sock and redis-server.pid files to exist', done => {
             expect(fs.existsSync('/var/run/redis/redis.sock') && fs.existsSync('/var/run/redis/redis-server.pid')).to.be.true;
             done();
         });
