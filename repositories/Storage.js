@@ -123,6 +123,28 @@ class Storage {
     }
 
 
+    static deleteFolder(path) {
+        return new Promise((resolve, reject) => {
+            fs.rmdir(_path.join(Storage.root, path), err => {
+                if (err)
+                    return reject(err);
+                else
+                    return resolve();
+            });
+        });
+    }
+
+    static deleteFile(id) {
+        return db.File.getOne({where: {id: id}})
+            .then(file => {
+                fs.unlinkSync(file.path);
+                return {};
+            });
+    }
+
+
+    /* PRIVATES METHODS */
+
     static _getDirectoryTree(url) {
         let dir = Storage._getDirectory(url);
         const dirData = fs.readdirSync(dir.path);

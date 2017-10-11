@@ -40,9 +40,8 @@ exports.store = function (req, res) {
                 res.json(err.message);
             });
     }
-    else {
+    else
         res.json({message: 'Unknown type.'});
-    }
 };
 
 exports.put = function (req, res) {
@@ -59,10 +58,29 @@ exports.put = function (req, res) {
     }
 };
 
-exports.move = function (req, res) {
+exports.update = function (req, res) {
 
 };
 
 exports.delete = function (req, res) {
-
+    if (req.query && req.query.type === 'directory') {
+        Storage.deleteFolder(req.body.path)
+            .then(() => {
+                res.json({});
+            })
+            .catch(err => {
+                res.json(err);
+            });
+    }
+    else if (req.query && req.query.type === 'file') {
+        Storage.deleteFile(req.body.id)
+            .then(() => {
+                res.json({});
+            })
+            .catch(err => {
+                res.json(err);
+            });
+    }
+    else
+        res.json({message: 'Unknown type.'});
 };
