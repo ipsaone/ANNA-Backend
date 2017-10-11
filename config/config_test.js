@@ -6,6 +6,18 @@ describe('Test the installation', () => {
 
     chai.use(require('chai-http'));
 
+    describe('Apache connection', () => {
+        it('expect no errors and to have the status code 200', done => {
+            chai.request('http://127.0.0.1')
+                .get('/')
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(200);
+                    done();
+                });
+        });
+    });
+
     describe('PHPMyAdmin connection', () => {
         it('expect no errors and to have the status code 200', done => {
 
