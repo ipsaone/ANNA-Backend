@@ -26,19 +26,13 @@ exports.index = function (req, res) {
  * @param res
  */
 exports.show = function (req, res) {
-    db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
+    db.User.findOne({where: {id: req.params.userId}, include: ['groups'], rejectOnEmpty: true})
         .then(user => {
-            if (!user) {
-                res.statusCode = 404;
-                res.json({code: 23});
-            }
-            else {
-                res.statusCode = 200;
-                res.json(user);
-            }
+            res.statusCode = 200;
+            res.json(user);
         })
         .catch(err => {
-            res.statusCode = 400;
+            res.statusCode = 404;
             res.json({code: 31, message: err.message});
         });
 };

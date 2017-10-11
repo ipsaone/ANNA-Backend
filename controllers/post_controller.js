@@ -25,7 +25,7 @@ exports.index = function (req, res) {
 };
 
 exports.show = function (req, res) {
-    db.Post.findOne({where: {id: req.params.postId}, include: ['author']})
+    db.Post.findOne({where: {id: req.params.postId}, include: ['author'], rejectOnEmpty: true})
         .then(post => {
             if (!post) {
                 res.statusCode = 404;
@@ -37,7 +37,7 @@ exports.show = function (req, res) {
             }
         })
         .catch(err => {
-            res.statusCode = 400;
+            res.statusCode = 404;
             res.json({code: 31, message: err.message});
         });
 };
