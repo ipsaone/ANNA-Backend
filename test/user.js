@@ -14,6 +14,8 @@ describe('Users', () => {
         db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'});
     });
 
+
+// [GET] /users
     describe('[GET] /users', () => {
         it('expect to GET all users', done => {
             chai.request(server)
@@ -35,6 +37,8 @@ describe('Users', () => {
         });
     });
 
+
+// [GET] /users/:id
     describe('[GET] /users/:id', () => {
         it('expect to GET user with id = 1', done => {
             chai.request(server)
@@ -66,6 +70,8 @@ describe('Users', () => {
         });
     });
 
+
+// [POST] /users
     describe('[POST] /users', () => {
         it('expect POST user to return the new user without errors', done => {
             chai.request(server)
@@ -115,6 +121,8 @@ describe('Users', () => {
         });
     });
 
+
+// [PUT] /users/:id
     describe('[PUT] /users/:id', () => {
         it('expect PUT to update the user with id = 2 and return nothing with the status 204', done => {
             chai.request(server)
@@ -157,6 +165,8 @@ describe('Users', () => {
         });
     });
 
+
+// [DELETE] /users/:id
     describe('[DELETE] /users/:id', () => {
         it('expect to DELETE user with id = 2 and return nothing with status 204', done => {
             chai.request(server)
@@ -175,10 +185,12 @@ describe('Users', () => {
             db.User.findById(2)
                 .then(user => {
                     expect(user).to.be.null;
+
                     done();
                 })
                 .catch(err => {
                     expect(err).to.not.be.null;
+
                     done();
                 });
         });
