@@ -78,7 +78,7 @@ node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
 echo -e "\n--- Testing setup ---\n"
 if hash nodejs 2>/dev/null; then
 	echo -e "NodeJS : OK"
-	node test/setup-test.js
+	./node_modules/.bin/mocha config/config_test.js
 else
 	echo -e "NodeJS : failed">&1
 fi

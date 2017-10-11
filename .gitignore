@@ -6,6 +6,7 @@
 
 node_modules/
 storage/*
+tmp/
 
 *.log
 package-lock.json

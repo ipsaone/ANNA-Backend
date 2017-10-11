@@ -24,8 +24,12 @@ Response codes :
 const express = require('express'); // Web server
 const bodyParser = require('body-parser'); // X-form-data decoder
 const helmet = require('helmet');
+const https = require('https');
+const config = require('./config/config');
 
 const app = express();
+// Set the app environment
+config.app.env = process.argv[2] === 'prod' ? 'production' : 'development';
 
 /*
  * Middleware
@@ -48,5 +52,17 @@ app.options('*', require('./middlewares/cors')); // Pre-flight
  * Routing
  */
 app.use(require('./routes'));
+
+/*
+ * Server config
+ */
+
+// Choose the right certificate depending on the environment
+const certificates = config.app.getCertificates();
+const {host, port} = config.app.getConnection();
+
+https.createServer(certificates, app).listen(port, host, function () {
+    console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+});
 
 module.exports = app;
