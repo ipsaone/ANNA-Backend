@@ -120,6 +120,8 @@ describe('Posts', () => {
 
 // [POST] /posts
     describe('[POST] /posts', () => {
-        it('expect ');
+        it('expect ', done => {
+            done();
+        });
     })
 });
