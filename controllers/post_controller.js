@@ -13,6 +13,7 @@ exports.index = function (req, res) {
         else if (req.query.published === 'false') posts = posts.scope('draft');
     }
 
+
     posts.findAll({include: ['author']})
         .then(posts => {
             res.statusCode = 200;
@@ -27,14 +28,8 @@ exports.index = function (req, res) {
 exports.show = function (req, res) {
     db.Post.findOne({where: {id: req.params.postId}, include: ['author'], rejectOnEmpty: true})
         .then(post => {
-            if (!post) {
-                res.statusCode = 404;
-                res.json({code: 23});
-            }
-            else {
-                res.statusCode = 200;
-                res.json(post);
-            }
+            res.statusCode = 200;
+            res.json(post);
         })
         .catch(err => {
             res.statusCode = 404;
@@ -55,7 +50,6 @@ exports.store = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    console.log(req.body);
     db.Post.update(req.body, {where: {id: req.params.postId}})
         .then(() => {
             res.statusCode = 204;
