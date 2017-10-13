@@ -93,8 +93,8 @@ class Storage {
                     .catch(err => {
                         return reject(err);
                     });
-            }
-        });
+                }
+            });
     }
 
 
