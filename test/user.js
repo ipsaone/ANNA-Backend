@@ -4,7 +4,7 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcryptjs');
 
 chai.use(require('chai-http'));
 

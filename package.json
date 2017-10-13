@@ -8,7 +8,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.5.0",
-    "bcrypt-nodejs": "^0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "connect-redis": "^3.3.0",
     "cors": "^2.8.4",
