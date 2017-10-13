@@ -42,7 +42,7 @@ describe('Test the installation', () => {
                 password: config.sequelize.password,
                 database: config.sequelize.database,
                 waitForConnections: true,
-                connectionLimit: 500
+                connectionLimit: 100
             }).connect(err => {
                 expect(err).to.be.null;
                 done();
