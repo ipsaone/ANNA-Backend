@@ -9,7 +9,7 @@ chai.use(require('chai-http'));
 
 describe('Storage', () => {
     before(() => {
-       return;
+       return db.sequelize.sync({force: true});
         
     });
 

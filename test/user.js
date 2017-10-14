@@ -9,11 +9,8 @@ const bcrypt = require('bcrypt-nodejs');
 chai.use(require('chai-http'));
 
 describe('Users', () => {
-    before((done) => {
-        db.sequelize.sync({force: true}).then(() => {
-            db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'})
-                .then(done())
-        });
+    before(() => {
+        return db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'});
     });
 
 

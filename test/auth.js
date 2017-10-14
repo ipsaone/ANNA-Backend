@@ -8,18 +8,17 @@ const expect = chai.expect;
 chai.use(require('chai-http'));
 
 describe('Auth', () => {
-    before('Init database', done => {
-        return db.User.destroy({where: {}})
-            .then(() => db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'}))
-        
+    before(() => {
+        return db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'});
     });
+    
 
 // POST /login
     describe('[POST] /login', () => {
         it('expect to login a user', done => {
             chai.request(server)
                 .post('/auth/login')
-                .send({username : 'foo', password: 'secret'})
+                .send({username : 'login_test', password: 'password_test'})
                 .end((err, res) => {
                     expect(err).to.be.null;
 
@@ -38,7 +37,8 @@ describe('Auth', () => {
 
 // POST /logout
     describe('[POST] /logout', () => {
-        chai.request(server)
+        it('expect to logout a user', done => {
+            chai.request(server)
             .post('/auth/logout')
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -46,6 +46,8 @@ describe('Auth', () => {
                 expect(res).to.have.status(200);
                 done();
             });
+        })
+        
     });
 
 })

@@ -8,13 +8,12 @@ const expect = chai.expect;
 chai.use(require('chai-http'));
 
 describe('Posts', () => {
-    before( done => {
-        db.sequelize.sync({force: true}).then(() => {
-            db.Post.create({id: 1, title: 'Foo', markdown: 'Bar', authorId: 1, published: true});
-            db.Post.create({id: 2, title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
-        }).then(() => {
-            done();
-        })
+    before( () => {
+            return db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true})
+                .then(() => {
+                    db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
+                });
+            
         
     });
 
