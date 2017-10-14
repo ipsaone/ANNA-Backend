@@ -65,24 +65,45 @@ class Storage {
         });
     };
 
+    static checkRoot() {
+        return new Promise((resolve, reject) => {
+            fs.access(Storage.root, err => {
+                if (err) {
+                    fs.mkdir(Storage.root, err => {
+                        return reject(Error('Internal server error'));
+                    })
+                }
+
+                resolve();
+            })
+        });
+    }
+
 
     static createFolder(path, name) {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
-            fs.access(complete_path, (err) => {
-                if (err) {
-                    return reject(Error('Folder already exists.'));
-                }
-
-                fs.mkdir(complete_path, (err) => {
+            
+            Storage.checkRoot().then(() => {
+                fs.access(complete_path, err => {
                     if (err) {
+                        fs.mkdir(complete_path, err => {
+                            if (err) {
 
-                        return reject(Error('Failed to create folder'))
+                                return reject(Error('Failed to create folder'))
+                            }
+
+                            return resolve();
+                        });
                     }
 
-                    return resolve();
-                });
+                    else {
+                        return reject(Error('Folder already exists.'));
+                    }
+                    
+                })
             })
+            
                 
         });
     }
