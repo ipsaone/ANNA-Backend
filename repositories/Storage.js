@@ -5,6 +5,7 @@ const _path = require('path');
 const mime = require('mime-types');
 const db = require('../models');
 const config = require('../config/config');
+const mv = require('mv');
 
 class Storage {
     static get root() {
@@ -113,19 +114,20 @@ class Storage {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
 
-            fs.access(_path.join(complete_path, name)), (err) => {
+            fs.access(_path.join(complete_path, name), err => {
                 if (err) {
-                    db.File.create({path: complete_path, ownerId: ownerId})
+                    db.File.create({path: complete_path, ownerId: ownerId, groupId: 1}) // TODO
                         .then(fileData => {
                             return resolve({url: Storage.url + path, method: 'PUT'});
                         })
                         .catch(err => {
                             return reject(err);
                         });
-                }
+                } else {
 
-                return reject(Error('File already exists.'));
-            }
+                    return reject(Error('File already exists.'));
+                }
+            });
         });
     }
 
@@ -137,11 +139,13 @@ class Storage {
             db.File.count({where: {path: path}})
                 .then(count => {
                     if (count !== 0) {
-                        fs.rename(file.path, path, (err) => {
-                            if (err)
+                        mv(file.path, path, err => {
+                            if (err) {
                                 return reject(err);
-                            else
-                                return resolve();
+                            }
+                            else {
+                                return resolve({success: true});
+                            }
                         });
                     }
                     else {
