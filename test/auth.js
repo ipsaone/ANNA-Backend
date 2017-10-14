@@ -27,7 +27,7 @@ describe('Auth', () => {
                 })
         })
 
-        it('checks login', done => {
+        it('checks login #TODO', done => {
             
             // TODO
 
@@ -35,11 +35,11 @@ describe('Auth', () => {
         });
     });
 
-// POST /logout
-    describe('[POST] /logout', () => {
+// GET /logout
+    describe('[GET] /logout', () => {
         it('expect to logout a user', done => {
             chai.request(server)
-            .post('/auth/logout')
+            .get('/auth/logout')
             .end((err, res) => {
                 expect(err).to.be.null;
 

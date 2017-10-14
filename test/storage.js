@@ -8,15 +8,23 @@ const expect = chai.expect;
 chai.use(require('chai-http'));
 
 describe('Storage', () => {
-    before(() => {
-       return db.sequelize.sync({force: true});
+    before(done => {
+       db.User.create({username: 'file_owner', password: 'ilovefiles', email: 'filemgr@local.dev'})
+        .then(owner => {
+            db.Group.create({name: 'file_test'}).then(group => {
+                owner.addGroup(group.id);
+                db.File.create({path: '/testfile', ownerId: owner.id, groupId: group.id});
+                done();
+            })
+        })
         
     });
 
-// POST /login
-    describe('test 1', () => {
+// GET /*
+    describe('[GET] /*', () => {
         it('expect to test', done => {
-            done();
+           
+
         })
     });
 
