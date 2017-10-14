@@ -9,10 +9,11 @@ const bcrypt = require('bcrypt-nodejs');
 chai.use(require('chai-http'));
 
 describe('Users', () => {
-    before(() => {
-        return db.User.destroy({where: {}})
-            .then(db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'}))
-            .catch(err => console.err(err));
+    before((done) => {
+        db.sequelize.sync({force: true}).then(() => {
+            db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'})
+                .then(done())
+        });
     });
 
 
@@ -35,7 +36,7 @@ describe('Users', () => {
 
                     done();
                 });
-        });
+        }); 
     });
 
 
@@ -113,9 +114,9 @@ describe('Users', () => {
             chai.request(server)
                 .post('/users')
                 .send({id: 2, username: 'groot', password: 'secret'}) // forgot the email
-                .end((err, res) => {
+                .end((err, resp) => {
                     expect(err).to.not.be.null;
-                    expect(res).to.have.status(400);
+                    expect(resp).to.have.status(400);
 
                     done();
                 });
@@ -196,4 +197,6 @@ describe('Users', () => {
                 });
         });
     });
+
+
 });

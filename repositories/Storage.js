@@ -69,12 +69,21 @@ class Storage {
     static createFolder(path, name) {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
-            if (!fs.existsSync(complete_path)) {
-                fs.mkdirSync(complete_path);
-                return resolve();
-            }
-            else
-                return reject(Error('Folder already exists.'));
+            fs.access(complete_path, (err) => {
+                if (err) {
+                    return reject(Error('Folder already exists.'));
+                }
+
+                fs.mkdir(complete_path, (err) => {
+                    if (err) {
+
+                        return reject(Error('Failed to create folder'))
+                    }
+
+                    return resolve();
+                });
+            })
+                
         });
     }
 
@@ -83,18 +92,20 @@ class Storage {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
 
-            if (fs.existsSync(_path.join(complete_path, name)))
-                return reject(Error('File already exists.'));
-            else {
-                db.File.create({path: complete_path, ownerId: ownerId})
-                    .then(fileData => {
-                        return resolve({url: Storage.url + path, method: 'PUT'});
-                    })
-                    .catch(err => {
-                        return reject(err);
-                    });
+            fs.access(_path.join(complete_path, name)), (err) => {
+                if (err) {
+                    db.File.create({path: complete_path, ownerId: ownerId})
+                        .then(fileData => {
+                            return resolve({url: Storage.url + path, method: 'PUT'});
+                        })
+                        .catch(err => {
+                            return reject(err);
+                        });
                 }
-            });
+
+                return reject(Error('File already exists.'));
+            }
+        });
     }
 
 
@@ -137,8 +148,7 @@ class Storage {
     static deleteFile(id) {
         return db.File.getOne({where: {id: id}})
             .then(file => {
-                fs.unlinkSync(file.path);
-                return {};
+                fs.unlink(file.path);
             });
     }
 

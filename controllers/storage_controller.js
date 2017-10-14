@@ -3,7 +3,7 @@
 const Storage = require('../repositories/Storage');
 
 exports.index = function (req, res) {
-    if (req.query.download && req.query.download === 'true')
+    if (req.query.download && req.query.download === 'true') {
         Storage.getFileForDownload(req.params[0])
             .then(file => {
                 res.download(file.path);
@@ -11,7 +11,8 @@ exports.index = function (req, res) {
             .catch(err => {
                 res.json(err);
             });
-    else
+    }
+    else {
         Storage.getObject(req.params[0])
             .then(object => {
                 res.json(object);
@@ -19,6 +20,7 @@ exports.index = function (req, res) {
             .catch(err => {
                 res.json(err);
             });
+    }
 };
 
 exports.store = function (req, res) {

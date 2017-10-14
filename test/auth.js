@@ -8,10 +8,9 @@ const expect = chai.expect;
 chai.use(require('chai-http'));
 
 describe('Auth', () => {
-    before(() => {
-        db.User.destroy({where: {}})
-        .then(db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'}))
-        .catch(err=>console.err(err));
+    before('Init database', done => {
+        return db.User.destroy({where: {}})
+            .then(() => db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'}))
         
     });
 
@@ -29,13 +28,13 @@ describe('Auth', () => {
                 })
         })
 
-        if('checks login', done => {
+        it('checks login', done => {
             
             // TODO
 
             done();
         });
-    })
+    });
 
 // POST /logout
     describe('[POST] /logout', () => {
