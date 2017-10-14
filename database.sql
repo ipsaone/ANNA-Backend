@@ -45,7 +45,7 @@ CREATE TABLE `drive_edits` (
   `editor_ID` int(11) NOT NULL,
   `edition_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `archive_exists` tinyint(1) NOT NULL,
-  `archive_path` varchar(255) NULL,
+  `archive_path` varchar(255) NOT NULL,
   `type` enum('CREATION','EDITION','DELETION') NOT NULL DEFAULT 'CREATION',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),

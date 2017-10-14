@@ -9,8 +9,12 @@ let config = {
     },
 
     env: {
-        dev: {
+        vagrant: {
             host: '192.168.50.5',
+            port: 8080
+        },
+        dev: {
+            host: '127.0.0.1',
             port: 8080
         },
 
@@ -63,6 +67,9 @@ config.app.getConnection = () => {
     if (config.app.env === 'production') {
         host = config.env.prod.host;
         port = config.env.prod.port;
+    } else if (process.env.ONEOS == "true") {
+        host = config.env.vagrant.host;
+        port = config.env.vagrant.port;
     } else {
         host = config.env.dev.host;
         port = config.env.dev.port;

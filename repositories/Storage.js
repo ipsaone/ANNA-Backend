@@ -5,6 +5,7 @@ const _path = require('path');
 const mime = require('mime-types');
 const db = require('../models');
 const config = require('../config/config');
+const mv = require('mv');
 
 class Storage {
     static get root() {
@@ -65,16 +66,46 @@ class Storage {
         });
     };
 
+    static checkRoot() {
+        return new Promise((resolve, reject) => {
+            fs.access(Storage.root, err => {
+                if (err) {
+                    fs.mkdir(Storage.root, err => {
+                        return reject(Error('Internal server error'));
+                    })
+                }
+
+                resolve();
+            })
+        });
+    }
+
 
     static createFolder(path, name) {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
-            if (!fs.existsSync(complete_path)) {
-                fs.mkdirSync(complete_path);
-                return resolve();
-            }
-            else
-                return reject(Error('Folder already exists.'));
+            
+            Storage.checkRoot().then(() => {
+                fs.access(complete_path, err => {
+                    if (err) {
+                        fs.mkdir(complete_path, err => {
+                            if (err) {
+
+                                return reject(Error('Failed to create folder'))
+                            }
+
+                            return resolve();
+                        });
+                    }
+
+                    else {
+                        return reject(Error('Folder already exists.'));
+                    }
+                    
+                })
+            })
+            
+                
         });
     }
 
@@ -83,18 +114,21 @@ class Storage {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
 
-            if (fs.existsSync(_path.join(complete_path, name)))
-                return reject(Error('File already exists.'));
-            else {
-                db.File.create({path: complete_path, ownerId: ownerId})
-                    .then(fileData => {
-                        return resolve({url: Storage.url + path, method: 'PUT'});
-                    })
-                    .catch(err => {
-                        return reject(err);
-                    });
+            fs.access(_path.join(complete_path, name), err => {
+                if (err) {
+                    db.File.create({path: complete_path, ownerId: ownerId, groupId: 1}) // TODO
+                        .then(fileData => {
+                            return resolve({url: Storage.url + path, method: 'PUT'});
+                        })
+                        .catch(err => {
+                            return reject(err);
+                        });
+                } else {
+
+                    return reject(Error('File already exists.'));
                 }
             });
+        });
     }
 
 
@@ -105,11 +139,13 @@ class Storage {
             db.File.count({where: {path: path}})
                 .then(count => {
                     if (count !== 0) {
-                        fs.rename(file.path, path, (err) => {
-                            if (err)
+                        mv(file.path, path, err => {
+                            if (err) {
                                 return reject(err);
-                            else
-                                return resolve();
+                            }
+                            else {
+                                return resolve({success: true});
+                            }
                         });
                     }
                     else {
@@ -137,8 +173,7 @@ class Storage {
     static deleteFile(id) {
         return db.File.getOne({where: {id: id}})
             .then(file => {
-                fs.unlinkSync(file.path);
-                return {};
+                fs.unlink(file.path);
             });
     }
 

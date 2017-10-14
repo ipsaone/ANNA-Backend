@@ -9,18 +9,16 @@ chai.use(require('chai-http'));
 
 describe('Auth', () => {
     before(() => {
-        db.User.destroy({where: {}})
-        .then(db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'}))
-        .catch(err=>console.err(err));
-        
+        return db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'});
     });
+    
 
 // POST /login
     describe('[POST] /login', () => {
         it('expect to login a user', done => {
             chai.request(server)
                 .post('/auth/login')
-                .send({username : 'foo', password: 'secret'})
+                .send({username : 'login_test', password: 'password_test'})
                 .end((err, res) => {
                     expect(err).to.be.null;
 
@@ -29,24 +27,27 @@ describe('Auth', () => {
                 })
         })
 
-        if('checks login', done => {
+        it('checks login #TODO', done => {
             
             // TODO
 
             done();
         });
-    })
+    });
 
-// POST /logout
-    describe('[POST] /logout', () => {
-        chai.request(server)
-            .post('/auth/logout')
+// GET /logout
+    describe('[GET] /logout', () => {
+        it('expect to logout a user', done => {
+            chai.request(server)
+            .get('/auth/logout')
             .end((err, res) => {
                 expect(err).to.be.null;
 
                 expect(res).to.have.status(200);
                 done();
             });
+        })
+        
     });
 
 })

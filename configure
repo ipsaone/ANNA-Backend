@@ -29,6 +29,8 @@ apt-get -qy install curl build-essential git >> /vagrant/vm_build.log 2>&1
 echo -e "\n--- Installing NodeJS ---\n"
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - >> /vagrant/vm_build.log 2>&1
 apt-get -qy install nodejs >> /vagrant/vm_build.log 2>&1
+echo 'export ONEOS="true"' >> ~/.bashrc
+export ONEOS="true";
 
 
 echo -e "\n--- Installing Apache ---\n"

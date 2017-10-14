@@ -4,7 +4,7 @@ const router = require('express').Router();
 const storage_controller = require('../controllers/storage_controller');
 const multer = require('multer');
 
-const upload = multer({dest: 'tmp/'});
+const upload = multer({dest: '/tmp/'});
 
 router.get('/*', storage_controller.index);
 

@@ -4,20 +4,17 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
-const fs = require('fs');
 
 chai.use(require('chai-http'));
 
 describe('Posts', () => {
-    before(() => {
-        return db.User.destroy({where: {}})
-            .then(db.User.create({id: 1, username: 'foo', password: 'secret', email: 'foo@local.dev'}))
-            .then(db.Post.destroy({where: {}}))
-            .then(() => {
-                db.Post.create({id: 1, title: 'Foo', markdown: 'Bar', authorId: 1, published: true});
-                db.Post.create({id: 2, title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
-            })
-            .catch(err => console.err(err));
+    before( () => {
+            return db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true})
+                .then(() => {
+                    db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
+                });
+            
+        
     });
 
 
