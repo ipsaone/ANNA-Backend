@@ -1,6 +1,20 @@
-x'use strict';
+'use strict';
 
-const bcrypt = require('bcryptjs');
+const config = require('../config/config');
+const bcrypt = require('bcrypt');
+
+let hashPassword = (user, options) => {
+        if (!user.changed('password')) {
+            return ;
+        }
+
+        return bcrypt.hash(user.getDataValue('password'), config.password.salt).then(hash => {7
+            console.log(hash);
+            user.setDataValue('password', hash);
+            console.log(user.getDataValue('password'))
+        });
+
+    };
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
@@ -9,9 +23,11 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             allowNull: false,
             type: DataTypes.STRING,
-            set (val) {
-                this.setDataValue('password', bcrypt.hashSync(val));
-            }
+        },
+    }, {
+        hooks: {
+            beforeCreate: hashPassword,
+            beforeUpdate: hashPassword
         }
     });
 
@@ -22,12 +38,8 @@ module.exports = (sequelize, DataTypes) => {
         User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
     };
 
-    let hashPassword = (user, options) => {
-        return bcrypt.hash(val).then(hash => user.setDataValue('password', user.password));
-    }
+    
 
-    User.beforeCreate(hashPassword);
-    User.beforeUpdate(hashPassword);
 
 
     return User;

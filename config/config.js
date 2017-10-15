@@ -10,20 +10,8 @@ let config = {
         version: '1.0.0'
     },
 
-    env: {
-        vagrant: {
-            host: '192.168.50.5',
-            port: 8080
-        },
-        dev: {
-            host: '127.0.0.1',
-            port: 8080
-        },
-
-        prod: {
-            host: '127.0.0.1',
-            port: 8080
-        },
+    password: {
+        salt: 10
     },
 
     sequelize: {

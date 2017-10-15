@@ -3,7 +3,7 @@
 const db = require('../models');
 const bcrypt = require('bcrypt');
 
-exports.login = function (req, res) {
+exports.login = (req, res) => {
     db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
         .then(user => {
 
@@ -23,7 +23,7 @@ exports.login = function (req, res) {
         });
 };
 
-exports.logout = function (req, res) {
+exports.logout = (req, res) => {
     req.session.userId = null;
     res.statusCode = 200;
     res.json({});
