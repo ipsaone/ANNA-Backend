@@ -13,8 +13,8 @@ describe('Auth', () => {
     });
     
 
-// POST /login
-    describe('[POST] /login', () => {
+// [POST] /auth/login
+    describe('[POST] /auth/login', () => {
         it('expect to login a user', done => {
             chai.request(server)
                 .post('/auth/login')
@@ -24,8 +24,8 @@ describe('Auth', () => {
 
                     expect(res).to.have.status(200);
                     done();
-                })
-        })
+                });
+        });
 
         it('checks login #TODO', done => {
             
@@ -50,4 +50,4 @@ describe('Auth', () => {
         
     });
 
-})
+});

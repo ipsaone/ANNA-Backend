@@ -28,8 +28,6 @@ const https = require('https');
 const config = require('./config/config');
 
 const app = express();
-// Set the app environment
-config.app.env = process.argv[2] === 'prod' ? 'production' : 'development';
 
 /*
  * Middleware

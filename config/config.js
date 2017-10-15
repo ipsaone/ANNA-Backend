@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const fs = require('fs');
 
 let config = {
@@ -26,10 +28,10 @@ let config = {
 
     sequelize: {
         dialect: 'mysql',
-        host: '127.0.0.1',
-        username: 'root',
-        password: 'OneServ_2017',
-        database: 'ipsaone',
+        host: process.env.DB_HOST,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
         logging: false // Prevent Sequelize from outpouting the query on the console
     },
 
@@ -43,26 +45,25 @@ let config = {
     }
 };
 
+
 config.app.getCertificates = () => {
     let privateKey, certificate;
 
-    if (config.app.env === 'production') {
-        privateKey = fs.readFileSync('sslcert/private.key', 'utf8');
-        certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
-
-        console.log('Using one.ipsa.fr certificate');
-    } else { // Development
+    if (process.env.DEV === 'true') {
         privateKey = fs.readFileSync('sslcert/localhost.key', 'utf8');
         certificate = fs.readFileSync('sslcert/localhost.crt', 'utf8');
 
         console.log('Using localhost certificate');
+    } else { // Production
+        privateKey = fs.readFileSync('sslcert/private.key', 'utf8');
+        certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
+
+        console.log('Using one.ipsa.fr certificate');
     }
 
     return {key: privateKey, cert: certificate};
 };
 
-config.app.getConnection = () => {
-    let host, port;
 
     if (config.app.env === 'production') {
         host = config.env.prod.host;

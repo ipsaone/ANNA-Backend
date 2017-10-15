@@ -1,7 +1,7 @@
 'use strict';
 
 const db = require('../models');
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcryptjs');
 
 exports.login = function (req, res) {
     db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
@@ -10,11 +10,12 @@ exports.login = function (req, res) {
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
                 if (err) throw err;
 
-                if (user.id) { req.session.userID = user.id}
+                if (user.id)
+                    req.session.userID = user.id;
                 res.statusCode = (accept) ? 200 : 400;
                 res.json({accept: accept, code: (accept) ? 0 : 11});
             });
-        
+
         })
         .catch(err => {
             res.statusCode = 404;
@@ -23,7 +24,7 @@ exports.login = function (req, res) {
 };
 
 exports.logout = function (req, res) {
-    req.session.userId = undefined;
+    req.session.userId = null;
     res.statusCode = 200;
     res.json({});
 };

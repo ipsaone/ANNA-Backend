@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             set (val) {
                 this.setDataValue('markdown', val); // Set this field with the raw markdown
-                this.setDataValue('content', marked(val)); // Compile to content the markdown
+
+                marked(val, (err, content) => {
+                    if (err) throw err;
+
+                    this.setDataValue('content', content);
+                })
             }
         },
         content: {allowNull: false, type: DataTypes.TEXT},
