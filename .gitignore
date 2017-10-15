@@ -4,6 +4,8 @@
 .npm/
 .vagrant/
 
+.env
+
 node_modules/
 storage/*
 tmp/
