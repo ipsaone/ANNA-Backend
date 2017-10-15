@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const fs = require('fs');
 const _path = require('path');
 const mime = require('mime-types');
@@ -13,7 +15,7 @@ class Storage {
     }
 
     static get url() {
-        if (config.app.env === 'production')
+        if (!process.env.DEV)
             return 'https://' + config.env.prod.host + ':' + config.env.prod.port + '/storage';
         else
             return 'https://' + config.env.dev.host + ':' + config.env.dev.port + '/storage';
@@ -72,11 +74,11 @@ class Storage {
                 if (err) {
                     fs.mkdir(Storage.root, err => {
                         return reject(Error('Internal server error'));
-                    })
+                    });
                 }
 
                 resolve();
-            })
+            });
         });
     }
 
@@ -84,14 +86,14 @@ class Storage {
     static createFolder(path, name) {
         return new Promise((resolve, reject) => {
             const complete_path = _path.join(Storage.root, path, name);
-            
+
             Storage.checkRoot().then(() => {
                 fs.access(complete_path, err => {
                     if (err) {
                         fs.mkdir(complete_path, err => {
                             if (err) {
 
-                                return reject(Error('Failed to create folder'))
+                                return reject(Error('Failed to create folder'));
                             }
 
                             return resolve();
@@ -101,11 +103,11 @@ class Storage {
                     else {
                         return reject(Error('Folder already exists.'));
                     }
-                    
-                })
-            })
-            
-                
+
+                });
+            });
+
+
         });
     }
 
