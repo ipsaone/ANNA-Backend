@@ -11,14 +11,14 @@ describe('Auth', () => {
     before(() => {
         return db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'});
     });
-    
+
 
 // [POST] /auth/login
     describe('[POST] /auth/login', () => {
         it('expect to login a user', done => {
             chai.request(server)
                 .post('/auth/login')
-                .send({username : 'login_test', password: 'password_test'})
+                .send({username: 'login_test', password: 'password_test'})
                 .end((err, res) => {
                     expect(err).to.be.null;
 
@@ -28,7 +28,7 @@ describe('Auth', () => {
         });
 
         it('checks login #TODO', done => {
-            
+
             // TODO
 
             done();
@@ -39,15 +39,15 @@ describe('Auth', () => {
     describe('[GET] /logout', () => {
         it('expect to logout a user', done => {
             chai.request(server)
-            .get('/auth/logout')
-            .end((err, res) => {
-                expect(err).to.be.null;
+                .get('/auth/logout')
+                .end((err, res) => {
+                    expect(err).to.be.null;
 
-                expect(res).to.have.status(200);
-                done();
-            });
-        })
-        
+                    expect(res).to.have.status(200);
+                    done();
+                });
+        });
+
     });
 
 });
