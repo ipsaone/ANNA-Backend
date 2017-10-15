@@ -1,4 +1,4 @@
-'use strict';
+x'use strict';
 
 const bcrypt = require('bcryptjs');
 
@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
         User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
     };
+
+    let hashPassword = (user, options) => {
+        return bcrypt.hash(val).then(hash => user.setDataValue('password', user.password));
+    }
+
+    User.beforeCreate(hashPassword);
+    User.beforeUpdate(hashPassword);
+
 
     return User;
 };
