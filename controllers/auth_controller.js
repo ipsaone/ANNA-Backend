@@ -24,7 +24,7 @@ exports.login = function (req, res) {
 };
 
 exports.logout = function (req, res) {
-    req.session.userId = undefined;
+    req.session.userId = null;
     res.statusCode = 200;
     res.json({});
 };
