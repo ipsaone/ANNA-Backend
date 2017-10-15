@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     File.associate = function (models) {
         File.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'});
         File.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
+        File.belongsToMany(models.Log, {as: 'logs', through: models.FileLog, foreignKey: 'userId'})
     };
 
     return File;
