@@ -65,18 +65,8 @@ config.app.getCertificates = () => {
 };
 
 
-    if (config.app.env === 'production') {
-        host = config.env.prod.host;
-        port = config.env.prod.port;
-    } else if (process.env.ONEOS == "true") {
-        host = config.env.vagrant.host;
-        port = config.env.vagrant.port;
-    } else {
-        host = config.env.dev.host;
-        port = config.env.dev.port;
-    }
-
-    return {host: host, port: port};
+config.app.getConnection = () => {
+    return {host: process.env.HOST, port: process.env.PORT};
 };
 
 
