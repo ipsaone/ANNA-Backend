@@ -2,28 +2,28 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('UserGroup', {
+        return queryInterface.createTable('FileLog', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            userId: {
+            fileId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
                 references: {
-                    model: 'Users',
+                    model: 'Files',
                     key: 'id'
                 },
             },
-            groupId: {
+            logId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
                 references: {
-                    model: 'Groups',
+                    model: 'Logs',
                     key: 'id'
                 },
             }
@@ -31,6 +31,6 @@ module.exports = {
     },
 
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('UserGroup');
+        return queryInterface.dropTable('FileLog');
     }
 };
