@@ -10,11 +10,12 @@ exports.login = function (req, res) {
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
                 if (err) throw err;
 
-                if (user.id) { req.session.userID = user.id}
+                if (user.id)
+                    req.session.userID = user.id;
                 res.statusCode = (accept) ? 200 : 400;
                 res.json({accept: accept, code: (accept) ? 0 : 11});
             });
-        
+
         })
         .catch(err => {
             res.statusCode = 404;
