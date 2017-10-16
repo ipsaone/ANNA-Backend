@@ -2,6 +2,7 @@
 
 const config = require('../config/config');
 const bcrypt = require('bcrypt');
+const Storage = require('../repositories/Storage');
 
 let hashPassword = (user, options) => {
         if (!user.changed('password')) {
@@ -37,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
         User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
     };
+
 
     
 

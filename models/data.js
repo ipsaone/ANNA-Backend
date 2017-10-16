@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     Data.associate = function (models) {
         Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'});
         Data.belongsTo(models.User, {foreignKey: 'ownerId', as: 'author'});
-        Data.belongsTo(models.Rights, {foreignKey: 'rightsId', as: 'rights'});
+        Data.belongsTo(models.Right, {foreignKey: 'rightsId', as: 'rights'});
         Data.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
     };
 

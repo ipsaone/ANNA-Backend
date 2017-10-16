@@ -50,7 +50,7 @@ module.exports = {
                     model: 'Groups',
                     key: 'id'
                 },
-            },
+            }
             deleted: {
                 allowNull: false,
                 default: false,
