@@ -24,10 +24,15 @@ class Storage {
     }
 
 
-    static getInstanceUrl () {
-        if (!this.id) {return;}
-        return "/" + Storage._getDirectoryTree(this.id).join('/');
-
+    static getInstanceUrl (revOffset=0) {
+        return new Promise((accept, reject) => {
+            let url = "/storage/files/";
+            url += this.id;
+            url += "?revision=";
+            url += revOffset;
+            
+            return accept(url);
+        });
     }
 
     static getInstancePath (rel=true, full=false, revOffset=0) {
