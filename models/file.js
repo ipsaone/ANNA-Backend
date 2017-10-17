@@ -17,7 +17,9 @@ module.exports = (sequelize, DataTypes) => {
             getPath: Storage.getInstancePath,
             getData: Storage.getInstanceData,
             getDirTree: Storage.getInstanceDirTree,
-            getUrl: Storage.getInstanceUrl
+            getUrl: Storage.getInstanceUrl,
+            _computeSize: Storage._computeInstanceSize,
+            _computeType: Storage._computeInstanceType
         }
     });
 

@@ -62,10 +62,10 @@ class Storage {
     }
 
     static getInstanceDirTree () {
-        return this.getCurrent('dirId').then(dirId => {
-            if (dirId == 0) {return [];}
+        return this.getData().then(data => {
+            if (data.dirId == 0) {return [];}
             else {
-                return db.File.findById(dirId).then(file => {
+                return db.File.findById(data.dirId).then(file => {
                     return file.getDirTree().then(tree => {
                         return tree.concat(this.name);
                     });
@@ -82,40 +82,49 @@ class Storage {
 
     }
 
-    static _computeFileType (fileId) {
-        return db.File.findById(fileId).then(file => {
-            if (file.isDir) {
-                return "Directory";
-            } else {
-                return new Promise((accept, reject) => {
-                    magic.detectFile(Storage.getPath(fileId), function(err, res) {
-                        if (err) { return reject(err); }
-                        else {
-                            return accept(res);
-                        }
-                    })
-                }) ;
-            }
+    static _computeInstanceType () {
+        return new Promise((accept, reject) => {
+            return this.getData().then(data => {
+                if (data.isDir) {
+                    return accept("Directory");
+                } else {
+                    this.getPath().then(path => {
+                        magic.detectFile(path, function(err, res) {
+                            if (err) { return reject(err); }
+                            else {
+                                return accept(res);
+                            }
+                        });
+                    });
+                }
+            });
         });
     }
 
 
 
-    static _computeSize(fileId) {
-        Storage.getCurrent(fileId).then(data => {
+    static _computeInstanceSize() {
+        this.getData().then(data => {
             if (data.isDir()) {
-                db.File.findAll({where: {dirId: fileId}}).then(files => {
-                    let fullsize = 0;
-                    //TODO : COMPUTE SIZE OF FILES
+                db.File.findAll({where: {dirId: fileId}}).then(files => { 
+
+                    // Compute all sizes in an array
+                    Promise.all(files.map(file => file._computeSize())).then(sizes => {
+
+                        // Return the sum of the sizes
+                        return sizes.reduce((a, b) => a+b, 0);
+                    })
                 })
             } else {
                 return new Promise((accept, reject) => {
-                    Storage.getPath(fileId).then(path => {
-                        fs.stat(path, (err, res) => {
-                            if (err) { return reject(err); }
-                            else {
-                                return accept(res);
-                            }
+                    db.File.findOne({where: {id: fileId}}).then(file => {
+                        file.getPath().then(path => {
+                            fs.stat(path, (err, res) => {
+                                if (err) { return reject(err); }
+                                else {
+                                    return accept(res.size);
+                                }
+                            });
                         });
                     });
                 });
