@@ -30,12 +30,12 @@ class Storage {
             url += this.id;
             url += "?revision=";
             url += revOffset;
-            
+
             return accept(url);
         });
     }
 
-    static getInstancePath (rel=true, full=false, revOffset=0) {
+    static getInstancePath (revOffset=0, full=false, ) {
         return this.getData(revOffset).then(data => {
             let path = "";
             path += (full==true) ? Storage.root : "";
@@ -63,11 +63,11 @@ class Storage {
 
     static getInstanceDirTree () {
         return this.getCurrent('dirId').then(dirId => {
-            if (dirId == 0) {return "";}
+            if (dirId == 0) {return [];}
             else {
                 return db.File.findById(dirId).then(file => {
                     return file.getDirTree().then(tree => {
-                        return tree + "/" + this.name;
+                        return tree.concat(this.name);
                     });
                 })
             }
@@ -75,7 +75,10 @@ class Storage {
     }
 
     static getInstanceData(offset=0) {
-        return db.Data.findAll({limit: 1, offset: offset, where: {fileId: fileId}, order: [['createdAt DESC']]})
+        return db.Data.findAll({limit: 1, offset: offset, where: {fileId: fileId}, order: [['createdAt DESC']]}).then(data => {
+            console.log("data found :", data);
+            return data[0];
+        })
 
     }
 
