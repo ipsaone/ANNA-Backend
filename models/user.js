@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = function (models) {
         User.hasMany(models.Post, {foreignKey: 'authorId', as: 'posts'});
-        User.hasMany(models.File, {foreignKey: 'ownerId', as: 'files'});
+        User.hasMany(models.Data, {foreignKey: 'ownerId', as: 'files'});
         User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
         User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
     };

@@ -24,6 +24,15 @@ module.exports = {
                     key: 'id'
                 }
             },
+            dirId: {
+                allowNull: false,
+                default: 0,
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'File',
+                    key: 'id'
+                }
+            },
             rightsId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
@@ -50,7 +59,7 @@ module.exports = {
                     model: 'Groups',
                     key: 'id'
                 },
-            }
+            },
             deleted: {
                 allowNull: false,
                 default: false,
