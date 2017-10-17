@@ -30,7 +30,29 @@ class Storage {
 
     }
 
-    static getInstancePath (rel=true, revId=null, revOffset=0) {
+    static getInstancePath (rel=true, full=false, revOffset=0) {
+        return this.getData(revOffset).then(data => {
+            let path = "";
+            path += (full==true) ? Storage.root : "";
+            path += "/";
+            path += this.id;
+            path += "/";
+            path += data.id;
+            path += "-"
+            path += this.name;
+
+            return newPromise((accept, reject) => {
+                fs.access(path, function() {
+                    if (err) { return reject(err); }
+                    else {
+                        return accept(path);
+                    }
+                })
+            })
+
+
+        })
+
         
     }
 
