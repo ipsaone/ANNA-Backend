@@ -8,18 +8,14 @@ module.exports = (sequelize, DataTypes) => {
         isDir: {allowNull: false, type: DataTypes.BOOLEAN}
     }, {
         timestamps: false,
-
-        classMethods: {
-            
-        },
         
         instanceMethods: {
-            getPath: Storage.getInstancePath,
-            getData: Storage.getInstanceData,
-            getDirTree: Storage.getInstanceDirTree,
-            getUrl: Storage.getInstanceUrl,
-            _computeSize: Storage._computeInstanceSize,
-            _computeType: Storage._computeInstanceType
+            getPath: Storage.getFilePath,
+            getData: Storage.getFileData,
+            getDirTree: Storage.getFileDirTree,
+            getUrl: Storage.getFileeUrl,
+            _computeSize: Storage._computeFileSize,
+            _computeType: Storage._computeFileType
         }
     });
 

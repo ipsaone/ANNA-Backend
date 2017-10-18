@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
         ownerId: {allowNull: false, type: DataTypes.INTEGER},
         rightsId: {allowNull: false, type: DataTypes.INTEGER},
         groupId: {allowNull: false, type: DataTypes.INTEGER},
+    }, {
+        timestamps: true,
+        instanceMethods: {
+            getRights: Storage.getDataRights
+        }
     });
 
     Data.associate = function (models) {

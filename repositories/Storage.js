@@ -9,6 +9,7 @@ const db = require('../models');
 const config = require('../config/config');
 const mv = require('mv');
 const mmm = require('mmmagic');
+const db = require('../models');
 
 const Magic = mmm.Magic;
 let magic = new Magic(mmm.MAGIC_MIME_TYPE);
@@ -24,7 +25,7 @@ class Storage {
     }
 
 
-    static getInstanceUrl(revOffset = 0) {
+    static getFileUrl(revOffset = 0) {
         return new Promise((accept, reject) => {
             let url = '/storage/files/';
             url += this.id;
@@ -35,7 +36,7 @@ class Storage {
         });
     }
 
-    static getInstancePath(revOffset = 0, full = false,) {
+    static getFilePath(revOffset = 0, full = false,) {
         return this.getData(revOffset).then(data => {
             let path = '';
             path += (full) ? Storage.root : '';
@@ -63,7 +64,7 @@ class Storage {
 
     }
 
-    static getInstanceDirTree() {
+    static getFileDirTree() {
         return this.getData().then(data => {
             if (data.dirId === 0) {
                 return [];
@@ -78,7 +79,7 @@ class Storage {
         });
     }
 
-    static getInstanceData(offset = 0) {
+    static getFileData(offset = 0) {
         return db.Data.findAll({
             limit: 1,
             offset: offset,
@@ -91,7 +92,11 @@ class Storage {
 
     }
 
-    static _computeInstanceType() {
+    static getDataRights() {
+        return db.Right.findOne({where: {id: this.rightsId}})
+    }
+
+    static _computeFileType() {
         return new Promise((accept, reject) => {
             return this.getData().then(data => {
                 if (data.isDir) {
@@ -113,7 +118,7 @@ class Storage {
     }
 
 
-    static _computeInstanceSize() {
+    static _computeFileSize() {
         this.getData().then(data => {
             if (data.isDir()) {
                 db.File.findAll({where: {dirId: fileId}}).then(files => {
