@@ -1,7 +1,7 @@
 'use strict';
 
 const db = require('../models');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 exports.login = (req, res) => {
     db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
