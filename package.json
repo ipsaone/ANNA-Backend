@@ -23,7 +23,8 @@
     "mv": "^2.1.1",
     "mysql2": "^1.4.2",
     "request": "^2.82.0",
-    "sequelize": "^4.13.2"
+    "sequelize": "^4.13.2",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

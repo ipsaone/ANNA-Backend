@@ -9,7 +9,6 @@ const db = require('../models');
 const config = require('../config/config');
 const mv = require('mv');
 const mmm = require('mmmagic');
-const db = require('../models');
 
 const Magic = mmm.Magic;
 let magic = new Magic(mmm.MAGIC_MIME_TYPE);
