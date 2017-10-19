@@ -4,7 +4,6 @@ require('dotenv').config();
 
 const fs = require('fs');
 const _path = require('path');
-const mime = require('mime-types');
 const db = require('../models');
 const config = require('../config/config');
 const mv = require('mv');
@@ -25,36 +24,32 @@ class Storage {
 
 
     static getFileUrl(revOffset = 0) {
-        return new Promise((accept, reject) => {
-            let url = '/storage/files/';
+        let url = '/storage/files/';
             url += this.id;
             url += '?revision=';
             url += revOffset;
 
-            return accept(url);
-        });
+        // Force return of a promise 
+        return Promise.resolve(url);
     }
 
     static getFilePath(revOffset = 0, full = false,) {
-        return this.getData(revOffset).then(data => {
-            let path = '';
+        let path = '';
             path += (full) ? Storage.root : '';
-            path += '/';
-            path += this.id;
-            path += '/';
-            path += data.id;
-            path += '-';
-            path += this.name;
+            path += '/' + this.id;
+            path += '/' + data.id;
+            path += '-' + this.name;
 
-            return newPromise((accept, reject) => {
-                fs.access(path, function () {
-                    if (err) {
-                        return reject(err);
-                    }
-                    else {
-                        return accept(path);
-                    }
-                });
+        return this.getData(revOffset).then(data => {
+
+            // Check file exists
+            fs.access(path, (err, res) => {
+                if (err) { throw(err); }
+                else {
+
+                    // Return file path if it exists
+                    return path;
+                }
             });
 
 
@@ -64,88 +59,95 @@ class Storage {
     }
 
     static getFileDirTree() {
-        return this.getData().then(data => {
-            if (data.dirId === 0) {
-                return [];
-            }
-            else {
-                return db.File.findById(data.dirId).then(file => {
-                    return file.getDirTree().then(tree => {
-                        return tree.concat(this.name);
-                    });
-                });
-            }
-        });
+        return this.getData()
+
+            // Get parents' directory tree
+            .then(data => data.dirId <= 0 ? [] : db.File.findById(data.dirId).then(file => file.getDirTree())
+
+            // Add own name :3
+            .then(tree => tree.concat(data.name));
     }
 
     static getFileData(offset = 0) {
-        return db.Data.findAll({
-            limit: 1,
-            offset: offset,
-            where: {fileId: fileId},
-            order: [['createdAt DESC']]
-        }).then(data => {
-            console.log('data found :', data);
-            return data[0];
-        });
+        return db.Data
+
+            // like findOne, but with order + offset
+            .findAll({
+                limit: 1,
+                offset: offset,
+                where: {fileId: fileId},
+                order: [['createdAt DESC']]
+            })
+
+            // findAll is limited, so there will always be one result (or none -> undefined)
+            .then(data => data[0])
 
     }
 
     static getDataRights() {
+
+        // only one right should exist for each data, no check needed
         return db.Right.findOne({where: {id: this.rightsId}})
     }
 
     static _computeFileType() {
-        return new Promise((accept, reject) => {
-            return this.getData().then(data => {
-                if (data.isDir) {
-                    return accept('Directory');
-                } else {
-                    this.getPath().then(path => {
-                        magic.detectFile(path, function (err, res) {
-                            if (err) {
-                                return reject(err);
-                            }
+        // TODO : check what detectFile() does on folders
+        //        probably could be simplified a lot
+
+        return this.getData()
+            .then(data => {
+                if (data.isDir) { return 'Directory'; }
+
+                return this.getPath()
+                    .then(path => {
+                        magic.detectFile(path, (err, res) => {
+                            if (err) { throw err; }
                             else {
-                                return accept(res);
+
+                                return res;
                             }
                         });
-                    });
-                }
-            });
+                });
+            
         });
     }
 
 
     static _computeFileSize() {
-        this.getData().then(data => {
-            if (data.isDir()) {
-                db.File.findAll({where: {dirId: fileId}}).then(files => {
+        this.getData()
+            .then(data => {
 
-                    // Compute all sizes in an array
-                    Promise.all(files.map(file => file._computeSize())).then(sizes => {
+                // If asking directory size, compute the sum of all sizes of files 
+                if (data.isDir()) {
+                    return db.File.findAll({where: {dirId: fileId}})
 
-                        // Return the sum of the sizes
-                        return sizes.reduce((a, b) => a + b, 0);
+                        // Compute all sizes in an array
+                        .then(files => Promise.all(files.map(file => file._computeSize()))
+
+                        // Compute the sum of all the sizes
+                        .then(sizes => sizes.reduce((a, b) => a + b, 0));
+                        
                     });
-                });
-            } else {
-                return new Promise((accept, reject) => {
-                    db.File.findOne({where: {id: fileId}}).then(file => {
-                        file.getPath().then(path => {
-                            fs.stat(path, (err, res) => {
-                                if (err) {
-                                    return reject(err);
-                                }
-                                else {
-                                    return accept(res.size);
-                                }
-                            });
+                } 
+
+                
+                // If asking file size, first get the FS file path and then get its size
+                return db.File.findOne({where: {id: fileId}}).then(file => file.getPath())
+
+                    // Get file statistics
+                    .then(path => {
+                        fs.stat(path, (err, res) => {
+                            if (err) { throw(err); }
+                            else {
+
+                                // Return file size 
+                                return res.size;
+                            }
                         });
                     });
-                });
-            }
-        });
+                
+                
+            });
     }
 
 
