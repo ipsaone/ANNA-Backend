@@ -14,18 +14,22 @@ let config = {
         salt: 10
     },
 
-    sequelize: {
-        dialect: 'mysql',
-        host: process.env.DB_HOST,
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        logging: false // Prevent Sequelize from outputting the query on the console
-    },
-
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
+    },
+
+    get sequelize () {
+        return {
+            dialect: 'mysql',
+            host: process.env.DB_HOST,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            logging: false, // Prevent Sequelize from outputting the query on the console
+            redis: this.session
+        };
+
     },
 
     storage: {
