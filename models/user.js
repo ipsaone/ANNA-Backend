@@ -1,7 +1,7 @@
 'use strict';
 
 const config = require('../config/config');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 let hashPassword = (user, options) => {
         if (!user.changed('password')) {
