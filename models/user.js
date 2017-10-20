@@ -5,15 +5,10 @@ const bcrypt = require('bcrypt');
 const Storage = require('../repositories/Storage');
 
 let hashPassword = (user, options) => {
-        if (!user.changed('password')) {
-            return ;
-        }
+        if (!user.changed('password')) { return ; }
 
-        return bcrypt.hash(user.getDataValue('password'), config.password.salt).then(hash => {7
-            console.log(hash);
-            user.setDataValue('password', hash);
-            console.log(user.getDataValue('password'))
-        });
+        return bcrypt.hash(user.getDataValue('password'), config.password.salt)
+            .then(hash => user.setDataValue('password', hash));
 
     };
 

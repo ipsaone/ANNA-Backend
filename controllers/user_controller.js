@@ -72,7 +72,8 @@ exports.store = function (req, res) {
  * @param res
  */
 exports.update = function (req, res) {
-    db.User.update(req.body, {where: {id: req.params.userId}})
+    db.User.findOne({where: {id: req.params.userId}})
+        .then(record => record.update(req.body))
         .then(() => {
             res.statusCode = 204;
             res.json({});
