@@ -16,6 +16,10 @@ module.exports = {
                 allowNull: true,
                 type: Sequelize.STRING
             },
+            size: {
+                allowNull: true,
+                type: Sequelize.INTEGER
+            },
             fileId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,

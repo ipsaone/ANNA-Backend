@@ -1,11 +1,12 @@
 'use strict';
 
-const Storage = require('../repositories/Storage')
+const Storage = require('../repositories/Storage');
 
 module.exports = (sequelize, DataTypes) => {
     const Data = sequelize.define('Data', {
         name: {allowNull: false, type: DataTypes.STRING},
         type: {allowNull: true, type: DataTypes.STRING},
+        size: {allowNull: true, type: DataTypes.INTEGER},
         fileId: {allowNull: false, type: DataTypes.INTEGER},
         dirId: {allowNull: false, default: 0, type: DataTypes.INTEGER},
         ownerId: {allowNull: false, type: DataTypes.INTEGER},
