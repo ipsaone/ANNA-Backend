@@ -1,23 +1,44 @@
 'use strict';
 
-const Storage = require('../repositories/Storage');
+
+
+let computeValues = (data, options) => {
+    const Storage = require('../repositories/Storage');
+
+    data.getPath()
+        .then(path => Storage.computeType(path))
+        .then(type => data.setDataValue('type'));
+
+    data.getPath()
+        .then(path => data.computeSize(path))
+        .then(size => data.setDataValue('size'));
+};
 
 module.exports = (sequelize, DataTypes) => {
+
     const Data = sequelize.define('Data', {
         name: {allowNull: false, type: DataTypes.STRING},
         type: {allowNull: true, type: DataTypes.STRING},
         size: {allowNull: true, type: DataTypes.INTEGER},
         fileId: {allowNull: false, type: DataTypes.INTEGER},
-        dirId: {allowNull: false, default: 0, type: DataTypes.INTEGER},
+        dirId: {allowNull: false, default: 1, type: DataTypes.INTEGER},
         ownerId: {allowNull: false, type: DataTypes.INTEGER},
         rightsId: {allowNull: false, type: DataTypes.INTEGER},
         groupId: {allowNull: false, type: DataTypes.INTEGER},
     }, {
         timestamps: true,
-        instanceMethods: {
-            getRights: Storage.getDataRights
+        hooks: {
+            beforeCreate: computeValues,
+            beforeUpdate: computeValues
         }
     });
+
+
+    const Storage = require('../repositories/Storage');
+
+    Data.prototype.getRights = Storage.getDataRights,
+    Data.prototype.getPath = Storage.getDataPath,
+    Data.prototype.getUrl = Storage.getDataUrl
 
     Data.associate = function (models) {
         Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'});

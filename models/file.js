@@ -1,23 +1,22 @@
 'use strict';
 
 
-const Storage = require('../repositories/Storage');
-
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
         isDir: {allowNull: false, type: DataTypes.BOOLEAN}
     }, {
-        timestamps: false,
-        
-        instanceMethods: {
-            getPath: Storage.getFilePath,
-            getData: Storage.getFileData,
-            getDirTree: Storage.getFileDirTree,
-            getUrl: Storage.getFileeUrl,
-            _computeSize: Storage._computeFileSize,
-            _computeType: Storage._computeFileType
-        }
+        timestamps: false
     });
+
+    const Storage = require('../repositories/Storage');
+
+    File.prototype.getData = Storage.getFileData;
+    File.prototype.getDirTree = Storage.getFileDirTre;
+    File.prototype.addData = Storage.addFileData;
+
+    File.createNew = Storage.createNewFile;
 
     return File;
 };
+
+

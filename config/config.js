@@ -27,13 +27,16 @@ let config = {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             logging: false, // Prevent Sequelize from outputting the query on the console
-            redis: this.session
+            //logging: console.log,
+            redis: this.session,
+            force: process.env.DB_FORCE_SYNC
         };
 
     },
 
     storage: {
-        folder: 'storage',
+        folder: './storage',
+        temp: '/tmp'
     }
 };
 
