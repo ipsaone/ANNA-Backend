@@ -24,16 +24,15 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'File',
+                    model: 'Files',
                     key: 'id'
                 }
             },
             dirId: {
                 allowNull: false,
-                default: 0,
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'File',
+                    model: 'Files',
                     key: 'id'
                 }
             },
@@ -63,11 +62,6 @@ module.exports = {
                     model: 'Groups',
                     key: 'id'
                 },
-            },
-            deleted: {
-                allowNull: false,
-                default: false,
-                type: Sequelize.BOOLEAN
             },
             createdAt: {
                 allowNull: false,

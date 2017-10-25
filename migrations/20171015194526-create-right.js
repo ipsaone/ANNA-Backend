@@ -9,27 +9,27 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             groupWrite: {
-                default: false,
+                defaultValue: false,
                 type: Sequelize.BOOLEAN
             },
             groupRead: {
-                default: false,
+                defaultValue: false,
                 type: Sequelize.BOOLEAN
             },
             ownerWrite: {
-                default: false,
+                defaultValue: false,
                 type: Sequelize.BOOLEAN
             },
             ownerRead: {
-                default: false,
+                defaultValue: false,
                 type: Sequelize.BOOLEAN
             },
             allWrite: {
-                default: false,
+                defaultValue: false,
                 type: Sequelize.BOOLEAN
             },
             allRead: {
-                default: false,
+                defaultValue: false,
                 type: Sequelize.BOOLEAN
             }
         });

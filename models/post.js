@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
                     if (err) throw err;
 
                     this.setDataValue('content', content);
-                })
+                });
             }
         },
         content: {allowNull: false, type: DataTypes.TEXT},

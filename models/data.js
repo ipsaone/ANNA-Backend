@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 let computeValues = (data, options) => {
     const Storage = require('../repositories/Storage');
 
@@ -20,8 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         name: {allowNull: false, type: DataTypes.STRING},
         type: {allowNull: true, type: DataTypes.STRING},
         size: {allowNull: true, type: DataTypes.INTEGER},
+        exists: {allowNull: false, defaultValue: true, type: DataTypes.BOOLEAN},
         fileId: {allowNull: false, type: DataTypes.INTEGER},
-        dirId: {allowNull: false, default: 1, type: DataTypes.INTEGER},
+        dirId: {allowNull: false, defaultValue: 1, type: DataTypes.INTEGER},
         ownerId: {allowNull: false, type: DataTypes.INTEGER},
         rightsId: {allowNull: false, type: DataTypes.INTEGER},
         groupId: {allowNull: false, type: DataTypes.INTEGER},
@@ -36,9 +36,9 @@ module.exports = (sequelize, DataTypes) => {
 
     const Storage = require('../repositories/Storage');
 
-    Data.prototype.getRights = Storage.getDataRights,
-    Data.prototype.getPath = Storage.getDataPath,
-    Data.prototype.getUrl = Storage.getDataUrl
+    Data.prototype.getRights = Storage.getDataRights;
+    Data.prototype.getPath = Storage.getDataPath;
+    Data.prototype.getUrl = Storage.getDataUrl;
 
     Data.associate = function (models) {
         Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'});

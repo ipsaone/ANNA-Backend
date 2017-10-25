@@ -5,21 +5,20 @@ const bcrypt = require('bcrypt');
 const Storage = require('../repositories/Storage');
 
 let hashPassword = (user, options) => {
-        if (!user.changed('password')) { return ; }
+    if (!user.changed('password')) {
+        return;
+    }
 
-        return bcrypt.hash(user.getDataValue('password'), config.password.salt)
-            .then(hash => user.setDataValue('password', hash));
+    return bcrypt.hash(user.getDataValue('password'), config.password.salt)
+        .then(hash => user.setDataValue('password', hash));
 
-    };
+};
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         username: {allowNull: false, type: DataTypes.STRING, unique: true},
         email: {allowNull: false, type: DataTypes.STRING, unique: true},
-        password: {
-            allowNull: false,
-            type: DataTypes.STRING,
-        },
+        password: {allowNull: false, type: DataTypes.STRING},
     }, {
         hooks: {
             beforeCreate: hashPassword,
@@ -33,10 +32,6 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
         User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
     };
-
-
-    
-
 
 
     return User;
