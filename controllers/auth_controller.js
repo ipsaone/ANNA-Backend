@@ -13,7 +13,7 @@ exports.login = (req, res) => {
                 if (user.id)
                     req.session.userID = user.id;
                 res.statusCode = (accept) ? 200 : 400;
-                res.json({accept: accept, code: (accept) ? 0 : 11});
+                res.json({accept: accept, code: (accept) ? 0 : 11, username: user.username, id: user.id});
             });
 
         })

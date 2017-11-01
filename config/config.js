@@ -17,6 +17,7 @@ let config = {
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
+        check: process.env.CHECK_AUTH
     },
 
     get sequelize () {
