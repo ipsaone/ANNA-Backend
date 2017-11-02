@@ -72,9 +72,11 @@ exports.upload_new = (req, res) => {
 }
 
 exports.list = (req, res) => {
+
     if (!req.folderId) {
         return res.send(400);
     }
 
+    
     
 }
