@@ -4,14 +4,13 @@ const db = require('../models');
 const bcrypt = require('bcrypt');
 
 exports.login = (req, res) => {
-    console.log(req.body)
     db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
         .then(user => {
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
                 if (err) throw err;
 
                 if (user.id)
-                    req.session.userID = user.id;
+                    req.session.auth = user.id;
                 res.statusCode = (accept) ? 200 : 400;
                 res.json({accept: accept, code: (accept) ? 0 : 11, username: user.username, id: user.id});
             });

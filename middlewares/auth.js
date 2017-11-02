@@ -4,10 +4,10 @@ const config = require('../config/config');
 
 module.exports = (req, res, next) => {
     if (req.url !== '/' && req.url !== '/auth/login') {
-        if (typeof(req.session.userID) === 'undefined' && config.session.check !== "false") {
-            return res.json({code: 13});
+        if (req.session.auth || config.session.check === "false") {
+            return next();
         } else {
-            next();
+            return res.status(401).send({code: 13});
         }
     } else {
         return next();
