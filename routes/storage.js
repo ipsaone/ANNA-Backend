@@ -11,6 +11,9 @@ let upload = multer({dest: config.storage.temp})
 router.post('/upload', upload.single('contents'), storage_controller.upload_new);
 router.post('/upload/:fileId', upload.single('contents'), storage_controller.upload_rev);
 
+// List files in a folder
+router.get('/files/list/:folderId', storage_controller.list);
+
 // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
 router.get('/files/:fileId', storage_controller.download);
 

@@ -70,3 +70,11 @@ exports.upload_new = (req, res) => {
         // Send error to client, if any
         .catch(err => res.json(err))
 }
+
+exports.list = (req, res) => {
+    if (!req.folderId) {
+        return res.send(400);
+    }
+
+    
+}

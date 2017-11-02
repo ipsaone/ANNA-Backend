@@ -6,9 +6,9 @@ const salt = require('../config/config').password.salt;
 module.exports = {
     up: (queryInterface, Sequelize) => {
         return queryInterface.bulkInsert('Users', [{
-            username: 'FooBar',
-            password: bcrypt.hashSync('secret', salt),
-            email: 'foobar@local.dev',
+            username: 'root',
+            password: bcrypt.hashSync('OneServ_2017', salt),
+            email: 'ipsaone@one.ipsa.fr',
             createdAt: new Date(Date.now()),
             updatedAt: new Date(Date.now())
         }]);
