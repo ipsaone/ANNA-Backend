@@ -13,7 +13,7 @@ exports.index = function (req, res) {
         else if (req.query.published === 'false') posts = posts.scope('draft');
     }
 
-    posts.findAll({include: ['author']})
+    posts.findAll({include: ['author'], order: ['createdAt', 'DESC']})
         .then(posts => {
             res.statusCode = 200;
             res.json(posts);
