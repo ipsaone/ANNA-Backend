@@ -78,18 +78,36 @@ exports.list = (req, res) => {
         return res.sendStatus(400);
     }
 
+    let folderId = parseInt(req.params.folderId);
+
     return db.File.findAll()    // Get all files
+
+            // Check if file exists
+            .then(files => {
+                if( !files.map(item => item.id).includes(folderId)) {
+                    res.send(400);
+                    return Promise.reject("Folder doesn't exist"); // TODO : real error type ?
+                } else {
+                    return files;
+                }
+            })
 
             // Get data corresponding to the files
             .then(files => files.map(file => file.getData())) 
             .then(dataPromises => Promise.all(dataPromises))
 
             // Get each one in the folder, exclude root folder
-            .then(data => data.filter(item => (item.dirId === parseInt(req.params.folderId))))
+            .then(data => data.filter(item => (item.dirId === folderId)))
             .then(data => data.filter(item => (item.fileId !== 1)))
 
-            // Return the data or the error, if any
+            // Return the data or an error, if needed
             .then(data => res.json(data))
-            .catch(err => res.json(err))
+            .catch(err => {
+
+                if (!res.headersSent) {
+                    return res.send(500); 
+                } 
+
+            })
 
 }
