@@ -52,7 +52,7 @@ exports.upload_rev = (req, res) => {
 exports.upload_new = (req, res) => {
 
     if (!req.file) {
-        return res.send(400);
+        return res.sendStatus(400);
     }
 
     // Escape req.body strings
@@ -64,7 +64,7 @@ exports.upload_new = (req, res) => {
 
     // Create the file and its data
     return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.statusCode(200))
+        .then(() => res.sendStatus(200))
         .then(() => res.json({}))
 
         // Send error to client, if any
@@ -73,10 +73,23 @@ exports.upload_new = (req, res) => {
 
 exports.list = (req, res) => {
 
-    if (!req.folderId) {
-        return res.send(400);
+    // Fail if the folder isn't defined
+    if (!req.params.folderId || !parseInt(req.params.folderId)) {
+        return res.sendStatus(400);
     }
 
-    
-    
+    return db.File.findAll()    // Get all files
+
+            // Get data corresponding to the files
+            .then(files => files.map(file => file.getData())) 
+            .then(dataPromises => Promise.all(dataPromises))
+
+            // Get each one in the folder, exclude root folder
+            .then(data => data.filter(item => (item.dirId === parseInt(req.params.folderId))))
+            .then(data => data.filter(item => (item.fileId !== 1)))
+
+            // Return the data or the error, if any
+            .then(data => res.json(data))
+            .catch(err => res.json(err))
+
 }

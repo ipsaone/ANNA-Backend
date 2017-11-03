@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Log.associate = function (models) {
         Log.belongsTo(models.User, {foreignKey: 'authorId', as: 'author'});
-        Log.hasOne(models.Data, {foreignKey: 'logId', as: 'file'});
+        // Log.hasOne(models.Data, {foreignKey: 'logId', as: 'file'});
     };
     return Log;
 };

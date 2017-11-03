@@ -55,7 +55,6 @@ exports.store = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    console.log(req.body);
     db.Post.update(req.body, {where: {id: req.params.postId}})
         .then(() => {
             res.statusCode = 204;
