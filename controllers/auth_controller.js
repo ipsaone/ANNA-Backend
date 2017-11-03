@@ -27,3 +27,21 @@ exports.logout = (req, res) => {
     res.statusCode = 200;
     res.json({});
 };
+
+exports.check = (req, res) => {
+    if (req.session.auth) {
+        db.User.findOne({where: {id: req.session.auth}, rejectOnEmpty: true})
+            .then(user => {
+                res.statusCode = 200;
+                res.json({id: user.id, username: user.username});
+            })
+            .catch(err => {
+                res.statusCode = 400;
+                res.json({});
+            });
+    }
+    else {
+        res.statusCode = 400;
+        res.json({});
+    }
+};
