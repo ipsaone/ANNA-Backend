@@ -13,14 +13,17 @@
     "connect-redis": "^3.3.0",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
+    "escape-html": "^1.0.3",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.4",
     "helmet": "^3.8.0",
     "marked": "^0.3.6",
+    "mmmagic": "^0.4.5",
     "multer": "^1.3.0",
     "mv": "^2.1.1",
     "mysql2": "^1.4.2",
+    "redis": "^2.8.0",
     "request": "^2.82.0",
     "sequelize": "^4.13.2"
   },
@@ -38,6 +41,7 @@
   "scripts": {
     "start": "node ./app.js",
     "test": "./node_modules/.bin/mocha ./test/index.js",
-    "migrate": "./node_modules/.bin/sequelize db:migrate"
+    "migrate": "./node_modules/.bin/sequelize db:migrate",
+    "seed": "./node_modules/.bin/sequelize db:seed:all"
   }
 }

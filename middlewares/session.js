@@ -19,5 +19,5 @@ module.exports = session({
     // Only save sessions in which data is stored
     saveUninitialized: false,
     // Secure cookies !
-    cookie: {secure: true, httpOnly: false},
+    cookie: {secure: true, httpOnly: false}
 });

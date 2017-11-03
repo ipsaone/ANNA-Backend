@@ -2,9 +2,10 @@
 
 const fs        = require('fs');
 const path      = require('path');
+const config    = require('../config/sequelize.js');
+const redis     = require('redis')
 const Sequelize = require('sequelize');
 const basename  = path.basename(__filename);
-const config    = require('../config/sequelize.js');
 const db        = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
@@ -27,5 +28,12 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+let force = false;
+if(config.force === 'true') {
+  console.log("Forcing synchronization ...")
+  force = true;
+}
+db.sequelize.sync({force: force});
 
 module.exports = db;

@@ -4,255 +4,209 @@ require('dotenv').config();
 
 const fs = require('fs');
 const _path = require('path');
-const mime = require('mime-types');
-const db = require('../models');
 const config = require('../config/config');
 const mv = require('mv');
+const mmm = require('mmmagic');
+const Magic = mmm.Magic;
+let magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 class Storage {
     static get root() {
         return _path.join(__dirname, '..', config.storage.folder);
     }
 
-    static get url() {
-        if (!process.env.DEV)
-            return 'https://' + config.env.prod.host + ':' + config.env.prod.port + '/storage';
-        else
-            return 'https://' + config.env.dev.host + ':' + config.env.dev.port + '/storage';
+    static get baseUrl() {
+        const conf = process.env.DEV ? config.env.dev : config.env.prod;
+        return 'https://' + conf.host + ':' + conf.port + '/storage';
     }
-
-    /**
-     * Returns an object describing the request.
-     * GET /bar/foo.txt returns a file object
-     * GET /bar/foo/ returns a folder object (with all its children)
-     *
-     * @param url example : /bar/foo.txt or /bar/foo/
-     */
-    static getObject(url) {
-        return new Promise((resolve, reject) => {
-            Storage._getStats(url)
-                .then(stats => {
-                    if (stats.isDirectory())
-                        Storage._getDirectoryTree(url)
-                            .then(tree => {
-                                return resolve(tree);
-                            });
-                    else if (stats.isFile())
-                        Storage._getFile(url, stats)
-                            .then(file => {
-                                return resolve(file);
-                            })
-                            .catch(err => {
-                                return reject(err);
-                            });
-                    else
-                        reject(Error('Storage.getObject error, not a file or a directory.'));
-                })
-                .catch(err => reject(err));
-        });
-    };
-
-
-    static getFileForDownload(url) {
-        return new Promise((resolve, reject) => {
-            const path = _path.join(Storage.root, url);
-
-            fs.stat(path, (err, stats) => {
-                if (err) return reject(err);
-
-                if (stats.isFile())
-                    return resolve({path: path});
-                else
-                    return reject(Error('Not a file'));
-            });
-        });
-    };
-
-    static checkRoot() {
-        return new Promise((resolve, reject) => {
-            fs.access(Storage.root, err => {
-                if (err) {
-                    fs.mkdir(Storage.root, err => {
-                        return reject(Error('Internal server error'));
-                    });
-                }
-
-                resolve();
-            });
-        });
-    }
-
-
-    static createFolder(path, name) {
-        return new Promise((resolve, reject) => {
-            const complete_path = _path.join(Storage.root, path, name);
-
-            Storage.checkRoot().then(() => {
-                fs.access(complete_path, err => {
-                    if (err) {
-                        fs.mkdir(complete_path, err => {
-                            if (err) {
-
-                                return reject(Error('Failed to create folder'));
-                            }
-
-                            return resolve();
-                        });
-                    }
-
-                    else {
-                        return reject(Error('Folder already exists.'));
-                    }
-
-                });
-            });
-
-
-        });
-    }
-
-
-    static saveDataFile(path, name, ownerId) {
-        return new Promise((resolve, reject) => {
-            const complete_path = _path.join(Storage.root, path, name);
-
-            fs.access(_path.join(complete_path, name), err => {
-                if (err) {
-                    db.File.create({path: complete_path, ownerId: ownerId, groupId: 1}) // TODO
-                        .then(fileData => {
-                            return resolve({url: Storage.url + path, method: 'PUT'});
-                        })
-                        .catch(err => {
-                            return reject(err);
-                        });
-                } else {
-
-                    return reject(Error('File already exists.'));
-                }
-            });
-        });
-    }
-
-
-    static saveFile(path, file) {
-        return new Promise((resolve, reject) => {
-            path = _path.join(Storage.root, path, file.originalname);
-
-            db.File.count({where: {path: path}})
-                .then(count => {
-                    if (count !== 0) {
-                        mv(file.path, path, err => {
-                            if (err) {
-                                return reject(err);
-                            }
-                            else {
-                                return resolve({success: true});
-                            }
-                        });
-                    }
-                    else {
-                        return reject(Error('File is not in the database.'));
-                    }
-                })
-                .catch(err => {
-                    return reject(err);
-                });
-        });
-    }
-
-
-    static deleteFolder(path) {
-        return new Promise((resolve, reject) => {
-            fs.rmdir(_path.join(Storage.root, path), err => {
-                if (err)
-                    return reject(err);
-                else
-                    return resolve();
-            });
-        });
-    }
-
-    static deleteFile(id) {
-        return db.File.getOne({where: {id: id}})
-            .then(file => {
-                fs.unlink(file.path);
-            });
-    }
-
-
-    /* PRIVATES METHODS */
-
-    static _getDirectoryTree(url) {
-        let dir = Storage._getDirectory(url);
-        const dirData = fs.readdirSync(dir.path);
-
-        let promises = [];
-
-        if (dirData !== null) {
-            promises = dirData.map(child => {
-                const child_url = url + '/' + child;
-
-                return Storage._getStats(child_url)
-                    .then(stats => {
-                        if (stats.isDirectory())
-                            return Storage._getDirectory(child_url);
-                        else
-                            return Storage._getFile(child_url, stats);
-                    });
-            });
-        }
-
-        return Promise.all(promises).then((res) => {
-            dir.children = res;
-            return dir;
-        });
-    };
-
-
-    static _getFile(url, stats) {
-        const path = _path.join(Storage.root, url);
-        const path_parsed = _path.parse(path);
-
-        return db.File.findOne({where: {path: path}, include: ['owner', 'group']})
-            .then(file => {
-                file.type = 'file';
-                file.url = Storage.url + url;
-                file.base = path_parsed.base;
-                file.name = path_parsed.name;
-                file.ext = path_parsed.ext;
-                file.size = stats.size;
-                file.mime = mime.lookup(path_parsed.ext);
-
-                return file;
-            })
-            .catch(err => Error(`File '${path}' is not registered in the database.`));
-    };
-
-
-    static _getDirectory(url) {
-        const path = _path.join(Storage.root, url);
-
-        return {
-            type: 'directory',
-            name: _path.basename(path),
-            url: Storage.url + '/' + url,
-            path: path,
-        };
-    };
-
-
-    static _getStats(url) {
-        return new Promise((resolve, reject) => {
-            fs.stat(_path.join(Storage.root, url), (err, stats) => {
-                if (err) return reject(err);
-
-                if (stats.isDirectory() || stats.isFile())
-                    return resolve(stats);
-                else
-                    return reject(Error('Unknown type'));
-            });
-        });
-    };
 }
 
 module.exports = Storage;
+
+
+Storage.getDataUrl = () => {
+    let url = '/storage/files/';
+        url += this.fileId;
+        url += '?revision=';
+        url += this.id;
+
+    // Force return of a promise 
+    return Promise.resolve(url);
+}
+
+Storage.getDataPath = function (full = false) {
+
+    // Compute file system path
+    let path = '';
+        path += (full) ? Storage.root : '';
+        path += '/' + this.fileId;
+        path += '/' + this.id;
+        path += '-' + this.name;
+
+    // Check file exists
+    return Promise.resolve(() => {
+        fs.access(path, (err, res) => {
+            if (err) { throw(err); }
+            else {
+
+                // Return file path if it exists
+                return path;
+            }
+        });
+    });
+}
+
+Storage.getFileDirTree = function () {
+    const db = require('../models');
+    return this.getData()
+
+        
+        .then(data => {
+            // Get parents' directory tree
+            let tree = 
+                (data.dirId === 1)
+                ? Promise.resolve([]) 
+                : db.File.findById(data.dirId).then(file => file.getDirTree());
+
+            // Add own directory name
+            return tree.then(tree => concat(data.name));
+        });
+}
+
+Storage.getFileData = function (offset = 0) {
+    const db = require('../models');
+    return db.Data
+
+        // like findOne, but with order + offset
+        .findAll({
+            limit: 1,
+            offset: offset,
+            where: {fileId: this.id},
+            order: [['createdAt', 'DESC']]
+        })
+
+        // findAll is limited, so there will always be one result (or none -> undefined)
+        .then(data => data[0])
+}
+
+Storage.getDataRights = function () {
+    const db = require('../models');
+
+    // only one right should exist for each data, no check needed
+    return db.Right.findOne({where: {id: this.rightsId}})
+}
+
+Storage.addFileData = function (changes, path) {
+    const db = require('../models');
+
+
+    changes.fileId = this.id;
+
+    let fileBuilder = function (changes, path) {
+        return new Promise((accept) => {
+            fs.access(path, err => {
+                if (err) { 
+                    changes.fileExists = false; 
+                }
+                else {
+                    changes.fileExists = true;
+                }
+
+                accept();
+            });
+        });
+    };
+
+    let rightsBuilder = function (changes, path) {
+
+        let newRight = false;
+        let rights = ["ownerRead", "ownerWrite", "groupRead", "groupWrite", "allRead", "allWrite"]
+        for(let i of rights) {
+            if (typeof(changes[i]) !== "undefined") {
+                newRight = true;
+                break;
+            }
+        }
+
+
+        if (newRight) {
+
+            // New right
+            return db.Right.create(changes)
+                .then(right => {changes.rightsId = right.id})
+        } else {
+
+            // Use previous rights
+            return db.File.findOne({where: {id: changes.fileId}})
+                .then(file => file.getData())
+                .then(data => {changes.rightsId = data.id})
+
+                // TODO : if previous right not found (first upload),
+                //        create new right with default values
+        }
+    }
+
+
+
+        // Build the rights and file properties
+    return Promise.all([rightsBuilder(changes, path), fileBuilder(changes, path)])
+
+        .then(() => console.log("here"))
+
+        // Create the data and save it
+        .then(() => db.Data.create(changes))
+
+        .then(data => {console.log("there"); return data;})
+
+        // Get destination
+        .then(data => data.getPath())
+
+        // Move file from temp
+        .then(dest => {
+            if (changes.fileExists) {
+                mv( path, dest,
+                    {mkdirp: true, clobber: false}, // make directory if needed, error if exists
+                    err => {if (err) throw err}       // error if something happens
+                );
+                    
+            }
+        })
+
+        .then(() => res.json({}))
+
+        .then(() => console.log("done !!"))
+
+        .catch(err => console.log(err));
+}
+
+Storage.createNewFile = function (changes, path, dir = false) {
+    const db = require('../models');
+
+    return db.File.create({isDir: dir})
+        .then(file => file.addData(changes, path));
+}
+
+Storage.computeType = function (path) {
+    return Promise.resolve((accept, reject) => {
+        magic.detectFile(path, (err, res) => {
+            if (err) { return reject(err); }
+            else {
+
+                return accept(res);
+            }
+        });
+        
+    });
+}
+
+Storage.computeSize = function (path) {
+    fs.stat(path, (err, res) => {
+        if (err) { throw(err); }
+        else {
+
+            // Return file size 
+            return res.size;
+        }
+    });
+}
+

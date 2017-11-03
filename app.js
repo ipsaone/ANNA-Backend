@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({extended: true})); // POST parser
 app.use(bodyParser.json());
 app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
-// app.use(require('./middlewares/auth')); // Auth check
+app.use(require('./middlewares/auth')); // Auth check
 
 /*
  * Options
