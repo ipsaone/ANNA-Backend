@@ -107,20 +107,13 @@ Storage.addFileData = function (changes, path) {
     let fileBuilder = function (changes, path) {
         return new Promise((accept) => {
             fs.access(path, err => {
-                if (err) {
-                    changes.fileExists = false;
-                }
-                else {
-                    changes.fileExists = true;
-                }
-
+                changes.fileExists = !err;
                 accept();
             });
         });
     };
 
     let rightsBuilder = function (changes, path) {
-
         let newRight = false;
         let rights = ['ownerRead', 'ownerWrite', 'groupRead', 'groupWrite', 'allRead', 'allWrite'];
         for (let i of rights) {
@@ -129,7 +122,6 @@ Storage.addFileData = function (changes, path) {
                 break;
             }
         }
-
 
         if (newRight) {
 

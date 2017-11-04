@@ -86,7 +86,7 @@ exports.list = (req, res) => {
         // Check if file exists
             .then(files => {
                 if (!files.map(item => item.id).includes(folderId)) {
-                    res.send(404);
+                    res.sendStatus(404);
                     return Promise.reject('Folder doesn\'t exist'); // TODO : real error type ?
                 } else {
                     return files;
@@ -113,7 +113,7 @@ exports.list = (req, res) => {
                 console.log(err);
 
                 if (!res.headersSent) {
-                    return res.send(500);
+                    return res.sendStatus(500);
                 }
 
             });
