@@ -97,7 +97,6 @@ exports.list = (req, res) => {
             .then(files => files.map(file => {return {isDir: file.isDir, dataPromise: file.getData()}}))
             .then(data => data.map(item => item.dataPromise.then(data =>  {return {data: data, isDir: item.isDir}})))
             .then(data => Promise.all(data))
-            .then(data => {console.log(data); return data;})
 
             // Get each one in the folder, exclude root folder
             .then(data => data.filter(item => (item.data.dirId === folderId)))
