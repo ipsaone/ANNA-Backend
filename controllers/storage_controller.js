@@ -80,12 +80,13 @@ exports.list = (req, res) => {
 
     let folderId = parseInt(req.params.folderId);
 
-    return db.File.findAll()    // Get all files
+    let children_data = 
+             db.File.findAll()    // Get all files
 
             // Check if file exists
             .then(files => {
                 if( !files.map(item => item.id).includes(folderId)) {
-                    res.send(400);
+                    res.send(404);
                     return Promise.reject("Folder doesn't exist"); // TODO : real error type ?
                 } else {
                     return files;
@@ -93,21 +94,33 @@ exports.list = (req, res) => {
             })
 
             // Get data corresponding to the files
-            .then(files => files.map(file => file.getData())) 
-            .then(dataPromises => Promise.all(dataPromises))
+            .then(files => files.map(file => {return {isDir: file.isDir, dataPromise: file.getData()}}))
+            .then(data => data.map(item => item.dataPromise.then(data =>  {return {data: data, isDir: item.isDir}})))
+            .then(data => Promise.all(data))
+            .then(data => {console.log(data); return data;})
 
             // Get each one in the folder, exclude root folder
-            .then(data => data.filter(item => (item.dirId === folderId)))
-            .then(data => data.filter(item => (item.fileId !== 1)))
+            .then(data => data.filter(item => (item.data.dirId === folderId)))
+            .then(data => data.filter(item => (item.data.fileId !== 1)))
+
 
             // Return the data or an error, if needed
-            .then(data => res.json(data))
             .catch(err => {
+                console.log(err);
 
                 if (!res.headersSent) {
                     return res.send(500); 
                 } 
 
             })
+
+    let folder_file = db.File.findOne({where: {id: folderId}})
+    let folder_data = folder_file.then(file => file.getData())
+
+    return Promise.all([folder_file, folder_data, children_data])
+            .then(results => res.json({
+                    File: results[0], Data: results[1],
+                    children: results[2]
+                }))
 
 }
