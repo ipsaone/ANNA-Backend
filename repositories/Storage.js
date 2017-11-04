@@ -26,27 +26,29 @@ module.exports = Storage;
 
 Storage.getDataUrl = () => {
     let url = '/storage/files/';
-        url += this.fileId;
-        url += '?revision=';
-        url += this.id;
+    url += this.fileId;
+    url += '?revision=';
+    url += this.id;
 
     // Force return of a promise 
     return Promise.resolve(url);
-}
+};
 
 Storage.getDataPath = function (full = false) {
 
     // Compute file system path
     let path = '';
-        path += (full) ? Storage.root : '';
-        path += '/' + this.fileId;
-        path += '/' + this.id;
-        path += '-' + this.name;
+    path += (full) ? Storage.root : '';
+    path += '/' + this.fileId;
+    path += '/' + this.id;
+    path += '-' + this.name;
 
     // Check file exists
     return Promise.resolve(() => {
         fs.access(path, (err, res) => {
-            if (err) { throw(err); }
+            if (err) {
+                throw(err);
+            }
             else {
 
                 // Return file path if it exists
@@ -54,30 +56,30 @@ Storage.getDataPath = function (full = false) {
             }
         });
     });
-}
+};
 
 Storage.getFileDirTree = function () {
     const db = require('../models');
     return this.getData()
 
-        
+
         .then(data => {
             // Get parents' directory tree
-            let tree = 
+            let tree =
                 (data.dirId === 1)
-                ? Promise.resolve([]) 
-                : db.File.findById(data.dirId).then(file => file.getDirTree());
+                    ? Promise.resolve([])
+                    : db.File.findById(data.dirId).then(file => file.getDirTree());
 
             // Add own directory name
             return tree.then(tree => concat(data.name));
         });
-}
+};
 
 Storage.getFileData = function (offset = 0) {
     const db = require('../models');
     return db.Data
 
-        // like findOne, but with order + offset
+    // like findOne, but with order + offset
         .findAll({
             limit: 1,
             offset: offset,
@@ -86,15 +88,15 @@ Storage.getFileData = function (offset = 0) {
         })
 
         // findAll is limited, so there will always be one result (or none -> undefined)
-        .then(data => data[0])
-}
+        .then(data => data[0]);
+};
 
 Storage.getDataRights = function () {
     const db = require('../models');
 
     // only one right should exist for each data, no check needed
-    return db.Right.findOne({where: {id: this.rightsId}})
-}
+    return db.Right.findOne({where: {id: this.rightsId}});
+};
 
 Storage.addFileData = function (changes, path) {
     const db = require('../models');
@@ -105,8 +107,8 @@ Storage.addFileData = function (changes, path) {
     let fileBuilder = function (changes, path) {
         return new Promise((accept) => {
             fs.access(path, err => {
-                if (err) { 
-                    changes.fileExists = false; 
+                if (err) {
+                    changes.fileExists = false;
                 }
                 else {
                     changes.fileExists = true;
@@ -120,9 +122,9 @@ Storage.addFileData = function (changes, path) {
     let rightsBuilder = function (changes, path) {
 
         let newRight = false;
-        let rights = ["ownerRead", "ownerWrite", "groupRead", "groupWrite", "allRead", "allWrite"]
-        for(let i of rights) {
-            if (typeof(changes[i]) !== "undefined") {
+        let rights = ['ownerRead', 'ownerWrite', 'groupRead', 'groupWrite', 'allRead', 'allWrite'];
+        for (let i of rights) {
+            if (typeof(changes[i]) !== 'undefined') {
                 newRight = true;
                 break;
             }
@@ -133,30 +135,36 @@ Storage.addFileData = function (changes, path) {
 
             // New right
             return db.Right.create(changes)
-                .then(right => {changes.rightsId = right.id})
+                .then(right => {
+                    changes.rightsId = right.id;
+                });
         } else {
 
             // Use previous rights
             return db.File.findOne({where: {id: changes.fileId}})
                 .then(file => file.getData())
-                .then(data => {changes.rightsId = data.id})
+                .then(data => {
+                    changes.rightsId = data.id;
+                });
 
-                // TODO : if previous right not found (first upload),
-                //        create new right with default values
+            // TODO : if previous right not found (first upload),
+            //        create new right with default values
         }
-    }
+    };
 
 
-
-        // Build the rights and file properties
+    // Build the rights and file properties
     return Promise.all([rightsBuilder(changes, path), fileBuilder(changes, path)])
 
-        .then(() => console.log("here"))
+        .then(() => console.log('here'))
 
         // Create the data and save it
         .then(() => db.Data.create(changes))
 
-        .then(data => {console.log("there"); return data;})
+        .then(data => {
+            console.log('there');
+            return data;
+        })
 
         // Get destination
         .then(data => data.getPath())
@@ -164,49 +172,55 @@ Storage.addFileData = function (changes, path) {
         // Move file from temp
         .then(dest => {
             if (changes.fileExists) {
-                mv( path, dest,
+                mv(path, dest,
                     {mkdirp: true, clobber: false}, // make directory if needed, error if exists
-                    err => {if (err) throw err}       // error if something happens
+                    err => {
+                        if (err) throw err;
+                    }       // error if something happens
                 );
-                    
+
             }
         })
 
         .then(() => res.json({}))
 
-        .then(() => console.log("done !!"))
+        .then(() => console.log('done !!'))
 
         .catch(err => console.log(err));
-}
+};
 
 Storage.createNewFile = function (changes, path, dir = false) {
     const db = require('../models');
 
     return db.File.create({isDir: dir})
         .then(file => file.addData(changes, path));
-}
+};
 
 Storage.computeType = function (path) {
     return Promise.resolve((accept, reject) => {
         magic.detectFile(path, (err, res) => {
-            if (err) { return reject(err); }
+            if (err) {
+                return reject(err);
+            }
             else {
 
                 return accept(res);
             }
         });
-        
+
     });
-}
+};
 
 Storage.computeSize = function (path) {
     fs.stat(path, (err, res) => {
-        if (err) { throw(err); }
+        if (err) {
+            throw(err);
+        }
         else {
 
             // Return file size 
             return res.size;
         }
     });
-}
+};
 
