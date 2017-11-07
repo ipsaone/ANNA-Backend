@@ -3,7 +3,7 @@
 const db = require('../models');
 const bcrypt = require('bcrypt');
 
-exports.login = (req, res) => {
+exports.login = (req, res) => {  
     db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
         .then(user => {
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
