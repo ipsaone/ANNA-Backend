@@ -2,7 +2,7 @@
 
 const db = require('../models');
 const escape = require('escape-html');
-const Storage = require('../repositories/Storage')
+const Storage = require('../repositories/Storage');
 
 
 exports.download = (req, res) => {
@@ -24,20 +24,20 @@ exports.download = (req, res) => {
 
     // Send back the correct response, file or json
     let data = findFile.then(file => file.getData(rev));
-    if (dl) 
+    if (dl)
         data.then(path => getPath(true))
             .then(path => res.download(path));
     else
         data.then(data => res.json(data));
 
 
-}
+};
 
 exports.upload_rev = (req, res) => {
 
     // Escape req.body strings
     for (let prop in req.body) {
-        if (req.body && req.body.hasOwnProperty(prop) && typeof(req.body[prop]) === "string") {
+        if (req.body && req.body.hasOwnProperty(prop) && typeof(req.body[prop]) === 'string') {
             req.body[prop] = escape(req.body[prop]);
         }
     }
@@ -47,7 +47,7 @@ exports.upload_rev = (req, res) => {
         .then(file => file.addData(req.body, req.file.path));
 
 
-}
+};
 
 exports.upload_new = (req, res) => {
 
@@ -57,7 +57,7 @@ exports.upload_new = (req, res) => {
 
     // Escape req.body strings
     for (let prop in req.body) {
-        if (req.body && Object.prototype.hasOwnProperty.call(req.body, prop) && typeof(req.body[prop]) === "string") {
+        if (req.body && Object.prototype.hasOwnProperty.call(req.body, prop) && typeof(req.body[prop]) === 'string') {
             req.body[prop] = escape(req.body[prop]);
         }
     }
@@ -68,8 +68,8 @@ exports.upload_new = (req, res) => {
         .then(() => res.json({}))
 
         // Send error to client, if any
-        .catch(err => res.json(err))
-}
+        .catch(err => res.json(err));
+};
 
 exports.list = (req, res) => {
 
@@ -78,18 +78,56 @@ exports.list = (req, res) => {
         return res.sendStatus(400);
     }
 
-    return db.File.findAll()    // Get all files
+    let folderId = parseInt(req.params.folderId);
+
+    let children_data =
+        db.File.findAll()    // Get all files
+
+        // Check if file exists
+            .then(files => {
+                if (!files.map(item => item.id).includes(folderId)) {
+                    res.sendStatus(404);
+                    return Promise.reject('Folder doesn\'t exist'); // TODO : real error type ?
+                } else {
+                    return files;
+                }
+            })
 
             // Get data corresponding to the files
-            .then(files => files.map(file => file.getData())) 
-            .then(dataPromises => Promise.all(dataPromises))
+            .then(files => files.map(file => {
+                return {isDir: file.isDir, dataPromise: file.getData()};
+            }))
+            .then(data => data.map(item => item.dataPromise.then(data => {
+                data.isDir = item.isDir;
+                return data;
+            })))
+            .then(data => Promise.all(data))
 
             // Get each one in the folder, exclude root folder
-            .then(data => data.filter(item => (item.dirId === parseInt(req.params.folderId))))
+            .then(data => data.filter(item => (item.dirId === folderId)))
             .then(data => data.filter(item => (item.fileId !== 1)))
 
-            // Return the data or the error, if any
-            .then(data => res.json(data))
-            .catch(err => res.json(err))
 
-}
+            // Return the data or an error, if needed
+            .catch(err => {
+                console.log(err);
+
+                if (!res.headersSent) {
+                    return res.sendStatus(500);
+                }
+
+            });
+
+    let folder_file = db.File.findOne({where: {id: folderId}});
+    let folder_data = folder_file.then(file => file.getData());
+
+    return Promise.all([folder_file, folder_data, children_data])
+        .then(results => {
+            let folder_data = results[1];
+            folder_data.isDir = results[0].isDir;
+            folder_data.children = results[2];
+
+            res.json(folder_data);
+        });
+
+};

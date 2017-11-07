@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         ownerId: {allowNull: false, type: DataTypes.INTEGER},
         rightsId: {allowNull: false, type: DataTypes.INTEGER},
         groupId: {allowNull: false, type: DataTypes.INTEGER},
+
+        isDir: DataTypes.VIRTUAL,
+        children: DataTypes.VIRTUAL,
     }, {
         timestamps: true,
         hooks: {

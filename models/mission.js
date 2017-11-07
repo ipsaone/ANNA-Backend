@@ -24,5 +24,5 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    return Data;
+    return Mission;
 };

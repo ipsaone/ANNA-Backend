@@ -17,7 +17,7 @@ module.exports = {
       .then(() => queryInterface.bulkInsert('Data', [{
                     name: 'root',
                     size: 0,
-                    type: 'Folder',
+                    type: '',
                     fileId: 1,
                     dirId: 1,
                     ownerId: 1,
