@@ -12,8 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         budgetAssigned: {allowNull: true, type: DataTypes.INTEGER},
         budgetUsed: {allowNull: true, type: DataTypes.INTEGER},
         groupId: {allowNull: false, type: DataTypes.INTEGER},
-        leaderId: {allowNull: false, type: DataTypes.INTEGER},
-        taskId: {allowNull: true, type: DataTypes.INTEGER}
+        leaderId: {allowNull: false, type: DataTypes.INTEGER}
     }, {
         timestamps: true,
         hooks: {

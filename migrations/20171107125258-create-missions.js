@@ -14,9 +14,8 @@ module.exports = {
     description: {allowNull: true, type: DataTypes.STRING},
     budgetAssigned: {allowNull: true, type: DataTypes.INTEGER},
     budgetUsed: {allowNull: true, type: DataTypes.INTEGER},
-    groupId: {allowNull: false, type: DataTypes.INTEGER},
-    leaderId: {allowNull: false, type: DataTypes.INTEGER},
-    taskId: {allowNull: true, type: DataTypes.INTEGER}
+    groupId: {allowNull: false, type: DataTypes.INTEGER, references: {model: 'Groups', key: 'id'}},
+    leaderId: {allowNull: false, type: DataTypes.INTEGER, references: {model: 'Users', key: 'id'}},
    });
   },
 

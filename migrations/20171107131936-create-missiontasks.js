@@ -9,7 +9,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            MissionId: {
+            missionId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
@@ -18,7 +18,7 @@ module.exports = {
                     key: 'id'
                 },
             },
-            TaskId: {
+            taskId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
