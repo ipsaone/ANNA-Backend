@@ -7,15 +7,13 @@ let compileMd = () => {
 module.exports = (sequelize, DataTypes) => {
     const Mission = sequelize.define('Mission', {
         name: {allowNull: false, type: DataTypes.STRING},
-        description_md: {allowNull: true, type: DataTypes.STRING},
-        description_html: {allowNull: true, type: DataTypes.STRING},
-        // group_id
-        // leader_id
-        // budget_assigned
-        // budget_used
-        // tasks_list_id
-            // task : {name[str], done[bool], task_list_id}
-            // task_list : {name[str], }
+        markdown: {allowNull: true, type: DataTypes.STRING},
+        description: {allowNull: true, type: DataTypes.STRING},
+        budgetAssigned: {allowNull: true, type: DataTypes.INTEGER},
+        budgetUsed: {allowNull: true, type: DataTypes.INTEGER},
+        groupId: {allowNull: false, type: DataTypes.INTEGER},
+        leaderId: {allowNull: false, type: DataTypes.INTEGER},
+        taskId: {allowNull: true, type: DataTypes.INTEGER}
     }, {
         timestamps: true,
         hooks: {
@@ -23,6 +21,13 @@ module.exports = (sequelize, DataTypes) => {
             beforeUpdate: compileMd
         }
     });
+
+
+    Mission.associate = function (models) {
+        Mission.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
+        Mission.hasOne(models.User, {foreignKey: 'leaderId', as: 'leader'});
+
+    }
 
     return Mission;
 };
