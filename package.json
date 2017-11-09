@@ -10,6 +10,7 @@
     "async": "^2.5.0",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
+    "boom": "^7.1.1",
     "connect-redis": "^3.3.0",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",

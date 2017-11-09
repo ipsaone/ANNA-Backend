@@ -1,21 +1,7 @@
 'use strict';
 
-exports.canIndex = (req, res, next) => {
-    next();
-}
+exports.filterIndex = (posts) => {
 
-exports.canShow = (req, res, next) => {
-    next();
-}
-
-exports.canStore = (req, res, next) => {
-    next();
-}
-
-exports.canUpdate = (req, res, next) => {
-    next();
-}
-
-exports.canDelete = (req, res, next) => {
-    next();
+    
+    
 }
