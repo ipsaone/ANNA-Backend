@@ -2,6 +2,7 @@
 
 const db = require('../models');
 const policy = require('../policies/post_policy');
+const boom = require('boom')
 
 exports.index = function (req, res) {
     // GET /posts                 -> return all posts
@@ -15,20 +16,25 @@ exports.index = function (req, res) {
     }
 
     posts.findAll({include: ['author'], order: [['createdAt', 'DESC']]})
-        .then(posts => policy.filterIndex(req, res, posts))
+        .then(posts => policy.filterIndex(req, posts))
         .then(posts => {
             res.statusCode = 200;
             res.json(posts);
         })
         .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
+            console.log(err);
+            if(!boom.isBoom(err)) {
+                res.statusCode = 500;
+                res.json({code: 31, message: err.message});
+            } else {
+                res.send(err);
+            }
         });
 };
 
 exports.show = function (req, res) {
     db.Post.findOne({where: {id: req.params.postId}, include: ['author'], rejectOnEmpty: true})
-        .then(post => policy.filterShow(req, res, post))
+        .then(post => policy.filterShow(req, post))
         .then(post => {
             if (!post) {
                 res.statusCode = 404;
@@ -40,8 +46,12 @@ exports.show = function (req, res) {
             }
         })
         .catch(err => {
-            res.statusCode = 404;
-            res.json({code: 31, message: err.message});
+            if(!boom.isBoom(err)) {
+                res.statusCode = 500;
+                res.json({code: 31, message: err.message});
+            } else {
+                res.send(err);
+            }
         });
 };
 
@@ -53,33 +63,45 @@ exports.store = function (req, res) {
             res.json(post);
         })
         .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
+            if(!boom.isBoom(err)) {
+                res.statusCode = 500;
+                res.json({code: 31, message: err.message});
+            } else {
+                res.send(err);
+            }
         });
 };
 
 exports.update = function (req, res) {
-    policy.filterUpdate(req, res)
+    policy.filterUpdate(req)
     .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
     .then(() => {
         res.statusCode = 204;
         res.json({});
     })
     .catch(err => {
-        res.statusCode = 400;
-        res.json({code: 31, message: err.message});
+        if(!boom.isBoom(err)) {
+            res.statusCode = 500;
+            res.json({code: 31, message: err.message});
+        } else {
+            res.send(err);
+        }
     });
 };
 
 exports.delete = function (req, res) {
-    policy.filterDelete(req, res)
+    policy.filterDelete(req)
     .then(() => db.Post.destroy({where: {id: req.params.postId}}))
     .then(() => {
         res.statusCode = 204;
         res.json({});
     })
     .catch(err => {
-        res.statusCode = 400;
-        res.json({code: 31, message: err.message});
+        if(!boom.isBoom(err)) {
+            res.statusCode = 500;
+            res.json({code: 31, message: err.message});
+        } else {
+            res.send(err);
+        }
     });
 };

@@ -33,6 +33,14 @@ exports.show = function (req, res) {
 };
 
 exports.store = function (req, res) {
+
+    // To lower case to avoid security problems 
+    // (users trying to create 'auTHOrs' group to gain rights)
+    if(typeof(req.body.name) !== 'undefined') {
+        req.body.name = toLowerCase(req.body.name)
+    }
+
+
     db.Group.create(req.body)
         .then(group => {
             res.statusCode = 201;
