@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
 
     Log.associate = function (models) {
         Log.belongsTo(models.User, {foreignKey: 'authorId', as: 'author'});
-        Log.belongsToMany(models.File, {as: 'files', through: models.FileLog, foreignKey: 'logId'});
-        Log.belongsToMany(models.User, {as: 'helpers', through: models.LogUser, foreignKey: 'logId'});
+        //Log.belongsToMany(models.File, {as: 'files', through: models.FileLog, foreignKey: 'logId'});
+        //Log.belongsToMany(models.User, {as: 'helpers', through: models.LogUser, foreignKey: 'logId'});
     };
     return Log;
 };

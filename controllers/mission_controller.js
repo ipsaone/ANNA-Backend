@@ -39,6 +39,6 @@ exports.update = function (req, res, handle) {
 
 exports.delete = function (req, res, handle) {
     db.Missions.destroy({where: {id: req.params.missionId}})
-        .then(() => res.status(204)?json({}))
+        .then(() => res.status(204).json({}))
         .catch(err => handle(err));
 };

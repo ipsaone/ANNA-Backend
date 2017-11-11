@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.Data, {foreignKey: 'ownerId', as: 'files'});
         User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
         User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
-        User.belongsToMany(models.Log, {as: 'logs', through: models.LogUser, foreignKey: 'userId'});
+        //User.belongsToMany(models.Log, {as: 'logs', through: models.LogUser, foreignKey: 'userId'});
         User.hasMany(models.Mission, {as: 'missions', foreignKey: 'leaderId'});
     };
 
