@@ -23,17 +23,33 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     db.Group.create(req.body)
         .then(group => res.status(201).json(group))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
 
 exports.update = function (req, res, handle) {
     db.Group.update(req.body, {where: {id: req.params.groupId}})
-        .then(result => res.status(204))
+        .then(result => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
 
 exports.delete = function (req, res, handle) {
     db.Group.destroy({where: {id: req.params.groupId}})
-        .then(() => res.status(204))
+        .then(data => {
+            //data :
+            // [0] : nomber of rows corresponding to request
+            // [1] : number of affected rows
+
+            if(!data[0]){ res.boom.badImplementation('Missing data !')}
+
+            if(data[0] == 1) {
+                res.status(204).json({})
+            } else if(data[0] == 0) {
+                res.boom.notFound();
+            } else {
+                res.boom.badImplementation('Too many rows deleted !');
+            }
+        })
         .catch(err => handle(err));
 };

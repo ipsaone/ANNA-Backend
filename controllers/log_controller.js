@@ -5,7 +5,13 @@ const boom = require('boom');
 
 exports.index = function (req, res, handle) {
     db.Log.findAll({include: ['author']})
-        .then(logs => res.status(200).json(logs))
+        .then(logs => {
+            if(!logs){ res.boom.notFound(); }
+
+            else {
+                res.status(200).json(logs);
+            }
+        })
         .catch(err => handle(err));
 };
 
@@ -24,6 +30,7 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     db.Log.create(req.body)
         .then(log => res.status(201).json(log))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
 
