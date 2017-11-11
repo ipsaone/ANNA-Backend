@@ -25,7 +25,7 @@ exports.show = function (req, res) {
     db.Post.findOne({where: {id: req.params.postId}, include: ['author'], rejectOnEmpty: true})
         .then(post => policy.filterShow(req, res, post))
         .then(post => {
-            if (!post) { res.boom.notFound(); }
+            if (!post) { throw res.boom.notFound(); }
 
             else {
                 res.status(200).json(post);
@@ -45,7 +45,7 @@ exports.store = function (req, res, handle) {
 exports.update = function (req, res, handle) {
     policy.filterUpdate(req, res)
     .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
-    .then(() => res.status(204).json({}))
+    .then(post => res.status(204).json(post))
     .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
     .catch(err => handle(err));
 };

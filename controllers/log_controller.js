@@ -14,7 +14,7 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.Log.findOne({where: {id: req.params.logId}, include: ['author']})
         .then(log => {
-            if (!log) { res.boom.notFound(); }
+            if (!log) { throw res.boom.notFound(); }
 
             else {
                 res.status(200).json(log);
@@ -39,14 +39,14 @@ exports.update = function (req, res, handle) {
 exports.delete = function (req, res, handle) {
     db.Log.destroy({where: {id: req.params.logId}})
         .then(data => {
-            if(!data[0]){ res.boom.badImplementation('Missing data !')}
+            if(!data[0]){ throw res.boom.badImplementation('Missing data !')}
 
             if(data[0] == 1) {
                 res.status(204).json({})
             } else if(data[0] == 0) {
-                res.boom.notFound();
+                throw res.boom.notFound();
             } else {
-                res.boom.badImplementation('Too many rows deleted !');
+                throw res.boom.badImplementation('Too many rows deleted !');
             }
         })
         .catch(err => handle(err));

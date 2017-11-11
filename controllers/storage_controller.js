@@ -25,7 +25,7 @@ exports.download = (req, res, handle) => {
 
     // Send back the correct response, file or json
     let data = findFile.then(file => {
-        if(!file){ res.boom.notFound(); }
+        if(!file){ throw res.boom.notFound(); }
 
         else {
             return file.getData(rev);
@@ -60,7 +60,7 @@ exports.upload_rev = (req, res, handle) => {
 };
 
 exports.upload_new = (req, res, handle) => {
-    if (!req.file) { res.boom.badRequest(); }
+    if (!req.file) { throw res.boom.badRequest(); }
 
     // Escape req.body strings
     for (let prop in req.body) {
@@ -90,7 +90,7 @@ exports.list = (req, res, handle) => {
         // Check if file exists
             .then(files => {
                 if (!files.map(item => item.id).includes(folderId)) {
-                    res.boom.notFound();
+                    throw res.boom.notFound();
                 } else {
                     return files;
                 }

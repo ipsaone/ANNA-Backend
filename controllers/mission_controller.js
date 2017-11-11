@@ -14,7 +14,7 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.Missions.findOne({where: {id: req.params.missionId}, rejectOnEmpty: true})
         .then(mission => {
-            if (!mission) { res.boom.notFound(); }
+            if (!mission) { throw res.boom.notFound(); }
 
             else {
                 res.status(200).json(post);
@@ -39,6 +39,6 @@ exports.update = function (req, res, handle) {
 
 exports.delete = function (req, res, handle) {
     db.Missions.destroy({where: {id: req.params.missionId}})
-        .then(() => res.status(204))
+        .then(() => res.status(204)?json({}))
         .catch(err => handle(err));
 };

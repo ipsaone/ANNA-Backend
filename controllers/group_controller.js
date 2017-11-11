@@ -11,7 +11,7 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.Group.findOne({where: {id: req.params.groupId}, include: ['users']})
         .then(group => {
-            if (!group) { res.boom.notFound(); }
+            if (!group) { throw res.boom.notFound(); }
 
             else {
                 res.json(group);

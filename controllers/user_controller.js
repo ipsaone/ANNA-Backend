@@ -23,7 +23,7 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
         .then(user => {
-            if(!user) { res.boom.badRequest(); }
+            if(!user) { throw res.boom.badRequest(); }
             else {
                 res.status(200).json(user);
             }
@@ -108,9 +108,15 @@ exports.posts = function (req, res, handle) {
  * @param req
  * @param res
  */
-exports.get_groups = function (req, res) {
+exports.get_groups = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
-        .then(user => res.status(200).json(user.groups))
+        .then(user => {
+            if(!user) { throw res.boom.badRequest(); }
+
+            else {
+                res.status(200).json(user.groups);
+            }
+        })
         .catch(err => handle(err));
 };
 
@@ -131,7 +137,7 @@ exports.get_groups = function (req, res) {
 exports.add_groups = function (req, res) {
     db.User.findById(req.params.userId)
         .then(user => {
-            if(!user) { res.boom.badRequest; }
+            if(!user) { throw res.boom.badRequest; }
 
             else {
                 user.addGroups(req.body.groupsId);
