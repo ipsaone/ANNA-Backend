@@ -21,16 +21,14 @@ exports.index = function (req, res, handle) {
         .catch(err => handle(err));
 };
 
-exports.show = function (req, res) {
-    db.Post.findOne({where: {id: req.params.postId}, include: ['author'], rejectOnEmpty: true})
-        .then(post => policy.filterShow(req, post))
+exports.show = function (req, res, handle) {
+    db.Post.findOne({where: {id: req.params.postId}, include: ['author']})
         .then(post => {
             if (!post) { throw res.boom.notFound(); }
-
-            else {
-                res.status(200).json(post);
-            }
+            return post;
         })
+        .then(post => policy.filterShow(req, post))
+        .then(post => res.status(200).json(post))
         .catch(err => handle(err));
 };
 

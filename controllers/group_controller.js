@@ -21,14 +21,14 @@ exports.show = function (req, res, handle) {
 };
 
 exports.store = function (req, res, handle) {
-    // To lower case to avoid security problems 
+    // To lower case to avoid security problems
     // (users trying to create 'auTHOrs' group to gain rights)
+    if(typeof(req.body.name) !== 'undefined') {
+        req.body.name = req.body.name.toLowerCase();
     }
 
 
 
-    if(typeof(req.body.name) !== 'undefined') {
-        req.body.name = toLowerCase(req.body.name)
     db.Group.create(req.body)
         .then(group => res.status(201).json(group))
         .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
@@ -36,6 +36,12 @@ exports.store = function (req, res, handle) {
 };
 
 exports.update = function (req, res, handle) {
+    // To lower case to avoid security problems
+    // (users trying to create 'auTHOrs' group to gain rights)
+    if(typeof(req.body.name) !== 'undefined') {
+        req.body.name = req.body.name.toLowerCase();
+    }
+    
     db.Group.update(req.body, {where: {id: req.params.groupId}})
         .then(result => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
