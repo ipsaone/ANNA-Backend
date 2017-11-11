@@ -1,22 +1,17 @@
 'use strict';
 
 const db = require('../models');
+const boom = require('boom');
 
 /**
  * List all users.
  * @param req
  * @param res
  */
-exports.index = function (req, res) {
+exports.index = function (req, res, handle) {
     db.User.findAll()
-        .then(users => {
-            res.statusCode = 200;
-            res.json(users);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(users => res.status(200).json(users))
+        .catch(err => handle(err));
 };
 
 
@@ -25,16 +20,15 @@ exports.index = function (req, res) {
  * @param req
  * @param res
  */
-exports.show = function (req, res) {
-    db.User.findOne({where: {id: req.params.userId}, include: ['groups'], rejectOnEmpty: true})
+exports.show = function (req, res, handle) {
+    db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
         .then(user => {
-            res.statusCode = 200;
-            res.json(user);
+            if(!user) { throw res.boom.badRequest(); }
+            else {
+                res.status(200).json(user);
+            }
         })
-        .catch(err => {
-            res.statusCode = 404;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
 
@@ -49,16 +43,11 @@ exports.show = function (req, res) {
  * @param req
  * @param res
  */
-exports.store = function (req, res) {
+exports.store = function (req, res, handle) {
     db.User.create(req.body)
-        .then(user => {
-            res.statusCode = 201;
-            res.json(user);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(user => res.status(201).json(user))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
 
@@ -71,17 +60,12 @@ exports.store = function (req, res) {
  * @param req
  * @param res
  */
-exports.update = function (req, res) {
+exports.update = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}})
         .then(record => record.update(req.body))
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(() => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
 
@@ -90,16 +74,11 @@ exports.update = function (req, res) {
  * @param req
  * @param res
  */
-exports.delete = function (req, res) {
+exports.delete = function (req, res, handle) {
     db.User.destroy({where: {id: req.params.userId}})
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(() => res.statusCode(204))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
 /**
@@ -107,7 +86,7 @@ exports.delete = function (req, res) {
  * @param req
  * @param res
  */
-exports.posts = function (req, res) {
+exports.posts = function (req, res, handle) {
     // GET /users/:userId/posts                 -> return all posts
     // GET /users/:userId/posts?published=true  -> return all published posts
     // GET /users/:userId/posts?published=false -> return all drafted posts
@@ -119,14 +98,8 @@ exports.posts = function (req, res) {
     }
 
     posts.findAll({where: {authorId: req.params.userId}})
-        .then(posts => {
-            res.statusCode = 200;
-            res.json(posts);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(posts => res.status(200).json(posts))
+        .catch(err => handle(err));
 };
 
 
@@ -135,16 +108,16 @@ exports.posts = function (req, res) {
  * @param req
  * @param res
  */
-exports.get_groups = function (req, res) {
+exports.get_groups = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
         .then(user => {
-            res.statusCode = 200;
-            res.json(user.groups);
+            if(!user) { throw res.boom.badRequest(); }
+
+            else {
+                res.status(200).json(user.groups);
+            }
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
 /**
@@ -164,20 +137,14 @@ exports.get_groups = function (req, res) {
 exports.add_groups = function (req, res) {
     db.User.findById(req.params.userId)
         .then(user => {
-            user.addGroups(req.body.groupsId)
-                .then(() => {
-                    res.statusCode = 204;
-                    res.json({});
-                })
-                .catch(err => { // If a group doesn't exist
-                    res.statusCode = 400;
-                    res.json({code: 31, message: err.message});
-                });
+            if(!user) { throw res.boom.badRequest; }
+
+            else {
+                user.addGroups(req.body.groupsId);
+            }
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(() => res.status(204).json({}))
+        .catch(err => handle(err));
 };
 
 /**
@@ -195,19 +162,7 @@ exports.add_groups = function (req, res) {
  */
 exports.delete_groups = function (req, res) {
     db.User.findById(req.params.userId)
-        .then(user => {
-            user.removeGroups(req.body.groupsId)
-                .then(() => {
-                    res.statusCode = 204;
-                    res.json({});
-                })
-                .catch(err => { // If a group doesn't exist
-                    res.statusCode = 400;
-                    res.json({code: 31, message: err.message});
-                });
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(user => user.removeGroups(req.body.groupsId))
+        .then(() => res.status(204).json({}))
+        .catch(err => handle(err));
 };

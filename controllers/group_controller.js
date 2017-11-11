@@ -2,68 +2,54 @@
 
 const db = require('../models');
 
-exports.index = function (req, res) {
+exports.index = function (req, res, handle) {
     db.Group.findAll({include: ['users']})
-        .then(group => {
-            res.statusCode = 200;
-            res.json(group);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(group => res.json(group))
+        .catch(err => handle(err));
 };
 
-exports.show = function (req, res) {
+exports.show = function (req, res, handle) {
     db.Group.findOne({where: {id: req.params.groupId}, include: ['users']})
         .then(group => {
-            if (!group) {
-                res.statusCode = 404;
-                res.json({code: 23});
-            }
+            if (!group) { throw res.boom.notFound(); }
+
             else {
-                res.statusCode = 200;
                 res.json(group);
             }
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
-exports.store = function (req, res) {
+exports.store = function (req, res, handle) {
     db.Group.create(req.body)
-        .then(group => {
-            res.statusCode = 201;
-            res.json(group);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(group => res.status(201).json(group))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
-exports.update = function (req, res) {
+exports.update = function (req, res, handle) {
     db.Group.update(req.body, {where: {id: req.params.groupId}})
-        .then(result => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(result => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
-exports.delete = function (req, res) {
+exports.delete = function (req, res, handle) {
     db.Group.destroy({where: {id: req.params.groupId}})
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
+        .then(data => {
+            //data :
+            // [0] : nomber of rows corresponding to request
+            // [1] : number of affected rows
+
+            if(!data[0]){ res.boom.badImplementation('Missing data !')}
+
+            if(data[0] == 1) {
+                res.status(204).json({})
+            } else if(data[0] == 0) {
+                res.boom.notFound();
+            } else {
+                res.boom.badImplementation('Too many rows deleted !');
+            }
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };

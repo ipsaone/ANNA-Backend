@@ -1,69 +1,44 @@
 'use strict';
 
 const db = require('../models');
+const boom = require('boom');
 
-exports.index = function (req, res) {
+exports.index = function (req, res, handle) {
     db.Missions.findAll()
         .then(missions => {
-            res.statusCode = 200;
-            res.json(missions);
+            res.status(200).json(missions)
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
-exports.show = function (req, res) {
+exports.show = function (req, res, handle) {
     db.Missions.findOne({where: {id: req.params.missionId}, rejectOnEmpty: true})
         .then(mission => {
-            if (!mission) {
-                res.statusCode = 404;
-                res.json({code: 23});
-            }
+            if (!mission) { throw res.boom.notFound(); }
+
             else {
-                res.statusCode = 200;
-                res.json(post);
+                res.status(200).json(post);
             }
         })
-        .catch(err => {
-            res.statusCode = 404;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
-exports.store = function (req, res) {
+exports.store = function (req, res, handle) {
     db.Missions.create(req.body)
-        .then(mission => {
-            res.statusCode = 201;
-            res.json(mission);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(mission => res.status(201).json(mission))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
-exports.update = function (req, res) {
+exports.update = function (req, res, handle) {
     db.Missions.update(req.body, {where: {id: req.params.missionId}})
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(() => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
-exports.delete = function (req, res) {
+exports.delete = function (req, res, handle) {
     db.Missions.destroy({where: {id: req.params.missionId}})
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(() => res.status(204)?json({}))
+        .catch(err => handle(err));
 };

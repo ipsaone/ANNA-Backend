@@ -3,45 +3,44 @@
 const db = require('../models');
 const bcrypt = require('bcrypt');
 
-exports.login = (req, res) => {  
+exports.login = (req, res, handle) => {
     db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
-        .then(user => {
-            bcrypt.compare(req.body.password, user.password, (err, accept) => {
-                if (err) throw err;
+        .then(user => bcrypt.compare(req.body.password, user.password, (err, accept) => {
+                if (err) { throw err; }
 
-                if (user.id)
-                    req.session.auth = user.id;
-                res.statusCode = (accept) ? 200 : 400;
-                res.json({accept: accept, code: (accept) ? 0 : 11, username: user.username, id: user.id});
-            });
+                if (accept) {
+                    if (user.id) {
+                        req.session.auth = user.id;
+                        res.status(200);
+                    } else {
+                        throw res.boom.badImplementation('User ID isn\'t defined');
+                    }
 
-        })
-        .catch(err => {
-            res.statusCode = 404;
-            res.json({code: 31, message: err.message});
-        });
+                } else {
+                    throw res.boom.unauthorized();
+                }
+            }))
+        .catch(err => handle(err));
 };
 
-exports.logout = (req, res) => {
+exports.logout = (req, res, handle) => {
     req.session.auth = null;
-    res.statusCode = 200;
-    res.json({});
+    res.status(200);
 };
 
-exports.check = (req, res) => {
+exports.check = (req, res, handle) => {
     if (req.session.auth) {
-        db.User.findOne({where: {id: req.session.auth}, rejectOnEmpty: true})
+        db.User.findOne({where: {id: req.session.auth}})
             .then(user => {
-                res.statusCode = 200;
-                res.json({id: user.id, username: user.username});
+                if(!user) { throw res.boom.notFound(); }
+
+                else {
+                    res.json({id: user.id, username: user.username});
+                }
             })
-            .catch(err => {
-                res.statusCode = 400;
-                res.json({});
-            });
+            .catch(err => handle(err));
     }
     else {
-        res.statusCode = 400;
-        res.json({});
+        res.boom.unauthorized();
     }
 };

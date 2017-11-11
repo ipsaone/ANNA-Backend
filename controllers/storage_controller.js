@@ -3,9 +3,10 @@
 const db = require('../models');
 const escape = require('escape-html');
 const Storage = require('../repositories/Storage');
+const boom = require('boom');
 
 
-exports.download = (req, res) => {
+exports.download = (req, res, handle) => {
 
     // Revision parameter, to get an older version
     let rev = 0;
@@ -23,17 +24,25 @@ exports.download = (req, res) => {
     let findFile = db.File.findOne({where: {id: req.params.fileId}});
 
     // Send back the correct response, file or json
-    let data = findFile.then(file => file.getData(rev));
+    let data = findFile.then(file => {
+        if(!file){ throw res.boom.notFound(); }
+
+        else {
+            return file.getData(rev);
+        }
+    });
     if (dl)
         data.then(path => getPath(true))
             .then(path => res.download(path));
     else
         data.then(data => res.json(data));
 
+    data.catch(err => handle(err));
+
 
 };
 
-exports.upload_rev = (req, res) => {
+exports.upload_rev = (req, res, handle) => {
 
     // Escape req.body strings
     for (let prop in req.body) {
@@ -44,16 +53,14 @@ exports.upload_rev = (req, res) => {
 
     // Find the file in database and add new data
     return db.File.findOne({where: {id: req.params.fileId}})
-        .then(file => file.addData(req.body, req.file.path));
+        .then(file => file.addData(req.body, req.file.path))
+        .catch(err => handle(err));
 
 
 };
 
-exports.upload_new = (req, res) => {
-
-    if (!req.file) {
-        return res.sendStatus(400);
-    }
+exports.upload_new = (req, res, handle) => {
+    if (!req.file) { throw res.boom.badRequest(); }
 
     // Escape req.body strings
     for (let prop in req.body) {
@@ -64,18 +71,15 @@ exports.upload_new = (req, res) => {
 
     // Create the file and its data
     return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.sendStatus(200))
-        .then(() => res.json({}))
-
-        // Send error to client, if any
-        .catch(err => res.json(err));
+        .then(() => res.status(200))
+        .catch(err => handle(err));
 };
 
-exports.list = (req, res) => {
+exports.list = (req, res, handle) => {
 
     // Fail if the folder isn't defined
     if (!req.params.folderId || !parseInt(req.params.folderId)) {
-        return res.sendStatus(400);
+        return handle(boom.badRequest());
     }
 
     let folderId = parseInt(req.params.folderId);
@@ -86,8 +90,7 @@ exports.list = (req, res) => {
         // Check if file exists
             .then(files => {
                 if (!files.map(item => item.id).includes(folderId)) {
-                    res.sendStatus(404);
-                    return Promise.reject('Folder doesn\'t exist'); // TODO : real error type ?
+                    throw res.boom.notFound();
                 } else {
                     return files;
                 }
@@ -107,17 +110,6 @@ exports.list = (req, res) => {
             .then(data => data.filter(item => (item.dirId === folderId)))
             .then(data => data.filter(item => (item.fileId !== 1)))
 
-
-            // Return the data or an error, if needed
-            .catch(err => {
-                console.log(err);
-
-                if (!res.headersSent) {
-                    return res.sendStatus(500);
-                }
-
-            });
-
     let folder_file = db.File.findOne({where: {id: folderId}});
     let folder_data = folder_file.then(file => file.getData());
 
@@ -128,6 +120,7 @@ exports.list = (req, res) => {
             folder_data.children = results[2];
 
             res.json(folder_data);
-        });
+        })
+        .catch(err => handle(err));
 
 };

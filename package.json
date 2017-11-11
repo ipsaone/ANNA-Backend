@@ -16,6 +16,7 @@
     "dotenv": "^4.0.0",
     "escape-html": "^1.0.3",
     "express": "^4.15.2",
+    "express-boom": "^2.0.0",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.4",
     "helmet": "^3.8.0",

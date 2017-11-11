@@ -30,7 +30,8 @@ let config = {
             logging: false, // Prevent Sequelize from outputting the query on the console
             //logging: console.log,
             redis: this.session,
-            force: process.env.DB_FORCE_SYNC
+            force: process.env.DB_FORCE_SYNC,
+            operatorsAliases: false
         };
 
     },
