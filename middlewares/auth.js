@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
         if (req.session.auth || config.session.check === "false") {
             return next();
         } else {
-            return res.status(401).send({code: 13});
+            res.boom.unauthorized('You must be logged before.');
         }
     } else {
         return next();

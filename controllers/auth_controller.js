@@ -11,7 +11,7 @@ exports.login = (req, res, handle) => {
                 if (accept) {
                     if (user.id) {
                         req.session.auth = user.id;
-                        res.status(200);
+                        res.status(200).send();
                     } else {
                         throw res.boom.badImplementation('User ID isn\'t defined');
                     }
