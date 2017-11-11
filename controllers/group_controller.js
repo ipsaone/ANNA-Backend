@@ -1,45 +1,39 @@
 'use strict';
 
 const db = require('../models');
-const boom = require('boom');
 
-exports.index = function (req, res) {
+exports.index = function (req, res, handle) {
     db.Group.findAll({include: ['users']})
         .then(group => res.json(group))
+        .catch(err => handle(err));
 };
 
-exports.show = function (req, res) {
+exports.show = function (req, res, handle) {
     db.Group.findOne({where: {id: req.params.groupId}, include: ['users']})
         .then(group => {
-            if (!group) {
-                throw boom.notFound()
-            }
+            if (!group) { res.boom.notFound(); }
+
             else {
                 res.json(group);
             }
         })
+        .catch(err => handle(err));
 };
 
-exports.store = function (req, res) {
+exports.store = function (req, res, handle) {
     db.Group.create(req.body)
-        .then(group => {
-            res.statusCode = 201;
-            res.json(group);
-        })
+        .then(group => res.status(201).json(group))
+        .catch(err => handle(err));
 };
 
-exports.update = function (req, res) {
+exports.update = function (req, res, handle) {
     db.Group.update(req.body, {where: {id: req.params.groupId}})
-        .then(result => {
-            res.statusCode = 204;
-            res.json({});
-        })
+        .then(result => res.status(204))
+        .catch(err => handle(err));
 };
 
-exports.delete = function (req, res) {
+exports.delete = function (req, res, handle) {
     db.Group.destroy({where: {id: req.params.groupId}})
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
-        })
+        .then(() => res.status(204))
+        .catch(err => handle(err));
 };

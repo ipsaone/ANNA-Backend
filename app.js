@@ -5,6 +5,7 @@ const bodyParser = require('body-parser'); // X-form-data decoder
 const helmet = require('helmet');
 const https = require('https');
 const config = require('./config/config');
+var boom = require('express-boom'); // Exception handling
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(bodyParser.json());
 app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
 app.use(require('./middlewares/auth')); // Auth check
+
+app.use(require('express-boom')()) // Error handling
 app.use(require('./middlewares/exception')) // Error handling
 
 /*

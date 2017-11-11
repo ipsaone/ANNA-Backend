@@ -1,69 +1,40 @@
 'use strict';
 
 const db = require('../models');
+const boom = require('boom');
 
-exports.index = function (req, res) {
+exports.index = function (req, res, handle) {
     db.Log.findAll({include: ['author']})
-        .then(logs => {
-            res.statusCode = 200;
-            res.json(logs);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(logs => res.status(200).json(logs))
+        .catch(err => handle(err));
 };
 
-exports.show = function (req, res) {
+exports.show = function (req, res, handle) {
     db.Log.findOne({where: {id: req.params.logId}, include: ['author']})
         .then(log => {
-            if (!log) {
-                res.statusCode = 404;
-                res.json({code: 23});
-            }
+            if (!log) { res.boom.notFound(); }
+
             else {
-                res.statusCode = 200;
-                res.json(log);
+                res.status(200).json(log);
             }
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
-exports.store = function (req, res) {
+exports.store = function (req, res, handle) {
     db.Log.create(req.body)
-        .then(log => {
-            res.statusCode = 201;
-            res.json(log);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(log => res.status(201).json(log))
+        .catch(err => handle(err));
 };
 
-exports.update = function (req, res) {
+exports.update = function (req, res, handle) {
     db.Log.update(req.body, {where: {id: req.params.logId}})
-        .then(result => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(result => res.status(204))
+        .catch(err => handle(err));
 };
 
-exports.delete = function (req, res) {
+exports.delete = function (req, res, handle) {
     db.Log.destroy({where: {id: req.params.logId}})
-        .then(() => {
-            res.statusCode = 204;
-            res.json({});
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(() => res.status(204))
+        .catch(err => handle(err));
 };

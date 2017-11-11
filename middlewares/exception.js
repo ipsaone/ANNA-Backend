@@ -1,7 +1,12 @@
 'use strict';
 
-const boom = require('boom');
 
 module.exports = (err, req, res, next) => {
-    res.send(boom.isBoom(err) ? err : boom.badImplementation(err.message));
+    console.log("Exception received by handler");
+
+    if(boom.isBoom(err)) {
+        res.send(err);
+    } else {
+        res.boom.badImplementation(err.message);
+    }
 }
