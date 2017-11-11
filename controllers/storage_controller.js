@@ -24,7 +24,13 @@ exports.download = (req, res, handle) => {
     let findFile = db.File.findOne({where: {id: req.params.fileId}});
 
     // Send back the correct response, file or json
-    let data = findFile.then(file => file.getData(rev));
+    let data = findFile.then(file => {
+        if(!file){ res.boom.notFound(); }
+
+        else {
+            return file.getData(rev);
+        }
+    });
     if (dl)
         data.then(path => getPath(true))
             .then(path => res.download(path));

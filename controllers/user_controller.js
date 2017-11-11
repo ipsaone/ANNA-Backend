@@ -46,6 +46,7 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     db.User.create(req.body)
         .then(user => res.status(201).json(user))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
 
@@ -62,7 +63,8 @@ exports.store = function (req, res, handle) {
 exports.update = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}})
         .then(record => record.update(req.body))
-        .then(() => res.status(204))
+        .then(() => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
 
@@ -75,6 +77,7 @@ exports.update = function (req, res, handle) {
 exports.delete = function (req, res, handle) {
     db.User.destroy({where: {id: req.params.userId}})
         .then(() => res.statusCode(204))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
 
@@ -127,8 +130,14 @@ exports.get_groups = function (req, res) {
  */
 exports.add_groups = function (req, res) {
     db.User.findById(req.params.userId)
-        .then(user => user.addGroups(req.body.groupsId))
-        .then(() => res.status(204))
+        .then(user => {
+            if(!user) { res.boom.badRequest; }
+
+            else {
+                user.addGroups(req.body.groupsId);
+            }
+        })
+        .then(() => res.status(204).json({}))
         .catch(err => handle(err));
 };
 
@@ -148,6 +157,6 @@ exports.add_groups = function (req, res) {
 exports.delete_groups = function (req, res) {
     db.User.findById(req.params.userId)
         .then(user => user.removeGroups(req.body.groupsId))
-        .then(() => res.status(204))
+        .then(() => res.status(204).json({}))
         .catch(err => handle(err));
 };
