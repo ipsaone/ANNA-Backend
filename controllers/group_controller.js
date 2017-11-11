@@ -1,35 +1,23 @@
 'use strict';
 
 const db = require('../models');
+const boom = require('boom');
 
 exports.index = function (req, res) {
     db.Group.findAll({include: ['users']})
-        .then(group => {
-            res.statusCode = 200;
-            res.json(group);
-        })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
+        .then(group => res.json(group))
 };
 
 exports.show = function (req, res) {
     db.Group.findOne({where: {id: req.params.groupId}, include: ['users']})
         .then(group => {
             if (!group) {
-                res.statusCode = 404;
-                res.json({code: 23});
+                throw boom.notFound()
             }
             else {
-                res.statusCode = 200;
                 res.json(group);
             }
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
 };
 
 exports.store = function (req, res) {
@@ -38,10 +26,6 @@ exports.store = function (req, res) {
             res.statusCode = 201;
             res.json(group);
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
 };
 
 exports.update = function (req, res) {
@@ -50,10 +34,6 @@ exports.update = function (req, res) {
             res.statusCode = 204;
             res.json({});
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
 };
 
 exports.delete = function (req, res) {
@@ -62,8 +42,4 @@ exports.delete = function (req, res) {
             res.statusCode = 204;
             res.json({});
         })
-        .catch(err => {
-            res.statusCode = 400;
-            res.json({code: 31, message: err.message});
-        });
 };
