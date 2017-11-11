@@ -2,7 +2,7 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('MissionTasks', {
+        return queryInterface.createTable('MissionTask', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -14,7 +14,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
                 references: {
-                    model: 'Mission',
+                    model: 'Missions',
                     key: 'id'
                 },
             },
@@ -23,7 +23,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
                 references: {
-                    model: 'Task',
+                    model: 'Tasks',
                     key: 'id'
                 },
             }
@@ -31,6 +31,6 @@ module.exports = {
     },
 
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('MissionTasks');
+        return queryInterface.dropTable('MissionTask');
     }
 };
