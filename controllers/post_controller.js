@@ -23,7 +23,7 @@ exports.index = function (req, res, handle) {
 
 exports.show = function (req, res) {
     db.Post.findOne({where: {id: req.params.postId}, include: ['author'], rejectOnEmpty: true})
-        .then(post => policy.filterShow(req, res, post))
+        .then(post => policy.filterShow(req, post))
         .then(post => {
             if (!post) { throw res.boom.notFound(); }
 
