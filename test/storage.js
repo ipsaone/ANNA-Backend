@@ -13,7 +13,9 @@ describe('Storage', () => {
             .then(owner => {
                 db.Group.create({name: 'file_test'}).then(group => {
                     owner.addGroup(group.id);
-                    db.File.create({path: '/testfile', ownerId: owner.id, groupId: group.id});
+                    db.File.create({isDir: false});
+
+                    
                     done();
                 });
             });

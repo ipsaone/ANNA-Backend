@@ -10,38 +10,35 @@ let config = {
         version: '1.0.0'
     },
 
-    env: {
-        vagrant: {
-            host: '192.168.50.5',
-            port: 8080
-        },
-        dev: {
-            host: '127.0.0.1',
-            port: 8080
-        },
-
-        prod: {
-            host: '127.0.0.1',
-            port: 8080
-        },
-    },
-
-    sequelize: {
-        dialect: 'mysql',
-        host: process.env.DB_HOST,
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        logging: false // Prevent Sequelize from outpouting the query on the console
+    password: {
+        salt: 10
     },
 
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
+        check: process.env.CHECK_AUTH
+    },
+
+    get sequelize () {
+        return {
+            dialect: 'mysql',
+            host: process.env.DB_HOST,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            logging: false, // Prevent Sequelize from outputting the query on the console
+            //logging: console.log,
+            redis: this.session,
+            force: process.env.DB_FORCE_SYNC,
+            operatorsAliases: false
+        };
+
     },
 
     storage: {
-        folder: 'storage',
+        folder: './storage',
+        temp: '/tmp'
     }
 };
 
@@ -65,18 +62,8 @@ config.app.getCertificates = () => {
 };
 
 
-    if (config.app.env === 'production') {
-        host = config.env.prod.host;
-        port = config.env.prod.port;
-    } else if (process.env.ONEOS == "true") {
-        host = config.env.vagrant.host;
-        port = config.env.vagrant.port;
-    } else {
-        host = config.env.dev.host;
-        port = config.env.dev.port;
-    }
-
-    return {host: host, port: port};
+config.app.getConnection = () => {
+    return {host: process.env.HOST, port: process.env.PORT};
 };
 
 

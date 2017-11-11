@@ -77,6 +77,19 @@ echo -e "\n--- Migrating $DNAME database ---\n"
 cd /home/vagrant/Anna
 node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
 
+echo -e "\n--- Create .env file ---\n"
+
+if [ ! -f .env ]
+then
+    echo "DEV=true" >> .env
+    echo "HOST=192.168.50.5" >> .env
+    echo "PORT=8080" >> .env
+    echo "DB_HOST=$DBHOST" >> .env
+    echo "DB_USERNAME=$DBUSER" >> .env
+    echo "DB_PASSWORD=$DBPASSWD" >> .env
+    echo "DB_NAME=$DBNAME" >> .env
+fi
+
 echo -e "\n--- Testing setup ---\n"
 if hash nodejs 2>/dev/null; then
 	echo -e "NodeJS : OK"

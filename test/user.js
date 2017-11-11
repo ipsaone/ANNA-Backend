@@ -4,7 +4,7 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 chai.use(require('chai-http'));
 
@@ -125,7 +125,7 @@ describe('Users', () => {
     describe('[PUT] /users/:id', () => {
         it('expect PUT to update the user with id = 2 and return nothing with the status 204', done => {
             chai.request(server)
-                .put('/users/2')
+                .put('/users/1')
                 .send({username: 'bar', password: 'secret', email: 'bar@local.dev'})
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -137,11 +137,15 @@ describe('Users', () => {
         });
 
         it('expect to have the new values for the user with id = 2', done => {
-            db.User.findById(2)
+            db.User.findOne({where:{username: 'bar'}})
                 .then(user => {
-                    expect(user.id).to.be.equal(2);
+                    expect(user.id).to.be.equal(1);
                     expect(user.username).to.be.equal('bar');
-                    expect(bcrypt.compareSync('secret', user.password)).to.be.true;
+
+                    let test = bcrypt.compareSync('secret', user.password);
+                    console.log(user.password);
+
+                    expect(test).to.be.true;
                     expect(user.email).to.be.equal('bar@local.dev');
                     expect(user.createdAt).to.not.be.null;
                     expect(user.updatedAt).to.not.be.null;

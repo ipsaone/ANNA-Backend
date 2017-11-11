@@ -1,30 +1,50 @@
 'use strict';
 
 const db = require('../models');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
-exports.login = function (req, res) {
-    db.User.findOne({where: {'username': req.body.username}, rejectOnEmpty: true})
+exports.login = (req, res, handle) => {
+    db.User.findOne({where: {'username': req.body.username}, include: ['groups']})
         .then(user => {
+            if(!user){ throw req.boom.notFound(); }
 
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
-                if (err) throw err;
+                if (err) { throw err; }
 
-                if (user.id)
-                    req.session.userID = user.id;
-                res.statusCode = (accept) ? 200 : 400;
-                res.json({accept: accept, code: (accept) ? 0 : 11});
+                if (accept) {
+                    if (user.id) {
+                        req.session.auth = user.id;
+                        res.status(200).json({id: user.id, username: user.username, groups: user.groups});
+                    } else {
+                        throw res.boom.badImplementation('User ID isn\'t defined');
+                    }
+
+                } else {
+                    throw res.boom.unauthorized();
+                }
             });
-
         })
-        .catch(err => {
-            res.statusCode = 404;
-            res.json({code: 31, message: err.message});
-        });
+        .catch(err => handle(err));
 };
 
-exports.logout = function (req, res) {
-    req.session.userId = null;
-    res.statusCode = 200;
-    res.json({});
+exports.logout = (req, res, handle) => {
+    req.session.auth = null;
+    res.status(200);
+};
+
+exports.check = (req, res, handle) => {
+    if (req.session.auth) {
+        db.User.findOne({where: {id: req.session.auth}, include: ['groups']})
+            .then(user => {
+                if(!user) { throw res.boom.notFound(); }
+
+                else {
+                    res.json({id: user.id, username: user.username, groups: user.groups});
+                }
+            })
+            .catch(err => handle(err));
+    }
+    else {
+        res.boom.unauthorized();
+    }
 };
