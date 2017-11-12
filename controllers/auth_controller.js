@@ -6,10 +6,14 @@ const bcrypt = require('bcrypt');
 exports.login = (req, res, handle) => {
     db.User.findOne({where: {'username': req.body.username}, include: ['groups']})
         .then(user => {
-            if(!user){ throw req.boom.notFound(); }
+            if (!user) {
+                throw res.boom.notFound();
+            }
 
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
-                if (err) { throw err; }
+                if (err) {
+                    throw err;
+                }
 
                 if (accept) {
                     if (user.id) {
@@ -36,7 +40,9 @@ exports.check = (req, res, handle) => {
     if (req.session.auth) {
         db.User.findOne({where: {id: req.session.auth}, include: ['groups']})
             .then(user => {
-                if(!user) { throw res.boom.notFound(); }
+                if (!user) {
+                    throw res.boom.notFound();
+                }
 
                 else {
                     res.json({id: user.id, username: user.username, groups: user.groups});
@@ -45,6 +51,6 @@ exports.check = (req, res, handle) => {
             .catch(err => handle(err));
     }
     else {
-        res.boom.unauthorized();
+        throw res.boom.unauthorized();
     }
 };

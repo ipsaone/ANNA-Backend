@@ -23,7 +23,9 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
         .then(user => {
-            if(!user) { throw res.boom.badRequest(); }
+            if (!user) {
+                res.boom.badRequest();
+            }
             else {
                 res.status(200).json(user);
             }
@@ -76,7 +78,7 @@ exports.update = function (req, res, handle) {
  */
 exports.delete = function (req, res, handle) {
     db.User.destroy({where: {id: req.params.userId}})
-        .then(() => res.statusCode(204))
+        .then(() => res.status(204).send())
         .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
         .catch(err => handle(err));
 };
@@ -111,7 +113,9 @@ exports.posts = function (req, res, handle) {
 exports.get_groups = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
         .then(user => {
-            if(!user) { throw res.boom.badRequest(); }
+            if (!user) {
+                throw res.boom.badRequest();
+            }
 
             else {
                 res.status(200).json(user.groups);
@@ -137,13 +141,15 @@ exports.get_groups = function (req, res, handle) {
 exports.add_groups = function (req, res) {
     db.User.findById(req.params.userId)
         .then(user => {
-            if(!user) { throw res.boom.badRequest; }
+            if (!user) {
+                throw res.boom.badRequest();
+            }
 
             else {
                 user.addGroups(req.body.groupsId);
             }
         })
-        .then(() => res.status(204).json({}))
+        .then(() => res.status(204).send())
         .catch(err => handle(err));
 };
 
@@ -163,6 +169,6 @@ exports.add_groups = function (req, res) {
 exports.delete_groups = function (req, res) {
     db.User.findById(req.params.userId)
         .then(user => user.removeGroups(req.body.groupsId))
-        .then(() => res.status(204).json({}))
+        .then(() => res.status(204).send())
         .catch(err => handle(err));
 };
