@@ -8,7 +8,7 @@ module.exports = (err, req, res, next) => {
     console.log(err);
     console.log('-------------------------------');
 
-    if(!res.headersSent) {
+    if (!res.headersSent) {
         res.boom.badImplementation(err.message);
     }
-}
+};

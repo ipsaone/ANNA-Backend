@@ -15,17 +15,16 @@ exports.download = (req, res, handle) => {
     }
 
     // Download parameter, to get file metadata or contents
-    let dl = false;
-    if (req.query.download && req.query.download === 'true') {
-        dl = true;
-    }
+    let dl = req.query.download && req.query.download === 'true';
 
     // Find the file in database
     let findFile = db.File.findOne({where: {id: req.params.fileId}});
 
     // Send back the correct response, file or json
     let data = findFile.then(file => {
-        if(!file){ throw res.boom.notFound(); }
+        if (!file) {
+            throw res.boom.notFound();
+        }
 
         else {
             return file.getData(rev);
@@ -38,12 +37,9 @@ exports.download = (req, res, handle) => {
         data.then(data => res.json(data));
 
     data.catch(err => handle(err));
-
-
 };
 
 exports.upload_rev = (req, res, handle) => {
-
     // Escape req.body strings
     for (let prop in req.body) {
         if (req.body && req.body.hasOwnProperty(prop) && typeof(req.body[prop]) === 'string') {
@@ -60,7 +56,9 @@ exports.upload_rev = (req, res, handle) => {
 };
 
 exports.upload_new = (req, res, handle) => {
-    if (!req.file) { throw res.boom.badRequest(); }
+    if (!req.file) {
+        throw res.boom.badRequest();
+    }
 
     // Escape req.body strings
     for (let prop in req.body) {
@@ -71,7 +69,7 @@ exports.upload_new = (req, res, handle) => {
 
     // Create the file and its data
     return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.status(200))
+        .then(() => res.status(204))
         .catch(err => handle(err));
 };
 
@@ -108,7 +106,7 @@ exports.list = (req, res, handle) => {
 
             // Get each one in the folder, exclude root folder
             .then(data => data.filter(item => (item.dirId === folderId)))
-            .then(data => data.filter(item => (item.fileId !== 1)))
+            .then(data => data.filter(item => (item.fileId !== 1)));
 
     let folder_file = db.File.findOne({where: {id: folderId}});
     let folder_data = folder_file.then(file => file.getData());
@@ -119,7 +117,7 @@ exports.list = (req, res, handle) => {
             folder_data.isDir = results[0].isDir;
             folder_data.children = results[2];
 
-            res.json(folder_data);
+            res.status(200).json(folder_data);
         })
         .catch(err => handle(err));
 

@@ -1,12 +1,11 @@
 'use strict';
 
 const db = require('../models');
-const boom = require('boom');
 
 exports.index = function (req, res, handle) {
     db.Missions.findAll()
         .then(missions => {
-            res.status(200).json(missions)
+            res.status(200).json(missions);
         })
         .catch(err => handle(err));
 };
@@ -14,7 +13,9 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.Missions.findOne({where: {id: req.params.missionId}, rejectOnEmpty: true})
         .then(mission => {
-            if (!mission) { throw res.boom.notFound(); }
+            if (!mission) {
+                throw res.boom.notFound();
+            }
 
             else {
                 res.status(200).json(post);
