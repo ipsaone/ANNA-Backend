@@ -16,7 +16,6 @@ exports.show = function (req, res, handle) {
             if (!log) {
                 throw res.boom.notFound();
             }
-
             else {
                 res.status(200).json(log);
             }

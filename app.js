@@ -12,6 +12,10 @@ const app = express();
 /*
  * Middleware
  */
+
+app.use(boom()) // Error handling
+app.use(require('./middlewares/exception')) // Error handling
+
 app.use(helmet()); // Helmet offers different protection middleware
 app.use(require('./middlewares/rate_limit')); // Rate limit
 app.use(bodyParser.urlencoded({extended: true})); // POST parser
@@ -20,8 +24,6 @@ app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
 app.use(require('./middlewares/auth')); // Auth check
 
-app.use(boom()) // Error handling
-app.use(require('./middlewares/exception')) // Error handling
 
 /*
  * Options
