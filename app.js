@@ -13,6 +13,7 @@ const app = express();
  * Middleware
  */
 
+// Error handling must be included first !
 app.use(boom()) // Error handling
 app.use(require('./middlewares/exception')) // Error handling
 
