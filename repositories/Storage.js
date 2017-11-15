@@ -30,7 +30,7 @@ Storage.getDataUrl = () => {
     url += '?revision=';
     url += this.id;
 
-    // Force return of a promise 
+    // Force return of a promise
     return Promise.resolve(url);
 };
 
@@ -123,6 +123,23 @@ Storage.addFileData = function (changes, path) {
             }
         }
 
+        
+        if(typeof(changes.ownerId) === 'undefined') {
+            // changes.ownerId = req.session.auth
+        } else {
+            // not yet supported
+        }
+
+        if(typeof(changes.groupId) === 'undefined') {
+            // ownerId = req.session.auth
+            // groups = getGroups(ownerId)
+            // if(groups.length == 0) {}
+            // else if(groups.length == 1)getMainGroup {}
+            // else {}
+        } else {
+            // not yet supported
+        }
+
         if (newRight) {
 
             // New right
@@ -148,15 +165,8 @@ Storage.addFileData = function (changes, path) {
     // Build the rights and file properties
     return Promise.all([rightsBuilder(changes, path), fileBuilder(changes, path)])
 
-        .then(() => console.log('here'))
-
         // Create the data and save it
         .then(() => db.Data.create(changes))
-
-        .then(data => {
-            console.log('there');
-            return data;
-        })
 
         // Get destination
         .then(data => data.getPath())
@@ -174,9 +184,7 @@ Storage.addFileData = function (changes, path) {
             }
         })
 
-        .then(() => res.json({}))
-
-        .then(() => console.log('done !!'))
+        .then(() => res.status(200).json({}))
 
         .catch(err => console.log(err));
 };
@@ -210,9 +218,8 @@ Storage.computeSize = function (path) {
         }
         else {
 
-            // Return file size 
+            // Return file size
             return res.size;
         }
     });
 };
-

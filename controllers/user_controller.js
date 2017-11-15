@@ -23,9 +23,8 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}, include: ['groups']})
         .then(user => {
-            if (!user) {
-                res.boom.badRequest();
-            }
+            if(!user) { throw res.boom.badRequest(); }
+            
             else {
                 res.status(200).json(user);
             }

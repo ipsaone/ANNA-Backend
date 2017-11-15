@@ -1,6 +1,5 @@
 'use strict';
 
-const boom = require('boom');
 const db = require('../models')
 
 
@@ -51,6 +50,7 @@ exports.filterShow = (req, post) => {
 
 exports.filterStore = (req, res) => {
 
+    // Only allow creation if user is an author
     return userIsAuthor(req.session.auth)
         .then(isAuthor => isAuthor ? true : Promise.reject(res.boom.unauthorized()));
 
@@ -58,6 +58,15 @@ exports.filterStore = (req, res) => {
 
 exports.filterUpdate = (req, res) => {
 
+    // Only allow update if user is an author
+    return userIsAuthor(req.session.auth)
+        .then(isAuthor => isAuthor ? true : Promise.reject(res.boom.unauthorized()));
+
+}
+
+exports.filterDelete = (req, res) => {
+
+    // Only allow delete if user is an author
     return userIsAuthor(req.session.auth)
         .then(isAuthor => isAuthor ? true : Promise.reject(res.boom.unauthorized()));
 
