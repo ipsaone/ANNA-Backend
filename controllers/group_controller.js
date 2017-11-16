@@ -11,10 +11,12 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.Group.findOne({where: {id: req.params.groupId}, include: ['users']})
         .then(group => {
-            if (!group) { throw res.boom.notFound(); }
+            if (!group) {
+                throw res.boom.notFound();
+            }
 
             else {
-                res.json(group);
+                res.status(200).json(group);
             }
         })
         .catch(err => handle(err));
@@ -23,10 +25,9 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     // To lower case to avoid security problems
     // (users trying to create 'auTHOrs' group to gain rights)
-    if(typeof(req.body.name) !== 'undefined') {
+    if (typeof(req.body.name) !== 'undefined') {
         req.body.name = req.body.name.toLowerCase();
     }
-
 
 
     db.Group.create(req.body)
@@ -38,10 +39,10 @@ exports.store = function (req, res, handle) {
 exports.update = function (req, res, handle) {
     // To lower case to avoid security problems
     // (users trying to create 'auTHOrs' group to gain rights)
-    if(typeof(req.body.name) !== 'undefined') {
+    if (typeof(req.body.name) !== 'undefined') {
         req.body.name = req.body.name.toLowerCase();
     }
-    
+
     db.Group.update(req.body, {where: {id: req.params.groupId}})
         .then(result => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
@@ -52,17 +53,19 @@ exports.delete = function (req, res, handle) {
     db.Group.destroy({where: {id: req.params.groupId}})
         .then(data => {
             //data :
-            // [0] : nomber of rows corresponding to request
+            // [0] : number of rows corresponding to request
             // [1] : number of affected rows
 
-            if(!data[0]){ res.boom.badImplementation('Missing data !')}
+            if (!data[0]) {
+                throw res.boom.badImplementation('Missing data !');
+            }
 
-            if(data[0] == 1) {
-                res.status(204).json({})
-            } else if(data[0] == 0) {
-                res.boom.notFound();
+            if (data[0] === 1) {
+                res.status(204).json({});
+            } else if (data[0] === 0) {
+                throw res.boom.notFound();
             } else {
-                res.boom.badImplementation('Too many rows deleted !');
+                throw res.boom.badImplementation('Too many rows deleted !');
             }
         })
         .catch(err => handle(err));

@@ -6,11 +6,13 @@ let computeValues = (data, options) => {
 
     data.getPath()
         .then(path => Storage.computeType(path))
-        .then(type => data.setDataValue('type'));
+        .then(type => data.type = type)
+        .catch(err => data.type = "")
 
     data.getPath()
-        .then(path => data.computeSize(path))
-        .then(size => data.setDataValue('size'));
+        .then(path => Storage.computeSize(path))
+        .then(size => data.size = size)
+        .catch(err => data.size = NaN)
 };
 
 module.exports = (sequelize, DataTypes) => {
@@ -37,12 +39,6 @@ module.exports = (sequelize, DataTypes) => {
     });
 
 
-    const Storage = require('../repositories/Storage');
-
-    Data.prototype.getRights = Storage.getDataRights;
-    Data.prototype.getPath = Storage.getDataPath;
-    Data.prototype.getUrl = Storage.getDataUrl;
-
     Data.associate = function (models) {
         Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'});
         Data.belongsTo(models.User, {foreignKey: 'ownerId', as: 'author'});
@@ -52,6 +48,14 @@ module.exports = (sequelize, DataTypes) => {
         Data.belongsTo(models.Data, {foreignKey: 'dirId', as: 'directory'});
         Data.hasMany(models.Data, {foreignKey: 'dirId', as: 'files'});
     };
+
+
+
+    const Storage = require('../repositories/Storage');
+
+    Data.prototype.getRights = Storage.getDataRights;
+    Data.prototype.getPath = Storage.getDataPath;
+    Data.prototype.getUrl = Storage.getDataUrl;
 
     return Data;
 };

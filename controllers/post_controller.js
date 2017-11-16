@@ -2,7 +2,6 @@
 
 const db = require('../models');
 const policy = require('../policies/post_policy');
-const boom = require('boom');
 
 exports.index = function (req, res, handle) {
     // GET /posts                 -> return all posts
@@ -24,7 +23,9 @@ exports.index = function (req, res, handle) {
 exports.show = function (req, res, handle) {
     db.Post.findOne({where: {id: req.params.postId}, include: ['author']})
         .then(post => {
-            if (!post) { throw res.boom.notFound(); }
+            if (!post) {
+                throw res.boom.notFound();
+            }
             return post;
         })
         .then(post => policy.filterShow(req, post))
@@ -42,16 +43,16 @@ exports.store = function (req, res, handle) {
 
 exports.update = function (req, res, handle) {
     policy.filterUpdate(req, res)
-    .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
-    .then(post => res.status(204).json(post))
-    .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
-    .catch(err => handle(err));
+        .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
+        .then(post => res.status(200).json(post))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
 
 exports.delete = function (req, res, handle) {
     policy.filterDelete(req, res)
-    .then(() => db.Post.destroy({where: {id: req.params.postId}}))
-    .then(() => res.status(204).json({}))
-    .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
-    .catch(err => handle(err));
+        .then(() => db.Post.destroy({where: {id: req.params.postId}}))
+        .then(() => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, err => res.boom.badRequest())
+        .catch(err => handle(err));
 };
