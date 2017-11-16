@@ -49,13 +49,13 @@ exports.upload_rev = (req, res, handle) => {
 
     // Find the file in database and add new data
     return db.File.findOne({where: {id: req.params.fileId}})
-        .then(file => file.addData(req.body, req.file.path))
+        .then(file => {console.log(req.file); return file.addData(req.body, req.file.path)})
         .catch(err => handle(err));
 
 
 };
 
-exports.upload_new = (req, res, handle) => {
+exports.upload_new = (req, res, handle) => {    
     if (!req.file) {
         throw res.boom.badRequest();
     }
@@ -80,12 +80,19 @@ exports.list = (req, res, handle) => {
         return handle(boom.badRequest());
     }
 
+    let file = db.File
+    if (req.query.filesOnly) {
+        file.scope('files');
+    } else if(req.query.foldersOnly) {
+        file.scope('folders');
+    }
+
     let folderId = parseInt(req.params.folderId);
 
     let children_data =
-        db.File.findAll()    // Get all files
+        file.findAll()    // Get all files
 
-        // Check if file exists
+            // Check if file exists
             .then(files => {
                 if (!files.map(item => item.id).includes(folderId)) {
                     throw res.boom.notFound();
@@ -95,13 +102,13 @@ exports.list = (req, res, handle) => {
             })
 
             // Get data corresponding to the files
-            .then(files => files.map(file => {
-                return {isDir: file.isDir, dataPromise: file.getData()};
-            }))
-            .then(data => data.map(item => item.dataPromise.then(data => {
-                data.isDir = item.isDir;
-                return data;
-            })))
+            .then(files => files.map(file => file.getData()
+                    .then(data => {data.isDir = file.isDir; return data;})
+                    .catch(err => {
+                        console.log('[badImplementation] No data corresponding to file #'+file.id);
+                        return {};
+                    }
+                )))
             .then(data => Promise.all(data))
 
             // Get each one in the folder, exclude root folder
@@ -122,3 +129,12 @@ exports.list = (req, res, handle) => {
         .catch(err => handle(err));
 
 };
+
+exports.delete = (req, res, handle) => {
+    db.Data.destroy({where: {fileId: req.params.fileId}})
+        .catch(err => handle(err));
+
+    db.File.destroy({where: {id: req.params.fileId}})
+        .then(() => res.status(204).send())
+        .catch(err => handle(err));
+}

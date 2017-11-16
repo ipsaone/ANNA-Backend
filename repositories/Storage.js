@@ -36,25 +36,26 @@ Storage.getDataUrl = () => {
 
 Storage.getDataPath = function (full = false) {
 
+
+
     // Compute file system path
+    // TODO : fix !
     let path = '';
     path += (full) ? Storage.root : '';
     path += '/' + this.fileId;
     path += '/' + this.id;
     path += '-' + this.name;
 
-    // Check file exists
-    return Promise.resolve(() => {
-        fs.access(path, (err, res) => {
-            if (err) {
-                throw(err);
-            }
-            else {
+    console.log(path);
 
-                // Return file path if it exists
-                return path;
-            }
-        });
+    // Check file exists
+    fs.access(path, (err, res) => {
+        if (err) { return Promise.reject(err); }
+
+        else {
+            // Return file path if it exists
+            return Promise.resolve(path);
+        }
     });
 };
 
@@ -88,7 +89,13 @@ Storage.getFileData = function (offset = 0) {
         })
 
         // findAll is limited, so there will always be one result (or none -> undefined)
-        .then(data => data[0]);
+        .then(data => {
+            if(data.length == 0) {
+                throw '';
+            }
+
+            return data[0]
+        });
 };
 
 Storage.getDataRights = function () {
@@ -100,7 +107,6 @@ Storage.getDataRights = function () {
 
 Storage.addFileData = function (changes, path) {
     const db = require('../models');
-
 
     changes.fileId = this.id;
 
@@ -123,7 +129,7 @@ Storage.addFileData = function (changes, path) {
             }
         }
 
-        
+
         if(typeof(changes.ownerId) === 'undefined') {
             // changes.ownerId = req.session.auth
         } else {
@@ -161,7 +167,6 @@ Storage.addFileData = function (changes, path) {
         }
     };
 
-
     // Build the rights and file properties
     return Promise.all([rightsBuilder(changes, path), fileBuilder(changes, path)])
 
@@ -197,18 +202,14 @@ Storage.createNewFile = function (changes, path, dir = false) {
 };
 
 Storage.computeType = function (path) {
-    return Promise.resolve((accept, reject) => {
-        magic.detectFile(path, (err, res) => {
-            if (err) {
-                return reject(err);
-            }
-            else {
+    magic.detectFile(path, (err, res) => {
+        if (err) { return Promise.reject(err); }
+        else {
 
-                return accept(res);
-            }
-        });
-
+            return Promise.resolve(res);
+        }
     });
+
 };
 
 Storage.computeSize = function (path) {

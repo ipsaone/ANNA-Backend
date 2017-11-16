@@ -17,4 +17,6 @@ router.get('/files/list/:folderId', storage_controller.list);
 // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
 router.get('/files/:fileId', storage_controller.download);
 
+router.delete('/files/:fileId', storage_controller.delete);
+
 module.exports = router;
