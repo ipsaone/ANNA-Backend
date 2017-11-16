@@ -49,7 +49,7 @@ Storage.getDataPath = function (full = false) {
     console.log(path);
 
     // Check file exists
-    fs.access(path, (err, res) => {
+    fs.access(path, fs.constants.F_OK, err => {
         if (err) { return Promise.reject(err); }
 
         else {
@@ -57,6 +57,7 @@ Storage.getDataPath = function (full = false) {
             return Promise.resolve(path);
         }
     });
+
 };
 
 Storage.getFileDirTree = function () {
