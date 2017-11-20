@@ -9,7 +9,10 @@ chai.use(require('chai-http'));
 
 describe('Auth', () => {
     before(() => {
-        return db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'});
+        return db.sequelize.sync().then(() =>
+            db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'})
+                .catch(err => console.log(err.message, ' (SQL : ', err.sql, ' )'))
+        );
     });
 
 
@@ -33,21 +36,6 @@ describe('Auth', () => {
 
             done();
         });
-    });
-
-// GET /logout
-    describe('[GET] /logout', () => {
-        it('expect to logout a user', done => {
-            chai.request(server)
-                .get('/auth/logout')
-                .end((err, res) => {
-                    expect(err).to.be.null;
-
-                    expect(res).to.have.status(200);
-                    done();
-                });
-        });
-
     });
 
 });

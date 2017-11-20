@@ -8,17 +8,12 @@ const expect = chai.expect;
 chai.use(require('chai-http'));
 
 describe('Storage', () => {
-    before(done => {
-        db.User.create({username: 'file_owner', password: 'ilovefiles', email: 'filemgr@local.dev'})
-            .then(owner => {
-                db.Group.create({name: 'file_test'}).then(group => {
-                    owner.addGroup(group.id);
-                    db.File.create({isDir: false});
-
-                    
-                    done();
-                });
-            });
+    before(() => {
+        return db.sequelize.sync()
+            .then(() => db.User.create({username: 'file_owner', password: 'ilovefiles', email: 'filemgr@local.dev'}))
+            .then(owner => db.Group.create({name: 'file_test'})
+                .then(group => owner.addGroup(group.id).then(() => db.File.create({isDir: false})))
+            );
 
     });
 

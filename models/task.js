@@ -8,10 +8,11 @@ module.exports = (sequelize, DataTypes) => {
         missionId: {allowNull: false, type: DataTypes.INTEGER}
     }, {
         timestamps: false,
+        tableName: 'Tasks'
     });
 
     Task.associate = function(models) {
-        Task.belongsTo(models.Mission, {foreignKey: 'missionId', as: 'mission', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        Task.belongsTo(models.Mission, {foreignKey: 'missionId', as: 'mission', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
     }
 
     return Task;

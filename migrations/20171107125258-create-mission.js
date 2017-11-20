@@ -14,8 +14,8 @@ module.exports = {
             description: {allowNull: true, type: Sequelize.STRING},
             budgetAssigned: {allowNull: true, type: Sequelize.INTEGER},
             budgetUsed: {allowNull: true, type: Sequelize.INTEGER},
-            groupId: {allowNull: false, type: Sequelize.INTEGER, references: {model: 'Groups', key: 'id'}},
-            leaderId: {allowNull: false, type: Sequelize.INTEGER, references: {model: 'Users', key: 'id'}},
+            groupId: {allowNull: false, type: Sequelize.INTEGER, references: {model: 'Groups', key: 'id', onDelete: 'RESTRICT', onUpdate: 'CASCADE'}},
+            leaderId: {allowNull: false, type: Sequelize.INTEGER,  references: {model: 'Users', key: 'id', onDelete: 'RESTRICT', onUpdate: 'CASCADE'}},
         });
     },
 

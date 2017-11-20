@@ -23,6 +23,8 @@ module.exports = {
             fileId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
                 references: {
                     model: 'Files',
                     key: 'id'
@@ -31,15 +33,18 @@ module.exports = {
             dirId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
+                onDelete: 'CASCADE',
+                OnUpdate: 'CASCADE',
                 references: {
                     model: 'Files',
                     key: 'id'
                 }
             },
             rightsId: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.INTEGER,
-                onDelete: 'CASCADE',
+                onDelete: 'SET NULL',
+                onUpdate: 'SET NULL',
                 references: {
                     model: 'Rights',
                     key: 'id'
@@ -49,15 +54,17 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
                 references: {
                     model: 'Users',
                     key: 'id'
                 },
             },
             groupId: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.INTEGER,
-                onDelete: 'CASCADE',
+                onDelete: 'SET NULL',
+                onUpdate: 'SET NULL',
                 references: {
                     model: 'Groups',
                     key: 'id'

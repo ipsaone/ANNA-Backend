@@ -6,5 +6,5 @@
  */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('UserGroup', {}, {timestamps: false, freezeTableName: true, tableName: 'UserGroup'});
+    return sequelize.define('FileLog', {}, {timestamps: false, freezeTableName: true, tableName: 'FileLog'});
 };

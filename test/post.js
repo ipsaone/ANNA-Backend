@@ -9,10 +9,11 @@ chai.use(require('chai-http'));
 
 describe('Posts', () => {
     before(() => {
-        return db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true})
-            .then(() => {
-                db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
-            });
+        return db.sequelize.sync().then(() =>
+            db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true})
+        ).then(() => {
+            db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
+        })
 
 
     });

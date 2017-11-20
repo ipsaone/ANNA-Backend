@@ -21,13 +21,14 @@ module.exports = {
                 type: Sequelize.TEXT
             },
             authorId: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.INTEGER,
-                onDelete: 'CASCADE',
+                onDelete: 'SET NULL',
+                onUpdate: 'CASCADE',
                 references: {
                     model: 'Users',
                     key: 'id'
-                },
+                }
             },
             createdAt: {
                 allowNull: false,
