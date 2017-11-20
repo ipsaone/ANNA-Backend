@@ -12,6 +12,7 @@ before('Init database', () => {
             .then(() => db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, options))
             .then(function () {
                 return t.commit();
-            });
+            })
+            .catch(err => console.log(err));
     });
 });

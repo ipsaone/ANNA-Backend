@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Post.associate = function (models) {
-        Post.belongsTo(models.User, {foreignKey: 'authorId', as: 'author'});
+        Post.belongsTo(models.User, {foreignKey: 'authorId', as: 'author', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
     };
 
     return Post;

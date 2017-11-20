@@ -23,9 +23,8 @@ module.exports = (sequelize, DataTypes) => {
 
 
     Mission.associate = function (models) {
-        Mission.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
-        Mission.belongsTo(models.User, {foreignKey: 'leaderId', as: 'leader'});
-
+        Mission.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        Mission.belongsTo(models.User, {foreignKey: 'leaderId', as: 'leader', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
     }
 
     return Mission;

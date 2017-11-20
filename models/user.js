@@ -27,12 +27,12 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.associate = function (models) {
-        User.hasMany(models.Post, {foreignKey: 'authorId', as: 'posts'});
-        User.hasMany(models.Data, {foreignKey: 'ownerId', as: 'files'});
-        User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
-        User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
+        User.hasMany(models.Post, {foreignKey: 'authorId', as: 'posts', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        User.hasMany(models.Data, {foreignKey: 'ownerId', as: 'files', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
         //User.belongsToMany(models.Log, {as: 'logs', through: models.LogUser, foreignKey: 'userId'});
-        User.hasMany(models.Mission, {as: 'missions', foreignKey: 'leaderId'});
+        User.hasMany(models.Mission, {as: 'missions', foreignKey: 'leaderId', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
     };
 
 

@@ -10,7 +10,8 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     name: {allowNull: false, type: Sequelize.STRING},
-    done: {allowNull: false, type: Sequelize.BOOLEAN, defaultValue: false}
+    done: {allowNull: false, type: Sequelize.BOOLEAN, defaultValue: false},
+    missionId: {allowNull: false, type: Sequelize.INTEGER}
    });
   },
 

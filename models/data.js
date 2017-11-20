@@ -40,13 +40,13 @@ module.exports = (sequelize, DataTypes) => {
 
 
     Data.associate = function (models) {
-        Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'});
-        Data.belongsTo(models.User, {foreignKey: 'ownerId', as: 'author'});
-        Data.belongsTo(models.Right, {foreignKey: 'rightsId', as: 'rights'});
-        Data.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
+        Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        Data.belongsTo(models.User, {foreignKey: 'ownerId', as: 'author', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        Data.belongsTo(models.Right, {foreignKey: 'rightsId', as: 'rights', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        Data.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
 
-        Data.belongsTo(models.Data, {foreignKey: 'dirId', as: 'directory'});
-        Data.hasMany(models.Data, {foreignKey: 'dirId', as: 'files'});
+        Data.belongsTo(models.Data, {foreignKey: 'dirId', as: 'directory', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        Data.hasMany(models.Data, {foreignKey: 'dirId', as: 'files', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
     };
 
 
