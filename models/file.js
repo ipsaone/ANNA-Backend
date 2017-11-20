@@ -13,14 +13,15 @@ module.exports = (sequelize, DataTypes) => {
             folders: {
                 where: {isDir: true}
             }
-        }
+        },
+        tableName: 'File'
     });
 
     const Storage = require('../repositories/Storage');
     File.associate = function (models) {
-        //File.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'});
-        //File.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
-        //File.belongsToMany(models.Log, {as: 'logs', through: models.FileLog, foreignKey: 'userId'})
+        File.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'});
+        File.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
+        File.belongsToMany(models.Log, {as: 'fileLogs', through: models.FileLog, foreignKey: 'userId'})
     };
 
     File.prototype.getData = Storage.getFileData;

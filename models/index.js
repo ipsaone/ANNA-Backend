@@ -29,11 +29,4 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-let force = false;
-if(config.force === 'true') {
-  console.log("Forcing synchronization ...")
-  force = true;
-}
-db.sequelize.sync({force: force});
-
 module.exports = db;

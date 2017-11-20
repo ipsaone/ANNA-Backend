@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         hooks: {
             beforeCreate: compileMd,
             beforeUpdate: compileMd
-        }
+        },
+        tableName: 'Mission'
     });
 
 
     Mission.associate = function (models) {
-        Mission.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
-        Mission.belongsTo(models.User, {foreignKey: 'leaderId', as: 'leader'});
-
+        Mission.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+        Mission.belongsTo(models.User, {foreignKey: 'leaderId', as: 'leader', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
     }
 
     return Mission;

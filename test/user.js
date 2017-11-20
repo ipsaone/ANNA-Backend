@@ -10,7 +10,7 @@ chai.use(require('chai-http'));
 
 describe('Users', () => {
     before(() => {
-        return db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'});
+        return db.sequelize.sync().then(() => db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'}));
     });
 
 

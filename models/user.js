@@ -23,16 +23,19 @@ module.exports = (sequelize, DataTypes) => {
         hooks: {
             beforeCreate: hashPassword,
             beforeUpdate: hashPassword
-        }
+        },
+        tableName: 'User'
     });
 
     User.associate = function (models) {
-        User.hasMany(models.Post, {foreignKey: 'authorId', as: 'posts'});
-        User.hasMany(models.Data, {foreignKey: 'ownerId', as: 'files'});
-        User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs'});
-        User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId'});
-        //User.belongsToMany(models.Log, {as: 'logs', through: models.LogUser, foreignKey: 'userId'});
-        User.hasMany(models.Mission, {as: 'missions', foreignKey: 'leaderId'});
+        User.belongsToMany(models.Group, {as: 'groups', through: models.UserGroup, foreignKey: 'userId', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+
+        User.hasMany(models.Post, {foreignKey: 'authorId', as: 'posts', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        User.hasMany(models.Data, {foreignKey: 'ownerId', as: 'files', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+        User.hasMany(models.Log, {foreignKey: 'authorId', as: 'logs', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
+
+        User.belongsToMany(models.Log, {as: 'userLogs', through: models.LogUser, foreignKey: 'userId'});
+        User.hasMany(models.Mission, {as: 'missions', foreignKey: 'leaderId', onDelete: 'SET NULL', onUpdate: 'CASCADE'});
     };
 
 

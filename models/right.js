@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN
         }
     }, {
-        timestamps: false
+        timestamps: false,
+        tableName: 'Right'
     });
     return Right;
 };

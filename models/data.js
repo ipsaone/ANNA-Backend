@@ -35,18 +35,20 @@ module.exports = (sequelize, DataTypes) => {
         hooks: {
             beforeCreate: computeValues,
             beforeUpdate: computeValues
-        }
+        },
+        freezeTableName: true,
+        tableName: 'Data'
     });
 
 
     Data.associate = function (models) {
-        Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'});
-        Data.belongsTo(models.User, {foreignKey: 'ownerId', as: 'author'});
-        Data.belongsTo(models.Right, {foreignKey: 'rightsId', as: 'rights'});
-        Data.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group'});
+        Data.belongsTo(models.File, {foreignKey: 'fileId', as: 'file', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+        Data.belongsTo(models.User, {foreignKey: 'ownerId', as: 'author', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+        Data.belongsTo(models.Right, {foreignKey: 'rightsId', as: 'rights', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+        Data.belongsTo(models.Group, {foreignKey: 'groupId', as: 'group', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
 
-        Data.belongsTo(models.Data, {foreignKey: 'dirId', as: 'directory'});
-        Data.hasMany(models.Data, {foreignKey: 'dirId', as: 'files'});
+        Data.belongsTo(models.Data, {foreignKey: 'dirId', as: 'directory', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+        Data.hasMany(models.Data, {foreignKey: 'dirId', as: 'files', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
     };
 
 
