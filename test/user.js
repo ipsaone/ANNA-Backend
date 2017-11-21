@@ -5,18 +5,24 @@ const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
 const bcrypt = require('bcrypt');
+const seed_and_login = require('./seed_and_login');
 
 chai.use(require('chai-http'));
+let agent = chai.request.agent(server);
 
 describe('Users', () => {
-    before(() => {
-        return db.sequelize.sync().then(() => db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'}));
-    });
+    before(() =>
+        seed_and_login()
+            .then(() =>
+                db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'})
+            ).then(() =>
+                agent.post('/auth/login').send({username: 'login_test', password: 'password_test'})
+            )
+    );
 
 
     it('expect to GET all users', () =>
-        chai.request(server)
-            .get('/users')
+        agent.get('/users')
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
@@ -31,8 +37,7 @@ describe('Users', () => {
 
 
     it('expect to GET user with id = 1', () =>
-        chai.request(server)
-            .get('/users/1')
+        agent.get('/users/1')
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
@@ -46,8 +51,7 @@ describe('Users', () => {
     );
 
     it('expect an error when GET user with id = 2', () =>
-        chai.request(server)
-            .get('/users/2')
+        agent.get('/users/2')
             .then(res => {
                 expect(err).to.not.be.null;
                 expect(res).to.have.status(404);
@@ -57,8 +61,7 @@ describe('Users', () => {
 
 
     it('expect POST user to return the new user without errors', () =>
-        chai.request(server)
-            .post('/users')
+        agent.post('/users')
             .send({id: 2, username: 'groot', password: 'secret', email: 'groot@local.dev'})
             .then(res => {
                 expect(err).to.be.null;
@@ -94,8 +97,7 @@ describe('Users', () => {
 
 
     it('expect POST user to return an error with status 400 when sending an incomplete request', () =>
-        chai.request(server)
-            .post('/users')
+        agent.post('/users')
             .send({id: 2, username: 'groot', password: 'secret'})
             .then(resp => {
                 expect(err).to.not.be.null;
@@ -104,8 +106,7 @@ describe('Users', () => {
     );
 
     it('expect PUT to update the user with id = 2 and return nothing with the status 204', () =>
-        chai.request(server)
-            .put('/users/1')
+        agent.put('/users/1')
             .send({username: 'bar', password: 'secret', email: 'bar@local.dev'})
             .then(res => {
                 expect(err).to.be.null;
@@ -136,8 +137,7 @@ describe('Users', () => {
     );
 
     it('expect PUT to return an error with the status 400 when sending an incomplete request', () =>
-        chai.request(server)
-            .put('/users/2')
+        agent.put('/users/2')
             .send({username: null})
             .then(res => {
                 expect(err).to.not.be.null;
@@ -148,8 +148,7 @@ describe('Users', () => {
 
 
     it('expect to DELETE user with id = 2 and return nothing with status 204', () =>
-        chai.request(server)
-            .delete('/users/2')
+        agent.delete('/users/2')
             .then(res => {
                 expect(err).to.be.null;
 

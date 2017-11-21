@@ -11,9 +11,10 @@ let agent = chai.request.agent(server);
 
 describe('Auth', () => {
     before('Create test user', () =>
-        db.sequelize.sync().then(() =>
-            db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'})
-        )
+        db.sequelize.sync()
+            .then(() =>
+                db.User.create({username: 'login_test', password: 'password_test', email: 'login@local.dev'})
+            )
     );
 
     it('expect to login a user', () =>
@@ -34,7 +35,6 @@ describe('Auth', () => {
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
-                expect(res).to.have.length.equal.to(0);
             })
 
     );

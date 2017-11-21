@@ -19,5 +19,6 @@ module.exports = session({
     // Only save sessions in which data is stored
     saveUninitialized: false,
     // Secure cookies !
-    cookie: {secure: true, httpOnly: false}
+    // TODO : only in production, or allow HTTPS on dev environment !
+    cookie: {secure: false, httpOnly: false}
 });

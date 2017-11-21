@@ -4,23 +4,28 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
+const seed_and_login = require('./seed_and_login')
 
 chai.use(require('chai-http'));
+let agent = chai.request.agent(server);
 
 describe('Posts', () => {
     before(() =>
-        db.sequelize.sync().then(() => {
-            db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true});
-            db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
-        })
+        seed_and_login()
+            .then(() => {
+                db.Group.create({name: 'authors'});
+                db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true});
+                db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});
+            }).then(() =>
+
+                agent.post('/auth/login').send({username: 'login_test', password: 'password_test'})
+            )
     );
 
 
     it('expect to GET all posts', () =>
-        chai.request(server)
-            .get('/posts')
+        agent.get('/posts')
             .then(res => {
-
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.length).to.be.equal(2);
@@ -29,10 +34,8 @@ describe('Posts', () => {
 
 
     it('expect to GET all published posts', () =>
-        chai.request(server)
-            .get('/posts?published=true')
+        agent.get('/posts?published=true')
             .then(res => {
-
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.length).to.be.equal(1);
@@ -48,10 +51,8 @@ describe('Posts', () => {
     );
 
     it('expect to GET all drafted posts', () =>
-        chai.request(server)
-            .get('/posts?published=false')
+        agent.get('/posts?published=false')
             .then(res => {
-
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.length).to.be.equal(1);
@@ -69,11 +70,8 @@ describe('Posts', () => {
 
 
     it('expect to GET post with id = 1', () =>
-        chai.request(server)
-            .get('/posts/1')
+        agent.get('/posts/1')
             .then(res => {
-                expect(err).to.be.null;
-
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
 
@@ -90,8 +88,7 @@ describe('Posts', () => {
     );
 
     it('expect an error when GET post with id = 3', () =>
-        chai.request(server)
-            .get('/posts/3')
+        agent.get('/posts/3')
             .then(res => {
                 expect(err).to.not.be.null;
                 expect(res).to.have.status(404);
@@ -101,12 +98,9 @@ describe('Posts', () => {
 
 
     it('expect POST to return the new post with status 201', () =>
-        chai.request(server)
-            .post('/posts')
+        agent.post('/posts')
             .send({id: 3, title: 'Lorem ipsum', markdown: 'Lorem ipsum', authorId: 1, published: true})
             .then(res => {
-                expect(err).to.be.null;
-
                 expect(res).to.have.status(201);
                 expect(res).to.be.json;
 
@@ -119,8 +113,7 @@ describe('Posts', () => {
     );
 
     it('expect the new post to exist in the database', () =>
-        db.Post.findById(3)
-            .then(post => {
+        agent.then(post => {
                 expect(post.id).to.be.equal(3);
                 expect(post.title).to.be.equal('Lorem ipsum');
                 expect(post.markdown).to.be.equal('Lorem ipsum');
@@ -134,8 +127,7 @@ describe('Posts', () => {
     );
 
     it('expect POST post to return an error with status 400 when sending an incomplete request', () =>
-        chai.request(server)
-            .post('/posts')
+        agent.post('/posts')
             .send({id: 3, markdown: 'Lorem ipsum', authorId: 1, published: true}) // forgot the title
             .then(res => {
                 expect(err).to.not.be.null;
@@ -169,8 +161,7 @@ describe('Posts', () => {
     );
 
     it('expect PUT to return an error with the status 400 when sending an incomplete request', () =>
-        chai.request(server)
-            .put('/posts/3')
+        agent.put('/posts/3')
             .send({title: null})
             .then(res => {
                 expect(err).to.not.be.null;
@@ -180,8 +171,7 @@ describe('Posts', () => {
     );
 
     it('expect to DELETE the post with id = 3 and return nothing with status 204', () =>
-        chai.request(server)
-            .delete('/posts/3')
+        agent.delete('/posts/3')
             .then(res => {
                 expect(err).to.be.null;
 
