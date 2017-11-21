@@ -33,7 +33,7 @@ exports.login = (req, res, handle) => {
 
 exports.logout = (req, res, handle) => {
     req.session.auth = null;
-    res.status(200);
+    res.status(200).json({});
 };
 
 exports.check = (req, res, handle) => {

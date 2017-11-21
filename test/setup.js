@@ -2,11 +2,13 @@
 
 const db = require('../models');
 
-before('Init database',  () => {
-        return db.sequelize.sync({force: true});
-});
+describe('Initialization', () => {
+    before('Init database',  () => {
+            return db.sequelize.sync({force: true});
+    });
 
-it('Forces initialization', done => {
-    console.log('Initialized !')
-    return done();
+    it('Forces initialization', done => {
+        return done();
+    })
+
 })
