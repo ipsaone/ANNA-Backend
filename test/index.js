@@ -4,5 +4,5 @@ require('./setup');
 require('./auth');
 
 require('./user');
-//require('./post');
+require('./post');
 //require('./storage');
