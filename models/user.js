@@ -23,8 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         hooks: {
             beforeCreate: hashPassword,
             beforeUpdate: hashPassword
-        },
-        tableName: 'User'
+        }
     });
 
     User.associate = function (models) {

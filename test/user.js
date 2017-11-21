@@ -82,30 +82,35 @@ describe('Users', () => {
                     expect(res).to.have.status(201);
                     expect(res).to.be.json;
 
-                    expect(res.body.id).to.be.equal(2);
+                    expect(res.body.id).to.be.integer;
                     expect(res.body.username).to.be.equal('groot');
                     expect(bcrypt.compareSync('secret', res.body.password)).to.be.true;
                     expect(res.body.email).to.be.equal('groot@local.dev');
                     expect(res.body.createdAt).to.not.be.null;
                     expect(res.body.updatedAt).to.not.be.null;
 
+                    it('expect the new user to exist in the database', done =>
+                        db.User.findById(res.body.id)
+                            .then(user => {
+                                expect(user).to.not.be.null;
+
+                                expect(user.id).to.be.equal(res.body.id);
+                                expect(user.username).to.be.equal('groot');
+                                expect(bcrypt.compareSync('secret', user.password)).to.be.true;
+                                expect(user.email).to.be.equal('groot@local.dev');
+                                expect(user.createdAt).to.not.be.null;
+                                expect(user.updatedAt).to.not.be.null;
+
+                                done();
+                            })
+                    );
+
+
                     done();
                 });
         });
 
-        it('expect the new user to exist in the database', done => {
-            db.User.findById(2)
-                .then(user => {
-                    expect(user.id).to.be.equal(2);
-                    expect(user.username).to.be.equal('groot');
-                    expect(bcrypt.compareSync('secret', user.password)).to.be.true;
-                    expect(user.email).to.be.equal('groot@local.dev');
-                    expect(user.createdAt).to.not.be.null;
-                    expect(user.updatedAt).to.not.be.null;
 
-                    done();
-                });
-        });
 
         it('expect POST user to return an error with status 400 when sending an incomplete request', done => {
             chai.request(server)
@@ -139,6 +144,8 @@ describe('Users', () => {
         it('expect to have the new values for the user with id = 2', done => {
             db.User.findOne({where:{username: 'bar'}})
                 .then(user => {
+                    expect(user).to.not.be.null;
+
                     expect(user.id).to.be.equal(1);
                     expect(user.username).to.be.equal('bar');
 

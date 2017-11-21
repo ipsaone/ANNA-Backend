@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         }
     }, {
-        tableName: 'Log'
+        
     });
 
     Log.associate = function (models) {

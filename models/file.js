@@ -13,8 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             folders: {
                 where: {isDir: true}
             }
-        },
-        tableName: 'File'
+        }
     });
 
     const Storage = require('../repositories/Storage');

@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         done: {allowNull: false, type: DataTypes.BOOLEAN, defaultValue: false},
         missionId: {allowNull: false, type: DataTypes.INTEGER}
     }, {
-        timestamps: false,
-        tableName: 'Tasks'
+        timestamps: false
     });
 
     Task.associate = function(models) {
