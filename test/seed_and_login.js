@@ -3,6 +3,7 @@
 const db = require('../models');
 const server = require('../app');
 const Chance = require('chance');
+const chai = require('chai');
 let chance = new Chance(Math.random);
 
 let seed_options = {
@@ -10,7 +11,7 @@ let seed_options = {
     max_users: 40,
     min_groups: 10,
     max_groups: 80
-}
+};
 
 let seed_data = {};
 let randoms = {};
@@ -25,7 +26,6 @@ module.exports = (agent) => {
     .then(() => {
 
             // a) users
-        console.log("Seeding users");
         seed_data.users = chance.integer({min: seed_options.min_users, max: seed_options.max_users});
         let user_promises = [];
         randoms.usernames = chance.unique(chance.string, seed_data.users, {length: chance.integer({min: 8, max: 25})});
@@ -38,7 +38,6 @@ module.exports = (agent) => {
     }).then(() => {
 
             // b) groups
-        console.log("Seeding groups");
         seed_data.groups = chance.integer({min: seed_options.min_groups, max: seed_options.max_groups});
         let group_promises = [];
         randoms.names = chance.unique(chance.string, seed_data.groups, {length: chance.integer({min: 5, max: 12})});
@@ -49,7 +48,6 @@ module.exports = (agent) => {
     }).then(() => {
 
             // c) user-group associations
-        console.log("Seeding user-group associations")
         seed_data.userGroups = chance.integer({min: 1, max: Math.min(seed_data.users, seed_data.groups)});
         let userGroup_promises = []
         let userIds = chance.unique(chance.integer, seed_data.userGroups, {min: 1, max: seed_data.users});
@@ -63,15 +61,14 @@ module.exports = (agent) => {
 
 
     /* 3. LOGIN */
-    //.then(() => db.sequelize.sync({force: false}))
     .then(() => new Promise(resolve => setTimeout(resolve, 5000)))
     .then(() => {
         let user = chance.integer({min: 1, max: seed_data.users});
-        console.log("Logging in with username", randoms.usernames[user], ", password", randoms.passwords[user]);
         return agent
             .post('/auth/login')
             .send({username: randoms.usernames[user], password: randoms.passwords[user]})
     })
+
 
 
 }

@@ -24,12 +24,6 @@ describe('Users', () => {
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
-                expect(res.body.length).to.be.equal(1);
-
-                expect(res.body[0].id).to.be.equal(1);
-                expect(res.body[0].username).to.be.equal('foo');
-                expect(bcrypt.compareSync('secret', res.body[0].password)).to.be.true;
-                expect(res.body[0].email).to.be.equal('foo@local.dev');
             })
     );
 
@@ -39,11 +33,6 @@ describe('Users', () => {
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
-
-                expect(res.body.id).to.be.equal(1);
-                expect(res.body.username).to.be.equal('foo');
-                expect(bcrypt.compareSync('secret', res.body.password)).to.be.true;
-                expect(res.body.email).to.be.equal('foo@local.dev');
 
             })
     );
@@ -62,8 +51,6 @@ describe('Users', () => {
         agent.post('/users')
             .send({id: 2, username: 'groot', password: 'secret', email: 'groot@local.dev'})
             .then(res => {
-                expect(err).to.be.null;
-
                 expect(res).to.have.status(201);
                 expect(res).to.be.json;
 
@@ -98,7 +85,6 @@ describe('Users', () => {
         agent.post('/users')
             .send({id: 2, username: 'groot', password: 'secret'})
             .then(resp => {
-                expect(err).to.not.be.null;
                 expect(res).to.have.status(400);
             })
     );
