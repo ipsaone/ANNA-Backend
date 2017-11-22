@@ -12,11 +12,9 @@ let agent = chai.request.agent(server);
 
 describe('Users', () => {
     before(() =>
-        seed_and_login()
+        seed_and_login(agent)
             .then(() =>
                 db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'})
-            ).then(() =>
-                agent.post('/auth/login').send({username: 'login_test', password: 'password_test'})
             )
     );
 

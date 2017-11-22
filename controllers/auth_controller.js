@@ -7,7 +7,7 @@ exports.login = (req, res, handle) => {
     db.User.findOne({where: {'username': req.body.username}, include: ['groups']})
         .then(user => {
             if (!user) {
-                throw res.boom.notFound();
+                throw res.boom.notFound("Bad username");
             }
 
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
@@ -24,7 +24,7 @@ exports.login = (req, res, handle) => {
                     }
 
                 } else {
-                    throw res.boom.unauthorized();
+                    throw res.boom.unauthorized("Bad password");
                 }
             });
         })
