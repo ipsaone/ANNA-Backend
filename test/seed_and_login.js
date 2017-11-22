@@ -64,9 +64,11 @@ module.exports = (agent) => {
     .then(() => new Promise(resolve => setTimeout(resolve, 5000)))
     .then(() => {
         let user = chance.integer({min: 1, max: seed_data.users});
+        let userData = {username: randoms.usernames[user], password: randoms.passwords[user]}
         return agent
             .post('/auth/login')
-            .send({username: randoms.usernames[user], password: randoms.passwords[user]})
+            .send(userData)
+            .then(() => userData)
     })
 
 

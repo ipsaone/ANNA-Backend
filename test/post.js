@@ -11,8 +11,8 @@ let agent = chai.request.agent(server);
 
 describe('Posts', () => {
     before(() =>
-        seed_and_login()
-            .then(() => {
+        seed_and_login(agent)
+            .then(user => {
                 db.Group.create({name: 'authors'});
                 db.Post.create({title: 'Foo', markdown: 'Bar', authorId: 1, published: true});
                 db.Post.create({title: 'Bar', markdown: 'Foo', authorId: 1, published: false});

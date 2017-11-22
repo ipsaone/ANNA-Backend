@@ -11,11 +11,14 @@ chai.use(require('chai-http'));
 let agent = chai.request.agent(server);
 
 describe('Users', () => {
+    let currentUser = {};
+
     before(() =>
         seed_and_login(agent)
-            .then(() =>
+            .then(user => {
                 db.User.create({username: 'foo', password: 'secret', email: 'foo@local.dev'})
-            )
+                db.User.find({username: user.username}).then(user => (currentUser = user));
+            })
     );
 
 
@@ -24,6 +27,7 @@ describe('Users', () => {
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
+                expect(res.body.length).to.be.within(10, 40); // see seed_and_login
             })
     );
 
@@ -37,14 +41,26 @@ describe('Users', () => {
             })
     );
 
-    it('expect an error when GET user with id = 2', () =>
-        agent.get('/users/2')
+    it('expect an error when GET user with id = -3', () =>
+        agent.get('/users/-3')
             .then(res => {
-                expect(err).to.not.be.null;
                 expect(res).to.have.status(404);
 
             })
     );
+
+    it('expect an error when GET user with id = abc', () => {
+        agent.get('/users/abc')
+            .catch(err => {
+                expect(err).to.have.status(404);
+            })
+            /*
+            .then(res => {
+                expect(res).to.have.status(404);
+
+            })
+            */
+    })
 
 
     it('expect POST user to return the new user without errors', () =>
