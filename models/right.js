@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false,
             type: DataTypes.BOOLEAN
         }
-    }, {
-        timestamps: false
-    });
+    }, {timestamps: false});
+
+
     return Right;
 };

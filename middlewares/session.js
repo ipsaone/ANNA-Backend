@@ -1,7 +1,7 @@
 'use strict';
 
-const config = require('../config/config');       // Config
-const session = require('express-session');  	   // Session management
+const config = require('../config/config'); // Config
+const session = require('express-session'); // Session management
 const redis = require('connect-redis')(session); // Session store
 
 module.exports = session({
@@ -18,7 +18,13 @@ module.exports = session({
     resave: false,
     // Only save sessions in which data is stored
     saveUninitialized: false,
-    // Secure cookies !
-    // TODO : only in production, or allow HTTPS on dev environment !
-    cookie: {secure: false, httpOnly: false}
+
+    /*
+     * Secure cookies !
+     * TODO : only in production, or allow HTTPS on dev environment !
+     */
+    cookie: {
+        secure: false,
+        httpOnly: false
+    }
 });

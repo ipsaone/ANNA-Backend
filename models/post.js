@@ -4,7 +4,10 @@ const marked = require('marked');
 
 module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
-        title: {allowNull: false, type: DataTypes.STRING},
+        title: {
+            allowNull: false,
+            type: DataTypes.STRING
+        },
         markdown: {
             allowNull: false,
             type: DataTypes.TEXT,
@@ -13,15 +16,24 @@ module.exports = (sequelize, DataTypes) => {
                 this.setDataValue('content', marked(val));
             }
         },
-        content: {allowNull: false, type: DataTypes.TEXT},
-        authorId: {allowNull: false, type: DataTypes.INTEGER},
+        content: {
+            allowNull: false,
+            type: DataTypes.TEXT
+        },
+        authorId: {
+            allowNull: false,
+            type: DataTypes.INTEGER
+        },
         published: {
             allowNull: false,
             defaultValue: false,
             type: DataTypes.BOOLEAN,
             set (val) {
-                if (val) this.setDataValue('publishedAt', Date.now());
-                else this.setDataValue('publishedAt', null);
+                if (val) {
+                    this.setDataValue('publishedAt', Date.now());
+                } else {
+                    this.setDataValue('publishedAt', null);
+                }
 
                 this.setDataValue('published', val);
             }
@@ -29,17 +41,18 @@ module.exports = (sequelize, DataTypes) => {
         publishedAt: DataTypes.DATE
     }, {
         scopes: {
-            draft: {
-                where: {published: false}
-            },
-            published: {
-                where: {published: true}
-            }
+            draft: {where: {published: false}},
+            published: {where: {published: true}}
         }
     });
 
     Post.associate = function (models) {
-        Post.belongsTo(models.User, {foreignKey: 'authorId', as: 'author', onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
+        Post.belongsTo(models.User, {
+            foreignKey: 'authorId',
+            as: 'author',
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
     };
 
     return Post;

@@ -19,7 +19,5 @@ module.exports = {
         .catch(err => console.log(err));
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Groups', null, {});
-  }
+    down: (queryInterface, Sequelize) => queryInterface.bulkDelete('Groups', null, {})
 };

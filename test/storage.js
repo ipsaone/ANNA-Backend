@@ -10,17 +10,18 @@ chai.use(require('chai-http'));
 
 describe('Storage', () => {
     before(() =>
-        seed_and_login()
-            .then(() => db.User.create({username: 'file_owner', password: 'ilovefiles', email: 'filemgr@local.dev'}))
-            .then(owner => db.Group.create({name: 'file_test'})
-                .then(group => owner.addGroup(group.id).then(() => db.File.create({isDir: false})))
-            )
+        seed_and_login().
+            then(() => db.User.create({
+                username: 'file_owner',
+                password: 'ilovefiles',
+                email: 'filemgr@local.dev'
+            })).
+            then((owner) => db.Group.create({name: 'file_test'}).
+                then((group) => owner.addGroup(group.id).then(() => db.File.create({isDir: false})))));
 
-    );
-
-// GET /*
+    // GET /*
     describe('[GET] /*', () => {
-        it('expect to test', done => {
+        it('expect to test', (done) => {
             done();
 
         });

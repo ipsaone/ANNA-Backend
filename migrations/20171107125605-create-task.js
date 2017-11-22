@@ -1,21 +1,29 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-   return queryInterface.createTable('Tasks', {
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: Sequelize.INTEGER
-    },
-    name: {allowNull: false, type: Sequelize.STRING},
-    done: {allowNull: false, type: Sequelize.BOOLEAN, defaultValue: false},
-    missionId: {allowNull: false, type: Sequelize.INTEGER}
-   });
-  },
+    up: (queryInterface, Sequelize) => queryInterface.createTable('Tasks', {
+        id: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: Sequelize.INTEGER
+        },
+        name: {
+            allowNull: false,
+            type: Sequelize.STRING
+        },
+        done: {
+            allowNull: false,
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
+        missionId: {
+            allowNull: false,
+            type: Sequelize.INTEGER
+        }
+    }),
 
-  down: (queryInterface, Sequelize) => {
-    queryInterface.dropTable('Tasks')
-  }
+    down: (queryInterface, Sequelize) => {
+        queryInterface.dropTable('Tasks')
+    }
 };

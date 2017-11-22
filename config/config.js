@@ -4,15 +4,13 @@ require('dotenv').config();
 
 const fs = require('fs');
 
-let config = {
+const config = {
     app: {
         name: 'A.N.N.A',
         version: '1.0.0'
     },
 
-    password: {
-        salt: 10
-    },
+    password: {salt: 10},
 
     session: {
         socket: '/var/run/redis/redis.sock',
@@ -28,17 +26,15 @@ let config = {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             logging: false, // Prevent Sequelize from outputting the query on the console
-            //logging: console.log,
+            // Logging: console.log,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
-            dialectOptions: {
-                socketPath: '/var/run/mysqld/mysqld.sock'
-            },
+            dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
-               maxConnections: 50,
-               maxIdleTime: 10
-           }
+                maxConnections: 50,
+                maxIdleTime: 10
+            }
         };
 
     },
@@ -65,13 +61,17 @@ config.app.getCertificates = () => {
         console.log('Using one.ipsa.fr certificate');
     }
 
-    return {key: privateKey, cert: certificate};
+    return {
+        key: privateKey,
+        cert: certificate
+    };
 };
 
 
-config.app.getConnection = () => {
-    return {host: process.env.HOST, port: process.env.PORT};
-};
+config.app.getConnection = () => ({
+    host: process.env.HOST,
+    port: process.env.PORT
+});
 
 
 module.exports = config;
