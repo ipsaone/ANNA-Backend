@@ -11,7 +11,6 @@ chai.use(require('chai-http'));
 const agent = chai.request.agent(server);
 
 describe('Users', () => {
-    let currentUser = {};
 
     before(() =>
         seedAndLogin(agent).
@@ -22,10 +21,7 @@ describe('Users', () => {
                     username: 'foo'
 
                 })
-                db.User.find({username: user.username}).
-                    then((dbuser) => {
-                        currentUser = dbuser
-                    });
+                db.User.find({username: user.username})
             }));
 
     describe('[GET]', () => {

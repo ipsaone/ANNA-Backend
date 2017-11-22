@@ -2,19 +2,17 @@
 
 const chai = require('chai');
 const db = require('../models');
-const server = require('../app');
-const expect = chai.expect;
-const seed_and_login = require('./seed_and_login');
+const seedAndLogin = require('./seed_and_login');
 
 chai.use(require('chai-http'));
 
 describe('Storage', () => {
     before(() =>
-        seed_and_login().
+        seedAndLogin().
             then(() => db.User.create({
-                username: 'file_owner',
+                email: 'filemgr@local.dev',
                 password: 'ilovefiles',
-                email: 'filemgr@local.dev'
+                username: 'file_owner'
             })).
             then((owner) => db.Group.create({name: 'file_test'}).
                 then((group) => owner.addGroup(group.id).then(() => db.File.create({isDir: false})))));

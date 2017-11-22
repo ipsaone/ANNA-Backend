@@ -14,6 +14,9 @@ module.exports = {
         "plugin:security/recommended",
         "plugin:mocha/recommended"
     ],
+    "settings": {
+        "allowForLoopAfterthoughts": true
+    },
     "rules": {
         /* chai-friendly */
         "no-unused-expressions": 0,
@@ -31,7 +34,7 @@ module.exports = {
         "block-spacing": "error",
         "brace-style": "error",
         "callback-return": "error",
-        "camelcase": "error",
+        "camelcase": "warn",
         "capitalized-comments": [
             "error",
             "always"
@@ -71,7 +74,7 @@ module.exports = {
         "guard-for-in": "error",
         "handle-callback-err": "error",
         "id-blacklist": "error",
-        "id-length": "error",
+        "id-length": "warn",
         "id-match": "error",
         "indent": "error",
         "indent-legacy": "error",
@@ -214,7 +217,7 @@ module.exports = {
         "padding-line-between-statements": "error",
         "prefer-arrow-callback": "off",
         "prefer-const": "error",
-        "prefer-destructuring": "error",
+        "prefer-destructuring": "warn",
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "error",
         "prefer-reflect": "error",
@@ -237,7 +240,7 @@ module.exports = {
             "last"
         ],
         "sort-imports": "error",
-        "sort-keys": "error",
+        "sort-keys": "warn",
         "sort-vars": "error",
         "space-before-blocks": "error",
         "space-before-function-paren": "error",

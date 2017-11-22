@@ -92,7 +92,6 @@ describe('Posts', () => {
     it('expect an error when GET post with id = 3', () =>
         agent.get('/posts/3').
             then((res) => {
-                expect(err).to.not.be.null;
                 expect(res).to.have.status(404);
 
             }));
@@ -140,7 +139,6 @@ describe('Posts', () => {
                 published: true
             }). // Forgot the title
             then((res) => {
-                expect(err).to.not.be.null;
                 expect(res).to.have.status(400);
 
             }));
@@ -153,8 +151,6 @@ describe('Posts', () => {
                 published: false
             }).
             then((res) => {
-                expect(err).to.be.null;
-
                 expect(res).to.have.status(204);
                 expect(res.body).to.be.empty;
 
@@ -174,7 +170,6 @@ describe('Posts', () => {
         agent.put('/posts/3').
             send({title: null}).
             then((res) => {
-                expect(err).to.not.be.null;
                 expect(res).to.have.status(400);
 
             }));
@@ -182,8 +177,6 @@ describe('Posts', () => {
     it('expect to DELETE the post with id = 3 and return nothing with status 204', () =>
         agent.delete('/posts/3').
             then((res) => {
-                expect(err).to.be.null;
-
                 expect(res).to.have.status(204);
                 expect(res.body).to.be.empty;
 
