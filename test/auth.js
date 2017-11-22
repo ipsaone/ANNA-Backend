@@ -14,9 +14,9 @@ describe('Auth', () => {
         db.sequelize.sync().
             then(() =>
                 db.User.create({
-                    username: 'login_test',
+                    email: 'login@local.dev',
                     password: 'password_test',
-                    email: 'login@local.dev'
+                    username: 'login_test'
                 })));
 
     it('expect to login a user', () =>

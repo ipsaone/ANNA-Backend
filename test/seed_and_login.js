@@ -1,19 +1,20 @@
 'use strict';
 
 const db = require('../models');
-const server = require('../app');
 const Chance = require('chance');
-const chai = require('chai');
 const chance = new Chance(Math.random);
 
-const seed_options = {
-    min_users: 10,
-    max_users: 40,
-    min_groups: 10,
-    max_groups: 80
+const seedOptions = {
+
+    maxGroups: 80,
+    maxUsers: 40,
+
+    minGroups: 10,
+    minUsers: 10
+
 };
 
-const seed_data = {};
+const seedData = {};
 const randoms = {};
 
 module.exports = (agent) =>
@@ -26,26 +27,26 @@ module.exports = (agent) =>
         then(() => {
 
             // A) users
-            seed_data.users = chance.integer({
-                min: seed_options.min_users,
-                max: seed_options.max_users
+            seedData.users = chance.integer({
+                min: seedOptions.min_users,
+                max: seedOptions.maxUsers
             });
             const user_promises = [];
 
-            randoms.usernames = chance.unique(chance.string, seed_data.users, {
+            randoms.usernames = chance.unique(chance.string, seedData.users, {
                 length: chance.integer({
                     min: 8,
                     max: 25
                 })
             });
-            randoms.passwords = chance.unique(chance.string, seed_data.users, {
+            randoms.passwords = chance.unique(chance.string, seedData.users, {
                 length: chance.integer({
                     min: 5,
                     max: 40
                 })
             });
-            randoms.emails = chance.unique(chance.email, seed_data.users)
-            for (let i = 0; i < seed_data.users; i++) {
+            randoms.emails = chance.unique(chance.email, seedData.users)
+            for (let i = 0; i < seedData.users; i += 1) {
                 user_promises.push(db.User.create({
                     username: randoms.usernames[i],
                     password: randoms.passwords[i],
@@ -58,46 +59,46 @@ module.exports = (agent) =>
         then(() => {
 
             // B) groups
-            seed_data.groups = chance.integer({
-                min: seed_options.min_groups,
-                max: seed_options.max_groups
+            seedData.groups = chance.integer({
+                min: seedOptions.minGroups,
+                max: seedOptions.maxGroups
             });
-            const group_promises = [];
+            const groupPromises = [];
 
-            randoms.names = chance.unique(chance.string, seed_data.groups, {
+            randoms.names = chance.unique(chance.string, seedData.groups, {
                 length: chance.integer({
                     min: 5,
                     max: 12
                 })
             });
-            for (let i = 0; i < seed_data.groups; i++) {
-                group_promises.push(db.Group.create({name: randoms.names[i]}));
+            for (let i = 0; i < seedData.groups; i += 1) {
+                groupPromises.push(db.Group.create({name: randoms.names[i]}));
             }
 
-            return Promise.all(group_promises);
+            return Promise.all(groupPromises);
         }).
         then(() => {
 
             // C) user-group associations
-            seed_data.userGroups = chance.integer({
+            seedData.userGroups = chance.integer({
                 min: 1,
-                max: Math.min(seed_data.users, seed_data.groups)
+                max: Math.min(seedData.users, seedData.groups)
             });
-            const userGroup_promises = []
-            const userIds = chance.unique(chance.integer, seed_data.userGroups, {
+            const userGroupPromises = []
+            const userIds = chance.unique(chance.integer, seedData.userGroups, {
                 min: 1,
-                max: seed_data.users
+                max: seedData.users
             });
-            const groupIds = chance.unique(chance.integer, seed_data.userGroups, {
+            const groupIds = chance.unique(chance.integer, seedData.userGroups, {
                 min: 1,
-                max: seed_data.groups
+                max: seedData.groups
             });
 
-            for (let i = 0; i < seed_data.userGroups; i++) {
-                userGroup_promises.push(db.Group.findById(groupIds[i]).then((group) => group.addUser(userIds[i])));
+            for (let i = 0; i < seedData.userGroups; i += 1) {
+                userGroupPromises.push(db.Group.findById(groupIds[i]).then((group) => group.addUser(userIds[i])));
             }
 
-            return Promise.all(userGroup_promises);
+            return Promise.all(userGroupPromises);
         }).
 
 
@@ -106,7 +107,7 @@ module.exports = (agent) =>
         then(() => {
             const user = chance.integer({
                 min: 1,
-                max: seed_data.users
+                max: seedData.users
             });
             const userData = {
                 username: randoms.usernames[user],
