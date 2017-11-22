@@ -27,7 +27,7 @@ describe('Users', () => {
 
     it('expect to GET all users', () =>
         agent.get('/users').
-            then((res) => {
+            then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.length).to.be.within(10, 40); // See seed_and_login
@@ -36,7 +36,7 @@ describe('Users', () => {
 
     it('expect to GET user with id = 1', () =>
         agent.get('/users/1').
-            then((res) => {
+            then(res => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
 
@@ -44,14 +44,14 @@ describe('Users', () => {
 
     it('expect an error when GET user with id = -3', () =>
         agent.get('/users/-3').
-            then((res) => {
+            then(res => {
                 expect(res).to.have.status(404);
 
             }));
 
     it('expect an error when GET user with id = abc', () => {
         agent.get('/users/abc').
-            catch((err) => {
+            catch(err => {
                 expect(err).to.have.status(404);
             })
 
@@ -118,8 +118,7 @@ describe('Users', () => {
                 password: 'secret',
                 email: 'bar@local.dev'
             }).
-            then((res) => {
-                expect(err).to.be.null;
+            then(res => {
                 expect(res).to.have.status(204);
                 expect(res.body).to.be.empty;
 
@@ -149,7 +148,6 @@ describe('Users', () => {
         agent.put('/users/2').
             send({username: null}).
             then((res) => {
-                expect(err).to.not.be.null;
                 expect(res).to.have.status(400);
 
             }));

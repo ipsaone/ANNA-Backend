@@ -1,11 +1,13 @@
 module.exports = {
     "env": {
         "es6": true,
-        "node": true
+        "node": true,
+        "mocha": true
     },
     "plugins": [
         "security",
-        "mocha"
+        "mocha",
+        "chai-friendly"
     ],
     "extends": [
         "eslint:recommended",
@@ -13,6 +15,10 @@ module.exports = {
         "plugin:mocha/recommended"
     ],
     "rules": {
+        /* chai-friendly */
+        "no-unused-expressions": 0,
+        "chai-friendly/no-unused-expressions": 2,
+
         "accessor-pairs": "error",
         "array-bracket-newline": "error",
         "array-bracket-spacing": "error",
@@ -180,7 +186,6 @@ module.exports = {
         "no-underscore-dangle": "error",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
-        "no-unused-expressions": "error",
         "no-use-before-define": "error",
         "no-useless-call": "error",
         "no-useless-computed-key": "error",
