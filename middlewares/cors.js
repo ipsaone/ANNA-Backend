@@ -2,7 +2,7 @@
 
 const cors = require('cors'); // Cross Origin Resource Sharing
 
-function getOrigin(origin, cb) {
+function getOrigin (origin, cb) {
     cb(null, true);
 }
 

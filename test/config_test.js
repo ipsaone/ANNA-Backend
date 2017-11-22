@@ -7,10 +7,10 @@ describe('Test the installation', () => {
     chai.use(require('chai-http'));
 
     describe('Apache connection', () => {
-        it('expect no errors and to have the status code 200', done => {
-            chai.request('http://127.0.0.1')
-                .get('/')
-                .end((err, res) => {
+        it('expect no errors and to have the status code 200', (done) => {
+            chai.request('http://127.0.0.1').
+                get('/').
+                end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(200);
                     done();
@@ -19,11 +19,11 @@ describe('Test the installation', () => {
     });
 
     describe('PHPMyAdmin connection', () => {
-        it('expect no errors and to have the status code 200', done => {
+        it('expect no errors and to have the status code 200', (done) => {
 
-            chai.request('http://127.0.0.1/phpmyadmin')
-                .get('/')
-                .end((err, res) => {
+            chai.request('http://127.0.0.1/phpmyadmin').
+                get('/').
+                end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(200);
                     done();
@@ -32,7 +32,7 @@ describe('Test the installation', () => {
     });
 
     describe('MySQL connection', () => {
-        it('expect no errors', done => {
+        it('expect no errors', (done) => {
             const mysql = require('mysql2');
             const config = require('./config');
 
@@ -43,7 +43,7 @@ describe('Test the installation', () => {
                 database: config.sequelize.database,
                 waitForConnections: true,
                 connectionLimit: 100
-            }).connect(err => {
+            }).connect((err) => {
                 expect(err).to.be.null;
                 done();
             });
@@ -53,7 +53,7 @@ describe('Test the installation', () => {
     describe('Redis connection', () => {
         const fs = require('fs');
 
-        it('expect redis.sock and redis-server.pid files to exist', done => {
+        it('expect redis.sock and redis-server.pid files to exist', (done) => {
             expect(fs.existsSync('/var/run/redis/redis.sock') && fs.existsSync('/var/run/redis/redis-server.pid')).to.be.true;
             done();
         });

@@ -5,7 +5,7 @@ const storage_controller = require('../controllers/storage_controller');
 
 const multer = require('multer');
 const config = require('../config/config');
-let upload = multer({dest: config.storage.temp});
+const upload = multer({dest: config.storage.temp});
 
 // Upload a file or edit it (use ?revision=:id)
 router.post('/upload', upload.single('contents'), storage_controller.upload_new);

@@ -8,9 +8,9 @@ module.exports = (err, req, res, next) => {
     console.log(err);
     console.log('-------------------------------');
 
-    if(!res.headersSent && typeof(res.boom) !== 'undefined') {
+    if (!res.headersSent && typeof res.boom !== 'undefined') {
         res.boom.badImplementation(err.message);
     } else {
-        console.log("Couldn't handle error :", err);
+        console.log('Couldn\'t handle error :', err);
     }
 }
