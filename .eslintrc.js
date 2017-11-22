@@ -3,7 +3,15 @@ module.exports = {
         "es6": true,
         "node": true
     },
-    "extends": "eslint:recommended",
+    "plugins": [
+        "security",
+        "mocha"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:security/recommended",
+        "plugin:mocha/recommended"
+    ],
     "rules": {
         "accessor-pairs": "error",
         "array-bracket-newline": "error",
