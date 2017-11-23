@@ -3,6 +3,6 @@
 require('./setup');
 require('./auth');
 
-require('./user');
-require('./post');
+//require('./user');
+//require('./post');
 //require('./storage');
