@@ -31,8 +31,8 @@ exports.download = (req, res, handle) => {
     });
 
     if (dl) {
-        data.then((path) => getPath(true)).
-            then((path) => res.download(path));
+        data.then((path) => getPath(true))
+            .then((path) => res.download(path));
     } else {
         data.then((data) => res.json(data));
     }
@@ -49,13 +49,13 @@ exports.upload_rev = (req, res, handle) => {
     }
 
     // Find the file in database and add new data
-    return db.File.findOne({where: {id: req.params.fileId}}).
-        then((file) => {
+    return db.File.findOne({where: {id: req.params.fileId}})
+        .then((file) => {
             console.log(req.file);
 
-            return file.addData(req.body, req.file.path)
-        }).
-        catch((err) => handle(err));
+            return file.addData(req.body, req.file.path);
+        })
+        .catch((err) => handle(err));
 
 
 };
@@ -73,9 +73,9 @@ exports.upload_new = (req, res, handle) => {
     }
 
     // Create the file and its data
-    return Storage.createNewFile(req.body, req.file.path).
-        then(() => res.status(204)).
-        catch((err) => handle(err));
+    return Storage.createNewFile(req.body, req.file.path)
+        .then(() => res.status(204))
+        .catch((err) => handle(err));
 };
 
 exports.list = (req, res, handle) => {
@@ -85,7 +85,7 @@ exports.list = (req, res, handle) => {
         return handle(boom.badRequest());
     }
 
-    const file = db.File
+    const file = db.File;
 
     if (req.query.filesOnly) {
         file.scope('files');
@@ -96,34 +96,34 @@ exports.list = (req, res, handle) => {
     const folderId = parseInt(req.params.folderId);
 
     const children_data =
-        file.findAll(). // Get all files
+        file.findAll() // Get all files
 
-            // Check if file exists
-            then((files) => {
+        // Check if file exists
+            .then((files) => {
                 if (!files.map((item) => item.id).includes(folderId)) {
                     throw res.boom.notFound();
                 } else {
                     return files;
                 }
-            }).
+            })
 
             // Get data corresponding to the files
-            then((files) => files.map((file) => file.getData().
-                then((data) => {
+            .then((files) => files.map((file) => file.getData()
+                .then((data) => {
                     data.isDir = file.isDir;
 
                     return data;
-                }).
-                catch((err) => {
+                })
+                .catch((err) => {
                     console.log(`[badImplementation] No data corresponding to file #${file.id}`);
 
                     return {};
-                }))).
-            then((data) => Promise.all(data)).
+                })))
+            .then((data) => Promise.all(data))
 
             // Get each one in the folder, exclude root folder
-            then((data) => data.filter((item) => item.dirId === folderId)).
-            then((data) => data.filter((item) => item.fileId !== 1));
+            .then((data) => data.filter((item) => item.dirId === folderId))
+            .then((data) => data.filter((item) => item.fileId !== 1));
 
     const folder_file = db.File.findOne({where: {id: folderId}});
     const folder_data = folder_file.then((file) => file.getData());
@@ -131,25 +131,25 @@ exports.list = (req, res, handle) => {
     return Promise.all([
         folder_file,
         folder_data,
-        children_data
-    ]).
-        then((results) => {
+        children_data,
+    ])
+        .then((results) => {
             const folder_data = results[1];
 
             folder_data.isDir = results[0].isDir;
             folder_data.children = results[2];
 
             res.status(200).json(folder_data);
-        }).
-        catch((err) => handle(err));
+        })
+        .catch((err) => handle(err));
 
 };
 
 exports.delete = (req, res, handle) => {
-    db.Data.destroy({where: {fileId: req.params.fileId}}).
-        catch((err) => handle(err));
+    db.Data.destroy({where: {fileId: req.params.fileId}})
+        .catch((err) => handle(err));
 
-    db.File.destroy({where: {id: req.params.fileId}}).
-        then(() => res.status(204).send()).
-        catch((err) => handle(err));
-}
+    db.File.destroy({where: {id: req.params.fileId}})
+        .then(() => res.status(204).send())
+        .catch((err) => handle(err));
+};

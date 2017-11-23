@@ -25,52 +25,52 @@ exports.index = function (req, res, handle) {
         order: [
             [
                 'createdAt',
-                'DESC'
-            ]
-        ]
-    }).
-        then((posts) => policy.filterIndex(req, res, posts)).
-        then((posts) => res.status(200).json(posts)).
-        catch((err) => handle(err));
+                'DESC',
+            ],
+        ],
+    })
+        .then((posts) => policy.filterIndex(req, res, posts))
+        .then((posts) => res.status(200).json(posts))
+        .catch((err) => handle(err));
 };
 
 exports.show = function (req, res, handle) {
     db.Post.findOne({
         where: {id: req.params.postId},
-        include: ['author']
-    }).
-        then((post) => {
+        include: ['author'],
+    })
+        .then((post) => {
             if (!post) {
                 throw res.boom.notFound();
             }
 
             return post;
-        }).
-        then((post) => policy.filterShow(req, post)).
-        then((post) => res.status(200).json(post)).
-        catch((err) => handle(err));
+        })
+        .then((post) => policy.filterShow(req, post))
+        .then((post) => res.status(200).json(post))
+        .catch((err) => handle(err));
 };
 
 exports.store = function (req, res, handle) {
-    policy.filterStore(req, res).
-        then(() => db.Post.create(req.body)).
-        then((post) => res.status(201).json(post)).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
-        catch((err) => handle(err));
+    policy.filterStore(req, res)
+        .then(() => db.Post.create(req.body))
+        .then((post) => res.status(201).json(post))
+        .catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest())
+        .catch((err) => handle(err));
 };
 
 exports.update = function (req, res, handle) {
-    policy.filterUpdate(req, res).
-        then(() => db.Post.update(req.body, {where: {id: req.params.postId}})).
-        then((post) => res.status(200).json(post)).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
-        catch((err) => handle(err));
+    policy.filterUpdate(req, res)
+        .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
+        .then((post) => res.status(200).json(post))
+        .catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest())
+        .catch((err) => handle(err));
 };
 
 exports.delete = function (req, res, handle) {
-    policy.filterDelete(req, res).
-        then(() => db.Post.destroy({where: {id: req.params.postId}})).
-        then(() => res.status(204).json({})).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
-        catch((err) => handle(err));
+    policy.filterDelete(req, res)
+        .then(() => db.Post.destroy({where: {id: req.params.postId}}))
+        .then(() => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest())
+        .catch((err) => handle(err));
 };
