@@ -6,9 +6,9 @@ const bcrypt = require('bcrypt');
 exports.login = (req, res, handle) => {
     db.User.findOne({
         where: {'username': req.body.username},
-        include: ['groups'],
-    })
-        .then((user) => {
+        include: ['groups']
+    }).
+        then((user) => {
             if (!user) {
                 throw res.boom.notFound('Bad username');
             }
@@ -24,7 +24,7 @@ exports.login = (req, res, handle) => {
                         res.status(200).json({
                             id: user.id,
                             username: user.username,
-                            groups: user.groups,
+                            groups: user.groups
                         });
                     } else {
                         throw res.boom.badImplementation('User ID isn\'t defined');
@@ -34,8 +34,8 @@ exports.login = (req, res, handle) => {
                     throw res.boom.unauthorized('Bad password');
                 }
             });
-        })
-        .catch((err) => handle(err));
+        }).
+        catch((err) => handle(err));
 };
 
 exports.logout = (req, res, handle) => {
@@ -47,20 +47,20 @@ exports.check = (req, res, handle) => {
     if (req.session.auth) {
         db.User.findOne({
             where: {id: req.session.auth},
-            include: ['groups'],
-        })
-            .then((user) => {
+            include: ['groups']
+        }).
+            then((user) => {
                 if (!user) {
                     throw res.boom.notFound();
                 } else {
                     res.json({
                         id: user.id,
                         username: user.username,
-                        groups: user.groups,
+                        groups: user.groups
                     });
                 }
-            })
-            .catch((err) => handle(err));
+            }).
+            catch((err) => handle(err));
     } else {
         throw res.boom.unauthorized();
     }

@@ -3,24 +3,24 @@
 const db = require('../models');
 
 exports.index = function (req, res, handle) {
-    db.Group.findAll({include: ['users']})
-        .then((group) => res.json(group))
-        .catch((err) => handle(err));
+    db.Group.findAll({include: ['users']}).
+        then((group) => res.json(group)).
+        catch((err) => handle(err));
 };
 
 exports.show = function (req, res, handle) {
     db.Group.findOne({
         where: {id: req.params.groupId},
         include: ['users']
-    })
-        .then((group) => {
+    }).
+        then((group) => {
             if (!group) {
                 throw res.boom.notFound();
             } else {
                 res.status(200).json(group);
             }
-        })
-        .catch((err) => handle(err));
+        }).
+        catch((err) => handle(err));
 };
 
 exports.store = function (req, res, handle) {
@@ -50,15 +50,15 @@ exports.update = function (req, res, handle) {
         req.body.name = req.body.name.toLowerCase();
     }
 
-    db.Group.update(req.body, {where: {id: req.params.groupId}})
-        .then((result) => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest())
-        .catch((err) => handle(err));
+    db.Group.update(req.body, {where: {id: req.params.groupId}}).
+        then((result) => res.status(204).json({})).
+        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        catch((err) => handle(err));
 };
 
 exports.delete = function (req, res, handle) {
-    db.Group.destroy({where: {id: req.params.groupId}})
-        .then((data) => {
+    db.Group.destroy({where: {id: req.params.groupId}}).
+        then((data) => {
 
             /*
              *Data :
@@ -77,6 +77,6 @@ exports.delete = function (req, res, handle) {
             } else {
                 throw res.boom.badImplementation('Too many rows deleted !');
             }
-        })
-        .catch((err) => handle(err));
+        }).
+        catch((err) => handle(err));
 };

@@ -11,35 +11,35 @@ const agent = chai.request.agent(server);
 
 describe('Posts', () => {
     before(() =>
-        seed_and_login(agent)
-            .then(() => {
+        seed_and_login(agent).
+            then(() => {
                 db.Group.create({name: 'authors'});
                 db.Post.create({
                     title: 'Foo',
                     markdown: 'Bar',
                     authorId: 1,
-                    published: true,
+                    published: true
                 });
                 db.Post.create({
                     title: 'Bar',
                     markdown: 'Foo',
                     authorId: 1,
-                    published: false,
+                    published: false
                 });
             }));
 
     describe('[GET]', () => {
         it('expect to GET all posts', () =>
-            agent.get('/posts')
-                .then((res) => {
+            agent.get('/posts').
+                then((res) => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body.length).to.be.equal(2);
                 }));
 
         it('expect to GET all published posts', () =>
-            agent.get('/posts?published=true')
-                .then((res) => {
+            agent.get('/posts?published=true').
+                then((res) => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body.length).to.be.equal(1);
@@ -54,8 +54,8 @@ describe('Posts', () => {
                 }));
 
         it('expect to GET all drafted posts', () =>
-            agent.get('/posts?published=false')
-                .then((res) => {
+            agent.get('/posts?published=false').
+                then((res) => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body.length).to.be.equal(1);
@@ -71,8 +71,8 @@ describe('Posts', () => {
                 }));
 
         it('expect to GET post with id = 1', () =>
-            agent.get('/posts/1')
-                .then((res) => {
+            agent.get('/posts/1').
+                then((res) => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
 
@@ -88,8 +88,8 @@ describe('Posts', () => {
                 }));
 
         it('expect an error when GET post with id = 3', () =>
-            agent.get('/posts/3')
-                .then((res) => {
+            agent.get('/posts/3').
+                then((res) => {
                     expect(res).to.have.status(404);
 
                 }));
@@ -97,15 +97,15 @@ describe('Posts', () => {
 
     describe('[POST]', () => {
         it('expect POST to return the new post with status 201', () =>
-            agent.post('/posts')
-                .send({
+            agent.post('/posts').
+                send({
                     id: 3,
                     title: 'Lorem ipsum',
                     markdown: 'Lorem ipsum',
                     authorId: 1,
-                    published: true,
-                })
-                .then((res) => {
+                    published: true
+                }).
+                then((res) => {
                     expect(res).to.have.status(201);
                     expect(res).to.be.json;
 
@@ -130,14 +130,14 @@ describe('Posts', () => {
             }));
 
         it('expect POST post to return an error with status 400 when sending an incomplete request', () =>
-            agent.post('/posts')
-                .send({
+            agent.post('/posts').
+                send({
                     id: 3,
                     markdown: 'Lorem ipsum',
                     authorId: 1,
-                    published: true,
-                }) // Forgot the title
-                .then((res) => {
+                    published: true
+                }). // Forgot the title
+                then((res) => {
                     expect(res).to.have.status(400);
 
                 }));
@@ -146,20 +146,20 @@ describe('Posts', () => {
 
     describe('[PUT]', () => {
         it('expect PUT to update the post with id = 3 and return nothing with status 204', () =>
-            chai.request(server).put('/posts/3')
-                .send({
+            chai.request(server).put('/posts/3').
+                send({
                     title: 'Edited title',
-                    published: false,
-                })
-                .then((res) => {
+                    published: false
+                }).
+                then((res) => {
                     expect(res).to.have.status(204);
                     expect(res.body).to.be.empty;
 
                 }));
 
         it('expect the data to be updated in the database', () =>
-            db.Post.findById(3)
-                .then((post) => {
+            db.Post.findById(3).
+                then((post) => {
                     expect(post.title).to.be.equal('Edited title');
                     expect(post.published).to.be.false;
                     expect(post.publishedAt).to.be.null;
@@ -168,9 +168,9 @@ describe('Posts', () => {
                 }));
 
         it('expect PUT to return an error with the status 400 when sending an incomplete request', () =>
-            agent.put('/posts/3')
-                .send({title: null})
-                .then((res) => {
+            agent.put('/posts/3').
+                send({title: null}).
+                then((res) => {
                     expect(res).to.have.status(400);
 
                 }));
@@ -178,16 +178,16 @@ describe('Posts', () => {
 
     describe('[DELETE]', () => {
         it('expect to DELETE the post with id = 3 and return nothing with status 204', () =>
-            agent.delete('/posts/3')
-                .then((res) => {
+            agent.delete('/posts/3').
+                then((res) => {
                     expect(res).to.have.status(204);
                     expect(res.body).to.be.empty;
 
                 }));
 
         it('expect to not have the post in the database', () =>
-            db.User.findById(3)
-                .then((post) => {
+            db.User.findById(3).
+                then((post) => {
                     expect(post).to.be.null;
 
                 }));
