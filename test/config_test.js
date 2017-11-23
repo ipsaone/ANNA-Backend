@@ -1,3 +1,5 @@
+/* eslint global-require: 0 */
+
 'use strict';
 
 describe('Test the installation', () => {

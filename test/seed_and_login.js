@@ -28,7 +28,7 @@ module.exports = (agent) =>
 
             // A) users
             seedData.users = chance.integer({
-                min: seedOptions.min_users,
+                min: seedOptions.minUsers,
                 max: seedOptions.maxUsers
             });
             const user_promises = [];
@@ -46,7 +46,7 @@ module.exports = (agent) =>
                 })
             });
             randoms.emails = chance.unique(chance.email, seedData.users)
-            for (let i = 0; i < seedData.users; i += 1) {
+            for (let i = 0; i < seedData.users; i++) {
                 user_promises.push(db.User.create({
                     username: randoms.usernames[i],
                     password: randoms.passwords[i],
@@ -71,7 +71,7 @@ module.exports = (agent) =>
                     max: 12
                 })
             });
-            for (let i = 0; i < seedData.groups; i += 1) {
+            for (let i = 0; i < seedData.groups; i++) {
                 groupPromises.push(db.Group.create({name: randoms.names[i]}));
             }
 
@@ -94,7 +94,7 @@ module.exports = (agent) =>
                 max: seedData.groups
             });
 
-            for (let i = 0; i < seedData.userGroups; i += 1) {
+            for (let i = 0; i < seedData.userGroups; i++) {
                 userGroupPromises.push(db.Group.findById(groupIds[i]).then((group) => group.addUser(userIds[i])));
             }
 
