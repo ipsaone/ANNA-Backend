@@ -10,9 +10,9 @@ describe('Test the installation', () => {
 
     describe('Apache connection', () => {
         it('expect no errors and to have the status code 200', (done) => {
-            chai.request('http://127.0.0.1').
-                get('/').
-                end((err, res) => {
+            chai.request('http://127.0.0.1')
+                .get('/')
+                .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(200);
                     done();
@@ -23,9 +23,9 @@ describe('Test the installation', () => {
     describe('PHPMyAdmin connection', () => {
         it('expect no errors and to have the status code 200', (done) => {
 
-            chai.request('http://127.0.0.1/phpmyadmin').
-                get('/').
-                end((err, res) => {
+            chai.request('http://127.0.0.1/phpmyadmin')
+                .get('/').
+                .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(200);
                     done();
@@ -44,7 +44,7 @@ describe('Test the installation', () => {
                 password: config.sequelize.password,
                 database: config.sequelize.database,
                 waitForConnections: true,
-                connectionLimit: 100
+                connectionLimit: 100,
             }).connect((err) => {
                 expect(err).to.be.null;
                 done();
