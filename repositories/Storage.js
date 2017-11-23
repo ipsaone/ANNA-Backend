@@ -54,8 +54,10 @@ Storage.getDataPath = function (full = false) {
     console.log(path);
 
     // Check file exists
-    fs.access(path, fs.constants.F_OK, err => {
-        if (err) { return Promise.reject(err); }
+    fs.access(path, fs.constants.F_OK, (err) => {
+        if (err) {
+            return Promise.reject(err);
+        }
 
 
         // Return file path if it exists
