@@ -17,7 +17,10 @@ router.post('/', (req, res) => {
     if (session.views) {
         session.views++;
         session.save();
-        res.json({test: true, views: session.views});
+        res.json({
+            test: true,
+            views: session.views
+        });
     } else {
         session.views = 1;
         session.save();

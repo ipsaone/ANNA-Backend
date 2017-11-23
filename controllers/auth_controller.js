@@ -4,10 +4,13 @@ const db = require('../models');
 const bcrypt = require('bcrypt');
 
 exports.login = (req, res, handle) => {
-    db.User.findOne({where: {'username': req.body.username}, include: ['groups']})
-        .then(user => {
+    db.User.findOne({
+        where: {'username': req.body.username},
+        include: ['groups'],
+    })
+        .then((user) => {
             if (!user) {
-                throw res.boom.notFound("Bad username");
+                throw res.boom.notFound('Bad username');
             }
 
             bcrypt.compare(req.body.password, user.password, (err, accept) => {
@@ -18,17 +21,21 @@ exports.login = (req, res, handle) => {
                 if (accept) {
                     if (user.id) {
                         req.session.auth = user.id;
-                        res.status(200).json({id: user.id, username: user.username, groups: user.groups});
+                        res.status(200).json({
+                            id: user.id,
+                            username: user.username,
+                            groups: user.groups,
+                        });
                     } else {
                         throw res.boom.badImplementation('User ID isn\'t defined');
                     }
 
                 } else {
-                    throw res.boom.unauthorized("Bad password");
+                    throw res.boom.unauthorized('Bad password');
                 }
             });
         })
-        .catch(err => handle(err));
+        .catch((err) => handle(err));
 };
 
 exports.logout = (req, res, handle) => {
@@ -38,19 +45,23 @@ exports.logout = (req, res, handle) => {
 
 exports.check = (req, res, handle) => {
     if (req.session.auth) {
-        db.User.findOne({where: {id: req.session.auth}, include: ['groups']})
-            .then(user => {
+        db.User.findOne({
+            where: {id: req.session.auth},
+            include: ['groups'],
+        })
+            .then((user) => {
                 if (!user) {
                     throw res.boom.notFound();
-                }
-
-                else {
-                    res.json({id: user.id, username: user.username, groups: user.groups});
+                } else {
+                    res.json({
+                        id: user.id,
+                        username: user.username,
+                        groups: user.groups,
+                    });
                 }
             })
-            .catch(err => handle(err));
-    }
-    else {
+            .catch((err) => handle(err));
+    } else {
         throw res.boom.unauthorized();
     }
 };

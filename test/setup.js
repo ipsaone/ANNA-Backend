@@ -3,12 +3,8 @@
 const db = require('../models');
 
 describe('Initialization', () => {
-    before('Init database',  () => {
-            return db.sequelize.sync({force: true});
-    });
+    before('Init database', () => db.sequelize.sync({force: true}));
 
-    it('Forces initialization', done => {
-        return done();
-    })
+    it('Forces initialization', (done) => done())
 
 })
