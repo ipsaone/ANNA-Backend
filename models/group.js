@@ -4,8 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     const Group = sequelize.define('Group', {
         name: {allowNull: false, type: DataTypes.STRING}
     }, {
-        timestamps: false,
-        tableName: 'Group'
+        timestamps: false
     });
 
     Group.associate = function (models) {

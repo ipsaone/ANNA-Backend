@@ -31,7 +31,14 @@ let config = {
             //logging: console.log,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
-            operatorsAliases: false
+            operatorsAliases: false,
+            dialectOptions: {
+                socketPath: '/var/run/mysqld/mysqld.sock'
+            },
+            pool: {
+               maxConnections: 50,
+               maxIdleTime: 10
+           }
         };
 
     },

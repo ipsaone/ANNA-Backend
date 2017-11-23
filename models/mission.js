@@ -18,8 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         hooks: {
             beforeCreate: compileMd,
             beforeUpdate: compileMd
-        },
-        tableName: 'Mission'
+        }
     });
 
 

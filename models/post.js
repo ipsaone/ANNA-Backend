@@ -35,8 +35,7 @@ module.exports = (sequelize, DataTypes) => {
             published: {
                 where: {published: true}
             }
-        },
-        tableName: 'Post'
+        }
     });
 
     Post.associate = function (models) {

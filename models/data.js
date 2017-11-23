@@ -36,8 +36,7 @@ module.exports = (sequelize, DataTypes) => {
             beforeCreate: computeValues,
             beforeUpdate: computeValues
         },
-        freezeTableName: true,
-        tableName: 'Data'
+        freezeTableName: true
     });
 
 
