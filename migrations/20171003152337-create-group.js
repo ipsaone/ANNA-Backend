@@ -13,5 +13,5 @@ module.exports = {
             type: Sequelize.STRING
         }
     }),
-    down: (queryInterface, Sequelize) => queryInterface.dropTable('Groups')
+    down: (queryInterface) => queryInterface.dropTable('Groups')
 };

@@ -4,14 +4,14 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
-const seed_and_login = require('./seed_and_login');
+const seedAndLogin = require('./seed_and_login');
 
 chai.use(require('chai-http'));
 const agent = chai.request.agent(server);
 
 describe('Posts', () => {
     before(() =>
-        seed_and_login(agent).
+        seedAndLogin(agent).
             then(() => {
                 db.Group.create({name: 'authors'});
                 db.Post.create({

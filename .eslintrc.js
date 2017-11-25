@@ -158,7 +158,7 @@ module.exports = {
         "no-param-reassign": "error",
         "no-path-concat": "error",
         "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}],
-        "no-process-env": "error",
+        "no-process-env": 0,
         "no-process-exit": "error",
         "no-proto": "error",
         "no-prototype-builtins": "error",
@@ -237,7 +237,7 @@ module.exports = {
             "last"
         ],
         "sort-imports": "error",
-        "sort-keys": "warn",
+        "sort-keys": 0,
         "sort-vars": "error",
         "space-before-blocks": "error",
         "space-before-function-paren": "error",
