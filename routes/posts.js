@@ -1,16 +1,15 @@
 'use strict';
 
 const router = require('express').Router();
-const post_controller = require('../controllers/post_controller');
-const post_policy = require('../policies/post_policy');
+const postController = require('../controllers/post_controller');
 
 router.route('/').
-    get(post_controller.index).
-    post(post_controller.store);
+    get(postController.index).
+    post(postController.store);
 
 router.route('/:postId([0-9]+)').
-    get(post_controller.show).
-    put(post_controller.update).
-    delete(post_controller.delete);
+    get(postController.show).
+    put(postController.update).
+    delete(postController.delete);
 
 module.exports = router;

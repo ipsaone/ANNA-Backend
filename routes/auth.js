@@ -1,10 +1,10 @@
 'use strict';
 
 const router = require('express').Router();
-const auth_controller = require('../controllers/auth_controller');
+const authController = require('../controllers/auth_controller');
 
-router.post('/login', auth_controller.login);
-router.get('/logout', auth_controller.logout);
-router.get('/check', auth_controller.check);
+router.post('/login', authController.login);
+router.get('/logout', authController.logout);
+router.get('/check', authController.check);
 
 module.exports = router;

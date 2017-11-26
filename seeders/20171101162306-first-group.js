@@ -3,7 +3,7 @@
 const db = require('../models');
 
 module.exports = {
-    up: (queryInterface, Sequelize) => queryInterface.bulkInsert('Groups', [
+    up: (queryInterface) => queryInterface.bulkInsert('Groups', [
         {name: 'root'},
         {name: 'authors'}
     ]).
@@ -15,5 +15,5 @@ module.exports = {
         then((root) => root.addGroup(authors.id)).
         catch((err) => console.log(err)),
 
-    down: (queryInterface, Sequelize) => queryInterface.bulkDelete('Groups', null, {})
+    down: (queryInterface) => queryInterface.bulkDelete('Groups', null, {})
 };
