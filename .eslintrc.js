@@ -31,7 +31,7 @@ module.exports = {
         "block-spacing": "error",
         "brace-style": "error",
         "callback-return": "error",
-        "camelcase": "warn",
+        "camelcase": "error",
         "capitalized-comments": [
             "error",
             "always"

@@ -11,7 +11,7 @@ exports.download = (req, res, handle) => {
     // Revision parameter, to get an older version
     let rev = 0;
 
-    if (req.query.revision && parseInt(req.query.revision)) {
+    if (req.query.revision && parseInt(req.query.revision, 10)) {
         rev = req.query.revision;
     }
 
@@ -23,27 +23,27 @@ exports.download = (req, res, handle) => {
 
     // Send back the correct response, file or json
     const data = findFile.then((file) => {
-        if (!file) {
-            throw res.boom.notFound();
-        } else {
+        if (file) {
             return file.getData(rev);
         }
+        throw res.boom.notFound();
+
     });
 
     if (dl) {
-        data.then((path) => getPath(true)).
+        data.then(() => data.getPath(true)).
             then((path) => res.download(path));
     } else {
-        data.then((data) => res.json(data));
+        data.then((contents) => res.json(contents));
     }
 
     data.catch((err) => handle(err));
 };
 
-exports.upload_rev = (req, res, handle) => {
+exports.uploadRev = (req, res, handle) => {
     // Escape req.body strings
     for (const prop in req.body) {
-        if (req.body && req.body.hasOwnProperty(prop) && typeof req.body[prop] === 'string') {
+        if (req.body && Object.prototype.hasOwnProperty.call(req.body, prop) && typeof req.body[prop] === 'string') {
             req.body[prop] = escape(req.body[prop]);
         }
     }
@@ -60,7 +60,7 @@ exports.upload_rev = (req, res, handle) => {
 
 };
 
-exports.upload_new = (req, res, handle) => {
+exports.uploadNew = (req, res, handle) => {
     if (!req.file) {
         throw res.boom.badRequest();
     }
@@ -81,7 +81,7 @@ exports.upload_new = (req, res, handle) => {
 exports.list = (req, res, handle) => {
 
     // Fail if the folder isn't defined
-    if (!req.params.folderId || !parseInt(req.params.folderId)) {
+    if (!req.params.folderId || !parseInt(req.params.folderId, 10)) {
         return handle(boom.badRequest());
     }
 
@@ -93,18 +93,18 @@ exports.list = (req, res, handle) => {
         file.scope('folders');
     }
 
-    const folderId = parseInt(req.params.folderId);
+    const folderId = parseInt(req.params.folderId, 10);
 
-    const children_data =
+    const childrenData =
         file.findAll(). // Get all files
 
         // Check if file exists
             then((files) => {
-                if (!files.map((item) => item.id).includes(folderId)) {
-                    throw res.boom.notFound();
-                } else {
+                if (files.map((item) => item.id).includes(folderId)) {
                     return files;
                 }
+                throw res.boom.notFound();
+
             }).
 
             // Get data corresponding to the files
@@ -125,21 +125,21 @@ exports.list = (req, res, handle) => {
             then((data) => data.filter((item) => item.dirId === folderId)).
             then((data) => data.filter((item) => item.fileId !== 1));
 
-    const folder_file = db.File.findOne({where: {id: folderId}});
-    const folder_data = folder_file.then((file) => file.getData());
+    const folderFile = db.File.findOne({where: {id: folderId}});
+    const filderData = folder_file.then((file) => file.getData());
 
     return Promise.all([
-        folder_file,
-        folder_data,
-        children_data
+        folderFile,
+        folderData,
+        childrenData
     ]).
         then((results) => {
-            const folder_data = results[1];
+            const folderData = results[1];
 
-            folder_data.isDir = results[0].isDir;
-            folder_data.children = results[2];
+            folderData.isDir = results[0].isDir;
+            folderData.children = results[2];
 
-            res.status(200).json(folder_data);
+            res.status(200).json(folderData);
         }).
         catch((err) => handle(err));
 
