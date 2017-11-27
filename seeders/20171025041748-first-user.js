@@ -1,3 +1,5 @@
+/* eslint no-sync: "off" */
+
 'use strict';
 
 const bcrypt = require('bcrypt');

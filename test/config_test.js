@@ -60,6 +60,4 @@ describe('Test the installation', () => {
             done();
         });
     });
-
-    after(() => process.exit(0));
 });

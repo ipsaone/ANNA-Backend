@@ -12,7 +12,7 @@ router.route('/:userId([0-9]+)').
     put(userController.update).
     delete(userController.delete);
 
-router.get('/:userId([0-9]+)/posts', user_controller.posts);
+router.get('/:userId([0-9]+)/posts', userController.posts);
 
 router.route('/:userId([0-9]+)/groups').
     get(userController.get_groups).

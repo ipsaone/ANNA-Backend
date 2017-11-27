@@ -49,7 +49,8 @@ const config = {
 
 
 config.app.getCertificates = () => {
-    let privateKey, certificate;
+    let certificate = '',
+        privateKey = '';
 
     if (process.env.DEV === 'true') {
         privateKey = fs.readFileSync('sslcert/localhost.key', 'utf8');

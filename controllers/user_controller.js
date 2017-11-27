@@ -3,11 +3,6 @@
 const db = require('../models');
 const boom = require('boom');
 
-/**
- * List all users.
- * @param req
- * @param res
- */
 exports.index = function (req, res, handle) {
     db.User.findAll().
         then((users) => res.status(200).json(users)).
@@ -15,11 +10,6 @@ exports.index = function (req, res, handle) {
 };
 
 
-/**
- * Return an user with its groups.
- * @param req
- * @param res
- */
 exports.show = function (req, res, handle) {
     db.User.findOne({
         where: {id: req.params.userId},
@@ -36,17 +26,6 @@ exports.show = function (req, res, handle) {
 };
 
 
-/**
- * Store a new user. The body must be :
- * {
- *      "username": string,
- *      "password": string,
- *      "email": string
- * }
- *
- * @param req
- * @param res
- */
 exports.store = function (req, res, handle) {
     db.User.create(req.body).
         then((user) => res.status(201).json(user)).
@@ -55,15 +34,6 @@ exports.store = function (req, res, handle) {
 };
 
 
-/**
- * Update an user. The body must be :
- * {
- *      "username": string - If you want to update just the username
- * }
- *
- * @param req
- * @param res
- */
 exports.update = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}}).
         then((record) => record.update(req.body)).
@@ -72,12 +42,6 @@ exports.update = function (req, res, handle) {
         catch((err) => handle(err));
 };
 
-
-/**
- * Delete an user.
- * @param req
- * @param res
- */
 exports.delete = function (req, res, handle) {
     db.User.destroy({where: {id: req.params.userId}}).
         then(() => res.status(204).send()).
@@ -85,11 +49,6 @@ exports.delete = function (req, res, handle) {
         catch((err) => handle(err));
 };
 
-/**
- * Return all posts of an user.
- * @param req
- * @param res
- */
 exports.posts = function (req, res, handle) {
 
     /*
@@ -113,11 +72,6 @@ exports.posts = function (req, res, handle) {
 };
 
 
-/**
- * Return all groups of an user.
- * @param req
- * @param res
- */
 exports.get_groups = function (req, res, handle) {
     db.User.findOne({
         where: {id: req.params.userId},
@@ -133,20 +87,6 @@ exports.get_groups = function (req, res, handle) {
         catch((err) => handle(err));
 };
 
-/**
- * Add groups to an user. The body must be :
- * {
- *      "groupsId": [int, int, int, int]
- * }
- *
- * If you want to add only one group :
- * {
- *      "groupsId": [int]
- * }
- *
- * @param req
- * @param res
- */
 exports.add_groups = function (req, res) {
     db.User.findById(req.params.userId).
         then((user) => {
@@ -160,19 +100,7 @@ exports.add_groups = function (req, res) {
         catch((err) => handle(err));
 };
 
-/**
- * Delete groups from an user. The body must be:
- * {
- *      "groupsId": [int, int, int, int]
- * }
- *
- * If you want to delete only one group :
- * {
- *      "groupsId": [int]
- * }
- * @param req
- * @param res
- */
+
 exports.delete_groups = function (req, res) {
     db.User.findById(req.params.userId).
         then((user) => user.removeGroups(req.body.groupsId)).
