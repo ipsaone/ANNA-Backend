@@ -29,8 +29,8 @@ exports.index = function (req, res, handle) {
             ]
         ]
     }).
-        then((posts) => policy.filterIndex(req, res, posts)).
-        then((posts) => res.status(200).json(posts)).
+        then((postsResponse) => policy.filterIndex(req, res, postsResponse)).
+        then((postsFiltered) => res.status(200).json(postsFiltered)).
         catch((err) => handle(err));
 };
 
@@ -55,7 +55,7 @@ exports.store = function (req, res, handle) {
     policy.filterStore(req, res).
         then(() => db.Post.create(req.body)).
         then((post) => res.status(201).json(post)).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
         catch((err) => handle(err));
 };
 
@@ -63,7 +63,7 @@ exports.update = function (req, res, handle) {
     policy.filterUpdate(req, res).
         then(() => db.Post.update(req.body, {where: {id: req.params.postId}})).
         then((post) => res.status(200).json(post)).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
         catch((err) => handle(err));
 };
 
@@ -71,6 +71,6 @@ exports.delete = function (req, res, handle) {
     policy.filterDelete(req, res).
         then(() => db.Post.destroy({where: {id: req.params.postId}})).
         then(() => res.status(204).json({})).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
         catch((err) => handle(err));
 };

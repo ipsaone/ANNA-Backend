@@ -38,7 +38,7 @@ exports.login = (req, res, handle) => {
         catch((err) => handle(err));
 };
 
-exports.logout = (req, res, handle) => {
+exports.logout = (req, res) => {
     req.session.auth = null;
     res.status(200).json({});
 };
@@ -50,14 +50,15 @@ exports.check = (req, res, handle) => {
             include: ['groups']
         }).
             then((user) => {
-                if (!user) {
-                    throw res.boom.notFound();
-                } else {
+                if (user) {
                     res.json({
                         id: user.id,
                         username: user.username,
                         groups: user.groups
                     });
+
+                } else {
+                    throw res.boom.notFound();
                 }
             }).
             catch((err) => handle(err));

@@ -1,3 +1,5 @@
+/* eslint no-sync: "warn" */
+
 'use strict';
 
 require('dotenv').config();

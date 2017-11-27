@@ -14,10 +14,10 @@ exports.show = function (req, res, handle) {
         include: ['users']
     }).
         then((group) => {
-            if (!group) {
-                throw res.boom.notFound();
-            } else {
+            if (group) {
                 res.status(200).json(group);
+            } else {
+                throw res.boom.notFound();
             }
         }).
         catch((err) => handle(err));
@@ -36,7 +36,7 @@ exports.store = function (req, res, handle) {
 
     db.Group.create(req.body).
         then((group) => res.status(201).json(group)).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
         catch((err) => handle(err));
 };
 
@@ -51,8 +51,8 @@ exports.update = function (req, res, handle) {
     }
 
     db.Group.update(req.body, {where: {id: req.params.groupId}}).
-        then((result) => res.status(204).json({})).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        then(() => res.status(204).json({})).
+        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
         catch((err) => handle(err));
 };
 

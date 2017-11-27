@@ -16,10 +16,10 @@ exports.show = function (req, res, handle) {
         include: ['author']
     }).
         then((log) => {
-            if (!log) {
-                throw res.boom.notFound();
-            } else {
+            if (log) {
                 res.status(200).json(log);
+            } else {
+                throw res.boom.notFound();
             }
         }).
         catch((err) => handle(err));
@@ -28,13 +28,13 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     db.Log.create(req.body).
         then((log) => res.status(201).json(log)).
-        catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest()).
+        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
         catch((err) => handle(err));
 };
 
 exports.update = function (req, res, handle) {
     db.Log.update(req.body, {where: {id: req.params.logId}}).
-        then((result) => res.status(204).json({})).
+        then(() => res.status(204).json({})).
         catch((err) => handle(err));
 };
 
