@@ -39,7 +39,11 @@ exports.filterIndex = (req, res, posts) =>
                 return posts;
             }
 
-            return Array.isArray(posts) ? posts.filter((post) => post.published) : [];
+            if (Array.isArray(posts)) {
+                return posts.filter((post) => post.published)
+            }
+
+            return [];
 
         })
 
@@ -48,27 +52,55 @@ exports.filterShow = (req, post) =>
 
     // Only show drafts is user is an author
     userIsAuthor(req.session.auth).
-        then((isAuthor) => post.published || isAuthor ? post : {})
+        then((isAuthor) => {
+            if (post.published || isAuthor) {
+                return post
+            }
+
+            return {};
+
+        })
 
 
 exports.filterStore = (req, res) =>
 
     // Only allow creation if user is an author
     userIsAuthor(req.session.auth).
-        then((isAuthor) => isAuthor ? true : Promise.reject(res.boom.unauthorized()))
+        then((isAuthor) => {
+            if (isAuthor) {
+                return true;
+            }
+
+            return Promise.reject(res.boom.unauthorized());
+
+        });
 
 
 exports.filterUpdate = (req, res) =>
 
     // Only allow update if user is an author
     userIsAuthor(req.session.auth).
-        then((isAuthor) => isAuthor ? true : Promise.reject(res.boom.unauthorized()))
+        then((isAuthor) => {
+            if (isAuthor) {
+                return true;
+            }
+
+            return Promise.reject(res.boom.unauthorized());
+
+
+        });
 
 
 exports.filterDelete = (req, res) =>
 
     // Only allow delete if user is an author
     userIsAuthor(req.session.auth).
-        then((isAuthor) => isAuthor ? true : Promise.reject(res.boom.unauthorized()))
+        then((isAuthor) => {
+            if (isAuthor) {
+                return true;
+            }
+
+            return Promise.reject(res.boom.unauthorized());
+        })
 
 
