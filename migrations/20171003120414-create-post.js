@@ -23,7 +23,7 @@ module.exports = {
             authorId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
-                onUpdate: 'CASCADE'
+                onUpdate: 'CASCADE',
                 onDelete: 'RESTRICT',
                 references: {
                     model: 'Users',
