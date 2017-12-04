@@ -1,15 +1,17 @@
+/* eslint new-cap: 0*/
+
 'use strict';
 
 const router = require('express').Router();
-const group_controller = require('../controllers/group_controller');
+const groupController = require('../controllers/group_controller');
 
 router.route('/').
-    get(group_controller.index).
-    post(group_controller.store);
+    get(groupController.index).
+    post(groupController.store);
 
 router.route('/:groupId([0-9]+)').
-    get(group_controller.show).
-    put(group_controller.update).
-    delete(group_controller.delete);
+    get(groupController.show).
+    put(groupController.update).
+    delete(groupController.delete);
 
 module.exports = router;

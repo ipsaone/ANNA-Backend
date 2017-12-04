@@ -6,19 +6,19 @@ module.exports = {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
-            type: Sequelize.INTEGER,
+            type: Sequelize.INTEGER
         },
         title: {
             allowNull: false,
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
         },
         markdown: {
             allowNull: false,
-            type: Sequelize.TEXT,
+            type: Sequelize.TEXT
         },
         content: {
             allowNull: false,
-            type: Sequelize.TEXT,
+            type: Sequelize.TEXT
         },
         authorId: {
             allowNull: true,
@@ -27,17 +27,17 @@ module.exports = {
             onUpdate: 'CASCADE',
             references: {
                 model: 'Users',
-                key: 'id',
-            },
+                key: 'id'
+            }
         },
         createdAt: {
             allowNull: false,
-            type: Sequelize.DATE,
+            type: Sequelize.DATE
         },
         updatedAt: {
             allowNull: false,
-            type: Sequelize.DATE,
-        },
+            type: Sequelize.DATE
+        }
     }),
-    down: (queryInterface, Sequelize) => queryInterface.dropTable('Logs'),
+    down: (queryInterface) => queryInterface.dropTable('Logs')
 };

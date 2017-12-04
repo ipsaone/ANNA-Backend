@@ -13,5 +13,5 @@ module.exports = {
             type: Sequelize.BOOLEAN
         }
     }),
-    down: (queryInterface, Sequelize) => queryInterface.dropTable('Files')
+    down: (queryInterface) => queryInterface.dropTable('Files')
 };

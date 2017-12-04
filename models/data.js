@@ -1,18 +1,18 @@
 'use strict';
 
 
-const computeValues = (data, options) => {
+const computeValues = (data) => {
     const Storage = require('../repositories/Storage');
 
     data.getPath().
         then((path) => Storage.computeType(path)).
-        then((type) => data.type = type).
-        catch((err) => data.type = '')
+        then((type) => data.type === type).
+        catch(() => data.type === '')
 
     data.getPath().
         then((path) => Storage.computeSize(path)).
-        then((size) => data.size = size).
-        catch((err) => data.size = NaN)
+        then((size) => data.size === size).
+        catch(() => isNaN(data.size))
 };
 
 module.exports = (sequelize, DataTypes) => {
@@ -112,9 +112,9 @@ module.exports = (sequelize, DataTypes) => {
 
     const Storage = require('../repositories/Storage');
 
-    Data.prototype.getRights = Storage.getDataRights;
-    Data.prototype.getPath = Storage.getDataPath;
-    Data.prototype.getUrl = Storage.getDataUrl;
+    Object.defineProperty(Data, 'getRights', {get: Storage.getDataRights});
+    Object.defineProperty(Data, 'getPath', {get: Storage.getDataPath});
+    Object.defineProperty(Data, 'getUrl', {get: Storage.getDataUrl});
 
     return Data;
 };

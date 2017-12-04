@@ -5,13 +5,43 @@ const escape = require('escape-html');
 const Storage = require('../repositories/Storage');
 const boom = require('boom');
 
+const getChildrenData = (req, res, folderId) =>
+    db.file.findAll(). // Get all files
+
+        // Check if file exists
+        then((files) => {
+            if (files.map((item) => item.id).includes(folderId)) {
+                return files;
+            }
+            throw res.boom.notFound();
+
+        }).
+
+    // Get data corresponding to the files
+        then((files) => files.map((thisFile) => thisFile.getData().
+            then((data) => {
+                data.isDir = thisFile.isDir;
+
+                return data;
+            }).
+            catch((err) => {
+                console.log(`[badImplementation] No data corresponding to file #${thisFile.id}`, err);
+
+                return {};
+            }))).
+        then((data) => Promise.all(data)).
+
+    // Get each one in the folder, exclude root folder
+        then((data) => data.filter((item) => item.dirId === folderId)).
+        then((data) => data.filter((item) => item.fileId !== 1));
+
 
 exports.download = (req, res, handle) => {
 
     // Revision parameter, to get an older version
     let rev = 0;
 
-    if (req.query.revision && parseInt(req.query.revision)) {
+    if (req.query.revision && parseInt(req.query.revision, 10)) {
         rev = req.query.revision;
     }
 
@@ -23,65 +53,57 @@ exports.download = (req, res, handle) => {
 
     // Send back the correct response, file or json
     const data = findFile.then((file) => {
-        if (!file) {
-            throw res.boom.notFound();
-        } else {
+        if (file) {
             return file.getData(rev);
         }
+        throw res.boom.notFound();
+
     });
 
     if (dl) {
-        data.then((path) => getPath(true))
-            .then((path) => res.download(path));
+        data.then(() => data.getPath(true)).
+            then((path) => res.download(path));
     } else {
-        data.then((data) => res.json(data));
+        data.then((contents) => res.json(contents));
     }
 
     data.catch((err) => handle(err));
 };
 
-exports.upload_rev = (req, res, handle) => {
+exports.uploadRev = (req, res, handle) => {
     // Escape req.body strings
-    for (const prop in req.body) {
-        if (req.body && req.body.hasOwnProperty(prop) && typeof req.body[prop] === 'string') {
-            req.body[prop] = escape(req.body[prop]);
-        }
-    }
+    req.body = req.body.map((elem) => escape(elem));
 
     // Find the file in database and add new data
-    return db.File.findOne({where: {id: req.params.fileId}})
-        .then((file) => {
+    return db.File.findOne({where: {id: req.params.fileId}}).
+        then((file) => {
             console.log(req.file);
 
             return file.addData(req.body, req.file.path);
-        })
-        .catch((err) => handle(err));
+        }).
+        catch((err) => handle(err));
 
 
 };
 
-exports.upload_new = (req, res, handle) => {
+exports.uploadNew = (req, res, handle) => {
     if (!req.file) {
         throw res.boom.badRequest();
     }
 
     // Escape req.body strings
-    for (const prop in req.body) {
-        if (req.body && Object.prototype.hasOwnProperty.call(req.body, prop) && typeof req.body[prop] === 'string') {
-            req.body[prop] = escape(req.body[prop]);
-        }
-    }
+    req.body = req.body.map((elem) => escape(elem));
 
     // Create the file and its data
-    return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.status(204))
-        .catch((err) => handle(err));
+    return Storage.createNewFile(req.body, req.file.path).
+        then(() => res.status(204)).
+        catch((err) => handle(err));
 };
 
 exports.list = (req, res, handle) => {
 
     // Fail if the folder isn't defined
-    if (!req.params.folderId || !parseInt(req.params.folderId)) {
+    if (!req.params.folderId || !parseInt(req.params.folderId, 10)) {
         return handle(boom.badRequest());
     }
 
@@ -93,63 +115,34 @@ exports.list = (req, res, handle) => {
         file.scope('folders');
     }
 
-    const folderId = parseInt(req.params.folderId);
+    const folderId = parseInt(req.params.folderId, 10);
 
-    const children_data =
-        file.findAll() // Get all files
-
-        // Check if file exists
-            .then((files) => {
-                if (!files.map((item) => item.id).includes(folderId)) {
-                    throw res.boom.notFound();
-                } else {
-                    return files;
-                }
-            })
-
-            // Get data corresponding to the files
-            .then((files) => files.map((file) => file.getData()
-                .then((data) => {
-                    data.isDir = file.isDir;
-
-                    return data;
-                })
-                .catch((err) => {
-                    console.log(`[badImplementation] No data corresponding to file #${file.id}`);
-
-                    return {};
-                })))
-            .then((data) => Promise.all(data))
-
-            // Get each one in the folder, exclude root folder
-            .then((data) => data.filter((item) => item.dirId === folderId))
-            .then((data) => data.filter((item) => item.fileId !== 1));
-
-    const folder_file = db.File.findOne({where: {id: folderId}});
-    const folder_data = folder_file.then((file) => file.getData());
+    const childrenData = getChildrenData(req, res, folderId)
+    const folderFile = db.File.findOne({where: {id: folderId}});
+    const folderData = folderFile.then((thisFile) => thisFile.getData());
 
     return Promise.all([
-        folder_file,
-        folder_data,
-        children_data,
-    ])
-        .then((results) => {
-            const folder_data = results[1];
+        folderFile,
+        folderData,
+        childrenData
+    ]).
+        then((results) => {
+            const response = results[1];
 
-            folder_data.isDir = results[0].isDir;
-            folder_data.children = results[2];
+            response.isDir = results[0].isDir;
+            response.children = results[2];
 
-            res.status(200).json(folder_data);
-        })
-        .catch((err) => handle(err));
+            res.status(200).json(response);
+        }).
+        catch((err) => handle(err));
 
 };
 
 exports.delete = (req, res, handle) => {
-    db.Data.destroy({where: {fileId: req.params.fileId}})
-        .catch((err) => handle(err));
+    db.Data.destroy({where: {fileId: req.params.fileId}}).
+        catch((err) => handle(err));
 
-    db.File.destroy({where: {id: req.params.fileId}})
-        .then(() => res.status(204).send())
-        .catch((err) => handle(err));
+    db.File.destroy({where: {id: req.params.fileId}}).
+        then(() => res.status(204).send()).
+        catch((err) => handle(err));
 };

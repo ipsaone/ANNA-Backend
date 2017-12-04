@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    up: (queryInterface, Sequelize) => queryInterface.bulkInsert('Files', [{isDir: true}]).
+    up: (queryInterface) => queryInterface.bulkInsert('Files', [{isDir: true}]).
         then(() => queryInterface.bulkInsert('Rights', [
             {
                 groupWrite: true,
@@ -27,5 +27,5 @@ module.exports = {
             }
         ])),
 
-    down: (queryInterface, Sequelize) => queryInterface.bulkDelete('Users', null, {})
+    down: (queryInterface) => queryInterface.bulkDelete('Users', null, {})
 };

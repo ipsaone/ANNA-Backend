@@ -2,9 +2,8 @@
 
 const config = require('../config/config');
 const bcrypt = require('bcrypt');
-const Storage = require('../repositories/Storage');
 
-const hashPassword = (user, options) => {
+const hashPassword = (user) => {
     if (!user.changed('password')) {
         return;
     }

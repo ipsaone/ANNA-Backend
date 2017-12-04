@@ -1,15 +1,17 @@
+/* eslint new-cap: 0*/
+
 'use strict';
 
 const router = require('express').Router();
-const log_controller = require('../controllers/log_controller');
+const logController = require('../controllers/log_controller');
 
 router.route('/').
-    get(log_controller.index).
-    post(log_controller.store);
+    get(logController.index).
+    post(logController.store);
 
 router.route('/:logId([0-9]+)').
-    get(log_controller.show).
-    put(log_controller.update).
-    delete(log_controller.delete);
+    get(logController.show).
+    put(logController.update).
+    delete(logController.delete);
 
 module.exports = router;

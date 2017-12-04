@@ -1,15 +1,17 @@
+/* eslint new-cap: 0*/
+
 'use strict';
 
 const router = require('express').Router();
-const mission_controller = require('../controllers/mission_controller');
+const missionController = require('../controllers/mission_controller');
 
 router.route('/').
-    get(mission_controller.index).
-    post(mission_controller.store);
+    get(missionController.index).
+    post(missionController.store);
 
 router.route('/:missionId([0-9]+)').
-    get(mission_controller.show).
-    put(mission_controller.update).
-    delete(mission_controller.delete);
+    get(missionController.show).
+    put(missionController.update).
+    delete(missionController.delete);
 
 module.exports = router;

@@ -28,5 +28,5 @@ module.exports = {
         }
     }),
 
-    down: (queryInterface, Sequelize) => queryInterface.dropTable('FileLog')
+    down: (queryInterface) => queryInterface.dropTable('FileLog')
 };

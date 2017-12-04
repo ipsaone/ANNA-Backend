@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = (err, req, res, next) => {
+module.exports = (err, req, res) => {
 
     console.log('-------------------------------');
     console.log('Exception received by handler :');
@@ -13,4 +13,6 @@ module.exports = (err, req, res, next) => {
     } else {
         console.log('Couldn\'t handle error :', err);
     }
+
+
 }

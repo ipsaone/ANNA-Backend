@@ -1,6 +1,8 @@
+/* eslint new-cap: 0*/
+
 'use strict';
 
-const router = require('express').Router();
+const router = require('express').router();
 const config = require('../config/config');
 
 // Homepage
@@ -15,7 +17,7 @@ router.post('/', (req, res) => {
     const session = req.session;
 
     if (session.views) {
-        session.views++;
+        session.views += 1;
         session.save();
         res.json({
             test: true,

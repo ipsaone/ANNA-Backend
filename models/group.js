@@ -10,21 +10,21 @@ module.exports = (sequelize, DataTypes) => {
 
     Group.associate = function (models) {
         Group.belongsToMany(models.User, {
-            through: models.UserGroup,
             foreignKey: 'groupId',
             as: 'users',
+            through: models.UserGroup,
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
         Group.hasMany(models.Data, {
-            foreignKey: 'groupId',
             as: 'files',
+            foreignKey: 'groupId',
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
         Group.hasMany(models.Mission, {
-            foreignKey: 'groupId',
             as: 'missions',
+            foreignKey: 'groupId',
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         })

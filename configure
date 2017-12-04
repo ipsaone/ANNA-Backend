@@ -93,7 +93,7 @@ fi
 echo -e "\n--- Testing setup ---\n"
 if hash nodejs 2>/dev/null; then
 	echo -e "NodeJS : OK"
-	./node_modules/.bin/mocha config/config_test.js
+	./node_modules/.bin/mocha --exit test/config_test.js
 else
 	echo -e "NodeJS : failed">&1
 fi
