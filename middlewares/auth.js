@@ -7,9 +7,11 @@ module.exports = (req, res, next) => {
         if (req.session.auth || config.session.check === 'false') {
             return next();
         }
-        res.boom.unauthorized('You must be logged in');
 
-    } else {
-        return next();
+        return res.boom.unauthorized('You must be logged in');
+
     }
+
+    return next();
+
 };
