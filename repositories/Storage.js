@@ -1,22 +1,29 @@
+/* eslint no-invalid-this: "warn" */
+
 'use strict';
 
 require('dotenv').config();
 
 const fs = require('fs');
-const _path = require('path');
+const path = require('path');
 const config = require('../config/config');
 const mv = require('mv');
 const mmm = require('mmmagic');
 const Magic = mmm.Magic;
 const magic = new Magic(mmm.MAGIC_MIME_TYPE);
+const db = require('../models');
 
 class Storage {
     static get root () {
-        return _path.join(__dirname, '..', config.storage.folder);
+        return path.join(__dirname, '..', config.storage.folder);
     }
 
     static get baseUrl () {
-        const conf = process.env.DEV ? config.env.dev : config.env.prod;
+        let conf = config.env.prod;
+
+        if (process.env.DEV) {
+            conf = config.env.dev
+        }
 
 
         return `https://${conf.host}:${conf.port}/storage`;
@@ -44,52 +51,50 @@ Storage.getDataPath = function (full = false) {
      * Compute file system path
      * TODO : fix !
      */
-    let path = '';
+    let dataPath = '';
 
-    path += full ? Storage.root : '';
-    path += `/${this.fileId}`;
-    path += `/${this.id}`;
-    path += `-${this.name}`;
+    if (full) {
+        dataPath += Storage.root;
+    }
+    dataPath += `/${this.fileId}`;
+    dataPath += `/${this.id}`;
+    dataPath += `-${this.name}`;
 
-    console.log(path);
+    console.log(dataPath);
 
     // Check file exists
-    fs.access(path, fs.constants.F_OK, (err) => {
+    fs.access(dataPath, fs.constants.F_OK, (err) => {
         if (err) {
             return Promise.reject(err);
         }
 
 
         // Return file path if it exists
-        return Promise.resolve(path);
+        return Promise.resolve(dataPath);
 
     });
 
 };
 
 Storage.getFileDirTree = function () {
-    const db = require('../models');
-
 
     return this.getData().
 
 
         then((data) => {
             // Get parents' directory tree
-            const tree =
-                data.dirId === 1
-                    ? Promise.resolve([])
-                    : db.File.findById(data.dirId).then((file) => file.getDirTree());
+            let fileDirTree = Promise.resolve([])
+
+            if (data.dirId !== 1) {
+                fileDirTree = db.File.findById(data.dirId).then((file) => file.getDirTree());
+            }
 
             // Add own directory name
-            return tree.then((tree) => concat(data.name));
+            return fileDirTree.then((tree) => tree.concat(data.name));
         });
 };
 
 Storage.getFileData = function (offset = 0) {
-    const db = require('../models');
-
-
     return db.Data.
 
     // Like findOne, but with order + offset
@@ -107,8 +112,8 @@ Storage.getFileData = function (offset = 0) {
 
         // FindAll is limited, so there will always be one result (or none -> undefined)
         then((data) => {
-            if (data.length == 0) {
-                throw '';
+            if (data.length === 0) {
+                throw new Error();
             }
 
             return data[0]
@@ -116,27 +121,22 @@ Storage.getFileData = function (offset = 0) {
 };
 
 Storage.getDataRights = function () {
-    const db = require('../models');
-
     // Only one right should exist for each data, no check needed
     return db.Right.findOne({where: {id: this.rightsId}});
 };
 
-Storage.addFileData = function (changes, path) {
-    const db = require('../models');
+Storage.addFileData = function (fileChanges, filePath) {
+    fileChanges.fileId = this.id;
 
-    changes.fileId = this.id;
-
-    const fileBuilder = function (changes, path) {
-        return new Promise((accept) => {
-            fs.access(path, (err) => {
-                changes.fileExists = !err;
+    const fileBuilder = (changes, builderPath) =>
+        new Promise((accept) => {
+            fs.access(builderPath, (err) => {
+                fileChanges.fileExists = !err;
                 accept();
             });
         });
-    };
 
-    const rightsBuilder = function (changes, path) {
+    const rightsBuilder = (changes) => {
         let newRight = false;
         const rights = [
             'ownerRead',
@@ -199,21 +199,21 @@ Storage.addFileData = function (changes, path) {
 
     // Build the rights and file properties
     return Promise.all([
-        rightsBuilder(changes, path),
-        fileBuilder(changes, path)
+        rightsBuilder(fileChanges, filePath),
+        fileBuilder(fileChanges, filePath)
     ]).
 
         // Create the data and save it
-        then(() => db.Data.create(changes)).
+        then(() => db.Data.create(fileChanges)).
 
         // Get destination
         then((data) => data.getPath()).
 
         // Move file from temp
         then((dest) => {
-            if (changes.fileExists) {
+            if (fileChanges.fileExists) {
                 mv(
-                    path, dest,
+                    filePath, dest,
                     {
                         mkdirp: true,
                         clobber: false
@@ -228,20 +228,16 @@ Storage.addFileData = function (changes, path) {
             }
         }).
 
-        then(() => res.status(200).json({})).
-
         catch((err) => console.log(err));
 };
 
-Storage.createNewFile = function (changes, path, dir = false) {
-    const db = require('../models');
-
+Storage.createNewFile = function (changes, filePath, dir = false) {
     return db.File.create({isDir: dir}).
-        then((file) => file.addData(changes, path));
+        then((file) => file.addData(changes, filePath));
 };
 
-Storage.computeType = function (path) {
-    magic.detectFile(path, (err, res) => {
+Storage.computeType = function (filePath) {
+    magic.detectFile(filePath, (err, res) => {
         if (err) {
             return Promise.reject(err);
         }
@@ -253,8 +249,8 @@ Storage.computeType = function (path) {
 
 };
 
-Storage.computeSize = function (path) {
-    fs.stat(path, (err, res) => {
+Storage.computeSize = function (filePath) {
+    fs.stat(filePath, (err, res) => {
         if (err) {
             throw err;
         } else {

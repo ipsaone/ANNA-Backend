@@ -112,9 +112,9 @@ module.exports = (sequelize, DataTypes) => {
 
     const Storage = require('../repositories/Storage');
 
-    Data.prototype.getRights = Storage.getDataRights;
-    Data.prototype.getPath = Storage.getDataPath;
-    Data.prototype.getUrl = Storage.getDataUrl;
+    Object.defineProperty(Data, 'getRights', {get: Storage.getDataRights});
+    Object.defineProperty(Data, 'getPath', {get: Storage.getDataPath});
+    Object.defineProperty(Data, 'getUrl', {get: Storage.getDataUrl});
 
     return Data;
 };
