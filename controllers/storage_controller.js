@@ -5,6 +5,36 @@ const escape = require('escape-html');
 const Storage = require('../repositories/Storage');
 const boom = require('boom');
 
+const getChildrenData = (req, res, folderId) =>
+    db.file.findAll(). // Get all files
+
+        // Check if file exists
+        then((files) => {
+            if (files.map((item) => item.id).includes(folderId)) {
+                return files;
+            }
+            throw res.boom.notFound();
+
+        }).
+
+    // Get data corresponding to the files
+        then((files) => files.map((thisFile) => thisFile.getData().
+            then((data) => {
+                data.isDir = thisFile.isDir;
+
+                return data;
+            }).
+            catch((err) => {
+                console.log(`[badImplementation] No data corresponding to file #${thisFile.id}`, err);
+
+                return {};
+            }))).
+        then((data) => Promise.all(data)).
+
+    // Get each one in the folder, exclude root folder
+        then((data) => data.filter((item) => item.dirId === folderId)).
+        then((data) => data.filter((item) => item.fileId !== 1));
+
 
 exports.download = (req, res, handle) => {
 
@@ -42,11 +72,7 @@ exports.download = (req, res, handle) => {
 
 exports.uploadRev = (req, res, handle) => {
     // Escape req.body strings
-    for (const prop in req.body) {
-        if (req.body && Object.prototype.hasOwnProperty.call(req.body, prop) && typeof req.body[prop] === 'string') {
-            req.body[prop] = escape(req.body[prop]);
-        }
-    }
+    req.body = req.body.map((elem) => escape(elem));
 
     // Find the file in database and add new data
     return db.File.findOne({where: {id: req.params.fileId}}).
@@ -66,11 +92,7 @@ exports.uploadNew = (req, res, handle) => {
     }
 
     // Escape req.body strings
-    for (const prop in req.body) {
-        if (req.body && Object.prototype.hasOwnProperty.call(req.body, prop) && typeof req.body[prop] === 'string') {
-            req.body[prop] = escape(req.body[prop]);
-        }
-    }
+    req.body = req.body.map((elem) => escape(elem));
 
     // Create the file and its data
     return Storage.createNewFile(req.body, req.file.path).
@@ -95,38 +117,9 @@ exports.list = (req, res, handle) => {
 
     const folderId = parseInt(req.params.folderId, 10);
 
-    const childrenData =
-        file.findAll(). // Get all files
-
-        // Check if file exists
-            then((files) => {
-                if (files.map((item) => item.id).includes(folderId)) {
-                    return files;
-                }
-                throw res.boom.notFound();
-
-            }).
-
-            // Get data corresponding to the files
-            then((files) => files.map((file) => file.getData().
-                then((data) => {
-                    data.isDir = file.isDir;
-
-                    return data;
-                }).
-                catch((err) => {
-                    console.log(`[badImplementation] No data corresponding to file #${file.id}`);
-
-                    return {};
-                }))).
-            then((data) => Promise.all(data)).
-
-            // Get each one in the folder, exclude root folder
-            then((data) => data.filter((item) => item.dirId === folderId)).
-            then((data) => data.filter((item) => item.fileId !== 1));
-
+    const childrenData = getChildrenData(req, res, folderId)
     const folderFile = db.File.findOne({where: {id: folderId}});
-    const filderData = folder_file.then((file) => file.getData());
+    const folderData = folderFile.then((thisFile) => thisFile.getData());
 
     return Promise.all([
         folderFile,
@@ -134,12 +127,12 @@ exports.list = (req, res, handle) => {
         childrenData
     ]).
         then((results) => {
-            const folderData = results[1];
+            const response = results[1];
 
-            folderData.isDir = results[0].isDir;
-            folderData.children = results[2];
+            response.isDir = results[0].isDir;
+            response.children = results[2];
 
-            res.status(200).json(folderData);
+            res.status(200).json(response);
         }).
         catch((err) => handle(err));
 

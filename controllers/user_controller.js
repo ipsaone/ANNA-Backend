@@ -66,12 +66,12 @@ exports.posts = function (req, res, handle) {
     }
 
     posts.findAll({where: {authorId: req.params.userId}}).
-        then((posts) => res.status(200).json(posts)).
+        then((response) => res.status(200).json(response)).
         catch((err) => handle(err));
 };
 
 
-exports.get_groups = function (req, res, handle) {
+exports.getGroups = function (req, res, handle) {
     db.User.findOne({
         where: {id: req.params.userId},
         include: ['groups']
@@ -86,7 +86,7 @@ exports.get_groups = function (req, res, handle) {
         catch((err) => handle(err));
 };
 
-exports.add_groups = function (req, res) {
+exports.addGroups = function (req, res) {
     db.User.findById(req.params.userId).
         then((user) => {
             if (user) {
@@ -95,14 +95,12 @@ exports.add_groups = function (req, res) {
                 throw res.boom.badRequest();
             }
         }).
-        then(() => res.status(204).send()).
-        catch((err) => handle(err));
+        then(() => res.status(204).send())
 };
 
 
-exports.delete_groups = function (req, res) {
+exports.deleteGroups = function (req, res) {
     db.User.findById(req.params.userId).
         then((user) => user.removeGroups(req.body.groupsId)).
-        then(() => res.status(204).send()).
-        catch((err) => handle(err));
+        then(() => res.status(204).send())
 };
