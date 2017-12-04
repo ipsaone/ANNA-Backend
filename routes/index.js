@@ -1,3 +1,5 @@
+/* eslint new-cap: 0*/
+
 'use strict';
 
 const router = require('express').router();
