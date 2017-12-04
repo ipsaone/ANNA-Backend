@@ -5,8 +5,8 @@
  * We add the option freezeTableName otherwise Sequelize will look for the UserGroups table or it's UserGroup.
  */
 
-module.exports = (sequelize, DataTypes) => sequelize.define('FileLog', {}, {
-    timestamps: false,
+module.exports = (sequelize) => sequelize.define('FileLog', {}, {
     freezeTableName: true,
-    tableName: 'FileLog'
+    tableName: 'FileLog',
+    timestamps: false
 });
