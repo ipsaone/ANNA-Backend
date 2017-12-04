@@ -1,7 +1,7 @@
 'use strict';
 
 
-const computeValues = (data, options) => {
+const computeValues = (data) => {
     const Storage = require('../repositories/Storage');
 
     data.getPath().
