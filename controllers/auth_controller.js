@@ -50,6 +50,12 @@ exports.check = (req, res, handle) => {
             include: ['groups']
         }).
             then((user) => {
+                if (!user) {
+                    throw res.boom.notFound();
+                } else {
+            include: ['groups']
+        }).
+            then((user) => {
                 if (user) {
                     res.json({
                         id: user.id,
