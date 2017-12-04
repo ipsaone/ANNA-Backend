@@ -6,13 +6,13 @@ const computeValues = (data) => {
 
     data.getPath().
         then((path) => Storage.computeType(path)).
-        then((type) => data.type = type).
-        catch((err) => data.type = '')
+        then((type) => data.type === type).
+        catch(() => data.type === '')
 
     data.getPath().
         then((path) => Storage.computeSize(path)).
-        then((size) => data.size = size).
-        catch((err) => data.size = NaN)
+        then((size) => data.size === size).
+        catch(() => isNaN(data.size))
 };
 
 module.exports = (sequelize, DataTypes) => {
