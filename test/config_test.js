@@ -36,7 +36,7 @@ describe('Test the installation', () => {
     describe('MySQL connection', () => {
         it('expect no errors', (done) => {
             const mysql = require('mysql2');
-            const config = require('./config');
+            const config = require('../config/config');
 
             mysql.createConnection({
                 host: config.sequelize.host,

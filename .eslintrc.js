@@ -7,18 +7,51 @@ module.exports = {
     "plugins": [
         "security",
         "mocha",
-        "chai-friendly"
+        "chai-friendly",
+        "deprecate",
+        "node",
+        "promise",
+        "jsdoc"
     ],
     "extends": [
         "eslint:recommended",
         "plugin:security/recommended",
-        "plugin:mocha/recommended"
+        "plugin:mocha/recommended",
+        "plugin:node/recommended"
     ],
     "rules": {
-        /* chai-friendly */
+        /* Plugins */
         "no-unused-expressions": 0,
         "chai-friendly/no-unused-expressions": 2,
+        "node/no-unpublished-require": "warn",
+         "promise/always-return": "error",
+        "promise/no-return-wrap": "error",
+        "promise/param-names": "error",
+        "promise/catch-or-return": "error",
+        "promise/no-native": "off",
+        "promise/no-nesting": "warn",
+        "promise/no-promise-in-callback": "warn",
+        "promise/no-callback-in-promise": "warn",
+        "promise/avoid-new": "warn",
+        "promise/no-return-in-finally": "warn",
+        "deprecate/function": "warn",
+        "deprecate/member-expression": "warn",
+        "deprecate/import": "warn",
+        "jsdoc/check-param-names": 1,
+        "jsdoc/check-tag-names": 1,
+        "jsdoc/check-types": 1,
+        "jsdoc/newline-after-description": 1,
+        "jsdoc/require-description-complete-sentence": 1,
+        "jsdoc/require-example": 1,
+        "jsdoc/require-hyphen-before-param-description": 1,
+        "jsdoc/require-param": 1,
+        "jsdoc/require-param-description": 1,
+        "jsdoc/require-param-name": 1,
+        "jsdoc/require-param-type": 1,
+        "jsdoc/require-returns-description": 1,
+        "jsdoc/require-returns-type": 1,
 
+        /* Default */
         "accessor-pairs": "error",
         "array-bracket-newline": "error",
         "array-bracket-spacing": "error",
