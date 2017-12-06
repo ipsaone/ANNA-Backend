@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 const hashPassword = (user) => {
     if (!user.changed('password')) {
-        return;
+        return user.getDataValue('password');
     }
 
     return bcrypt.hash(user.getDataValue('password'), config.password.salt).

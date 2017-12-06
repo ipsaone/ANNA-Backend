@@ -48,9 +48,9 @@ module.exports = (agent) =>
             randoms.emails = chance.unique(chance.email, seedData.users)
             for (let i = 0; i < seedData.users; i++) {
                 userPromises.push(db.User.create({
-                    username: randoms.usernames[i],
-                    password: randoms.passwords[i],
-                    email: randoms.emails[i]
+                    username: randoms.usernames.i,
+                    password: randoms.passwords.i,
+                    email: randoms.emails.i
                 }));
             }
 

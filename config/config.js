@@ -1,4 +1,4 @@
-/* eslint no-sync: "warn" */
+/* eslint no-sync: 0 */
 
 'use strict';
 
