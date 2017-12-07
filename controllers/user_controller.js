@@ -16,10 +16,10 @@ exports.show = function (req, res, handle) {
     }).
         then((user) => {
             if (user) {
-                res.status(200).json(user);
-            } else {
-                throw res.boom.badRequest();
+                return res.status(200).json(user);
             }
+            throw res.boom.badRequest();
+
         }).
         catch((err) => handle(err));
 };
@@ -78,10 +78,10 @@ exports.getGroups = function (req, res, handle) {
     }).
         then((user) => {
             if (user) {
-                res.status(200).json(user.groups);
-            } else {
-                throw res.boom.badRequest();
+                return res.status(200).json(user.groups);
             }
+            throw res.boom.badRequest();
+
         }).
         catch((err) => handle(err));
 };
@@ -90,17 +90,19 @@ exports.addGroups = function (req, res) {
     db.User.findById(req.params.userId).
         then((user) => {
             if (user) {
-                user.addGroups(req.body.groupsId);
-            } else {
-                throw res.boom.badRequest();
+                return user.addGroups(req.body.groupsId);
             }
+            throw res.boom.badRequest();
+
         }).
-        then(() => res.status(204).send())
+        then(() => res.status(204).send()).
+        catch((err) => console.log(err))
 };
 
 
 exports.deleteGroups = function (req, res) {
     db.User.findById(req.params.userId).
         then((user) => user.removeGroups(req.body.groupsId)).
-        then(() => res.status(204).send())
+        then(() => res.status(204).send()).
+        catch((err) => console.log(err))
 };

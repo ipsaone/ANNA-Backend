@@ -129,10 +129,10 @@ Storage.addFileData = function (fileChanges, filePath) {
     fileChanges.fileId = this.id;
 
     const fileBuilder = (changes, builderPath) =>
-        new Promise((accept) => {
+        new Promise((resolve) => {
             fs.access(builderPath, (err) => {
                 fileChanges.fileExists = !err;
-                accept();
+                resolve();
             });
         });
 
@@ -180,6 +180,8 @@ Storage.addFileData = function (fileChanges, filePath) {
             return db.Right.create(changes).
                 then((right) => {
                     changes.rightsId = right.id;
+
+                    return true;
                 });
         }
 
@@ -188,6 +190,8 @@ Storage.addFileData = function (fileChanges, filePath) {
             then((file) => file.getData()).
             then((data) => {
                 changes.rightsId = data.id;
+
+                return true;
             });
 
         /*
@@ -213,19 +217,24 @@ Storage.addFileData = function (fileChanges, filePath) {
         then((dest) => {
             if (fileChanges.fileExists) {
                 mv(
+                    // Make directory if needed, error if exists
                     filePath, dest,
                     {
                         mkdirp: true,
                         clobber: false
-                    }, // Make directory if needed, error if exists
+                    },
                     (err) => {
                         if (err) {
                             throw err;
                         }
-                    } // Error if something happens
+
+                        return true;
+                    }
                 );
 
             }
+
+            return true;
         }).
 
         catch((err) => console.log(err));

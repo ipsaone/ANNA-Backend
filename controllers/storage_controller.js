@@ -62,12 +62,18 @@ exports.download = (req, res, handle) => {
 
     if (dl) {
         data.then(() => data.getPath(true)).
-            then((path) => res.download(path));
+            then((path) => res.download(path)).
+            catch((err) => handle(err))
     } else {
-        data.then((contents) => res.json(contents));
+        data.then((contents) => res.json(contents)).
+            catch((err) => handle(err));
     }
 
-    data.catch((err) => handle(err));
+    /*
+     * Had to comment and distribute the following line
+     * data.catch((err) => handle(err));
+     * to avoir eslint error
+     */
 };
 
 exports.uploadRev = (req, res, handle) => {
@@ -132,7 +138,7 @@ exports.list = (req, res, handle) => {
             response.isDir = results[0].isDir;
             response.children = results[2];
 
-            res.status(200).json(response);
+            return res.status(200).json(response);
         }).
         catch((err) => handle(err));
 

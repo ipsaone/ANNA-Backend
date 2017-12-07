@@ -4,9 +4,7 @@ const db = require('../models');
 
 exports.index = function (req, res, handle) {
     db.Log.findAll({include: ['author']}).
-        then((logs) => {
-            res.status(200).json(logs);
-        }).
+        then((logs) => res.status(200).json(logs)).
         catch((err) => handle(err));
 };
 
@@ -17,10 +15,10 @@ exports.show = function (req, res, handle) {
     }).
         then((log) => {
             if (log) {
-                res.status(200).json(log);
-            } else {
-                throw res.boom.notFound();
+                return res.status(200).json(log);
             }
+            throw res.boom.notFound();
+
         }).
         catch((err) => handle(err));
 };
@@ -46,7 +44,7 @@ exports.delete = function (req, res, handle) {
             }
 
             if (data[0] === 1) {
-                res.status(204).json({});
+                return res.status(204).json({});
             } else if (data[0] === 0) {
                 throw res.boom.notFound();
             } else {

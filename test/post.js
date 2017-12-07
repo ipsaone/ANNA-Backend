@@ -26,6 +26,8 @@ describe('Posts', () => {
                     authorId: 1,
                     published: false
                 });
+
+                return true;
             }));
 
     describe('[GET]', () => {
@@ -35,6 +37,8 @@ describe('Posts', () => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body.length).to.be.equal(2);
+
+                    return true;
                 }));
 
         it('expect to GET all published posts', () =>
@@ -51,6 +55,8 @@ describe('Posts', () => {
                     expect(res.body[0].authorId).to.be.equal(1);
                     expect(res.body[0].published).to.be.true;
                     expect(res.body[0].publishedAt).to.be.equal(res.body[0].createdAt);
+
+                    return true;
                 }));
 
         it('expect to GET all drafted posts', () =>
@@ -68,6 +74,7 @@ describe('Posts', () => {
                     expect(res.body[0].published).to.be.false;
                     expect(res.body[0].publishedAt).to.be.null;
 
+                    return true;
                 }));
 
         it('expect to GET post with id = 1', () =>
@@ -85,6 +92,7 @@ describe('Posts', () => {
                     expect(res.body.author).to.not.be.empty;
                     expect(res.body.publishedAt).to.be.equal(res.body.createdAt);
 
+                    return true;
                 }));
 
         it('expect an error when GET post with id = 3', () =>
@@ -92,6 +100,7 @@ describe('Posts', () => {
                 then((res) => {
                     expect(res).to.have.status(404);
 
+                    return true;
                 }));
     });
 
@@ -114,6 +123,7 @@ describe('Posts', () => {
                     expect(res.body.markdown).to.be.equal('Lorem ipsum');
                     expect(res.body.content.replace(/\r?\n?/g, '')).to.be.equal('<p>Lorem ipsum</p>');
 
+                    return true;
                 }));
 
         it('expect the new post to exist in the database', () =>
@@ -127,6 +137,7 @@ describe('Posts', () => {
                 expect(post.createdAt).to.not.be.null;
                 expect(post.updatedAt).to.not.be.null;
 
+                return true;
             }));
 
         it('expect POST post to return an error with status 400 when sending an incomplete request', () =>
@@ -140,6 +151,7 @@ describe('Posts', () => {
                 then((res) => {
                     expect(res).to.have.status(400);
 
+                    return true;
                 }));
 
     });
@@ -155,6 +167,7 @@ describe('Posts', () => {
                     expect(res).to.have.status(204);
                     expect(res.body).to.be.empty;
 
+                    return true;
                 }));
 
         it('expect the data to be updated in the database', () =>
@@ -165,6 +178,7 @@ describe('Posts', () => {
                     expect(post.publishedAt).to.be.null;
                     expect(post.updatedAt).to.not.be.equal(post.createdAt);
 
+                    return true;
                 }));
 
         it('expect PUT to return an error with the status 400 when sending an incomplete request', () =>
@@ -173,6 +187,7 @@ describe('Posts', () => {
                 then((res) => {
                     expect(res).to.have.status(400);
 
+                    return true;
                 }));
     });
 
@@ -183,6 +198,7 @@ describe('Posts', () => {
                     expect(res).to.have.status(204);
                     expect(res.body).to.be.empty;
 
+                    return true;
                 }));
 
         it('expect to not have the post in the database', () =>
@@ -190,6 +206,7 @@ describe('Posts', () => {
                 then((post) => {
                     expect(post).to.be.null;
 
+                    return true;
                 }));
     });
 

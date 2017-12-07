@@ -31,7 +31,7 @@ describe('Auth', () => {
                 expect(res).to.be.json;
                 expect(res.body.error).to.be.undefined;
 
-
+                return true;
             }));
 
     it('expect to logout a user', () =>
@@ -39,6 +39,8 @@ describe('Auth', () => {
             then((res) => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
+
+                return true;
             }));
 
 });

@@ -22,6 +22,8 @@ describe('Users', () => {
 
                 });
                 db.User.find({username: user.username});
+
+                return true;
             }));
 
     describe('[GET]', () => {
@@ -32,6 +34,8 @@ describe('Users', () => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body.length).to.be.within(10, 40); // See seed_and_login
+
+                    return true;
                 }));
 
         it('expect to GET user with id = 1', () =>
@@ -40,6 +44,7 @@ describe('Users', () => {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
 
+                    return true;
                 }));
 
         it('expect an error when GET user with id = -3', () =>
@@ -47,12 +52,15 @@ describe('Users', () => {
                 then((res) => {
                     expect(res).to.have.status(404);
 
+                    return true;
                 }));
 
         it('expect an error when GET user with id = abc', () => {
             agent.get('/users/abc').
                 catch((err) => {
                     expect(err).to.have.status(404);
+
+                    return true;
                 });
         });
     });
@@ -73,7 +81,9 @@ describe('Users', () => {
 
                     expect(res.body.id).to.be.integer;
                     expect(res.body.username).to.be.equal('groot');
-                    bcrypt.compare('secret', res.body.password).then((comp) => expect(comp).to.be.true);
+                    bcrypt.compare('secret', res.body.password).
+                        then((comp) => expect(comp).to.be.true).
+                        catch((err) => console.log(err));
                     expect(res.body.email).to.be.equal('groot@local.dev');
                     expect(res.body.createdAt).to.not.be.null;
                     expect(res.body.updatedAt).to.not.be.null;
@@ -85,12 +95,17 @@ describe('Users', () => {
 
                                 expect(user.id).to.be.equal(res.body.id);
                                 expect(user.username).to.be.equal('groot');
-                                bcrypt.compare('secret', user.password).then((comp) => expect(comp).to.be.true);
+                                bcrypt.compare('secret', user.password).
+                                    then((comp) => expect(comp).to.be.true).
+                                    catch((err) => console.log(err));
                                 expect(user.email).to.be.equal('groot@local.dev');
                                 expect(user.createdAt).to.not.be.null;
                                 expect(user.updatedAt).to.not.be.null;
 
+                                return true;
                             }));
+
+                    return true;
 
                 }));
 
@@ -103,6 +118,8 @@ describe('Users', () => {
                 }).
                 then((res) => {
                     expect(res).to.have.status(400);
+
+                    return true;
                 }));
     });
 
@@ -118,6 +135,7 @@ describe('Users', () => {
                     expect(res).to.have.status(204);
                     expect(res.body).to.be.empty;
 
+                    return true;
                 }));
 
         it('expect to have the new values for the user with id = 2', () =>
@@ -128,7 +146,9 @@ describe('Users', () => {
                     expect(user.id).to.be.equal(1);
                     expect(user.username).to.be.equal('bar');
 
-                    bcrypt.compare('secret', user.password).then((comp) => expect(comp).to.be.true);
+                    bcrypt.compare('secret', user.password).
+                        then((comp) => expect(comp).to.be.true).
+                        catch((err) => console.log(err));
 
                     expect(test).to.be.true;
                     expect(user.email).to.be.equal('bar@local.dev');
@@ -136,6 +156,7 @@ describe('Users', () => {
                     expect(user.updatedAt).to.not.be.null;
                     expect(user.updatedAt).to.not.be.equal(user.createdAt);
 
+                    return true;
                 }));
 
         it('expect PUT to return an error with the status 400 when sending an incomplete request', () =>
@@ -144,6 +165,7 @@ describe('Users', () => {
                 then((res) => {
                     expect(res).to.have.status(400);
 
+                    return true;
                 }));
     });
 
@@ -156,12 +178,15 @@ describe('Users', () => {
                     expect(res).to.have.status(204);
                     expect(res.body).to.be.empty;
 
+                    return true;
                 }));
 
         it('expect to not have the user in the database', () =>
             db.User.findById(2).
                 then((user) => {
                     expect(user).to.be.null;
+
+                    return true;
                 }));
     });
 

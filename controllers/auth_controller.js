@@ -13,7 +13,7 @@ exports.login = (req, res, handle) => {
                 throw res.boom.notFound('Bad username');
             }
 
-            bcrypt.compare(req.body.password, user.password, (err, accept) => {
+            return bcrypt.compare(req.body.password, user.password, (err, accept) => {
                 if (err) {
                     throw err;
                 }
@@ -21,14 +21,16 @@ exports.login = (req, res, handle) => {
                 if (accept) {
                     if (user.id) {
                         req.session.auth = user.id;
-                        res.status(200).json({
+
+                        return res.status(200).json({
                             id: user.id,
                             username: user.username,
                             groups: user.groups
                         });
-                    } else {
-                        throw res.boom.badImplementation('User ID isn\'t defined');
+
                     }
+                    throw res.boom.badImplementation('User ID isn\'t defined');
+
 
                 } else {
                     throw res.boom.unauthorized('Bad password');
@@ -51,15 +53,15 @@ exports.check = (req, res, handle) => {
         }).
             then((user) => {
                 if (user) {
-                    res.json({
+                    return res.json({
                         id: user.id,
                         username: user.username,
                         groups: user.groups
                     });
 
-                } else {
-                    throw res.boom.notFound();
                 }
+                throw res.boom.notFound();
+
             }).
             catch((err) => handle(err));
     } else {

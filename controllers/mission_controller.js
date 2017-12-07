@@ -4,9 +4,7 @@ const db = require('../models');
 
 exports.index = function (req, res, handle) {
     db.Missions.findAll().
-        then((missions) => {
-            res.status(200).json(missions)
-        }).
+        then((missions) => res.status(200).json(missions)).
         catch((err) => handle(err));
 };
 
@@ -17,10 +15,10 @@ exports.show = function (req, res, handle) {
     }).
         then((mission) => {
             if (mission) {
-                res.status(200).json(mission);
-            } else {
-                throw res.boom.notFound();
+                return res.status(200).json(mission);
             }
+            throw res.boom.notFound();
+
         }).
         catch((err) => handle(err));
 };

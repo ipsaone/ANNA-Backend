@@ -15,10 +15,10 @@ exports.show = function (req, res, handle) {
     }).
         then((group) => {
             if (group) {
-                res.status(200).json(group);
-            } else {
-                throw res.boom.notFound();
+                return res.status(200).json(group);
             }
+            throw res.boom.notFound();
+
         }).
         catch((err) => handle(err));
 };
@@ -71,7 +71,7 @@ exports.delete = function (req, res, handle) {
             }
 
             if (data[0] === 1) {
-                res.status(204).json({});
+                return res.status(204).json({});
             } else if (data[0] === 0) {
                 throw res.boom.notFound();
             } else {
