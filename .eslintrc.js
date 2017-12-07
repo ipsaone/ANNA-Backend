@@ -303,6 +303,6 @@ module.exports = {
         "yield-star-spacing": "error",
         "yoda": "error",
 
-        "no-console": "warn"
+        "no-console": "off"
     }
 };
