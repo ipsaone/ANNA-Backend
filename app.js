@@ -15,7 +15,6 @@ const app = express();
 
 // Error handling must be included first !
 app.use(boom()) // Error handling
-app.use(require('./middlewares/exception')) // Error handling
 
 app.use(helmet()); // Helmet offers different protection middleware
 app.use(require('./middlewares/rate_limit')); // Rate limit
@@ -24,7 +23,6 @@ app.use(bodyParser.json());
 app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
 app.use(require('./middlewares/auth')); // Auth check
-
 
 /*
  * Options
@@ -36,6 +34,9 @@ app.options('*', require('./middlewares/cors')); // Pre-flight
  * Routing
  */
 app.use(require('./routes'));
+
+
+app.use(require('./middlewares/exception')) // Error handling
 
 /*
  * Server config

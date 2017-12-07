@@ -9,9 +9,7 @@ exports.index = function (req, res, handle) {
 };
 
 exports.show = function (req, res, handle) {
-    db.Event.findOne({
-        where: {id: req.params.eventId}
-    }).
+    db.Event.findOne({where: {id: req.params.eventId}}).
         then((event) => {
             if (event) {
                 return res.status(200).json(event);
