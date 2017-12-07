@@ -3,8 +3,10 @@
 require('./setup');
 require('./auth');
 
+
+require('./user');
+
 /*
- *Require('./user');
- *require('./post');
- *require('./storage');
+ * Require('./post');
+ * require('./storage');
  */

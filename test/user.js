@@ -21,7 +21,7 @@ describe('Users', () => {
                     username: 'foo'
 
                 });
-                db.User.find({username: user.username});
+                db.User.find({where: {username: user.username}});
 
                 return true;
             }));
@@ -150,7 +150,6 @@ describe('Users', () => {
                         then((comp) => expect(comp).to.be.true).
                         catch((err) => console.log(err));
 
-                    expect(test).to.be.true;
                     expect(user.email).to.be.equal('bar@local.dev');
                     expect(user.createdAt).to.not.be.null;
                     expect(user.updatedAt).to.not.be.null;

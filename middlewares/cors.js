@@ -3,6 +3,8 @@
 const cors = require('cors'); // Cross Origin Resource Sharing
 
 module.exports = cors({
-    origin: function(origin, cb){ cb(null, true); },
+    origin (origin, cb) {
+        cb(null, true);
+    },
     credentials: true
 });

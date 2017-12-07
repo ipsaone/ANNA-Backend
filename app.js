@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const https = require('https');
 const config = require('./config/config');
 const boom = require('express-boom'); // Exception handling
+const morgan = require('morgan');
 
 const app = express();
 
@@ -13,9 +14,7 @@ const app = express();
  * Middleware
  */
 
-// Error handling must be included first !
-app.use(boom()) // Error handling
-
+app.use(boom()) // Error responses
 app.use(helmet()); // Helmet offers different protection middleware
 app.use(require('./middlewares/rate_limit')); // Rate limit
 app.use(bodyParser.urlencoded({extended: true})); // POST parser
@@ -23,20 +22,24 @@ app.use(bodyParser.json());
 app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
 app.use(require('./middlewares/auth')); // Auth check
+app.use(require('express-request-id')({setHeader: false})) // unique ID for every request
 
 /*
  * Options
  */
 app.set('trust proxy', 1); // Trust first proxy
 app.options('*', require('./middlewares/cors')); // Pre-flight
+morgan.token('id', (req) => req.id.split('-')[0]);
+// Logging
+app.use(morgan("[:date[iso] #:id] Started :method :url for :remote-addr", {immediate: true}))
+app.use(morgan("[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])"))
 
 /*
- * Routing
+ * Routing and error catching
  */
 app.use(require('./routes'));
-
-
 app.use(require('./middlewares/exception')) // Error handling
+
 
 /*
  * Server config

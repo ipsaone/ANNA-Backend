@@ -22,7 +22,6 @@ exports.login = (req, res, handle) => {
                     if (accept) {
                         if (user.id) {
                             req.session.auth = user.id;
-                            console.log("I'm here !")
 
                             return res.status(200).json({
                                 id: user.id,

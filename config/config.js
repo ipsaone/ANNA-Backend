@@ -20,6 +20,10 @@ const config = {
         check: process.env.CHECK_AUTH
     },
 
+    logging: {
+        level: 'debug'
+    },
+
     get sequelize () {
         return {
             dialect: 'mysql',
