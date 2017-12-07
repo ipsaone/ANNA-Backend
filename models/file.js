@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    const Storage = require('../repositories/Storage').initialize();
+    const Storage = require('../repositories/Storage');
 
     File.associate = function (models) {
         File.belongsTo(models.User, {

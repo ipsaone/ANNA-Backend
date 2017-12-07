@@ -17,8 +17,8 @@ router.route('/:userId([0-9]+)').
 router.get('/:userId([0-9]+)/posts', userController.posts);
 
 router.route('/:userId([0-9]+)/groups').
-    get(userController.get_groups).
-    put(userController.add_groups).
-    delete(userController.delete_groups);
+    get(userController.getGroups).
+    put(userController.addGroups).
+    delete(userController.deleteGroups);
 
 module.exports = router;

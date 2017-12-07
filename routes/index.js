@@ -2,7 +2,7 @@
 
 'use strict';
 
-const router = require('express').router();
+const router = require('express').Router();
 const config = require('../config/config');
 
 // Homepage

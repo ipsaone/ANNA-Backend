@@ -10,8 +10,8 @@ const config = require('../config/config');
 const upload = multer({dest: config.storage.temp});
 
 // Upload a file or edit it (use ?revision=:id)
-router.post('/upload', upload.single('contents'), storageController.upload_new);
-router.put('/upload/:fileId', upload.single('contents'), storageController.upload_rev);
+router.post('/upload', upload.single('contents'), storageController.uploadNew);
+router.put('/upload/:fileId', upload.single('contents'), storageController.uploadRev);
 
 // List files in a folder
 router.get('/files/list/:folderId', storageController.list);
