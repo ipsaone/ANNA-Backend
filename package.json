@@ -45,8 +45,8 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-this": "^0.2.2",
     "eslint-plugin-xss": "^0.1.9",
+    "husky": "^0.14.3",
     "mocha": "^4.0.1",
-    "pre-commit": "^1.2.2",
     "sequelize-cli": "^3.2.0"
   },
   "node_deb": {
@@ -60,12 +60,10 @@
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "seed": "./node_modules/.bin/sequelize db:seed:all",
     "lint": "./node_modules/.bin/eslint --fix .",
-    "lint-nofix": "./node_modules/.bin/eslint ."
+    "lint-nofix": "./node_modules/.bin/eslint .",
+    "precommit": "cd ../../OneOS && vagrant ssh -c 'cd Anna/backend && npm run lint-nofix && npm run test'"
   },
   "engines": {
     "node": ">=8.9.0"
-  },
-  "pre-commit": [
-    "lint-nofix"
-  ]
+  }
 }
