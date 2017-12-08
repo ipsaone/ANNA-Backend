@@ -20,9 +20,7 @@ const config = {
         check: process.env.CHECK_AUTH
     },
 
-    logging: {
-        level: 'debug'
-    },
+    logging: {level: 'debug'},
 
     get sequelize () {
         return {

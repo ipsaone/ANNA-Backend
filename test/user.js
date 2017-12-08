@@ -49,9 +49,6 @@ describe('Users', () => {
 
         it('expect an error when GET user with id = -3', () =>
             agent.get('/users/-3').
-                then((res) => {
-                    return true;
-                }).
                 catch((err) => {
                     expect(err).to.have.status(404);
 
@@ -117,9 +114,6 @@ describe('Users', () => {
                     password: 'secret',
                     username: 'groot'
                 }).
-                then((res) => {
-                    return true;
-                }).
                 catch((err) => {
                     expect(err).to.have.status(400);
 
@@ -165,10 +159,6 @@ describe('Users', () => {
         it('expect PUT to return an error with the status 400 when sending an incomplete request', () =>
             agent.put('/users/2').
                 send({username: null}).
-                then((res) => {
-
-                    return true;
-                }).
                 catch((err) => {
                     expect(err).to.have.status(400);
 
