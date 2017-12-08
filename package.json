@@ -44,8 +44,9 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-this": "^0.2.2",
-    "eslint-plugin-xss": "^0.1.8",
+    "eslint-plugin-xss": "^0.1.9",
     "mocha": "^4.0.1",
+    "pre-commit": "^1.2.2",
     "sequelize-cli": "^3.2.0"
   },
   "node_deb": {
@@ -58,9 +59,13 @@
     "test": "./node_modules/.bin/mocha --exit ./test/index.js",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "seed": "./node_modules/.bin/sequelize db:seed:all",
-    "lint": "./node_modules/.bin/eslint --fix ."
+    "lint": "./node_modules/.bin/eslint --fix .",
+    "lint-nofix": "./node_modules/.bin/eslint ."
   },
   "engines": {
     "node": ">=8.9.0"
-  }
+  },
+  "pre-commit": [
+    "lint-nofix"
+  ]
 }

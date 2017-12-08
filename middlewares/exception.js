@@ -1,6 +1,6 @@
 'use strict';
 
-// no choice, it's Express' default error handler parameters ...
+// No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
 module.exports = (err, req, res, next) => {
 
