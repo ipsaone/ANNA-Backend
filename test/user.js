@@ -50,7 +50,10 @@ describe('Users', () => {
         it('expect an error when GET user with id = -3', () =>
             agent.get('/users/-3').
                 then((res) => {
-                    expect(res).to.have.status(404);
+                    return true;
+                }).
+                catch((err) => {
+                    expect(err).to.have.status(404);
 
                     return true;
                 }));
@@ -70,7 +73,6 @@ describe('Users', () => {
             agent.post('/users').
                 send({
                     email: 'groot@local.dev',
-                    id: 2,
                     password: 'secret',
                     username: 'groot'
 
@@ -79,7 +81,6 @@ describe('Users', () => {
                     expect(res).to.have.status(201);
                     expect(res).to.be.json;
 
-                    expect(res.body.id).to.be.integer;
                     expect(res.body.username).to.be.equal('groot');
                     bcrypt.compare('secret', res.body.password).
                         then((comp) => expect(comp).to.be.true).
@@ -117,7 +118,10 @@ describe('Users', () => {
                     username: 'groot'
                 }).
                 then((res) => {
-                    expect(res).to.have.status(400);
+                    return true;
+                }).
+                catch((err) => {
+                    expect(err).to.have.status(400);
 
                     return true;
                 }));
@@ -162,7 +166,11 @@ describe('Users', () => {
             agent.put('/users/2').
                 send({username: null}).
                 then((res) => {
-                    expect(res).to.have.status(400);
+
+                    return true;
+                }).
+                catch((err) => {
+                    expect(err).to.have.status(400);
 
                     return true;
                 }));

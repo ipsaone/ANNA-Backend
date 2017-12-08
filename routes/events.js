@@ -9,7 +9,7 @@ router.route('/').
     get(eventController.index).
     post(eventController.store);
 
-router.route('/:groupId([0-9]+)').
+router.route('/:eventId([0-9]+)').
     get(eventController.show).
     put(eventController.update).
     delete(eventController.delete);

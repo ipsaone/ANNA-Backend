@@ -18,6 +18,7 @@ exports.show = function (req, res, handle) {
             if (user) {
                 return res.status(200).json(user);
             }
+            console.log("User not found");
             throw res.boom.badRequest();
 
         }).

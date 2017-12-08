@@ -7,6 +7,8 @@ const https = require('https');
 const config = require('./config/config');
 const boom = require('express-boom'); // Exception handling
 const morgan = require('morgan');
+const fs = require('fs'); // File system
+const path = require('path');
 
 const app = express();
 
@@ -33,7 +35,7 @@ morgan.token('id', (req) => req.id.split('-')[0]);
 // Logging
 app.use(morgan("[:date[iso] #:id] Started :method :url for :remote-addr", {immediate: true}))
 app.use(morgan("[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])"))
-
+app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}))
 /*
  * Routing and error catching
  */
