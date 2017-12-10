@@ -11,7 +11,7 @@ const mv = require('mv');
 const mmm = require('mmmagic');
 const Magic = mmm.Magic;
 const magic = new Magic(mmm.MAGIC_MIME_TYPE);
-const db = require('../models');
+
 
 class Storage {
     static get root () {
@@ -79,8 +79,6 @@ Storage.getDataPath = function (full = false) {
 Storage.getFileDirTree = function () {
 
     return this.getData()
-
-
         .then((data) => {
             // Get parents' directory tree
             let fileDirTree = Promise.resolve([]);
@@ -95,6 +93,8 @@ Storage.getFileDirTree = function () {
 };
 
 Storage.getFileData = function (offset = 0) {
+    const db = require('../models');
+
     return db.Data
 
     // Like findOne, but with order + offset
@@ -121,11 +121,15 @@ Storage.getFileData = function (offset = 0) {
 };
 
 Storage.getDataRights = function () {
+    const db = require('../models');
+
     // Only one right should exist for each data, no check needed
     return db.Right.findOne({where: {id: this.rightsId}});
 };
 
 Storage.addFileData = function (fileChanges, filePath) {
+    const db = require('../models');
+
     fileChanges.fileId = this.id;
 
     const fileBuilder = (changes, builderPath) =>
@@ -241,6 +245,8 @@ Storage.addFileData = function (fileChanges, filePath) {
 };
 
 Storage.createNewFile = function (changes, filePath, dir = false) {
+    const db = require('../models');
+
     return db.File.create({isDir: dir})
         .then((file) => file.addData(changes, filePath));
 };

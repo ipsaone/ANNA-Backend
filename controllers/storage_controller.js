@@ -6,7 +6,7 @@ const Storage = require('../repositories/Storage');
 const boom = require('boom');
 
 const getChildrenData = (req, res, folderId) =>
-    db.file.findAll() // Get all files
+    db.File.findAll() // Get all files
 
         // Check if file exists
         .then((files) => {

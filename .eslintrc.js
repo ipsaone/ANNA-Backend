@@ -24,7 +24,7 @@ module.exports = {
         "no-unused-expressions": 0,
         "chai-friendly/no-unused-expressions": 2,
         "node/no-unpublished-require": "warn",
-         "promise/always-return": "error",
+        "promise/always-return": "error",
         "promise/no-return-wrap": "error",
         "promise/param-names": "error",
         "promise/catch-or-return": "error",
