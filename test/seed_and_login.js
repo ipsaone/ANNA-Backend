@@ -8,14 +8,19 @@ const seedOptions = {
 
     maxGroups: 80,
     maxUsers: 40,
+    maxPosts: 40,
 
     minGroups: 10,
-    minUsers: 10
+    minUsers: 10,
+    minPosts: 10
 
 };
 
 const seedData = {};
 const randoms = {};
+
+let myUser = {};
+let myUserData = {};
 
 module.exports = (agent) =>
 
@@ -54,7 +59,26 @@ module.exports = (agent) =>
                 }));
             }
 
-            return Promise.all(userPromises);
+            myUser = chance.integer({
+                min: 1,
+                max: seedData.users - 1
+            });
+            myUserData = {
+                username: randoms.usernames[myUser],
+                password: randoms.passwords[myUser]
+            };
+
+            return Promise.all(userPromises)
+                .then(() => db.User.find({where: {username: myUserData.username}}))
+                .then((user) => {
+                    if (!user) {
+                        console.log(myUserData, myUser);
+                    }
+
+                    myUserData.id = user.id;
+
+                    return true;
+                });
         })
         .then(() => {
 
@@ -100,25 +124,77 @@ module.exports = (agent) =>
 
             return Promise.all(userGroupPromises);
         })
+        .then(() => {
+
+            // D) posts
+            seedData.posts = chance.integer({
+                min: seedOptions.minPosts,
+                max: seedOptions.maxPosts
+            });
+
+            const postPromises = [];
+
+            randoms.postTitles = chance.unique(chance.string, seedData.posts, {
+                length: chance.integer({
+                    min: 5,
+                    max: 40
+                })
+            });
+            randoms.postContents = chance.unique(chance.string, seedData.posts, {
+                min: 20,
+                max: 500
+            });
+            randoms.postAuthorIds = chance.n(chance.integer, seedData.posts, {
+                min: 1,
+                max: seedData.users
+            });
+            randoms.postPublished = chance.n(chance.bool, seedData.posts);
+
+            for (let i = 0; i < seedData.userGroups; i++) {
+                postPromises.push(db.Post.create({
+                    published: randoms.postPublished[i],
+                    title: randoms.postTitles[i],
+                    markdown: randoms.postContents[i],
+                    authorId: randoms.postAuthorIds[i]
+                }));
+            }
+
+            // Create one draft and one published post for my user
+            postPromises.push(db.Post.create({
+                title: chance.string({
+                    min: 5,
+                    max: 40
+                }),
+                markdown: chance.string({
+                    min: 20,
+                    max: 500
+                }),
+                authorId: myUserData.id,
+                published: true
+            }));
+            postPromises.push(db.Post.create({
+                title: chance.string({
+                    min: 5,
+                    max: 40
+                }),
+                markdown: chance.string({
+                    min: 20,
+                    max: 500
+                }),
+                authorId: myUserData.id,
+                published: false
+            }));
+
+            return Promise.all(postPromises);
+        })
 
 
     /* 3. LOGIN */
         .then(() => new Promise((resolve) => setTimeout(resolve, 5000)))
-        .then(() => {
-            const user = chance.integer({
-                min: 1,
-                max: seedData.users
-            });
-            const userData = {
-                username: randoms.usernames[user],
-                password: randoms.passwords[user]
-            };
-
-
-            return agent
+        .then(() =>
+            agent
                 .post('/auth/login')
-                .send(userData)
-                .then(() => userData);
-        });
+                .send(myUserData)
+                .then(() => myUserData));
 
 

@@ -14,14 +14,13 @@ describe('Users', () => {
 
     before(() =>
         seedAndLogin(agent)
-            .then((user) => {
+            .then(() => {
                 db.User.create({
                     email: 'foo@local.dev',
                     password: 'secret',
                     username: 'foo'
 
                 });
-                db.User.find({where: {username: user.username}});
 
                 return true;
             }));

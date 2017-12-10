@@ -1,8 +1,7 @@
 'use strict';
 
 require('./setup');
-require('./auth');
 
-const tests = [];
+const tests = ['auth'];
 
 tests.map((item) => require(`./${item}`));

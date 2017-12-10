@@ -85,7 +85,7 @@ exports.filterUpdate = (req, res) =>
                 return true;
             }
 
-            return Promise.reject(res.boom.unauthorized());
+            throw res.boom.unauthorized();
 
 
         });
