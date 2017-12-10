@@ -61,7 +61,7 @@
     "seed": "./node_modules/.bin/sequelize db:seed:all",
     "lint": "./node_modules/.bin/eslint --fix .",
     "lint-nofix": "./node_modules/.bin/eslint .",
-    "precommit": "cd ../../OneOS && vagrant ssh -c 'cd Anna/backend && npm run lint-nofix && npm run test'"
+    "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'"
   },
   "engines": {
     "node": ">=8.9.0"
