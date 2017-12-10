@@ -9,10 +9,12 @@ const seedOptions = {
     maxGroups: 80,
     maxUsers: 40,
     maxPosts: 40,
+    maxLogs: 200,
 
     minGroups: 10,
     minUsers: 10,
-    minPosts: 10
+    minPosts: 10,
+    minLogs: 30
 
 };
 
@@ -187,7 +189,40 @@ module.exports = (agent) =>
 
             return Promise.all(postPromises);
         })
+        .then(() => {
 
+            // E) logs
+            seedData.logs = chance.integer({
+                min: seedOptions.minLogs,
+                max: seedOptions.maxLogs
+            });
+            const logPromises = [];
+
+            randoms.logTitles = chance.unique(chance.string, seedData.logs, {
+                min: 5,
+                max: 40
+            });
+
+            randoms.logContents = chance.unique(chance.string, seedData.logs, {
+                min: 20,
+                max: 500
+            });
+
+            randoms.logAuthorIds = chance.n(chance.integer, seedData.logs, {
+                min: 1,
+                max: seedData.users
+            });
+
+            for (let i = 0; i < seedData.logs; i++) {
+                logPromises.push(db.Log.create({
+                    title: randoms.logTitles[i],
+                    content: randoms.logContents[i],
+                    authorId: randoms.logAuthorIds[i]
+                }));
+            }
+
+            return Promise.all(logPromises);
+        })
 
     /* 3. LOGIN */
         .then(() => new Promise((resolve) => setTimeout(resolve, 5000)))

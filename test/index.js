@@ -2,6 +2,9 @@
 
 require('./setup');
 
-const tests = ['auth'];
+const tests = [
+    'auth',
+    'log'
+];
 
 tests.map((item) => require(`./${item}`));
