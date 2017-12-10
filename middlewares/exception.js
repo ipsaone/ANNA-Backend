@@ -6,8 +6,9 @@ module.exports = (err, req, res, next) => {
 
     console.log('-------------------------------');
     console.log('Exception received by handler :');
-    console.log('error type :', typeof err);
-    // Console.log(err)
+    if (err instanceof Error) {
+        console.log(err);
+    }
     console.trace();
     console.log('-------------------------------');
 

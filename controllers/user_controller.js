@@ -43,7 +43,8 @@ exports.update = function (req, res, handle) {
 };
 
 exports.delete = function (req, res, handle) {
-    db.User.destroy({where: {id: req.params.userId}})
+    db.UserGroup.destroy({where: {userId: req.params.userId}})
+        .then(() => db.User.destroy({where: {id: req.params.userId}}))
         .then(() => res.status(204).send())
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));

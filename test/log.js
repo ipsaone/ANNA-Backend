@@ -33,6 +33,18 @@ describe('Logs', () => {
 
                     return true;
                 }));
+
+        it('Expect to get log with id = 4', () => {
+            agent.get('/logs/4')
+                .then((res) => {
+                    expect(res).to.have.status(200);
+
+                    return true;
+                })
+                .catch((err) => {
+                    throw err;
+                });
+        });
     });
 
     describe('[POST]', () => {
