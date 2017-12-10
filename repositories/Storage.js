@@ -77,6 +77,7 @@ Storage.getDataPath = function (full = false) {
 };
 
 Storage.getFileDirTree = function () {
+    const db = require('../models');
 
     return this.getData()
         .then((data) => {
