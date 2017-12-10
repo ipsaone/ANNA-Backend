@@ -13,4 +13,4 @@ tmp/
 *.log
 package-lock.json
 access.log
-nyc_output/
+.nyc_output/

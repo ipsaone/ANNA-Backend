@@ -85,7 +85,7 @@ module.exports = {
         "consistent-this": "error",
         "curly": "error",
         "default-case": "error",
-        "dot-location": "error",
+        "dot-location": ["error", "property"],
         "dot-notation": "error",
         "eol-last": "error",
         "eqeqeq": "error",
@@ -263,7 +263,7 @@ module.exports = {
         "require-await": "error",
         "require-jsdoc": "error",
         "rest-spread-spacing": "error",
-        "semi": "off",
+        "semi": "error",
         "semi-spacing": "error",
         "semi-style": [
             "error",

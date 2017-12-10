@@ -4,15 +4,15 @@
 const computeValues = (data) => {
     const Storage = require('../repositories/Storage');
 
-    data.getPath().
-        then((path) => Storage.computeType(path)).
-        then((type) => data.type === type).
-        catch(() => data.type === '')
+    data.getPath()
+        .then((path) => Storage.computeType(path))
+        .then((type) => data.type === type)
+        .catch(() => data.type === '');
 
-    data.getPath().
-        then((path) => Storage.computeSize(path)).
-        then((size) => data.size === size).
-        catch(() => isNaN(data.size))
+    data.getPath()
+        .then((path) => Storage.computeSize(path))
+        .then((size) => data.size === size)
+        .catch(() => isNaN(data.size));
 };
 
 module.exports = (sequelize, DataTypes) => {

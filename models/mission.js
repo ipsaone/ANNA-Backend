@@ -1,6 +1,6 @@
 'use strict';
 
-const compileMd = () => ''
+const compileMd = () => '';
 
 module.exports = (sequelize, DataTypes) => {
     const Mission = sequelize.define('Mission', {
@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
-    }
+    };
 
     return Mission;
 };

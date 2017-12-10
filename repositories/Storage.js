@@ -22,7 +22,7 @@ class Storage {
         let conf = config.env.prod;
 
         if (process.env.DEV) {
-            conf = config.env.dev
+            conf = config.env.dev;
         }
 
 
@@ -78,12 +78,12 @@ Storage.getDataPath = function (full = false) {
 
 Storage.getFileDirTree = function () {
 
-    return this.getData().
+    return this.getData()
 
 
-        then((data) => {
+        .then((data) => {
             // Get parents' directory tree
-            let fileDirTree = Promise.resolve([])
+            let fileDirTree = Promise.resolve([]);
 
             if (data.dirId !== 1) {
                 fileDirTree = db.File.findById(data.dirId).then((file) => file.getDirTree());
@@ -95,10 +95,10 @@ Storage.getFileDirTree = function () {
 };
 
 Storage.getFileData = function (offset = 0) {
-    return db.Data.
+    return db.Data
 
     // Like findOne, but with order + offset
-        findAll({
+        .findAll({
             limit: 1,
             offset,
             where: {fileId: this.id},
@@ -108,15 +108,15 @@ Storage.getFileData = function (offset = 0) {
                     'DESC'
                 ]
             ]
-        }).
+        })
 
         // FindAll is limited, so there will always be one result (or none -> undefined)
-        then((data) => {
+        .then((data) => {
             if (data.length === 0) {
                 throw new Error();
             }
 
-            return data[0]
+            return data[0];
         });
 };
 
@@ -177,8 +177,8 @@ Storage.addFileData = function (fileChanges, filePath) {
         if (newRight) {
 
             // New right
-            return db.Right.create(changes).
-                then((right) => {
+            return db.Right.create(changes)
+                .then((right) => {
                     changes.rightsId = right.id;
 
                     return true;
@@ -186,9 +186,9 @@ Storage.addFileData = function (fileChanges, filePath) {
         }
 
         // Use previous rights
-        return db.File.findOne({where: {id: changes.fileId}}).
-            then((file) => file.getData()).
-            then((data) => {
+        return db.File.findOne({where: {id: changes.fileId}})
+            .then((file) => file.getData())
+            .then((data) => {
                 changes.rightsId = data.id;
 
                 return true;
@@ -205,16 +205,16 @@ Storage.addFileData = function (fileChanges, filePath) {
     return Promise.all([
         rightsBuilder(fileChanges, filePath),
         fileBuilder(fileChanges, filePath)
-    ]).
+    ])
 
         // Create the data and save it
-        then(() => db.Data.create(fileChanges)).
+        .then(() => db.Data.create(fileChanges))
 
         // Get destination
-        then((data) => data.getPath()).
+        .then((data) => data.getPath())
 
         // Move file from temp
-        then((dest) => {
+        .then((dest) => {
             if (fileChanges.fileExists) {
                 mv(
                     // Make directory if needed, error if exists
@@ -235,14 +235,14 @@ Storage.addFileData = function (fileChanges, filePath) {
             }
 
             return true;
-        }).
+        })
 
-        catch((err) => console.log(err));
+        .catch((err) => console.log(err));
 };
 
 Storage.createNewFile = function (changes, filePath, dir = false) {
-    return db.File.create({isDir: dir}).
-        then((file) => file.addData(changes, filePath));
+    return db.File.create({isDir: dir})
+        .then((file) => file.addData(changes, filePath));
 };
 
 Storage.computeType = function (filePath) {

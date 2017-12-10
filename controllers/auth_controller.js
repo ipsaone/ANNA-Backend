@@ -7,8 +7,8 @@ exports.login = (req, res, handle) => {
     db.User.findOne({
         where: {'username': req.body.username},
         include: ['groups']
-    }).
-        then((user) => {
+    })
+        .then((user) => {
             if (!user) {
                 throw res.boom.notFound('Bad username');
             }
@@ -39,8 +39,8 @@ exports.login = (req, res, handle) => {
                 });
             });
 
-        }).
-        catch((err) => handle(err));
+        })
+        .catch((err) => handle(err));
 };
 
 exports.logout = (req, res) => {
@@ -53,8 +53,8 @@ exports.check = (req, res, handle) => {
         db.User.findOne({
             where: {id: req.session.auth},
             include: ['groups']
-        }).
-            then((user) => {
+        })
+            .then((user) => {
                 if (user) {
                     return res.json({
                         id: user.id,
@@ -65,8 +65,8 @@ exports.check = (req, res, handle) => {
                 }
                 throw res.boom.notFound();
 
-            }).
-            catch((err) => handle(err));
+            })
+            .catch((err) => handle(err));
     } else {
         throw res.boom.unauthorized();
     }

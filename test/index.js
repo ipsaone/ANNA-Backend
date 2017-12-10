@@ -3,10 +3,6 @@
 require('./setup');
 require('./auth');
 
+const tests = [];
 
-require('./user');
-
-/*
- * Require('./post');
- * require('./storage');
- */
+tests.map((item) => require(`./${item}`));

@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
-    }
+    };
 
     return Task;
 };

@@ -24,6 +24,6 @@ module.exports = {
     }),
 
     down: (queryInterface) => {
-        queryInterface.dropTable('Tasks')
+        queryInterface.dropTable('Tasks');
     }
 };

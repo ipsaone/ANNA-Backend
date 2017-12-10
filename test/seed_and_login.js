@@ -20,11 +20,11 @@ const randoms = {};
 module.exports = (agent) =>
 
     /* 1. CLEAR */
-    db.sequelize.sync({force: true}).
+    db.sequelize.sync({force: true})
 
 
     /* 2. SEED */
-        then(() => {
+        .then(() => {
 
             // A) users
             seedData.users = chance.integer({
@@ -45,7 +45,7 @@ module.exports = (agent) =>
                     max: 40
                 })
             });
-            randoms.emails = chance.unique(chance.email, seedData.users)
+            randoms.emails = chance.unique(chance.email, seedData.users);
             for (let i = 0; i < seedData.users; i++) {
                 userPromises.push(db.User.create({
                     username: randoms.usernames[i],
@@ -54,9 +54,9 @@ module.exports = (agent) =>
                 }));
             }
 
-            return Promise.all(userPromises)
-        }).
-        then(() => {
+            return Promise.all(userPromises);
+        })
+        .then(() => {
 
             // B) groups
             seedData.groups = chance.integer({
@@ -76,15 +76,15 @@ module.exports = (agent) =>
             }
 
             return Promise.all(groupPromises);
-        }).
-        then(() => {
+        })
+        .then(() => {
 
             // C) user-group associations
             seedData.userGroups = chance.integer({
                 min: 1,
                 max: Math.min(seedData.users, seedData.groups)
             });
-            const userGroupPromises = []
+            const userGroupPromises = [];
             const userIds = chance.unique(chance.integer, seedData.userGroups, {
                 min: 1,
                 max: seedData.users
@@ -99,12 +99,12 @@ module.exports = (agent) =>
             }
 
             return Promise.all(userGroupPromises);
-        }).
+        })
 
 
     /* 3. LOGIN */
-        then(() => new Promise((resolve) => setTimeout(resolve, 5000))).
-        then(() => {
+        .then(() => new Promise((resolve) => setTimeout(resolve, 5000)))
+        .then(() => {
             const user = chance.integer({
                 min: 1,
                 max: seedData.users
@@ -112,13 +112,13 @@ module.exports = (agent) =>
             const userData = {
                 username: randoms.usernames[user],
                 password: randoms.passwords[user]
-            }
+            };
 
 
-            return agent.
-                post('/auth/login').
-                send(userData).
-                then(() => userData)
-        })
+            return agent
+                .post('/auth/login')
+                .send(userData)
+                .then(() => userData);
+        });
 
 

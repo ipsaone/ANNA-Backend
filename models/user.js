@@ -8,8 +8,8 @@ const hashPassword = (user) => {
         return user.getDataValue('password');
     }
 
-    return bcrypt.hash(user.getDataValue('password'), config.password.salt).
-        then((hash) => user.setDataValue('password', hash));
+    return bcrypt.hash(user.getDataValue('password'), config.password.salt)
+        .then((hash) => user.setDataValue('password', hash));
 
 };
 

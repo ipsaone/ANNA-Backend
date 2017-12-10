@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'fileLogs',
             through: models.FileLog,
             foreignKey: 'userId'
-        })
+        });
     };
 
     File.prototype.getData = Storage.getFileData;

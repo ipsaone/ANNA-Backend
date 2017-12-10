@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-    up: (queryInterface) => queryInterface.bulkInsert('Files', [{isDir: true}]).
-        then(() => queryInterface.bulkInsert('Rights', [
+    up: (queryInterface) => queryInterface.bulkInsert('Files', [{isDir: true}])
+        .then(() => queryInterface.bulkInsert('Rights', [
             {
                 groupWrite: true,
                 groupRead: true,
@@ -11,8 +11,8 @@ module.exports = {
                 allWrite: true,
                 allRead: true
             }
-        ])).
-        then(() => queryInterface.bulkInsert('Data', [
+        ]))
+        .then(() => queryInterface.bulkInsert('Data', [
             {
                 name: 'root',
                 size: 0,

@@ -11,8 +11,8 @@ const agent = chai.request.agent(server);
 
 describe('Auth', () => {
     before('Create test user', () =>
-        db.sequelize.sync().
-            then(() =>
+        db.sequelize.sync()
+            .then(() =>
                 db.User.create({
                     email: 'login@local.dev',
                     password: 'password_test',
@@ -20,12 +20,12 @@ describe('Auth', () => {
                 })));
 
     it('expect to login a user', () =>
-        agent.post('/auth/login').
-            send({
+        agent.post('/auth/login')
+            .send({
                 username: 'login_test',
                 password: 'password_test'
-            }).
-            then((res) => {
+            })
+            .then((res) => {
 
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
@@ -35,8 +35,8 @@ describe('Auth', () => {
             }));
 
     it('expect to logout a user', () =>
-        agent.get('/auth/logout').
-            then((res) => {
+        agent.get('/auth/logout')
+            .then((res) => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
 

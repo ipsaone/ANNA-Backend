@@ -3,21 +3,21 @@
 const db = require('../models');
 
 exports.index = function (req, res, handle) {
-    db.Event.findAll().
-        then((events) => res.json(events)).
-        catch((err) => handle(err));
+    db.Event.findAll()
+        .then((events) => res.json(events))
+        .catch((err) => handle(err));
 };
 
 exports.show = function (req, res, handle) {
-    db.Event.findOne({where: {id: req.params.eventId}}).
-        then((event) => {
+    db.Event.findOne({where: {id: req.params.eventId}})
+        .then((event) => {
             if (event) {
                 return res.status(200).json(event);
             }
             throw res.boom.notFound();
 
-        }).
-        catch((err) => handle(err));
+        })
+        .catch((err) => handle(err));
 };
 
 exports.store = function (req, res, handle) {
@@ -31,10 +31,10 @@ exports.store = function (req, res, handle) {
     }
 
 
-    db.Event.create(req.body).
-        then((event) => res.status(201).json(event)).
-        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
-        catch((err) => handle(err));
+    db.Event.create(req.body)
+        .then((event) => res.status(201).json(event))
+        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => handle(err));
 };
 
 exports.update = function (req, res, handle) {
@@ -47,15 +47,15 @@ exports.update = function (req, res, handle) {
         req.body.name = req.body.name.toLowerCase();
     }
 
-    db.Event.update(req.body, {where: {id: req.params.eventId}}).
-        then(() => res.status(204).json({})).
-        catch(db.Sequelize.ValidationError, () => res.boom.badRequest()).
-        catch((err) => handle(err));
+    db.Event.update(req.body, {where: {id: req.params.eventId}})
+        .then(() => res.status(204).json({}))
+        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => handle(err));
 };
 
 exports.delete = function (req, res, handle) {
-    db.Event.destroy({where: {id: req.params.eventId}}).
-        then((data) => {
+    db.Event.destroy({where: {id: req.params.eventId}})
+        .then((data) => {
 
             /*
              *Data :
@@ -74,6 +74,6 @@ exports.delete = function (req, res, handle) {
             } else {
                 throw res.boom.badImplementation('Too many rows deleted !');
             }
-        }).
-        catch((err) => handle(err));
+        })
+        .catch((err) => handle(err));
 };

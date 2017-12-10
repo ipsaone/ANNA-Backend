@@ -5,13 +5,13 @@
 const router = require('express').Router();
 const postController = require('../controllers/post_controller');
 
-router.route('/').
-    get(postController.index).
-    post(postController.store);
+router.route('/')
+    .get(postController.index)
+    .post(postController.store);
 
-router.route('/:postId([0-9]+)').
-    get(postController.show).
-    put(postController.update).
-    delete(postController.delete);
+router.route('/:postId([0-9]+)')
+    .get(postController.show)
+    .put(postController.update)
+    .delete(postController.delete);
 
 module.exports = router;

@@ -16,7 +16,7 @@ const app = express();
  * Middleware
  */
 
-app.use(boom()) // Error responses
+app.use(boom()); // Error responses
 app.use(helmet()); // Helmet offers different protection middleware
 app.use(require('./middlewares/rate_limit')); // Rate limit
 app.use(bodyParser.urlencoded({extended: true})); // POST parser
@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
 app.use(require('./middlewares/auth')); // Auth check
-app.use(require('express-request-id')({setHeader: false})) // Unique ID for every request
+app.use(require('express-request-id')({setHeader: false})); // Unique ID for every request
 
 /*
  * Options
@@ -33,15 +33,15 @@ app.set('trust proxy', 1); // Trust first proxy
 app.options('*', require('./middlewares/cors')); // Pre-flight
 morgan.token('id', (req) => req.id.split('-')[0]);
 // Logging
-app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}))
-app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'))
-app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}))
+app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
+app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
+app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}));
 
 /*
  * Routing and error catching
  */
 app.use(require('./routes'));
-app.use(require('./middlewares/exception')) // Error handling
+app.use(require('./middlewares/exception')); // Error handling
 
 
 /*
