@@ -77,19 +77,6 @@ describe('Posts', () => {
 
                     return true;
                 }));
-
-        it('expect an error when GET post with id = 3', () =>
-            agent.get('/posts/3')
-                .then((data) => {
-                    expect(data).to.be.null;
-
-                    return true;
-                })
-                .catch((err) => {
-                    expect(err).to.have.status(404);
-
-                    return true;
-                }));
     });
 
     describe('[POST]', () => {

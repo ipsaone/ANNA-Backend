@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT
         },
         authorId: {
-            allowNull: false,
+            allowNull: true,
             type: DataTypes.INTEGER
         },
         published: {
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         Post.belongsTo(models.User, {
             foreignKey: 'authorId',
             as: 'author',
-            onDelete: 'RESTRICT',
+            onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
         });
     };

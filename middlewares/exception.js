@@ -7,9 +7,10 @@ module.exports = (err, req, res, next) => {
     console.log('-------------------------------');
     console.log('Exception received by handler :');
     if (err instanceof Error) {
-        console.log(err);
+        console.log(err.message);
+    } else {
+        console.trace();
     }
-    console.trace();
     console.log('-------------------------------');
 
     if (!res.headersSent && typeof res !== 'undefined' && typeof res.boom !== 'undefined') {

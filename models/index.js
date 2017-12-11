@@ -2,13 +2,21 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../config/sequelize.js');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const db = {};
 
+let config = {};
+
+if (typeof process.env.test !== 'undefined' && process.env.test === 'true') {
+    console.log('Using test database');
+    config = require(path.join(__dirname, '../config/test'));
+} else {
+
+    config = require(path.join(__dirname, '../config/sequelize'));
+}
+
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
-//* Eslint handle-callback-err:"error"*/
 
 fs
     .readdirSync(__dirname)

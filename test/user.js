@@ -2,28 +2,24 @@
 
 const chai = require('chai');
 const db = require('../models');
-const server = require('../app');
 const expect = chai.expect;
 const bcrypt = require('bcrypt');
-const seedAndLogin = require('./seed_and_login');
 
 chai.use(require('chai-http'));
-const agent = chai.request.agent(server);
+const agent = global.agent;
 
 describe('Users', () => {
 
-    before(() =>
-        seedAndLogin(agent)
-            .then(() => {
-                db.User.create({
-                    email: 'foo@local.dev',
-                    password: 'secret',
-                    username: 'foo'
+    before(() => {
 
-                });
+        db.User.create({
+            email: 'foo@local.dev',
+            password: 'secret',
+            username: 'foo'
 
-                return true;
-            }));
+
+        });
+    });
 
     describe('[GET]', () => {
 

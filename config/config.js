@@ -43,6 +43,26 @@ const config = {
 
     },
 
+    get sequelizeTest () {
+        return {
+            dialect: 'mysql',
+            host: process.env.DB_HOST,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME_TEST,
+            logging: false, // Prevent Sequelize from outputting the query on the console
+            // Logging: console.log,
+            redis: this.session,
+            force: process.env.DB_FORCE_SYNC,
+            operatorsAliases: false,
+            dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
+            pool: {
+                maxConnections: 50,
+                maxIdleTime: 10
+            }
+        };
+    },
+
     storage: {
         folder: './storage',
         temp: '/tmp'
