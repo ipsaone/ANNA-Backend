@@ -1,22 +1,29 @@
 'use strict';
 
-process.env.test = 'true';
-
 const tests = [
-    'auth'
-//    'user'
+    'auth',
+    'user',
 
-/*
- *    'post',
- * 'log',
- * 'mission',
- * 'event'
- */
+
+    'post',
+    'log',
+    'mission',
+    'event',
+    'storage'
+
 ];
 
 const mochaOptions = {timeout: 5000};
+
 const runMigrations = false;
 
+/*
+ * ---------------------------------------------------------------------
+ *  TESTS CONFIGURATION STOPS HERE
+ * ----------------------------------------------------------------------
+ */
+
+process.env.test = 'true';
 const Mocha = require('mocha');
 const Umzug = require('umzug');
 const path = require('path');

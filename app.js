@@ -58,4 +58,9 @@ https.createServer(certificates, app).listen(port, host, function () {
     console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
 });
 
+process.on('unhandledRejection', (err) => { 
+  console.error(err)
+  process.exit(1)
+})
+
 module.exports = app;

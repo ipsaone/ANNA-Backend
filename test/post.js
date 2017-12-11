@@ -4,29 +4,22 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
-const seedAndLogin = require('./seed_and_login');
 
 chai.use(require('chai-http'));
-const agent = chai.request.agent(server);
+const agent = global.agent;
+const userData = global.userData;
 
 let userInfo = {};
 
 describe('Posts', () => {
     before(() =>
-        seedAndLogin(agent)
-            .then((userData) => {
-                const promises = [];
+        db.Group.create({name: 'authors'})
+            .then((group) => db.User.find({where: {username: userData.username}})
+                .then((user) => {
+                    userInfo = user;
 
-                promises.push(db.Group.create({name: 'authors'})
-                    .then((group) => db.User.find({where: {username: userData.username}})
-                        .then((user) => {
-                            userInfo = user;
-
-                            return user.addGroup(group.id);
-                        })));
-
-                return Promise.all(promises);
-            }));
+                    return user.addGroup(group.id);
+                })));
 
     describe('[GET]', () => {
         it('expect to GET all posts', () =>
