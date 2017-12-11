@@ -34,7 +34,9 @@ app.options('*', require('./middlewares/cors')); // Pre-flight
 morgan.token('id', (req) => req.id.split('-')[0]);
 // Logging
 app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
-app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
+if (process.env.LOG_TO_CONSOLE) {
+    app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
+}
 app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}));
 
 /*

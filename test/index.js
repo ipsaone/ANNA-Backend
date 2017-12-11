@@ -1,9 +1,10 @@
 'use strict';
+
 process.env.test = 'true';
 
 const tests = [
-    'auth',
-    'user'
+    'auth'
+//    'user'
 
 /*
  *    'post',
@@ -44,7 +45,14 @@ const umzug = new Umzug({
 global.agent = agent;
 
 // Running migrations ...
-new Promise(() => !runMigrations || umzug.up())
+new Promise((resolve) => {
+    if (runMigrations) {
+        return umzug.up();
+    }
+
+    resolve();
+
+})
 
 // Syncing database ...
     .then(() => db.sequelize.sync({force: true}))
@@ -62,7 +70,7 @@ new Promise(() => !runMigrations || umzug.up())
     .then(() => {
         let failures = 0;
 
-        let promises = tests.map((item) =>
+        const promises = tests.map((item) =>
             new Promise((resolve) => {
                 new Mocha(mochaOptions)
                     .addFile(path.join(__dirname, `./${item}.js`))
@@ -70,20 +78,18 @@ new Promise(() => !runMigrations || umzug.up())
                         failures += testFailures;
                     })
                     .on('end', () => {
-                        console.log('Tests for', item+'.js',  'done !');
+                        console.log('Tests for', `${item}.js`, 'done !');
                         resolve();
                     });
 
-                }));
+            }));
 
-
-        Promise.all(promises).then(() => {
+        return Promise.all(promises).then(() => {
             console.log('Test complete with', failures, 'errors !');
-            // eslint-disable-next-line no-process-exit
-            process.exit(failures) // Exit with non-zero status if there were failures
-        });
 
-        return true;
+            // eslint-disable-next-line no-process-exit
+            return process.exit(failures); // Exit with non-zero status if there were failures
+        });
     })
 
 // Error handling

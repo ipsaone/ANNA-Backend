@@ -12,7 +12,7 @@ if (typeof process.env.test !== 'undefined' && process.env.test === 'true') {
     console.log('Using test database');
     config = require(path.join(__dirname, '../config/test'));
 } else {
-
+    console.log('Using production database');
     config = require(path.join(__dirname, '../config/sequelize'));
 }
 
