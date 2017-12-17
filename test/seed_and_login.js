@@ -225,7 +225,6 @@ module.exports = (agent) =>
         })
 
     /* 3. LOGIN */
-        .then(() => new Promise((resolve) => setTimeout(resolve, 5000)))
         .then(() =>
             agent
                 .post('/auth/login')

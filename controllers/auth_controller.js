@@ -13,33 +13,30 @@ exports.login = (req, res, handle) => {
                 throw res.boom.notFound('Bad username');
             }
 
-            return new Promise(() => { // Used for eslint not to throw an error
-                bcrypt.compare(req.body.password, user.password, (err, accept) => {
-                    if (err) {
-                        throw err;
-                    }
-
-                    if (accept) {
-                        if (user.id) {
-                            req.session.auth = user.id;
-
-                            return res.status(200).json({
-                                id: user.id,
-                                username: user.username,
-                                groups: user.groups
-                            });
-
-                        }
-                        throw res.boom.badImplementation('User ID isn\'t defined');
-
-
-                    }
-                    throw res.boom.unauthorized('Bad password');
-
-                });
-            });
-
+            return user;
         })
+        .then((user) =>
+            bcrypt.compare(req.body.password, user.password)
+            // Check password
+                .then((accept) => {
+                    if (!accept) {
+                        throw res.boom.unauthorized('Bad password');
+                    }
+
+                    return true;
+                })
+            // Set user session variables
+                .then(() => {
+                    req.session.auth = user.id;
+
+                    return true;
+                })
+            // Send response
+                .then(() => res.status(200).json({
+                    id: user.id,
+                    username: user.username,
+                    groups: user.groups
+                })))
         .catch((err) => handle(err));
 };
 

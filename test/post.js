@@ -4,29 +4,22 @@ const chai = require('chai');
 const db = require('../models');
 const server = require('../app');
 const expect = chai.expect;
-const seedAndLogin = require('./seed_and_login');
 
 chai.use(require('chai-http'));
-const agent = chai.request.agent(server);
+const agent = global.agent;
+const userData = global.userData;
 
 let userInfo = {};
 
 describe('Posts', () => {
     before(() =>
-        seedAndLogin(agent)
-            .then((userData) => {
-                const promises = [];
+        db.Group.create({name: 'authors'})
+            .then((group) => db.User.find({where: {username: userData.username}})
+                .then((user) => {
+                    userInfo = user;
 
-                promises.push(db.Group.create({name: 'authors'})
-                    .then((group) => db.User.find({where: {username: userData.username}})
-                        .then((user) => {
-                            userInfo = user;
-
-                            return user.addGroup(group.id);
-                        })));
-
-                return Promise.all(promises);
-            }));
+                    return user.addGroup(group.id);
+                })));
 
     describe('[GET]', () => {
         it('expect to GET all posts', () =>
@@ -74,19 +67,6 @@ describe('Posts', () => {
                     if (res.body.published) {
                         expect(res.body.publishedAt).to.be.equal(res.body.createdAt);
                     }
-
-                    return true;
-                }));
-
-        it('expect an error when GET post with id = 3', () =>
-            agent.get('/posts/3')
-                .then((data) => {
-                    expect(data).to.be.null;
-
-                    return true;
-                })
-                .catch((err) => {
-                    expect(err).to.have.status(404);
 
                     return true;
                 }));

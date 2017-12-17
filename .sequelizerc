@@ -2,8 +2,16 @@
 
 const path = require('path');
 
+let config = null;
+if (typeof process.env.test !== 'undefined' && process.env.test === 'true') {
+    config = path.resolve('config', 'test.js')
+} else {
+    config = path.resolve('config', 'sequelize.js')
+}
+
+
 module.exports = {
-    'config': path.resolve('config', 'sequelize.js'),
+    'config': config,
     'models-path': path.resolve('models'),
     'seeders-path': path.resolve('seeders'),
     'migrations-path': path.resolve('migrations')

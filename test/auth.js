@@ -11,13 +11,26 @@ const agent = chai.request.agent(server);
 
 describe('Auth', () => {
     before('Create test user', () =>
-        db.sequelize.sync()
-            .then(() =>
-                db.User.create({
-                    email: 'login@local.dev',
-                    password: 'password_test',
-                    username: 'login_test'
-                })));
+        db.User.create({
+            email: 'login@local.dev',
+            password: 'password_test',
+            username: 'login_test'
+        }));
+
+    it('expect to fail to login (good user / bad password)', () =>
+        agent.post('/auth/login')
+            .send({
+                username: 'login_test',
+                password: 'qlmdkgsfk'
+            })
+            .then((res) => {
+                expect(res).not.to.exist;
+
+                return true;
+            })
+            .catch((err) => {
+                expect(err).to.have.status(401);
+            }));
 
     it('expect to login a user', () =>
         agent.post('/auth/login')

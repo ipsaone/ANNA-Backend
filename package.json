@@ -46,8 +46,11 @@
     "eslint-plugin-this": "^0.2.2",
     "eslint-plugin-xss": "^0.1.9",
     "husky": "^0.14.3",
+    "jsdoc": "^3.5.5",
     "mocha": "^4.0.1",
-    "sequelize-cli": "^3.2.0"
+    "nsp": "^3.1.0",
+    "sequelize-cli": "^3.2.0",
+    "umzug": "^2.1.0"
   },
   "node_deb": {
     "entrypoints": {
@@ -56,12 +59,13 @@
   },
   "scripts": {
     "start": "node ./app.js",
-    "test": "./node_modules/.bin/mocha --exit ./test/index.js",
+    "test": "node ./test",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "seed": "./node_modules/.bin/sequelize db:seed:all",
     "lint": "./node_modules/.bin/eslint --fix .",
     "lint-nofix": "./node_modules/.bin/eslint .",
-    "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'"
+    "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
+    "security": "./node_modules/.bin/nsp check ."
   },
   "engines": {
     "node": ">=8.9.0"
