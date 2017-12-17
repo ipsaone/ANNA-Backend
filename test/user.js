@@ -50,14 +50,18 @@ describe('Users', () => {
                     return true;
                 }));
 
-        it('expect an error when GET user with id = abc', () => {
+        it('expect an error when GET user with id = abc', () =>
             agent.get('/users/abc')
+                .then((res) => {
+                    expect(res).not.to.exist;
+
+                    return false;
+                })
                 .catch((err) => {
                     expect(err).to.have.status(404);
 
                     return true;
-                });
-        });
+                }));
     });
 
     describe('[POST]', () => {

@@ -33,9 +33,11 @@ app.set('trust proxy', 1); // Trust first proxy
 app.options('*', require('./middlewares/cors')); // Pre-flight
 morgan.token('id', (req) => req.id.split('-')[0]);
 // Logging
-app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
-if (process.env.LOG_TO_CONSOLE) {
-    app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
+if (!global.noLog) {
+    app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
+    if (process.env.LOG_TO_CONSOLE) {
+        app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
+    }
 }
 app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}));
 
@@ -58,9 +60,11 @@ https.createServer(certificates, app).listen(port, host, function () {
     console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
 });
 
-process.on('unhandledRejection', (err) => { 
-  console.error(err)
-  process.exit(1)
-})
+process.on('unhandledRejection', (err) => {
+    console.error(err);
+
+    // eslint-disable-next-line no-process-exit
+    process.exit(1);
+});
 
 module.exports = app;

@@ -2,7 +2,7 @@
 
 // No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
-module.exports = (err, req, res, next) => {
+module.exports = (err, req, res) => {
 
     console.log('-------------------------------');
     console.log('Exception received by handler :');
@@ -17,8 +17,6 @@ module.exports = (err, req, res, next) => {
         res.boom.badImplementation(err.message);
     } else {
         console.log('Couldn\'t handle error manually');
-
-        return next(err);
     }
 
 

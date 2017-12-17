@@ -1,17 +1,20 @@
 'use strict';
 
-const tests = [
-    'auth',
-    'user',
+const tests = [];
 
-
-    'post',
-    'log',
-    'mission',
-    'event',
-    'storage'
-
-];
+/*
+ * // 'auth',
+ * // 'user',
+ *
+ *
+ * // 'post',
+ * // 'log',
+ * // 'mission',
+ * // 'event',
+ * // 'storage'
+ *
+ * ];
+ */
 
 const mochaOptions = {timeout: 5000};
 
@@ -24,6 +27,8 @@ const runMigrations = false;
  */
 
 process.env.test = 'true';
+global.noLog = true;
+
 const Mocha = require('mocha');
 const Umzug = require('umzug');
 const path = require('path');
@@ -51,7 +56,8 @@ const umzug = new Umzug({
 
 global.agent = agent;
 
-// Running migrations ...
+
+// Running migrations
 new Promise((resolve) => {
     if (runMigrations) {
         return umzug.up();
@@ -61,19 +67,17 @@ new Promise((resolve) => {
 
 })
 
-// Syncing database ...
-    .then(() => db.sequelize.sync({force: true}))
 
-// Logging in ...
+// Clear, seed and Log in
     .then(() => seedAndLogin(agent))
     .then((userData) => {
-        process.env.userData = userData;
+        global.userData = userData;
 
         return true;
     })
 
 
-// Starting tests ...
+// Starting tests
     .then(() => {
         let failures = 0;
 

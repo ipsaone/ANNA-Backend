@@ -57,7 +57,7 @@ describe('Logs', () => {
                     return true;
                 }));
 
-        it('expect an error when GET post with id = abc', () => {
+        it('expect an error when GET post with id = abc', () =>
             agent.get('/posts/abc')
                 .then((data) => {
                     expect(data).to.be.null;
@@ -65,11 +65,10 @@ describe('Logs', () => {
                     return true;
                 })
                 .catch((err) => {
-                    expect(err).to.have.status(400);
+                    expect(err).to.have.status(404);
 
                     return true;
-                });
-        });
+                }));
     });
 
     describe('[POST]', () => {
