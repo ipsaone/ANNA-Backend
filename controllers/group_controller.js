@@ -2,12 +2,34 @@
 
 const db = require('../models');
 
+/*
+ *
+ * Get all existing groups
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.index = function (req, res, handle) {
     db.Group.findAll({include: ['users']})
         .then((group) => res.json(group))
         .catch((err) => handle(err));
 };
 
+/*
+ *
+ * Get an existing group
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.show = function (req, res, handle) {
     db.Group.findOne({
         where: {id: req.params.groupId},
@@ -23,6 +45,17 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/*
+ *
+ * Creates a new group and stores it
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.store = function (req, res, handle) {
 
     /*
@@ -40,6 +73,17 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/*
+ *
+ * Updates an existing group
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.update = function (req, res, handle) {
 
     /*
@@ -56,6 +100,17 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/*
+ *
+ * Deletes an existing group
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.delete = function (req, res, handle) {
     db.Group.destroy({where: {id: req.params.groupId}})
         .then((data) => {

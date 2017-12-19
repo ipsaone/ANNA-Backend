@@ -3,6 +3,17 @@
 const db = require('../models');
 const bcrypt = require('bcrypt');
 
+/**
+ *
+ * Logs in a user
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.login = (req, res, handle) => {
     db.User.findOne({
         where: {'username': req.body.username},
@@ -40,11 +51,35 @@ exports.login = (req, res, handle) => {
         .catch((err) => handle(err));
 };
 
+
+/*
+ *
+ * Logs out a user
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.logout = (req, res) => {
     req.session.auth = null;
     res.status(200).json({});
 };
 
+
+/*
+ *
+ * Checks a user is connected
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.check = (req, res, handle) => {
     if (req.session.auth) {
         db.User.findOne({

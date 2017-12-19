@@ -1,4 +1,4 @@
-/* eslint no-invalid-this: "warn" */
+/* eslint no-invalid-this: "warn", max-lines: "warn" */
 
 'use strict';
 
@@ -14,10 +14,25 @@ const magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 
 class Storage {
+
+/*
+ *
+ * Get root storage path in file system
+ *
+ * @returns {string} storage path
+ *
+ */
     static get root () {
         return path.join(__dirname, '..', config.storage.folder);
     }
 
+    /*
+     *
+     * Get base url for storage requests
+     *
+     * @returns {string} storage url
+     *
+     */
     static get baseUrl () {
         let conf = config.env.prod;
 
@@ -32,7 +47,14 @@ class Storage {
 
 module.exports = Storage;
 
-
+/*
+ *
+ * Get URL for a data object.
+ * Is designed to be bound to the data object
+ *
+ * @returns {string} data URL
+ *
+ */
 Storage.getDataUrl = () => {
     let url = '/storage/files/';
 
@@ -44,13 +66,17 @@ Storage.getDataUrl = () => {
     return Promise.resolve(url);
 };
 
+/*
+ *
+ * Get file system path for a data object.
+ * Is designed to be bound to the data object
+ *
+ * @todo fix
+ *
+ * @returns {string} data path
+ *
+ */
 Storage.getDataPath = function (full = false) {
-
-
-    /*
-     * Compute file system path
-     * TODO : fix !
-     */
     let dataPath = '';
 
     if (full) {
@@ -76,6 +102,13 @@ Storage.getDataPath = function (full = false) {
 
 };
 
+/*
+ *
+ * Get diretory tree for a file object
+ *
+ * @returns {object} promise to directory tree
+ *
+ */
 Storage.getFileDirTree = function () {
     const db = require('../models');
 
@@ -93,6 +126,13 @@ Storage.getFileDirTree = function () {
         });
 };
 
+/*
+ *
+ * Get all data for a file object
+ *
+ * @returns {object} promise to file data
+ *
+ */
 Storage.getFileData = function (offset = 0) {
     const db = require('../models');
 
@@ -121,6 +161,13 @@ Storage.getFileData = function (offset = 0) {
         });
 };
 
+/*
+ *
+ * Get rights for a data object
+ *
+ * @returns {object} promise to rights
+ *
+ */
 Storage.getDataRights = function () {
     const db = require('../models');
 
@@ -128,6 +175,14 @@ Storage.getDataRights = function () {
     return db.Right.findOne({where: {id: this.rightsId}});
 };
 
+/*
+ *
+ * Add data for a file object
+ *
+ * @todo finish and test
+ * @returns {object} promise to directory tree
+ *
+ */
 Storage.addFileData = function (fileChanges, filePath) {
     const db = require('../models');
 
@@ -245,6 +300,13 @@ Storage.addFileData = function (fileChanges, filePath) {
         .catch((err) => console.log(err));
 };
 
+/*
+ *
+ * Create a new file object
+ *
+ * @returns {object} promise to success boolean
+ *
+ */
 Storage.createNewFile = function (changes, filePath, dir = false) {
     const db = require('../models');
 
@@ -252,6 +314,13 @@ Storage.createNewFile = function (changes, filePath, dir = false) {
         .then((file) => file.addData(changes, filePath));
 };
 
+/*
+ *
+ * Compute type for a file path
+ *
+ * @returns {object} promise to file type
+ *
+ */
 Storage.computeType = function (filePath) {
     magic.detectFile(filePath, (err, res) => {
         if (err) {
@@ -265,6 +334,13 @@ Storage.computeType = function (filePath) {
 
 };
 
+/*
+ *
+ * Compute size for a file path
+ *
+ * @returns {object} promise to file size
+ *
+ */
 Storage.computeSize = function (filePath) {
     fs.stat(filePath, (err, res) => {
         if (err) {
