@@ -2,7 +2,7 @@
 
 const config = require('../config/config');
 
-/*
+/**
  *
  * Checks the request to see if the user is logged in
  *

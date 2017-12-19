@@ -15,7 +15,7 @@ const magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 class Storage {
 
-/*
+/**
  *
  * Get root storage path in file system
  *
@@ -26,7 +26,7 @@ class Storage {
         return path.join(__dirname, '..', config.storage.folder);
     }
 
-    /*
+    /**
      *
      * Get base url for storage requests
      *
@@ -47,7 +47,7 @@ class Storage {
 
 module.exports = Storage;
 
-/*
+/**
  *
  * Get URL for a data object.
  * Is designed to be bound to the data object
@@ -66,12 +66,14 @@ Storage.getDataUrl = () => {
     return Promise.resolve(url);
 };
 
-/*
+/**
  *
  * Get file system path for a data object.
  * Is designed to be bound to the data object
  *
  * @todo fix
+ *
+ * @param {bool} full get full path or relative path
  *
  * @returns {string} data path
  *
@@ -102,7 +104,7 @@ Storage.getDataPath = function (full = false) {
 
 };
 
-/*
+/**
  *
  * Get diretory tree for a file object
  *
@@ -126,9 +128,11 @@ Storage.getFileDirTree = function () {
         });
 };
 
-/*
+/**
  *
  * Get all data for a file object
+ *
+ * @param {integer} offset how old the data is
  *
  * @returns {object} promise to file data
  *
@@ -161,7 +165,7 @@ Storage.getFileData = function (offset = 0) {
         });
 };
 
-/*
+/**
  *
  * Get rights for a data object
  *
@@ -175,9 +179,12 @@ Storage.getDataRights = function () {
     return db.Right.findOne({where: {id: this.rightsId}});
 };
 
-/*
+/**
  *
  * Add data for a file object
+ *
+ * @param {obj} fileChanges the changes in this data
+ * @param {obj} filePath the path to the file to add data to
  *
  * @todo finish and test
  * @returns {object} promise to directory tree
@@ -300,9 +307,13 @@ Storage.addFileData = function (fileChanges, filePath) {
         .catch((err) => console.log(err));
 };
 
-/*
+/**
  *
  * Create a new file object
+ *
+ * @param {object} changes the file metadata
+ * @param {string} filePath the file path to create
+ * @param {boolean} dir whether the file is a directory or not
  *
  * @returns {object} promise to success boolean
  *
@@ -314,9 +325,11 @@ Storage.createNewFile = function (changes, filePath, dir = false) {
         .then((file) => file.addData(changes, filePath));
 };
 
-/*
+/**
  *
  * Compute type for a file path
+ *
+ * @param {object} filePath the file to compute size
  *
  * @returns {object} promise to file type
  *
@@ -334,9 +347,11 @@ Storage.computeType = function (filePath) {
 
 };
 
-/*
+/**
  *
  * Compute size for a file path
+ *
+ * @param {object} filePath the file to compute size
  *
  * @returns {object} promise to file size
  *

@@ -1,6 +1,6 @@
 'use strict';
 
-/*
+/**
  *
  * Handles a raised exception
  * If possible, send an error to the client

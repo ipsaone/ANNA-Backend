@@ -4,7 +4,7 @@ const db = require('../models');
 const policy = require('../policies/post_policy');
 
 
-/*
+/**
  *
  * Get all existing posts
  * Can get altered with scopes to filter publishing
@@ -44,7 +44,7 @@ exports.index = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Get an existing post
  *
@@ -72,7 +72,7 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Create and store a new post
  *
@@ -91,7 +91,7 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Updates an existing post
  *
@@ -110,7 +110,7 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Deletes an existing post
  *

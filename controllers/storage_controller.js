@@ -36,7 +36,7 @@ const getChildrenData = (req, res, folderId) =>
         .then((data) => data.filter((item) => item.fileId !== 1));
 
 
-/*
+/**
  *
  * Download a file or its metadata
  *
@@ -87,7 +87,7 @@ exports.download = (req, res, handle) => {
      */
 };
 
-/*
+/**
  *
  * Upload a new revision for an existing file
  *
@@ -114,7 +114,7 @@ exports.uploadRev = (req, res, handle) => {
 
 };
 
-/*
+/**
  *
  * Upload a new file
  *
@@ -139,7 +139,7 @@ exports.uploadNew = (req, res, handle) => {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * List contents of a folder
  *
@@ -188,7 +188,7 @@ exports.list = (req, res, handle) => {
 
 };
 
-/*
+/**
  *
  * Deletes a file or folder
  *

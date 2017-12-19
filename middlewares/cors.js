@@ -2,7 +2,7 @@
 
 const cors = require('cors'); // Cross Origin Resource Sharing
 
-/*
+/**
  *
  * Manages the Cross-Origin Request Security settings
  *

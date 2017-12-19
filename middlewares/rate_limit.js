@@ -2,7 +2,7 @@
 
 const RateLimit = require('express-rate-limit'); // Rate limiter (DDOS security)
 
-/*
+/**
  *
  * Handles the rate limiting to avoid Denial-of-Service attacks
  *

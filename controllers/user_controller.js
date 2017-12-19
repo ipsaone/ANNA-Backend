@@ -2,7 +2,7 @@
 
 const db = require('../models');
 
-/*
+/**
  *
  * Get all existing users
  *
@@ -20,7 +20,7 @@ exports.index = function (req, res, handle) {
 };
 
 
-/*
+/**
  *
  * Get a single user
  *
@@ -47,7 +47,7 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Create a store a new user
  *
@@ -65,7 +65,7 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Updates an existing user
  *
@@ -84,7 +84,7 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Deletes an existing user
  *
@@ -103,7 +103,7 @@ exports.delete = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Get all user's posts
  * Can get altered with scopes
@@ -134,7 +134,7 @@ exports.posts = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Get all user's groups
  *
@@ -160,7 +160,7 @@ exports.getGroups = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Add user to group
  *
@@ -184,7 +184,7 @@ exports.addGroups = function (req, res) {
         .catch((err) => console.log(err));
 };
 
-/*
+/**
  *
  * Remove user from groups
  *

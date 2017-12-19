@@ -2,7 +2,7 @@
 
 const db = require('../models');
 
-/*
+/**
  *
  * Get all existing logs
  *
@@ -19,7 +19,7 @@ exports.index = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Get a single log
  *
@@ -45,7 +45,7 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Create a new log and store it
  *
@@ -63,7 +63,7 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Updates an existing log
  *
@@ -80,7 +80,7 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Deletes an existing log
  *

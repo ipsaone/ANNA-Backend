@@ -70,7 +70,7 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Updates an existing event
  *
@@ -97,7 +97,7 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Deletes an event
  *

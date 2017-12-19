@@ -2,7 +2,7 @@
 
 const db = require('../models');
 
-/*
+/**
  *
  * Get all existing groups
  *
@@ -19,7 +19,7 @@ exports.index = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Get an existing group
  *
@@ -45,7 +45,7 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Creates a new group and stores it
  *
@@ -73,7 +73,7 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Updates an existing group
  *
@@ -100,7 +100,7 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Deletes an existing group
  *

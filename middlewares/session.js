@@ -4,7 +4,7 @@ const config = require('../config/config'); // Config
 const session = require('express-session'); // Session management
 const Redis = require('connect-redis')(session); // Session store
 
-/*
+/**
  *
  * Handles the user sessions settings
  * @todo : set secure=true and httpOnly=true in production

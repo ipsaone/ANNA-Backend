@@ -2,7 +2,7 @@
 
 const db = require('../models');
 
-/*
+/**
  *
  * Get all existing missions
  *
@@ -19,7 +19,7 @@ exports.index = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Get a single mission
  *
@@ -45,7 +45,7 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Create and store a new mission
  *
@@ -63,7 +63,7 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Updates an existing mission
  *
@@ -81,7 +81,7 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
  * Delete an existing mission
  *
