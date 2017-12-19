@@ -1,5 +1,17 @@
 'use strict';
 
+/**
+ *
+ * Handles a raised exception
+ * If possible, send an error to the client
+ * Logs the errors to console
+ *
+ * @param {obj} err     the exception that was raised
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ *
+ *
+ */
 // No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
 module.exports = (err, req, res) => {

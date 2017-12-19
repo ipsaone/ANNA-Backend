@@ -2,6 +2,17 @@
 
 const db = require('../models');
 
+/**
+ *
+ * Get all existing users
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.index = function (req, res, handle) {
     db.User.findAll()
         .then((users) => res.status(200).json(users))
@@ -9,6 +20,17 @@ exports.index = function (req, res, handle) {
 };
 
 
+/**
+ *
+ * Get a single user
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.show = function (req, res, handle) {
     db.User.findOne({
         where: {id: req.params.userId},
@@ -25,7 +47,17 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-
+/**
+ *
+ * Create a store a new user
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.store = function (req, res, handle) {
     db.User.create(req.body)
         .then((user) => res.status(201).json(user))
@@ -33,7 +65,17 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-
+/**
+ *
+ * Updates an existing user
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.update = function (req, res, handle) {
     db.User.findOne({where: {id: req.params.userId}})
         .then((record) => record.update(req.body))
@@ -42,6 +84,17 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Deletes an existing user
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.delete = function (req, res, handle) {
     db.UserGroup.destroy({where: {userId: req.params.userId}})
         .then(() => db.User.destroy({where: {id: req.params.userId}}))
@@ -50,13 +103,22 @@ exports.delete = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Get all user's posts
+ * Can get altered with scopes
+ *
+ * @example GET /users/:userId/posts?published=true  -> return all published posts
+ * @example GET /users/:userId/posts?published=false -> return all drafted posts
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.posts = function (req, res, handle) {
-
-    /*
-     * GET /users/:userId/posts                 -> return all posts
-     * GET /users/:userId/posts?published=true  -> return all published posts
-     * GET /users/:userId/posts?published=false -> return all drafted posts
-     */
     let posts = db.Post;
 
     if (req.query.published) {
@@ -72,7 +134,17 @@ exports.posts = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-
+/**
+ *
+ * Get all user's groups
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.getGroups = function (req, res, handle) {
     db.User.findOne({
         where: {id: req.params.userId},
@@ -88,6 +160,17 @@ exports.getGroups = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Add user to group
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.addGroups = function (req, res) {
     db.User.findById(req.params.userId)
         .then((user) => {
@@ -101,7 +184,17 @@ exports.addGroups = function (req, res) {
         .catch((err) => console.log(err));
 };
 
-
+/**
+ *
+ * Remove user from groups
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.deleteGroups = function (req, res) {
     db.User.findById(req.params.userId)
         .then((user) => user.removeGroups(req.body.groupsId))

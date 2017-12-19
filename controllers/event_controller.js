@@ -2,12 +2,34 @@
 
 const db = require('../models');
 
+/*
+ *
+ * Gets all events
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.index = function (req, res, handle) {
     db.Event.findAll()
         .then((events) => res.json(events))
         .catch((err) => handle(err));
 };
 
+/*
+ *
+ * Gets a single event
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.show = function (req, res, handle) {
     db.Event.findOne({where: {id: req.params.eventId}})
         .then((event) => {
@@ -20,6 +42,17 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/*
+ *
+ * Creates a new event and stores it
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.store = function (req, res, handle) {
 
     /*
@@ -37,6 +70,17 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Updates an existing event
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.update = function (req, res, handle) {
 
     /*
@@ -53,6 +97,17 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Deletes an event
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.delete = function (req, res, handle) {
     db.Event.destroy({where: {id: req.params.eventId}})
         .then((data) => {

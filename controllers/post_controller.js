@@ -3,13 +3,23 @@
 const db = require('../models');
 const policy = require('../policies/post_policy');
 
-exports.index = function (req, res, handle) {
 
-    /*
-     * GET /posts                 -> return all posts
-     * GET /posts?published=true  -> return all published posts
-     * GET /posts?published=false -> return all drafted posts
-     */
+/**
+ *
+ * Get all existing posts
+ * Can get altered with scopes to filter publishing
+ *
+ * @example GET /posts?published=true  -> return all published posts
+ * @example GET /posts?published=false -> return all drafter posts
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
+exports.index = function (req, res, handle) {
     let posts = db.Post;
 
     if (req.query.published) {
@@ -34,6 +44,17 @@ exports.index = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Get an existing post
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.show = function (req, res, handle) {
     db.Post.findOne({
         where: {id: req.params.postId},
@@ -51,6 +72,17 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Create and store a new post
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.store = function (req, res, handle) {
     policy.filterStore(req, res)
         .then(() => db.Post.create(req.body))
@@ -59,6 +91,17 @@ exports.store = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Updates an existing post
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.update = function (req, res, handle) {
     policy.filterUpdate(req, res)
         .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
@@ -67,6 +110,17 @@ exports.update = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * Deletes an existing post
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.delete = function (req, res, handle) {
     policy.filterDelete(req, res)
         .then(() => db.Post.destroy({where: {id: req.params.postId}}))

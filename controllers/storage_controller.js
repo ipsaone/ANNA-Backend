@@ -36,6 +36,17 @@ const getChildrenData = (req, res, folderId) =>
         .then((data) => data.filter((item) => item.fileId !== 1));
 
 
+/**
+ *
+ * Download a file or its metadata
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.download = (req, res, handle) => {
 
     // Revision parameter, to get an older version
@@ -76,6 +87,17 @@ exports.download = (req, res, handle) => {
      */
 };
 
+/**
+ *
+ * Upload a new revision for an existing file
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.uploadRev = (req, res, handle) => {
     // Escape req.body strings
     req.body = req.body.map((elem) => escape(elem));
@@ -92,6 +114,17 @@ exports.uploadRev = (req, res, handle) => {
 
 };
 
+/**
+ *
+ * Upload a new file
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.uploadNew = (req, res, handle) => {
     if (!req.file) {
         throw res.boom.badRequest();
@@ -106,6 +139,17 @@ exports.uploadNew = (req, res, handle) => {
         .catch((err) => handle(err));
 };
 
+/**
+ *
+ * List contents of a folder
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.list = (req, res, handle) => {
 
     // Fail if the folder isn't defined
@@ -144,6 +188,17 @@ exports.list = (req, res, handle) => {
 
 };
 
+/**
+ *
+ * Deletes a file or folder
+ *
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
+ *
+ * @returns {obj} promise
+ *
+ */
 exports.delete = (req, res, handle) => {
     db.Data.destroy({where: {fileId: req.params.fileId}})
         .catch((err) => handle(err));
