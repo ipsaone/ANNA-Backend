@@ -14,7 +14,7 @@ const db = require('../models');
  *
  */
 exports.index = function (req, res, handle) {
-    db.Event.findAll()
+    return db.Event.findAll()
         .then((events) => res.json(events))
         .catch((err) => handle(err));
 };
@@ -31,7 +31,12 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    db.Event.findOne({where: {id: req.params.eventId}})
+    if (typeof req.params.eventId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.Event.findOne({where: {id: req.params.eventId}})
         .then((event) => {
             if (event) {
                 return res.status(200).json(event);
@@ -54,19 +59,23 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
+    if (typeof req.body.name !== 'string') {
+
+        throw res.boom.badRequest();
+    }
 
     /*
      * To lower case to avoid security problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
-    if (typeof req.body.name !== 'undefined') {
-        req.body.name = req.body.name.toLowerCase();
-    }
+    req.body.name = req.body.name.toLowerCase();
 
 
-    db.Event.create(req.body)
+    return db.Event.create(req.body)
         .then((event) => res.status(201).json(event))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch(db.Sequelize.ValidationError, () => {
+            throw res.boom.badRequest();
+        })
         .catch((err) => handle(err));
 };
 
@@ -82,16 +91,19 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
+    if (typeof req.body.name !== 'string' ||
+        typeof req.params.eventId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
 
     /*
      * To lower case to avoid security problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
-    if (typeof req.body.name !== 'undefined') {
-        req.body.name = req.body.name.toLowerCase();
-    }
+    req.body.name = req.body.name.toLowerCase();
 
-    db.Event.update(req.body, {where: {id: req.params.eventId}})
+    return db.Event.update(req.body, {where: {id: req.params.eventId}})
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -109,7 +121,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    db.Event.destroy({where: {id: req.params.eventId}})
+    if (typeof req.params.eventId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.Event.destroy({where: {id: req.params.eventId}})
         .then((data) => {
 
             /*

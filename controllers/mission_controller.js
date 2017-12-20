@@ -14,7 +14,7 @@ const db = require('../models');
  *
  */
 exports.index = function (req, res, handle) {
-    db.Missions.findAll()
+    return db.Missions.findAll()
         .then((missions) => res.status(200).json(missions))
         .catch((err) => handle(err));
 };
@@ -31,7 +31,13 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    db.Missions.findOne({
+    if (typeof req.params.missionId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+
+    return db.Missions.findOne({
         where: {id: req.params.missionId},
         rejectOnEmpty: true
     })
@@ -57,7 +63,7 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    db.Missions.create(req.body)
+    return db.Missions.create(req.body)
         .then((mission) => res.status(201).json(mission))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -75,7 +81,12 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    db.Missions.update(req.body, {where: {id: req.params.missionId}})
+    if (typeof req.params.missionId !== 'number') {
+
+        return handle(res.boom.badRequest());
+    }
+
+    return db.Missions.update(req.body, {where: {id: req.params.missionId}})
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -93,7 +104,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    db.Missions.destroy({where: {id: req.params.missionId}})
+    if (typeof req.params.missionId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.Missions.destroy({where: {id: req.params.missionId}})
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };

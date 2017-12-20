@@ -14,7 +14,7 @@ const db = require('../models');
  *
  */
 exports.index = function (req, res, handle) {
-    db.Group.findAll({include: ['users']})
+    return db.Group.findAll({include: ['users']})
         .then((group) => res.json(group))
         .catch((err) => handle(err));
 };
@@ -31,7 +31,12 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    db.Group.findOne({
+    if (typeof req.params.groupId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.Group.findOne({
         where: {id: req.params.groupId},
         include: ['users']
     })
@@ -57,17 +62,19 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
+    if (typeof req.body.name !== 'string') {
+
+        throw res.boom.badRequest();
+    }
 
     /*
      * To lower case to avoid security problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
-    if (typeof req.body.name !== 'undefined') {
-        req.body.name = req.body.name.toLowerCase();
-    }
+    req.body.name = req.body.name.toLowerCase();
 
 
-    db.Group.create(req.body)
+    return db.Group.create(req.body)
         .then((group) => res.status(201).json(group))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -85,16 +92,19 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
+    if (typeof req.body.name !== 'string' ||
+        typeof req.params.groupId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
 
     /*
      * To lower case to avoid security problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
-    if (typeof req.body.name !== 'undefined') {
-        req.body.name = req.body.name.toLowerCase();
-    }
+    req.body.name = req.body.name.toLowerCase();
 
-    db.Group.update(req.body, {where: {id: req.params.groupId}})
+    return db.Group.update(req.body, {where: {id: req.params.groupId}})
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -112,7 +122,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    db.Group.destroy({where: {id: req.params.groupId}})
+    if (typeof req.params.eventId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.Group.destroy({where: {id: req.params.groupId}})
         .then((data) => {
 
             /*

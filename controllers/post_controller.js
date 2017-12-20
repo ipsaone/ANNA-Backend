@@ -30,7 +30,7 @@ exports.index = function (req, res, handle) {
         }
     }
 
-    posts.findAll({
+    return posts.findAll({
         include: ['author'],
         order: [
             [
@@ -56,7 +56,12 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    db.Post.findOne({
+    if (typeof req.params.postId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.Post.findOne({
         where: {id: req.params.postId},
         include: ['author']
     })
@@ -84,7 +89,7 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    policy.filterStore(req, res)
+    return policy.filterStore(req, res)
         .then(() => db.Post.create(req.body))
         .then((post) => res.status(201).json(post))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
@@ -103,7 +108,12 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    policy.filterUpdate(req, res)
+    if (typeof req.params.postId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return policy.filterUpdate(req, res)
         .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
         .then((post) => res.status(200).json(post))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
@@ -122,7 +132,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    policy.filterDelete(req, res)
+    if (typeof req.params.postId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return policy.filterDelete(req, res)
         .then(() => db.Post.destroy({where: {id: req.params.postId}}))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())

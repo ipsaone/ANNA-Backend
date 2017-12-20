@@ -61,7 +61,8 @@ https.createServer(certificates, app).listen(port, host, function () {
 });
 
 process.on('unhandledRejection', (err) => {
-    console.error(err);
+    console.error('unhandled exception : ');
+    console.log(err);
 
     // eslint-disable-next-line no-process-exit
     process.exit(1);

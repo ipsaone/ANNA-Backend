@@ -14,7 +14,7 @@ const db = require('../models');
  *
  */
 exports.index = function (req, res, handle) {
-    db.Log.findAll({include: ['author']})
+    return db.Log.findAll({include: ['author']})
         .then((logs) => res.status(200).json(logs))
         .catch((err) => handle(err));
 };
@@ -31,7 +31,12 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    db.Log.findOne({
+    if (typeof req.params.logId !== 'number') {
+
+        return handle(res.boom.badRequest());
+    }
+
+    return db.Log.findOne({
         where: {id: req.params.logId},
         include: ['author']
     })
@@ -57,7 +62,7 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    db.Log.create(req.body)
+    return db.Log.create(req.body)
         .then((log) => res.status(201).json(log))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -75,7 +80,12 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    db.Log.update(req.body, {where: {id: req.params.logId}})
+    if (typeof req.params.logId !== 'number') {
+
+        return handle(res.boom.badRequest());
+    }
+
+    return db.Log.update(req.body, {where: {id: req.params.logId}})
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
@@ -92,6 +102,11 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
+    if (typeof req.params.logId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
     db.Log.destroy({where: {id: req.params.logId}})
         .then((data) => {
             if (!data[0]) {

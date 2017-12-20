@@ -3,7 +3,6 @@
 const db = require('../models');
 const escape = require('escape-html');
 const Storage = require('../repositories/Storage');
-const boom = require('boom');
 
 const getChildrenData = (req, res, folderId) =>
     db.File.findAll() // Get all files
@@ -48,6 +47,10 @@ const getChildrenData = (req, res, folderId) =>
  *
  */
 exports.download = (req, res, handle) => {
+    if (typeof req.params.fileId !== 'number') {
+
+        return handle(res.boom.badRequest());
+    }
 
     // Revision parameter, to get an older version
     let rev = 0;
@@ -72,13 +75,14 @@ exports.download = (req, res, handle) => {
     });
 
     if (dl) {
-        data.then(() => data.getPath(true))
+        return data.then(() => data.getPath(true))
             .then((path) => res.download(path))
             .catch((err) => handle(err));
-    } else {
-        data.then((contents) => res.json(contents))
-            .catch((err) => handle(err));
     }
+
+    return data.then((contents) => res.json(contents))
+        .catch((err) => handle(err));
+
 
     /*
      * Had to comment and distribute the following line
@@ -99,6 +103,11 @@ exports.download = (req, res, handle) => {
  *
  */
 exports.uploadRev = (req, res, handle) => {
+    if (typeof req.params.fileId !== 'number') {
+
+        return handle(res.boom.badRequest());
+    }
+
     // Escape req.body strings
     req.body = req.body.map((elem) => escape(elem));
 
@@ -151,10 +160,9 @@ exports.uploadNew = (req, res, handle) => {
  *
  */
 exports.list = (req, res, handle) => {
-
     // Fail if the folder isn't defined
     if (!req.params.folderId || !parseInt(req.params.folderId, 10)) {
-        return handle(boom.badRequest());
+        throw res.boom.badRequest();
     }
 
     const file = db.File;
@@ -200,10 +208,13 @@ exports.list = (req, res, handle) => {
  *
  */
 exports.delete = (req, res, handle) => {
-    db.Data.destroy({where: {fileId: req.params.fileId}})
-        .catch((err) => handle(err));
+    if (typeof req.params.fileId !== 'number') {
 
-    db.File.destroy({where: {id: req.params.fileId}})
+        throw res.boom.badRequest();
+    }
+
+    return db.Data.destroy({where: {fileId: req.params.fileId}})
+        .then(() => db.File.destroy({where: {id: req.params.fileId}}))
         .then(() => res.status(204).send())
         .catch((err) => handle(err));
 };

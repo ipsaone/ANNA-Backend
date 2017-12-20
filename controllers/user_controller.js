@@ -14,7 +14,7 @@ const db = require('../models');
  *
  */
 exports.index = function (req, res, handle) {
-    db.User.findAll()
+    return db.User.findAll()
         .then((users) => res.status(200).json(users))
         .catch((err) => handle(err));
 };
@@ -32,7 +32,11 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    db.User.findOne({
+    if (typeof req.params.userId !== 'number') {
+        throw res.boom.badRequest();
+    }
+
+    return db.User.findOne({
         where: {id: req.params.userId},
         include: ['groups']
     })
@@ -40,7 +44,6 @@ exports.show = function (req, res, handle) {
             if (user) {
                 return res.status(200).json(user);
             }
-            console.log('User not found');
             throw res.boom.badRequest();
 
         })
@@ -59,7 +62,7 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    db.User.create(req.body)
+    return db.User.create(req.body)
         .then((user) => res.status(201).json(user))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -77,7 +80,12 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    db.User.findOne({where: {id: req.params.userId}})
+    if (typeof req.params.userId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.User.findOne({where: {id: req.params.userId}})
         .then((record) => record.update(req.body))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
@@ -96,7 +104,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    db.UserGroup.destroy({where: {userId: req.params.userId}})
+    if (typeof req.params.userId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.UserGroup.destroy({where: {userId: req.params.userId}})
         .then(() => db.User.destroy({where: {id: req.params.userId}}))
         .then(() => res.status(204).send())
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
@@ -119,6 +132,10 @@ exports.delete = function (req, res, handle) {
  *
  */
 exports.posts = function (req, res, handle) {
+    if (typeof req.params.userId !== 'number') {
+
+        handle(res.boom.badRequest());
+    }
     let posts = db.Post;
 
     if (req.query.published) {
@@ -129,7 +146,7 @@ exports.posts = function (req, res, handle) {
         }
     }
 
-    posts.findAll({where: {authorId: req.params.userId}})
+    return posts.findAll({where: {authorId: req.params.userId}})
         .then((response) => res.status(200).json(response))
         .catch((err) => handle(err));
 };
@@ -146,7 +163,12 @@ exports.posts = function (req, res, handle) {
  *
  */
 exports.getGroups = function (req, res, handle) {
-    db.User.findOne({
+    if (typeof req.params.userId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.User.findOne({
         where: {id: req.params.userId},
         include: ['groups']
     })
@@ -171,8 +193,13 @@ exports.getGroups = function (req, res, handle) {
  * @returns {obj} promise
  *
  */
-exports.addGroups = function (req, res) {
-    db.User.findById(req.params.userId)
+exports.addGroups = function (req, res, handle) {
+    if (typeof req.params.userId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.User.findById(req.params.userId)
         .then((user) => {
             if (user) {
                 return user.addGroups(req.body.groupsId);
@@ -181,7 +208,7 @@ exports.addGroups = function (req, res) {
 
         })
         .then(() => res.status(204).send())
-        .catch((err) => console.log(err));
+        .catch((err) => handle(err));
 };
 
 /**
@@ -195,9 +222,14 @@ exports.addGroups = function (req, res) {
  * @returns {obj} promise
  *
  */
-exports.deleteGroups = function (req, res) {
-    db.User.findById(req.params.userId)
+exports.deleteGroups = function (req, res, handle) {
+    if (typeof req.params.userId !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.User.findById(req.params.userId)
         .then((user) => user.removeGroups(req.body.groupsId))
         .then(() => res.status(204).send())
-        .catch((err) => console.log(err));
+        .catch((err) => handle(err));
 };

@@ -15,7 +15,13 @@ const bcrypt = require('bcrypt');
  *
  */
 exports.login = (req, res, handle) => {
-    db.User.findOne({
+    if (typeof req.body.username !== 'string' ||
+        typeof req.body.password !== 'string') {
+
+        throw res.boom.badRequest();
+    }
+
+    return db.User.findOne({
         where: {'username': req.body.username},
         include: ['groups']
     })
@@ -52,7 +58,7 @@ exports.login = (req, res, handle) => {
 };
 
 
-/*
+/**
  *
  * Logs out a user
  *
@@ -69,7 +75,7 @@ exports.logout = (req, res) => {
 };
 
 
-/*
+/**
  *
  * Checks a user is connected
  *
@@ -81,8 +87,13 @@ exports.logout = (req, res) => {
  *
  */
 exports.check = (req, res, handle) => {
+    if (typeof req.body.username !== 'number') {
+
+        throw res.boom.badRequest();
+    }
+
     if (req.session.auth) {
-        db.User.findOne({
+        return db.User.findOne({
             where: {id: req.session.auth},
             include: ['groups']
         })
@@ -99,7 +110,7 @@ exports.check = (req, res, handle) => {
 
             })
             .catch((err) => handle(err));
-    } else {
-        throw res.boom.unauthorized();
     }
+    throw res.boom.unauthorized();
+
 };
