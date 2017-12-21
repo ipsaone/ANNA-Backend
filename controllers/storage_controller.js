@@ -4,15 +4,17 @@ const db = require('../models');
 const escape = require('escape-html');
 const Storage = require('../repositories/Storage');
 
-const getChildrenData = (req, res, folderId) =>
+const getChildrenData = (folderId) =>
     db.File.findAll() // Get all files
 
         // Check if file exists
         .then((files) => {
+            console.log('there !');
             if (files.map((item) => item.id).includes(folderId)) {
                 return files;
             }
-            throw res.boom.notFound();
+
+            return [];
 
         })
 
@@ -183,9 +185,14 @@ exports.list = (req, res, handle) => {
 
     const folderId = parseInt(req.params.folderId, 10);
 
-    const childrenData = getChildrenData(req, res, folderId);
-    const folderFile = db.File.findOne({where: {id: folderId}});
+    const childrenData = getChildrenData(folderId);
+    const folderFile = db.File.findOne({
+        where: {id: folderId},
+        rejectOnEmpty: true
+    });
     const folderData = folderFile.then((thisFile) => thisFile.getData());
+
+    console.log('4');
 
     return Promise.all([
         folderFile,

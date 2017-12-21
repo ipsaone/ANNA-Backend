@@ -6,7 +6,9 @@ module.exports = {
             {
                 isDir: true,
                 createdAt: new Date(Date.now()),
-                updatedAt: new Date(Date.now())
+                updatedAt: new Date(Date.now()),
+                ownerId: 1,
+                groupId: 1
             }
         ])
             .then(() => queryInterface.bulkInsert('Rights', [

@@ -158,7 +158,9 @@ Storage.getFileData = function (offset = 0) {
         // FindAll is limited, so there will always be one result (or none -> undefined)
         .then((data) => {
             if (data.length === 0) {
-                throw new Error();
+                console.log('No data at this offset !');
+
+                return;
             }
 
             return data[0];
