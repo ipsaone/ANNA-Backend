@@ -1,18 +1,37 @@
 'use strict';
 
+require('dotenv').config();
+const config = require('../config/config');
+const path = require('path');
 
 const computeValues = (data) => {
     const Storage = require('../repositories/Storage');
 
     data.getPath()
-        .then((path) => Storage.computeType(path))
-        .then((type) => data.type === type)
-        .catch(() => data.type === '');
+        .then((dataPath) => Storage.computeType(path.join('..', config.storage.folder, dataPath)))
+        .then((type) => {
+            data.type = type;
+
+            return true;
+        })
+        .catch(() => {
+            data.type = '';
+
+            return true;
+        });
 
     data.getPath()
-        .then((path) => Storage.computeSize(path))
-        .then((size) => data.size === size)
-        .catch(() => isNaN(data.size));
+        .then((dataPath) => Storage.computeSize(path.join('..', config.storage.folder, dataPath)))
+        .then((size) => {
+            data.size = size;
+
+            return true;
+        })
+        .catch(() => {
+            data.size = -1;
+
+            return true;
+        });
 };
 
 module.exports = (sequelize, DataTypes) => {
@@ -112,9 +131,9 @@ module.exports = (sequelize, DataTypes) => {
 
     const Storage = require('../repositories/Storage');
 
-    Object.defineProperty(Data, 'getRights', {get: Storage.getDataRights});
-    Object.defineProperty(Data, 'getPath', {get: Storage.getDataPath});
-    Object.defineProperty(Data, 'getUrl', {get: Storage.getDataUrl});
+    Data.prototype.getRights = Storage.getDataRights;
+    Data.prototype.getPath = Storage.getDataPath;
+    Data.prototype.getUrl = Storage.getDataUrl;
 
     return Data;
 };

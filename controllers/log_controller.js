@@ -102,7 +102,7 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.logId !== 'number') {
+    if (typeof req.params.logId !== 'string' || isNaN(parseInt(req.params.logId, 10))) {
 
         throw res.boom.badRequest();
     }

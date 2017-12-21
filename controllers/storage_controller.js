@@ -153,7 +153,7 @@ exports.uploadNew = (req, res, handle) => {
     }
 
     // Create the file and its data
-    return Storage.createNewFile(req.body, req.file.path)
+    return Storage.createNewFile(req.body, req.file.path, req)
         .then(() => res.status(204))
         .catch((err) => handle(err));
 };

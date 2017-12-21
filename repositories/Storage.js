@@ -83,6 +83,8 @@ Storage.getDataPath = function (full = false) {
 
     if (full) {
         dataPath += Storage.root;
+    } else {
+        dataPath += config.storage.folder;
     }
     dataPath += `/${this.fileId}`;
     dataPath += `/${this.id}`;
@@ -91,16 +93,19 @@ Storage.getDataPath = function (full = false) {
     console.log(dataPath);
 
     // Check file exists
-    fs.access(dataPath, fs.constants.F_OK, (err) => {
-        if (err) {
-            return Promise.reject(err);
-        }
+    return new Promise(() => {
+        fs.access(dataPath, fs.constants.F_OK, (err) => {
+            if (err) {
+                throw err;
+            }
 
 
-        // Return file path if it exists
-        return Promise.resolve(dataPath);
+            // Return file path if it exists
+            return dataPath;
 
+        });
     });
+
 
 };
 
@@ -187,12 +192,13 @@ Storage.getDataRights = function () {
  *
  * @param {obj} fileChanges the changes in this data
  * @param {obj} filePath the path to the file to add data to
+ * @param {obj} userId the logged user ID
  *
  * @todo finish and test
  * @returns {object} promise to directory tree
  *
  */
-Storage.addFileData = function (fileChanges, filePath) {
+Storage.addFileData = function (fileChanges, filePath, userId) {
     const db = require('../models');
 
     fileChanges.fileId = this.id;
@@ -223,25 +229,22 @@ Storage.addFileData = function (fileChanges, filePath) {
             }
         }
 
+        changes.ownerId = userId;
 
-        if (typeof changes.ownerId === 'undefined') {
-            // Changes.ownerId = req.session.auth
-        } else {
-            // Not yet supported
-        }
-
-        if (typeof changes.groupId === 'undefined') {
-
-            /*
-             * OwnerId = req.session.auth
-             * groups = getGroups(ownerId)
-             * if(groups.length == 0) {}
-             * else if(groups.length == 1)getMainGroup {}
-             * else {}
-             */
-        } else {
-            // Not yet supported
-        }
+        /*
+         * If (typeof changes.groupId === 'undefined') {
+         *
+         *
+         * OwnerId = req.session.auth
+         * groups = getGroups(ownerId)
+         * if(groups.length == 0) {}
+         * else if(groups.length == 1)getMainGroup {}
+         * else {}
+         *
+         * } else {
+         * // Not yet supported
+         * }
+         */
 
         if (newRight) {
 
@@ -255,6 +258,8 @@ Storage.addFileData = function (fileChanges, filePath) {
         }
 
         // Use previous rights
+        console.log('heeeere');
+
         return db.File.findOne({where: {id: changes.fileId}})
             .then((file) => file.getData())
             .then((data) => {
@@ -315,16 +320,21 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  * @param {object} changes the file metadata
  * @param {string} filePath the file path to create
+ * @param {integer} userId the logged user ID
  * @param {boolean} dir whether the file is a directory or not
+ * @todo find a way to reset max-params
  *
  * @returns {object} promise to success boolean
  *
  */
-Storage.createNewFile = function (changes, filePath, dir = false) {
+// eslint-disable-next-line max-params
+Storage.createNewFile = function (changes, filePath, userId, dir = false) {
     const db = require('../models');
 
-    return db.File.create({isDir: dir})
-        .then((file) => file.addData(changes, filePath));
+    changes.isDir = dir;
+
+    return db.File.create(changes)
+        .then((file) => file.addData(changes, filePath, userId));
 };
 
 /**
