@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Creates table 'Groups'
+ * Groups only have a name and an id
+ * name is a STRING
+ */
+
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.createTable('Groups', {
         id: {

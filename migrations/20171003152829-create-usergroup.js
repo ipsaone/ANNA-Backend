@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Creates table 'UserGroup'
+ *
+ */
+
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.createTable('UserGroup', {
         id: {
