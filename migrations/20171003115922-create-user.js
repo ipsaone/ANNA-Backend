@@ -10,7 +10,7 @@
 
 module.exports = {
   /**
-   * Set table 'Users'
+   * Sets table 'Users'
    * @function up
    * @implements {id}
    * @implements {username}
@@ -74,7 +74,7 @@ module.exports = {
         }
     }),
     /**
-     * Reset the table 'Users'
+     * Resets the table 'Users'
      * @function down
      */
     down: (queryInterface) => queryInterface.dropTable('Users')
