@@ -109,7 +109,11 @@ exports.uploadRev = (req, res, handle) => {
     }
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    for (const key in req.body) {
+        if (Object.prototype.hasOwnProperty.call(req.body, key) && typeof req.body.key === 'string') {
+            req.body.key = escape(req.body.key);
+        }
+    }
 
     // Find the file in database and add new data
     return db.File.findOne({where: {id: req.params.fileId}})
@@ -140,7 +144,11 @@ exports.uploadNew = (req, res, handle) => {
     }
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    for (const key in req.body) {
+        if (Object.prototype.hasOwnProperty.call(req.body, key) && typeof req.body.key === 'string') {
+            req.body.key = escape(req.body.key);
+        }
+    }
 
     // Create the file and its data
     return Storage.createNewFile(req.body, req.file.path)
