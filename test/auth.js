@@ -18,9 +18,9 @@ describe('Auth', () => {
             username: 'login_test'
         }));
 
-/**
- *
- */
+    /**
+     *
+     */
 
     it('expect to fail to login (good user / bad password)', () =>
         agent.post('/auth/login')

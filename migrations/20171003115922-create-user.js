@@ -9,27 +9,33 @@
 
 
 module.exports = {
-  /**
-   * Sets table 'Users'
-   * @function up
-   * @implements {id}
-   * @implements {username}
-   * @implements {password}
-   * @implements {email}
-   * @implements {createdAt}
-   * @implements {updatedAt}
-   */
+
+    /**
+     * Sets table 'Users'
+     * @function up
+     * @param {Object} queryInterface a query interface
+     * @param {Object} Sequelize the Sequelize object
+     * @implements {id}
+     * @implements {username}
+     * @implements {password}
+     * @implements {email}
+     * @implements {createdAt}
+     * @implements {updatedAt}
+     * @returns {Promise} the promise to create a table
+     */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
-      /**
-       * The id of the user
-       * @var id
-       */
+
+        /**
+         * The id of the user
+         * @var id
+         */
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
         },
+
         /**
          * The username of the user
          * @var username
@@ -39,6 +45,7 @@ module.exports = {
             type: Sequelize.STRING,
             unique: true
         },
+
         /**
          * The user's password
          * @var password
@@ -47,6 +54,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.STRING
         },
+
         /**
          * The user's email adress
          * @var email
@@ -56,6 +64,7 @@ module.exports = {
             type: Sequelize.STRING,
             unique: true
         },
+
         /**
          * The user's registration date
          * @var createdAt
@@ -64,6 +73,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         },
+
         /**
          * The date of the last update of the user's data
          * @var updatedAt
@@ -73,9 +83,12 @@ module.exports = {
             type: Sequelize.DATE
         }
     }),
+
     /**
      * Resets the table 'Users'
      * @function down
+     * @param {Object} queryInterface - the query interface
+     * @returns {Promise} the promise to drop a table
      */
     down: (queryInterface) => queryInterface.dropTable('Users')
 };

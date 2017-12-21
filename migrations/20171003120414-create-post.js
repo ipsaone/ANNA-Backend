@@ -9,29 +9,35 @@
 
 
 module.exports = {
-  /**
-   * Sets table 'Posts'
-   * @function up
-   * @implements {id}
-   * @implements {title}
-   * @implements {markdown}
-   * @implements {content}
-   * @implements {authorId}
-   * @implements {published}
-   * @implements {publishedAt}
-   * @implements {updatedAt}
-   */
+
+    /**
+     * Sets table 'Posts'
+     * @function up
+     * @param {Object} queryInterface a query interface
+     * @param {Object} Sequelize the Sequelize object
+     * @implements {id}
+     * @implements {title}
+     * @implements {markdown}
+     * @implements {content}
+     * @implements {authorId}
+     * @implements {published}
+     * @implements {publishedAt}
+     * @implements {updatedAt}
+     * @returns {Promise} the promise to create a table
+     */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Posts', {
-      /**
-       * The id of the post
-       * @var id
-       */
+
+        /**
+         * The id of the post
+         * @var id
+         */
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
         },
+
         /**
          * The title of the post
          * @var title
@@ -40,6 +46,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.STRING
         },
+
         /**
          * The content sent by the author
          * @var markdown
@@ -48,6 +55,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.TEXT
         },
+
         /**
          * The content seen by the user
          * @var content
@@ -56,6 +64,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.TEXT
         },
+
         /**
          * The id of the author
          * @var authorId
@@ -70,6 +79,7 @@ module.exports = {
                 key: 'id'
             }
         },
+
         /**
          * Boolean that indicates if the post is published or a draft
          * @var published
@@ -79,6 +89,7 @@ module.exports = {
             defaultValue: false,
             type: Sequelize.BOOLEAN
         },
+
         /**
          * The date of publication of the Posts
          * @var publishedAt
@@ -88,6 +99,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         },
+
         /**
          * The date of the last update of the post
          * @var updatedAt
@@ -97,9 +109,13 @@ module.exports = {
             type: Sequelize.DATE
         }
     }),
+
     /**
      * Resets the table 'Posts'
      * @function down
+     * @param {Object} queryInterface a query interface
+     * @param {Object} Sequelize the Sequelize object
+     * @returns {Promise} the promise to drop a table
      */
     down: (queryInterface) => queryInterface.dropTable('Posts')
 };

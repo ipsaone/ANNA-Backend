@@ -2,7 +2,7 @@
 
 /**
  * Creates table 'Logs'
- * 
+ *
  */
 
 module.exports = {

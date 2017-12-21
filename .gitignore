@@ -14,3 +14,6 @@ tmp/
 package-lock.json
 access.log
 .nyc_output/
+
+out/
+doc/
