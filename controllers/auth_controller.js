@@ -5,13 +5,13 @@ const bcrypt = require('bcrypt');
 
 /**
  *
- * Logs in a user
+ * Logs in a user.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.login = (req, res, handle) => {
@@ -62,11 +62,10 @@ exports.login = (req, res, handle) => {
  *
  * Logs out a user
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.logout = (req, res) => {
@@ -79,9 +78,9 @@ exports.logout = (req, res) => {
  *
  * Checks a user is connected
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {obj} req - the user request
+ * @param {obj} res - the response to be sent
+ * @param {obj} handle - the error handling function
  *
  * @returns {obj} promise
  *

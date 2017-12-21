@@ -6,11 +6,11 @@ const db = require('../models');
  *
  * Get all existing users
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.index = function (req, res, handle) {
@@ -24,11 +24,11 @@ exports.index = function (req, res, handle) {
  *
  * Get a single user
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.show = function (req, res, handle) {
@@ -54,11 +54,11 @@ exports.show = function (req, res, handle) {
  *
  * Create a store a new user
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.store = function (req, res, handle) {
@@ -72,11 +72,11 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing user
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.update = function (req, res, handle) {
@@ -96,11 +96,11 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing user
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.delete = function (req, res, handle) {
@@ -124,11 +124,11 @@ exports.delete = function (req, res, handle) {
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.posts = function (req, res, handle) {
@@ -155,11 +155,11 @@ exports.posts = function (req, res, handle) {
  *
  * Get all user's groups
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.getGroups = function (req, res, handle) {
@@ -186,11 +186,11 @@ exports.getGroups = function (req, res, handle) {
  *
  * Add user to group
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.addGroups = function (req, res, handle) {
@@ -215,11 +215,11 @@ exports.addGroups = function (req, res, handle) {
  *
  * Remove user from groups
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.deleteGroups = function (req, res, handle) {

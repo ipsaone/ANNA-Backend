@@ -6,11 +6,11 @@ const db = require('../models');
  *
  * Gets all events
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.index = function (req, res, handle) {
@@ -23,11 +23,11 @@ exports.index = function (req, res, handle) {
  *
  * Gets a single event
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.show = function (req, res, handle) {
@@ -51,11 +51,11 @@ exports.show = function (req, res, handle) {
  *
  * Creates a new event and stores it
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.store = function (req, res, handle) {
@@ -83,11 +83,11 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing event
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.update = function (req, res, handle) {
@@ -113,11 +113,11 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an event
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.delete = function (req, res, handle) {

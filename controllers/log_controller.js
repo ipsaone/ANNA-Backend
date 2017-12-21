@@ -6,11 +6,11 @@ const db = require('../models');
  *
  * Get all existing logs
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.index = function (req, res, handle) {
@@ -23,11 +23,11 @@ exports.index = function (req, res, handle) {
  *
  * Get a single log
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.show = function (req, res, handle) {
@@ -54,11 +54,11 @@ exports.show = function (req, res, handle) {
  *
  * Create a new log and store it
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.store = function (req, res, handle) {
@@ -72,11 +72,11 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing log
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.update = function (req, res, handle) {
@@ -94,11 +94,11 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing log
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.delete = function (req, res, handle) {

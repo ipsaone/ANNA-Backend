@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN
         }
     }, {
-        timestamps: false,
+        timestamps: true,
+        paranoid: true,
         scopes: {
             files: {where: {isDir: false}},
             folders: {where: {isDir: true}}

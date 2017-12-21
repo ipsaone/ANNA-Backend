@@ -39,11 +39,11 @@ const getChildrenData = (req, res, folderId) =>
  *
  * Download a file or its metadata
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.download = (req, res, handle) => {
@@ -95,11 +95,11 @@ exports.download = (req, res, handle) => {
  *
  * Upload a new revision for an existing file
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.uploadRev = (req, res, handle) => {
@@ -127,11 +127,11 @@ exports.uploadRev = (req, res, handle) => {
  *
  * Upload a new file
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.uploadNew = (req, res, handle) => {
@@ -152,11 +152,11 @@ exports.uploadNew = (req, res, handle) => {
  *
  * List contents of a folder
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.list = (req, res, handle) => {
@@ -200,11 +200,11 @@ exports.list = (req, res, handle) => {
  *
  * Deletes a file or folder
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
  *
  */
 exports.delete = (req, res, handle) => {
