@@ -4,7 +4,7 @@ const db = require('../models');
 
 /**
  *
- * Get all existing users
+ * Get all existing users.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -22,11 +22,11 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get a single user
+ * Get a single user.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -52,11 +52,11 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create a store a new user
+ * Create a store a new user.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - the user request.
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -70,11 +70,11 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing user
+ * Updates an existing user.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     the response to be sent.
+ * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
  *
@@ -94,7 +94,7 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an existing user
+ * Deletes an existing user.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -119,14 +119,14 @@ exports.delete = function (req, res, handle) {
 /**
  *
  * Get all user's posts
- * Can get altered with scopes
+ * Can get altered with scopes.
  *
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -153,11 +153,11 @@ exports.posts = function (req, res, handle) {
 
 /**
  *
- * Get all user's groups
+ * Get all user's groups.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request.
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
  *
@@ -184,7 +184,7 @@ exports.getGroups = function (req, res, handle) {
 
 /**
  *
- * Add user to group
+ * Add user to group.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -213,7 +213,7 @@ exports.addGroups = function (req, res, handle) {
 
 /**
  *
- * Remove user from groups
+ * Remove user from groups.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent

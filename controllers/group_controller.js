@@ -4,7 +4,7 @@ const db = require('../models');
 
 /**
  *
- * Get all existing groups
+ * Get all existing groups.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -21,7 +21,7 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get an existing group
+ * Get an existing group.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -52,7 +52,7 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Creates a new group and stores it
+ * Creates a new group and stores it.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -82,7 +82,7 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing group
+ * Updates an existing group.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -112,7 +112,7 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an existing group
+ * Deletes an existing group.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent

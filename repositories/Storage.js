@@ -17,7 +17,7 @@ class Storage {
 
 /**
  *
- * Get root storage path in file system
+ * Get root Storage path. in file system.
  *
  * @returns {string} storage path
  *
@@ -28,9 +28,9 @@ class Storage {
 
     /**
      *
-     * Get base url for storage requests
+     * Get base url for storage requests.
      *
-     * @returns {string} storage url
+     * @returns {string} Storage url.
      *
      */
     static get baseUrl () {
@@ -50,9 +50,9 @@ module.exports = Storage;
 /**
  *
  * Get URL for a data object.
- * Is designed to be bound to the data object
+ * Is designed to be bound to the data object.
  *
- * @returns {string} data URL
+ * @returns {string} Data URL.
  *
  */
 Storage.getDataUrl = () => {
@@ -69,11 +69,11 @@ Storage.getDataUrl = () => {
 /**
  *
  * Get file system path for a data object.
- * Is designed to be bound to the data object
+ * Is designed to be bound to the data object.
  *
  * @todo fix
  *
- * @param {bool} full get full path or relative path
+ * @param {bool} full - Get full path or relative path.
  *
  * @returns {string} data path
  *
@@ -106,9 +106,9 @@ Storage.getDataPath = function (full = false) {
 
 /**
  *
- * Get diretory tree for a file object
+ * Get diretory tree for a file object.
  *
- * @returns {object} promise to directory tree
+ * @returns {Object} Promise to directory tree.
  *
  */
 Storage.getFileDirTree = function () {
@@ -130,11 +130,11 @@ Storage.getFileDirTree = function () {
 
 /**
  *
- * Get all data for a file object
+ * Get all data for a file object.
  *
- * @param {integer} offset how old the data is
+ * @param {integer} offset - how old the data is
  *
- * @returns {object} promise to file data
+ * @returns {Object} promise to file data
  *
  */
 Storage.getFileData = function (offset = 0) {
@@ -167,9 +167,9 @@ Storage.getFileData = function (offset = 0) {
 
 /**
  *
- * Get rights for a data object
+ * Get rights for a data object.
  *
- * @returns {object} promise to rights
+ * @returns {Object} Promise to rights.
  *
  */
 Storage.getDataRights = function () {
@@ -181,13 +181,13 @@ Storage.getDataRights = function () {
 
 /**
  *
- * Add data for a file object
+ * Add data for a file object.
  *
- * @param {obj} fileChanges the changes in this data
+ * @param {obj} fileChanges the changes in this data.
  * @param {obj} filePath the path to the file to add data to
  *
  * @todo finish and test
- * @returns {object} promise to directory tree
+ * @returns {Object} promise to directory tree
  *
  */
 Storage.addFileData = function (fileChanges, filePath) {
@@ -309,13 +309,13 @@ Storage.addFileData = function (fileChanges, filePath) {
 
 /**
  *
- * Create a new file object
+ * Create a new file object.
  *
- * @param {object} changes the file metadata
+ * @param {Object} changes the file metadata.
  * @param {string} filePath the file path to create
  * @param {boolean} dir whether the file is a directory or not
  *
- * @returns {object} promise to success boolean
+ * @returns {Object} promise to success boolean
  *
  */
 Storage.createNewFile = function (changes, filePath, dir = false) {
@@ -327,11 +327,11 @@ Storage.createNewFile = function (changes, filePath, dir = false) {
 
 /**
  *
- * Compute type for a file path
+ * Compute type for a file path.
  *
- * @param {object} filePath the file to compute size
+ * @param {Object} filePath - The file to compute size.
  *
- * @returns {object} promise to file type
+ * @returns {Object} Promise to file type.
  *
  */
 Storage.computeType = function (filePath) {
@@ -349,11 +349,11 @@ Storage.computeType = function (filePath) {
 
 /**
  *
- * Compute size for a file path
+ * Compute size for a file path.
  *
- * @param {object} filePath the file to compute size
+ * @param {Object} filePath the file to compute size
  *
- * @returns {object} promise to file size
+ * @returns {Object} promise to file size
  *
  */
 Storage.computeSize = function (filePath) {

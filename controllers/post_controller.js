@@ -7,14 +7,14 @@ const policy = require('../policies/post_policy');
 /**
  *
  * Get all existing posts
- * Can get altered with scopes to filter publishing
+ * Can get altered with scopes to filter publishing.
  *
  * @example GET /posts?published=true  -> return all published posts
  * @example GET /posts?published=false -> return all drafter posts
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -46,11 +46,11 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get an existing post
+ * Get an existing post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request.
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
  *
@@ -79,7 +79,7 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create and store a new post
+ * Create and store a new post.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -98,11 +98,11 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing post
+ * Updates an existing post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -122,11 +122,11 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an existing post
+ * Deletes an existing post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *

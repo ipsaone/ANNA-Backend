@@ -4,7 +4,7 @@ const db = require('../models');
 
 /**
  *
- * Get all existing missions
+ * Get all existing missions.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -21,7 +21,7 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get a single mission
+ * Get a single mission.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -53,7 +53,7 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create and store a new mission
+ * Create and store a new mission.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -71,11 +71,11 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing mission
+ * Updates an existing mission.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -94,11 +94,11 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Delete an existing mission
+ * Delete an existing mission.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *

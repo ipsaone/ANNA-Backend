@@ -2,9 +2,9 @@
 
 const db = require('../models');
 
-/*
+/**
  *
- * Gets all events
+ * Gets all events.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -81,7 +81,7 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing event
+ * Updates an existing event.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -111,7 +111,7 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an event
+ * Deletes an event.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent

@@ -37,11 +37,11 @@ const getChildrenData = (req, res, folderId) =>
 
 /**
  *
- * Download a file or its metadata
+ * Download a file or its metadata.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - the response to be sent.
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -93,13 +93,13 @@ exports.download = (req, res, handle) => {
 
 /**
  *
- * Upload a new revision for an existing file
+ * Upload a new revision for an existing file.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {obj} Promise.
  *
  */
 exports.uploadRev = (req, res, handle) => {
@@ -125,7 +125,7 @@ exports.uploadRev = (req, res, handle) => {
 
 /**
  *
- * Upload a new file
+ * Upload a new file.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -150,7 +150,7 @@ exports.uploadNew = (req, res, handle) => {
 
 /**
  *
- * List contents of a folder
+ * List contents of a folder.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -198,7 +198,7 @@ exports.list = (req, res, handle) => {
 
 /**
  *
- * Deletes a file or folder
+ * Deletes a file or folder.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
