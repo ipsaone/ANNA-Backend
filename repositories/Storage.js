@@ -132,7 +132,7 @@ Storage.getFileDirTree = function () {
  *
  * Get all data for a file object.
  *
- * @param {integer} offset - how old the data is
+ * @param {integer} offset - how old the data is.
  *
  * @returns {Object} promise to file data
  *
@@ -183,7 +183,7 @@ Storage.getDataRights = function () {
  *
  * Add data for a file object.
  *
- * @param {obj} fileChanges the changes in this data.
+ * @param {obj} fileChanges - The changes in this data.
  * @param {obj} filePath the path to the file to add data to
  *
  * @todo finish and test
@@ -311,8 +311,8 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  * Create a new file object.
  *
- * @param {Object} changes the file metadata.
- * @param {string} filePath the file path to create
+ * @param {Object} changes The file metadata.
+ * @param {string} filePath the file path to create.
  * @param {boolean} dir whether the file is a directory or not
  *
  * @returns {Object} promise to success boolean

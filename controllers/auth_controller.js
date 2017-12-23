@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @file Manages authentification
+ */
+
+/**
+ * @module auth
+ */
+
 const db = require('../models');
 const bcrypt = require('bcrypt');
 
@@ -7,11 +15,16 @@ const bcrypt = require('bcrypt');
  *
  * Logs in a user.
  *
+ * @function login
+ *
  * @param {obj} req      the user request
  * @param {obj} res      the response to be sent
  * @param {obj} handle   the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:auth
+ * @inner
  *
  */
 exports.login = (req, res, handle) => {
@@ -62,10 +75,15 @@ exports.login = (req, res, handle) => {
  *
  * Logs out a user.
  *
- * @param {Object} req - the user request
+ * @function logout
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  *
  * @returns {Object} promise
+ *
+ * @memberof module:auth
+ * @inner
  *
  */
 exports.logout = (req, res) => {
@@ -78,11 +96,16 @@ exports.logout = (req, res) => {
  *
  * Checks a user is connected.
  *
+ * @function  check
+ *
  * @param {obj} req - the user request
  * @param {obj} res - the response to be sent
  * @param {obj} handle - the error handling function
  *
  * @returns {obj} promise
+ *
+ * @memberof module:auth
+ * @inner
  *
  */
 exports.check = (req, res, handle) => {

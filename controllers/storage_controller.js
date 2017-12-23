@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @file Manages files in the database
+ */
+
+/**
+ * @module storage
+ */
+
 const db = require('../models');
 const escape = require('escape-html');
 const Storage = require('../repositories/Storage');
@@ -39,11 +47,16 @@ const getChildrenData = (req, res, folderId) =>
  *
  * Download a file or its metadata.
  *
+ * @function download
+ *
  * @param {obj} req     - The user request.
- * @param {obj} res     - the response to be sent.
- * @param {obj} handle  - the error handling function
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} promise
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.download = (req, res, handle) => {
@@ -95,11 +108,16 @@ exports.download = (req, res, handle) => {
  *
  * Upload a new revision for an existing file.
  *
+ * @function uploadRev
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {obj} Promise.
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.uploadRev = (req, res, handle) => {
@@ -127,11 +145,16 @@ exports.uploadRev = (req, res, handle) => {
  *
  * Upload a new file.
  *
- * @param {Object} req - the user request
+ * @function uploadNew
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.uploadNew = (req, res, handle) => {
@@ -152,11 +175,16 @@ exports.uploadNew = (req, res, handle) => {
  *
  * List contents of a folder.
  *
+ * @function list
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.list = (req, res, handle) => {
@@ -200,11 +228,16 @@ exports.list = (req, res, handle) => {
  *
  * Deletes a file or folder.
  *
- * @param {Object} req - the user request
+ * @function delete
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.delete = (req, res, handle) => {

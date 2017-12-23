@@ -7,21 +7,21 @@
  * @implements {down}
  */
 
-
 module.exports = {
 
     /**
-     * Sets table 'Users'
+     * Sets table 'Users'.
+     *
      * @function up
-     * @param {Object} queryInterface a query interface
-     * @param {Object} Sequelize the Sequelize object
+     * @param {Object} queryInterface - A query interface.
+     * @param {Object} Sequelize - The Sequelize object.
      * @implements {id}
      * @implements {username}
      * @implements {password}
      * @implements {email}
      * @implements {createdAt}
      * @implements {updatedAt}
-     * @returns {Promise} the promise to create a table
+     * @returns {Promise} The promise to create a table.
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
 
@@ -85,10 +85,11 @@ module.exports = {
     }),
 
     /**
-     * Resets the table 'Users'
+     * Resets the table 'Users'.
+     *
      * @function down
-     * @param {Object} queryInterface - the query interface
-     * @returns {Promise} the promise to drop a table
+     * @param {Object} queryInterface - The query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Users')
 };

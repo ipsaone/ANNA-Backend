@@ -1,16 +1,29 @@
 'use strict';
 
+/**
+ * @file Manages groups
+ */
+
+/**
+ * @module group
+ */
+
 const db = require('../models');
 
 /**
  *
  * Get all existing groups.
  *
+ * @function index
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -23,11 +36,16 @@ exports.index = function (req, res, handle) {
  *
  * Get an existing group.
  *
- * @param {Object} req - the user request
+ * @function show
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -54,11 +72,16 @@ exports.show = function (req, res, handle) {
  *
  * Creates a new group and stores it.
  *
- * @param {Object} req - the user request
+ * @function store
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -84,11 +107,16 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing group.
  *
- * @param {Object} req - the user request
+ * @function update
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -114,11 +142,16 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing group.
  *
- * @param {Object} req - the user request
+ * @function delete
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {

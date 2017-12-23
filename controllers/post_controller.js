@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @file Manages posts
+ */
+
+/**
+ * @module post
+ */
+
 const db = require('../models');
 const policy = require('../policies/post_policy');
 
@@ -9,6 +17,8 @@ const policy = require('../policies/post_policy');
  * Get all existing posts
  * Can get altered with scopes to filter publishing.
  *
+ * @function index
+ *
  * @example GET /posts?published=true  -> return all published posts
  * @example GET /posts?published=false -> return all drafter posts
  *
@@ -17,6 +27,9 @@ const policy = require('../policies/post_policy');
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -48,11 +61,16 @@ exports.index = function (req, res, handle) {
  *
  * Get an existing post.
  *
+ * @function show
+ *
  * @param {obj} req     the user request.
- * @param {obj} res     the response to be sent
+ * @param {obj} res     The response to be sent.
  * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -81,11 +99,16 @@ exports.show = function (req, res, handle) {
  *
  * Create and store a new post.
  *
+ * @function store
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -100,11 +123,16 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing post.
  *
- * @param {obj} req     the user request
+ * @function update
+ *
+ * @param {obj} req     - the user request
  * @param {obj} res     the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -124,11 +152,16 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing post.
  *
- * @param {obj} req     the user request
+ * @function delete
+ *
+ * @param {obj} req     The user request.
  * @param {obj} res     the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {

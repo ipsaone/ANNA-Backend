@@ -1,16 +1,29 @@
 'use strict';
 
+/**
+ * @file Manages users
+ */
+
+/**
+ * @module user
+ */
+
 const db = require('../models');
 
 /**
  *
  * Get all existing users.
  *
+ * @function index
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -24,11 +37,16 @@ exports.index = function (req, res, handle) {
  *
  * Get a single user.
  *
- * @param {obj} req     - the user request
- * @param {obj} res     - the response to be sent
+ * @function show
+ *
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -54,11 +72,16 @@ exports.show = function (req, res, handle) {
  *
  * Create a store a new user.
  *
- * @param {obj} req     - the user request.
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @function store
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -72,11 +95,16 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing user.
  *
- * @param {obj} req     - The user request.
- * @param {obj} res     the response to be sent.
- * @param {obj} handle  the error handling function
+ * @function update
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -96,11 +124,16 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing user.
  *
+ * @function delete
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
@@ -121,6 +154,8 @@ exports.delete = function (req, res, handle) {
  * Get all user's posts
  * Can get altered with scopes.
  *
+ * @function posts
+ *
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
@@ -129,6 +164,9 @@ exports.delete = function (req, res, handle) {
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.posts = function (req, res, handle) {
@@ -155,11 +193,16 @@ exports.posts = function (req, res, handle) {
  *
  * Get all user's groups.
  *
- * @param {obj} req     the user request.
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function getGroups
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.getGroups = function (req, res, handle) {
@@ -186,11 +229,16 @@ exports.getGroups = function (req, res, handle) {
  *
  * Add user to group.
  *
- * @param {Object} req - the user request
+ * @function addGroups
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.addGroups = function (req, res, handle) {
@@ -215,11 +263,16 @@ exports.addGroups = function (req, res, handle) {
  *
  * Remove user from groups.
  *
+ * @function deleteGroups
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.deleteGroups = function (req, res, handle) {

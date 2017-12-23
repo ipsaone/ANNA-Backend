@@ -1,16 +1,29 @@
 'use strict';
 
+/**
+ * @file Manages events
+ */
+
+/**
+ * @module event
+ */
+
 const db = require('../models');
 
 /**
  *
  * Gets all events.
  *
+ * @function index
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -19,15 +32,20 @@ exports.index = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
- * Gets a single event
+ * Gets a single event.
+ *
+ * @function show
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -47,15 +65,20 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
- * Creates a new event and stores it
+ * Creates a new event and stores it.
+ *
+ * @function store
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -83,11 +106,16 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing event.
  *
+ * @function update
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -113,11 +141,16 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an event.
  *
+ * @function delete
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
@@ -130,9 +163,9 @@ exports.delete = function (req, res, handle) {
         .then((data) => {
 
             /*
-             *Data :
-             * [0] : number of rows corresponding to request
-             * [1] : number of affected rows
+             * Data :
+             *  [0] : number of rows corresponding to request
+             *  [1] : number of affected rows
              */
 
             if (!data[0]) {

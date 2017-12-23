@@ -1,16 +1,29 @@
 'use strict';
 
+/**
+ * @file Manages missions
+ */
+
+/**
+ * @module mission
+ */
+
 const db = require('../models');
 
 /**
  *
  * Get all existing missions.
  *
+ * @function index
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -23,11 +36,16 @@ exports.index = function (req, res, handle) {
  *
  * Get a single mission.
  *
+ * @function show
+ *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -55,11 +73,16 @@ exports.show = function (req, res, handle) {
  *
  * Create and store a new mission.
  *
- * @param {Object} req - the user request
+ * @function store
+ *
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -73,11 +96,16 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing mission.
  *
- * @param {obj} req     the user request
+ * @function update
+ *
+ * @param {obj} req     The user request.
  * @param {obj} res     the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -96,11 +124,16 @@ exports.update = function (req, res, handle) {
  *
  * Delete an existing mission.
  *
- * @param {obj} req     the user request
+ * @function delete
+ *
+ * @param {obj} req     - the user request
  * @param {obj} res     the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {

@@ -7,14 +7,14 @@
  * @implements {down}
  */
 
-
 module.exports = {
 
     /**
-     * Sets table 'Posts'
+     * Sets table 'Posts'.
+     *
      * @function up
-     * @param {Object} queryInterface a query interface
-     * @param {Object} Sequelize the Sequelize object
+     * @param {Object} queryInterface - A query interface.
+     * @param {Object} Sequelize - The Sequelize object.
      * @implements {id}
      * @implements {title}
      * @implements {markdown}
@@ -23,7 +23,7 @@ module.exports = {
      * @implements {published}
      * @implements {publishedAt}
      * @implements {updatedAt}
-     * @returns {Promise} the promise to create a table
+     * @returns {Promise} The promise to create a table.
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Posts', {
 
@@ -111,11 +111,12 @@ module.exports = {
     }),
 
     /**
-     * Resets the table 'Posts'
+     * Resets the table 'Posts'.
+     *
      * @function down
-     * @param {Object} queryInterface a query interface
-     * @param {Object} Sequelize the Sequelize object
-     * @returns {Promise} the promise to drop a table
+     * @param {Object} queryInterface - A query interface.
+     * @param {Object} Sequelize - The Sequelize object.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Posts')
 };

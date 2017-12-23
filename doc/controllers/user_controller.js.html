@@ -28,17 +28,30 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+/**
+ * @file Manages users
+ */
+
+/**
+ * @module user
+ */
+
 const db = require('../models');
 
 /**
  *
- * Get all existing users
+ * Get all existing users.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function index
  *
- * @returns {obj} promise
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -50,13 +63,18 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get a single user
+ * Get a single user.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function show
  *
- * @returns {obj} promise
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -80,13 +98,18 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create a store a new user
+ * Create a store a new user.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function store
  *
- * @returns {obj} promise
+ * @param {obj} req     - the user request.
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -98,13 +121,18 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing user
+ * Updates an existing user.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
+ * @function update
+ *
+ * @param {obj} req     - The user request.
+ * @param {obj} res     the response to be sent.
  * @param {obj} handle  the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -122,13 +150,18 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an existing user
+ * Deletes an existing user.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function delete
  *
- * @returns {obj} promise
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
@@ -147,16 +180,21 @@ exports.delete = function (req, res, handle) {
 /**
  *
  * Get all user's posts
- * Can get altered with scopes
+ * Can get altered with scopes.
+ *
+ * @function posts
  *
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.posts = function (req, res, handle) {
@@ -181,13 +219,18 @@ exports.posts = function (req, res, handle) {
 
 /**
  *
- * Get all user's groups
+ * Get all user's groups.
  *
- * @param {obj} req     the user request
+ * @function getGroups
+ *
+ * @param {obj} req     the user request.
  * @param {obj} res     the response to be sent
  * @param {obj} handle  the error handling function
  *
- * @returns {obj} promise
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.getGroups = function (req, res, handle) {
@@ -212,13 +255,18 @@ exports.getGroups = function (req, res, handle) {
 
 /**
  *
- * Add user to group
+ * Add user to group.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function addGroups
  *
- * @returns {obj} promise
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.addGroups = function (req, res, handle) {
@@ -241,13 +289,18 @@ exports.addGroups = function (req, res, handle) {
 
 /**
  *
- * Remove user from groups
+ * Remove user from groups.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function deleteGroups
  *
- * @returns {obj} promise
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.deleteGroups = function (req, res, handle) {
@@ -271,13 +324,13 @@ exports.deleteGroups = function (req, res, handle) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addGroups">addGroups</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteGroups">deleteGroups</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#getGroups">getGroups</a></li><li><a href="global.html#index">index</a></li><li><a href="global.html#list">list</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#posts">posts</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#store">store</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#uploadNew">uploadNew</a></li><li><a href="global.html#uploadRev">uploadRev</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-auth.html">auth</a></li><li><a href="module-event.html">event</a></li><li><a href="module-group.html">group</a></li><li><a href="module-log.html">log</a></li><li><a href="module-mission.html">mission</a></li><li><a href="module-post.html">post</a></li><li><a href="module-storage.html">storage</a></li><li><a href="module-user.html">user</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 21 2017 13:58:06 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 23 2017 17:23:50 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>
