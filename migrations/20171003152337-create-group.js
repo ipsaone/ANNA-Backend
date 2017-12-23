@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ * @file Manages the table containing all groups in the database
+ * @see {@link module:createGroups}
+ */
+
+/**
  * Creates table 'Groups'
  * @module createGroups
  * @implements {up}

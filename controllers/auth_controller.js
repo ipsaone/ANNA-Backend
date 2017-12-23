@@ -2,6 +2,7 @@
 
 /**
  * @file Manages authentification
+ * @see {@link module:auth}
  */
 
 /**

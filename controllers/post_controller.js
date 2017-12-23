@@ -2,6 +2,7 @@
 
 /**
  * @file Manages posts
+ * @see {@link module:post}
  */
 
 /**

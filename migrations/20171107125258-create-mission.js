@@ -1,5 +1,17 @@
 'use strict';
 
+/**
+ * @file Manages the table containing all missions and their description, budget, and assigned
+ * @see {@link module:createMissions}
+ */
+
+/**
+ * Creates table 'Missions'
+ * @module createMissions
+ * @implements {up}
+ * @implements {down}
+ */
+
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.createTable('Missions', {
         id: {

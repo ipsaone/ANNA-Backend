@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ * @file Manages the table containing all users in the database
+ * @see {@link module:createUsers}
+ */
+
+/**
  * Creates table 'Users'
  * @module createUsers
  * @implements {up}

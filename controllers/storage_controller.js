@@ -2,6 +2,7 @@
 
 /**
  * @file Manages files in the database
+ * @see {@link module:storage}
  */
 
 /**

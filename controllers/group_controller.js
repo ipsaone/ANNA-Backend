@@ -2,6 +2,7 @@
 
 /**
  * @file Manages groups
+ * @see {@link module:group}
  */
 
 /**
@@ -127,7 +128,7 @@ exports.update = function (req, res, handle) {
     }
 
     /*
-     * To lower case to avoid security problems
+     * To lower case to avoid segroupty problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
     req.body.name = req.body.name.toLowerCase();

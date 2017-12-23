@@ -2,6 +2,7 @@
 
 /**
  * @file Manages events
+ * @see {@link module:event}
  */
 
 /**

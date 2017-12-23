@@ -2,6 +2,7 @@
 
 /**
  * @file Manages users
+ * @see {@link module:user}
  */
 
 /**

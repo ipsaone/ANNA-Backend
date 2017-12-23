@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ * @file Manages the table containing all posts in the database
+ * @see {@link module:createPosts}
+ */
+
+/**
  * Creates table 'Posts'
  * @module createPosts
  * @implements {up}

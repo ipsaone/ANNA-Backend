@@ -2,6 +2,7 @@
 
 /**
  * @file Manages missions
+ * @see {@link module:mission}
  */
 
 /**

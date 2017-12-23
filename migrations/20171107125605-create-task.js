@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Manages the table containing all tasks in the database
+ */
+
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.createTable('Tasks', {
         id: {

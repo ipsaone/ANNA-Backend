@@ -2,6 +2,7 @@
 
 /**
  * @file Manages logs
+ * @see {@link module:log}
  */
 
 /**
@@ -17,8 +18,8 @@ const db = require('../models');
  * @function index
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
  * @returns {Object} promise
  *
@@ -39,7 +40,7 @@ exports.index = function (req, res, handle) {
  * @function show
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
@@ -75,7 +76,7 @@ exports.show = function (req, res, handle) {
  * @function store
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
@@ -92,13 +93,13 @@ exports.store = function (req, res, handle) {
 };
 
 /**
- *
+ *LOg
  * Updates an existing log.
  *
  * @function update
  *
  * @param {obj} req     - the user request
- * @param {obj} res     the response to be sent
+ * @param {obj} res     - the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise

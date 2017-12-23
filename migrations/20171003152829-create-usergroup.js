@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ * @file Manages the junction table between users and groups
+ * @see {@link module:createUsergroup}
+ */
+
+/**
  * Creates table 'UserGroup'
  * @module createUsergroup
  * @implements {up}
@@ -50,7 +55,7 @@ module.exports = {
         },
 
         /**
-         * The groupId to which the user belongs
+         * The Id of the group to which the user belongs
          * @var groupId
          */
         groupId: {
