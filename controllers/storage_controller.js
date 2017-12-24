@@ -2,7 +2,6 @@
 
 const db = require('../models');
 const escape = require('escape-html');
-const Storage = require('../repositories/Storage');
 
 const getChildrenData = (req, res, folderId) =>
     db.File.findAll() // Get all files
@@ -98,6 +97,7 @@ exports.download = (req, res, handle) => {
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
+ * @todo for security, better escape req.body, like validating against a schema ?
  *
  * @returns {obj} Promise.
  *
@@ -109,7 +109,13 @@ exports.uploadRev = (req, res, handle) => {
     }
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    Object.keys(req.body).map(function (key) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = escape(req.body[key]);
+        }
+
+        return true;
+    });
 
     // Find the file in database and add new data
     return db.File.findOne({where: {id: req.params.fileId}})
@@ -140,11 +146,17 @@ exports.uploadNew = (req, res, handle) => {
     }
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    Object.keys(req.body).map(function (key) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = escape(req.body[key]);
+        }
+
+        return true;
+    });
 
     // Create the file and its data
-    return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.status(204))
+    return db.File.createNew(req.body, req.file.path, req.session.auth, false)
+        .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
 

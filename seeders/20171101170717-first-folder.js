@@ -1,7 +1,13 @@
 'use strict';
 
 module.exports = {
-    up: (queryInterface) => queryInterface.bulkInsert('Files', [{isDir: true}])
+    up: (queryInterface) => queryInterface.bulkInsert('Files', [
+        {
+            isDir: true,
+            createdAt: new Date(Date.now()),
+            updatedAt: new Date(Date.now())
+        }
+    ])
         .then(() => queryInterface.bulkInsert('Rights', [
             {
                 groupWrite: true,

@@ -18,8 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    const Storage = require('../repositories/Storage');
-
     File.associate = function (models) {
         File.belongsTo(models.User, {
             foreignKey: 'ownerId',
@@ -43,15 +41,17 @@ module.exports = (sequelize, DataTypes) => {
      *
      * @param {obj} fileChanges the changes in this data.
      * @param {obj} filePath the path to the file to add data to
+     * @param {obj} userId - the user identifier
      *
      * @todo finish and test
      * @returns {Object} promise to directory tree
      *
      */
-    Storage.addFileData = function (fileChanges, filePath) {
+    File.prototype.addData = function (fileChanges, filePath, userId) {
         const db = require('../models');
 
         fileChanges.fileId = this.id;
+        fileChanges.ownerId = userId;
 
         const fileBuilder = (changes, builderPath) =>
             new Promise((resolve) => {
@@ -80,50 +80,35 @@ module.exports = (sequelize, DataTypes) => {
             }
 
 
-            if (typeof changes.ownerId === 'undefined') {
-                // Changes.ownerId = req.session.auth
-            } else {
-                // Not yet supported
-            }
+            return db.User.findById(userId).then((user) => user.getGroups())
+                // Check user is in group
+                .then((groups) => {
+                    if (isNaN(parseInt(changes.groupId, 10))) {
+                        throw new RangeError('Group is not an integer');
+                    }
+                    changes.groupId = parseInt(changes.groupId, 10);
+                    const groupIds = groups.map((grp) => grp.id);
 
-            if (typeof changes.groupId === 'undefined') {
+                    if (!groupIds.includes(changes.groupId)) {
+                        throw new RangeError('Invalid group');
+                    }
 
-                /*
-                 * OwnerId = req.session.auth
-                 * groups = getGroups(ownerId)
-                 * if(groups.length == 0) {}
-                 * else if(groups.length == 1)getMainGroup {}
-                 * else {}
-                 */
-            } else {
-                // Not yet supported
-            }
+                    return true;
+                })
+                // Find right or create it
+                .then(() => {
+                    if (newRight) {
+                        return db.Right.create(changes);
+                    }
 
-            if (newRight) {
+                    return db.File.findOne({where: {id: changes.fileId}}).then((file) => file.getData());
 
-                // New right
-                return db.Right.create(changes)
-                    .then((right) => {
-                        changes.rightsId = right.id;
-
-                        return true;
-                    });
-            }
-
-            // Use previous rights
-            return db.File.findOne({where: {id: changes.fileId}})
-                .then((file) => file.getData())
-                .then((data) => {
-                    changes.rightsId = data.id;
+                })
+                .then((right) => {
+                    changes.rightsId = right.id;
 
                     return true;
                 });
-
-            /*
-             * TODO : if previous right not found (first upload),
-             *        Create new right with default values
-             */
-
         };
 
         // Build the rights and file properties
@@ -160,9 +145,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
 
                 return true;
-            })
-
-            .catch((err) => console.log(err));
+            });
     };
 
 
@@ -234,16 +217,19 @@ module.exports = (sequelize, DataTypes) => {
      *
      * @param {Object} changes the file metadata.
      * @param {string} filePath the file path to create
+     * @param {integer} userId the user id
      * @param {boolean} dir whether the file is a directory or not
+     * @todo max-params
      *
      * @returns {Object} promise to success boolean
      *
      */
-    File.createNew = function (changes, filePath, dir = false) {
+    // eslint-disable-next-line max-params
+    File.createNew = function (changes, filePath, userId, dir = false) {
         const db = require('../models');
 
         return db.File.create({isDir: dir})
-            .then((file) => file.addData(changes, filePath));
+            .then((file) => file.addData(changes, filePath, userId));
     };
 
 

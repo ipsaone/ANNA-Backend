@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         children: DataTypes.VIRTUAL
     }, {
         timestamps: true,
+        paranoid: true,
         hooks: {
             beforeCreate: computeValues,
             beforeUpdate: computeValues
