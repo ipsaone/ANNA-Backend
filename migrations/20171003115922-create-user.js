@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * Creates table 'Users'
+ * username is unique, is a STRING
+ * password is a STRING
+ * email is unique, is a STRING
+ * createdAt and updatedAt are DATE
+ */
+
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
         id: {

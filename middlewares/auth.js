@@ -4,7 +4,7 @@ const config = require('../config/config');
 
 /**
  *
- * Checks the request to see if the user is logged in
+ * Checks the request to see if the user is logged in.
  *
  * @param {obj} req     the user request
  * @param {obj} res     the response to be sent

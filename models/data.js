@@ -1,12 +1,13 @@
 'use strict';
 
+const Storage = require('../repositories/Storage');
+const fs = require('fs');
+
 require('dotenv').config();
 const config = require('../config/config');
 const path = require('path');
 
 const computeValues = (data) => {
-    const Storage = require('../repositories/Storage');
-
     data.getPath()
         .then((dataPath) => Storage.computeType(path.join('..', config.storage.folder, dataPath)))
         .then((type) => {
@@ -80,6 +81,7 @@ module.exports = (sequelize, DataTypes) => {
         children: DataTypes.VIRTUAL
     }, {
         timestamps: true,
+        paranoid: true,
         hooks: {
             beforeCreate: computeValues,
             beforeUpdate: computeValues
@@ -129,11 +131,76 @@ module.exports = (sequelize, DataTypes) => {
     };
 
 
-    const Storage = require('../repositories/Storage');
+    /**
+     *
+     * Get URL for a data object.
+     * Is designed to be bound to the data object.
+     *
+     * @returns {string} Data URL.
+     *
+     */
+    Data.prototype.getUrl = function () {
+        let url = '/storage/files/';
 
-    Data.prototype.getRights = Storage.getDataRights;
-    Data.prototype.getPath = Storage.getDataPath;
-    Data.prototype.getUrl = Storage.getDataUrl;
+        url += this.fileId;
+        url += '?revision=';
+        url += this.id;
+
+        // Force return of a promise
+        return Promise.resolve(url);
+    };
+
+    /**
+     *
+     * Get file system path for a data object.
+     * Is designed to be bound to the data object.
+     *
+     * @todo fix
+     *
+     * @param {bool} full - Get full path or relative path.
+     *
+     * @returns {string} data path
+     *
+     */
+    Data.prototype.getPath = function (full = false) {
+        let dataPath = '';
+
+        if (full) {
+            dataPath += Storage.root;
+        }
+        dataPath += `/${this.fileId}`;
+        dataPath += `/${this.id}`;
+        dataPath += `-${this.name}`;
+
+        console.log(dataPath);
+
+        // Check file exists
+        fs.access(dataPath, fs.constants.F_OK, (err) => {
+            if (err) {
+                return Promise.reject(err);
+            }
+
+
+            // Return file path if it exists
+            return Promise.resolve(dataPath);
+
+        });
+
+    };
+
+    /**
+     *
+     * Get rights for a data object.
+     *
+     * @returns {Object} Promise to rights.
+     *
+     */
+    Data.prototype.getRights = function () {
+        const db = require('../models');
+
+        // Only one right should exist for each data, no check needed
+        return db.Right.findOne({where: {id: this.rightsId}});
+    };
 
     return Data;
 };

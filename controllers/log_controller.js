@@ -4,7 +4,7 @@ const db = require('../models');
 
 /**
  *
- * Get all existing logs
+ * Get all existing logs.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -21,7 +21,7 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get a single log
+ * Get a single log.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -52,7 +52,7 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create a new log and store it
+ * Create a new log and store it.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -64,17 +64,17 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     return db.Log.create(req.body)
         .then((log) => res.status(201).json(log))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest(err))
         .catch((err) => handle(err));
 };
 
 /**
  *
- * Updates an existing log
+ * Updates an existing log.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -92,30 +92,26 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an existing log
+ * Deletes an existing log.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
  */
 exports.delete = function (req, res, handle) {
     if (typeof req.params.logId !== 'string' || isNaN(parseInt(req.params.logId, 10))) {
-
         throw res.boom.badRequest();
     }
+    const logId = parseInt(req.params.logId, 10);
 
-    db.Log.destroy({where: {id: req.params.logId}})
+    db.Log.destroy({where: {id: logId}})
         .then((data) => {
-            if (!data[0]) {
-                throw res.boom.badImplementation('Missing data !');
-            }
-
-            if (data[0] === 1) {
+            if (data === 1) {
                 return res.status(204).json({});
-            } else if (data[0] === 0) {
+            } else if (data === 0) {
                 throw res.boom.notFound();
             } else {
                 throw res.boom.badImplementation('Too many rows deleted !');

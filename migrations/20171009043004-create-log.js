@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Creates table 'Logs'
+ * @function {up}:
+ */
+
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.createTable('Logs', {
         id: {

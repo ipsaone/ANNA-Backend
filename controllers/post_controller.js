@@ -7,14 +7,14 @@ const policy = require('../policies/post_policy');
 /**
  *
  * Get all existing posts
- * Can get altered with scopes to filter publishing
+ * Can get altered with scopes to filter publishing.
  *
  * @example GET /posts?published=true  -> return all published posts
  * @example GET /posts?published=false -> return all drafter posts
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -46,23 +46,23 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get an existing post
+ * Get an existing post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request.
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.postId !== 'number') {
-
+    if (isNaN(parseInt(req.params.postId, 10))) {
         throw res.boom.badRequest();
     }
+    const postId = parseInt(req.params.postId, 10);
 
     return db.Post.findOne({
-        where: {id: req.params.postId},
+        where: {id: postId},
         include: ['author']
     })
         .then((post) => {
@@ -79,7 +79,7 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create and store a new post
+ * Create and store a new post.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -98,47 +98,55 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing post
+ * Updates an existing post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.params.postId !== 'number') {
-
+    if (isNaN(parseInt(req.params.postId, 10))) {
         throw res.boom.badRequest();
     }
+    const postId = parseInt(req.params.postId, 10);
 
     return policy.filterUpdate(req, res)
-        .then(() => db.Post.update(req.body, {where: {id: req.params.postId}}))
-        .then((post) => res.status(200).json(post))
+        .then(() => db.Post.update(req.body, {where: {id: postId}}))
+        .then((post) => {
+            if (post === 1) {
+                return res.status(200).json(post);
+            } else if (post === 0) {
+                throw res.boom.notFound();
+            } else {
+                throw res.boom.badImplementation();
+            }
+        })
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
 };
 
 /**
  *
- * Deletes an existing post
+ * Deletes an existing post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {obj} req     the user request
+ * @param {obj} res     the response to be sent
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.postId !== 'number') {
-
+    if (isNaN(parseInt(req.params.postId, 10))) {
         throw res.boom.badRequest();
     }
+    const postId = parseInt(req.params.postId, 10);
 
     return policy.filterDelete(req, res)
-        .then(() => db.Post.destroy({where: {id: req.params.postId}}))
+        .then(() => db.Post.destroy({where: {id: postId}}))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));

@@ -2,9 +2,9 @@
 
 const db = require('../models');
 
-/*
+/**
  *
- * Gets all events
+ * Gets all events.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -31,12 +31,12 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.eventId !== 'number') {
-
+    if (isNaN(parseInt(req.params.eventId, 10))) {
         throw res.boom.badRequest();
     }
+    const eventId = parseInt(req.params.eventId, 10);
 
-    return db.Event.findOne({where: {id: req.params.eventId}})
+    return db.Event.findOne({where: {id: eventId}})
         .then((event) => {
             if (event) {
                 return res.status(200).json(event);
@@ -81,7 +81,7 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing event
+ * Updates an existing event.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -91,11 +91,10 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.body.name !== 'string' ||
-        typeof req.params.eventId !== 'number') {
-
+    if (isNaN(parseInt(req.params.eventId, 10))) {
         throw res.boom.badRequest();
     }
+    const eventId = parseInt(req.params.eventId, 10);
 
     /*
      * To lower case to avoid security problems
@@ -103,7 +102,7 @@ exports.update = function (req, res, handle) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    return db.Event.update(req.body, {where: {id: req.params.eventId}})
+    return db.Event.update(req.body, {where: {id: eventId}})
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -111,7 +110,7 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an event
+ * Deletes an event.
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
@@ -121,12 +120,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.eventId !== 'number') {
-
+    if (isNaN(parseInt(req.params.eventId, 10))) {
         throw res.boom.badRequest();
     }
+    const eventId = parseInt(req.params.eventId, 10);
 
-    return db.Event.destroy({where: {id: req.params.eventId}})
+    return db.Event.destroy({where: {id: eventId}})
         .then((data) => {
 
             /*
