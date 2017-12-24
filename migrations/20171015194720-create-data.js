@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @file Manages the table containing 'data'
+ * @file Manages the table used to update files in the database
  * @see {@link module:createData}
  */
 
@@ -34,13 +34,13 @@ module.exports = {
      * @implements {createdAt}
      * @implements {updatedAt}
      *
-     * @returns {Promise} The promise to drop a table.
+     * @returns {Promise} The promise to create a table.
      *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Data', {
 
         /**
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -50,8 +50,8 @@ module.exports = {
         },
 
         /**
-         * The name of the data
-         * @var name
+         * The name of the update
+         * @var {STRING} name
          */
         name: {
             allowNull: false,
@@ -59,8 +59,8 @@ module.exports = {
         },
 
         /**
-         * The type of the data
-         * @var type
+         * The type of the file
+         * @var {STRING} type
          */
         type: {
             allowNull: true,
@@ -68,8 +68,8 @@ module.exports = {
         },
 
         /**
-         * The size of the data
-         * @var size
+         * The size of the update
+         * @var {INTEGER} size
          */
         size: {
             allowNull: true,
@@ -78,7 +78,7 @@ module.exports = {
 
         /**
          * The id of the file
-         * @var fileId
+         * @var {INTEGER} fileId
          */
         fileId: {
             allowNull: false,
@@ -93,7 +93,7 @@ module.exports = {
 
         /**
          * The id of the directory ?
-         * @var dirId
+         * @var {INTEGER} dirId
          */
         dirId: {
             allowNull: false,
@@ -107,8 +107,8 @@ module.exports = {
         },
 
         /**
-         * The id of the rights on the file ?
-         * @var rightsId
+         * The id of the rights on the file
+         * @var {INTEGER} rightsId
          */
         rightsId: {
             allowNull: true,
@@ -123,7 +123,7 @@ module.exports = {
 
         /**
          * The id of the owner
-         * @var ownerId
+         * @var {INTEGER} ownerId
          */
         ownerId: {
             allowNull: false,
@@ -138,7 +138,7 @@ module.exports = {
 
         /**
          * The id of the group
-         * @var groupId
+         * @var {INTEGER} groupId
          */
         groupId: {
             allowNull: true,
@@ -153,7 +153,7 @@ module.exports = {
 
         /**
          * The creation date of the file
-         * @var createdAt
+         * @var {DATE} createdAt
          */
         createdAt: {
             allowNull: false,
@@ -162,7 +162,7 @@ module.exports = {
 
         /**
          * The date of the last update of the file
-         * @var updatedAt
+         * @var {DATE} updatedAt
          */
         updatedAt: {
             allowNull: false,
@@ -173,6 +173,7 @@ module.exports = {
     /**
      * @function down
      * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Data')
 };

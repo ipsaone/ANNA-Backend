@@ -22,11 +22,14 @@ module.exports = {
      * @implements {id}
      * @implements {logId}
      * @implements {userId}
+     *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('LogUser', {
 
         /**
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -37,7 +40,7 @@ module.exports = {
 
         /**
          * The id of the log
-         * @var logId
+         * @var {INTEGER} logId
          */
         logId: {
             allowNull: false,
@@ -51,7 +54,7 @@ module.exports = {
 
         /**
          * The id of the user
-         * @var userId
+         * @var {INTEGER} userId
          */
         userId: {
             allowNull: false,
@@ -69,6 +72,7 @@ module.exports = {
      *
      * @function down
      * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('LogUser')
 };

@@ -18,18 +18,22 @@ module.exports = {
      * Sets the table 'UserGroup'.
      *
      * @function up
+     *
      * @implements {id}
      * @implements {userId}
      * @implements {groupId}
+     *
      * @param {Object} queryInterface - A query interface.
      * @param {Object} Sequelize - The Sequelize object.
-     * @returns {Promise} The promise to drop a table.
+     *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('UserGroup', {
 
         /**
          * The id of the UserGroup
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -40,7 +44,7 @@ module.exports = {
 
         /**
          * The userId of the user who belongs to a group
-         * @var userId
+         * @var {INTEGER} userId
          */
         userId: {
             allowNull: false,
@@ -56,7 +60,7 @@ module.exports = {
 
         /**
          * The Id of the group to which the user belongs
-         * @var groupId
+         * @var {INTEGER} groupId
          */
         groupId: {
             allowNull: false,

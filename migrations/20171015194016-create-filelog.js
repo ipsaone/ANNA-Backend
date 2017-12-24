@@ -26,11 +26,12 @@ module.exports = {
      * @implements {fileId}
      * @implements {logId}
      *
+     * @returns {Promise} The promise to create a table.
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('FileLog', {
 
         /**
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -41,7 +42,7 @@ module.exports = {
 
         /**
          * The id of the file
-         * @var fileId
+         * @var {INTEGER} fileId
          */
         fileId: {
             allowNull: false,
@@ -55,7 +56,7 @@ module.exports = {
 
         /**
          * The id of the log
-         * @var logId
+         * @var {INTEGER} logId
          */
         logId: {
             allowNull: false,
@@ -73,6 +74,7 @@ module.exports = {
      *
      * @function down
      * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('FileLog')
 };

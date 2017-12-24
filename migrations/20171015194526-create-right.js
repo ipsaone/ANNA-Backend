@@ -30,11 +30,13 @@ module.exports = {
      * @implements {allWrite}
      * @implements {allRead}
      *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Rights', {
 
         /**
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -44,8 +46,8 @@ module.exports = {
         },
 
         /**
-         *
-         * @var groupWrite
+         * Shows the writing rights of a group
+         * @var {BOOLEAN} groupWrite
          */
         groupWrite: {
             defaultValue: false,
@@ -53,8 +55,8 @@ module.exports = {
         },
 
         /**
-         *
-         * @var groupRead
+         * Shows the reading rights of a group
+         * @var {BOOLEAN} groupRead
          */
         groupRead: {
             defaultValue: false,
@@ -62,8 +64,8 @@ module.exports = {
         },
 
         /**
-         *
-         * @var ownerWrite
+         * Shows the writinng rights of the owner
+         * @var {BOOLEAN} ownerWrite
          */
         ownerWrite: {
             defaultValue: false,
@@ -71,8 +73,8 @@ module.exports = {
         },
 
         /**
-         *
-         * @var ownerRead
+         * Shows the reading rights of the owner
+         * @var {BOOLEAN} ownerRead
          */
         ownerRead: {
             defaultValue: false,
@@ -80,8 +82,8 @@ module.exports = {
         },
 
         /**
-         *
-         * @var allWrite
+         * Shows the writing rights of all users
+         * @var {BOOLEAN} allWrite
          */
         allWrite: {
             defaultValue: false,
@@ -89,8 +91,8 @@ module.exports = {
         },
 
         /**
-         *
-         * @var allRead
+         * Shows the reading rights of all users
+         * @var {BOOLEAN} allRead
          */
         allRead: {
             defaultValue: false,
@@ -103,6 +105,7 @@ module.exports = {
      *
      * @function down
      * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Rights')
 };

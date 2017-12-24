@@ -18,17 +18,21 @@ module.exports = {
      * Sets table 'Groups'.
      *
      * @function up
+     *
      * @implements {id}
      * @implements {name}
+     *
      * @param {Object} queryInterface - A query interface.
      * @param {Object} Sequelize - The Sequelize object.
-     * @returns {Promise} The promise to drop a table.
+     *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Groups', {
 
         /**
          * The id of the group
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -39,7 +43,7 @@ module.exports = {
 
         /**
          * The name of the group
-         * @var name
+         * @var {STRING} name
          */
         name: {
             allowNull: false,

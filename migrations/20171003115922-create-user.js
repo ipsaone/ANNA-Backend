@@ -18,21 +18,25 @@ module.exports = {
      * Sets table 'Users'.
      *
      * @function up
+     *
      * @param {Object} queryInterface - A query interface.
      * @param {Object} Sequelize - The Sequelize object.
+     *
      * @implements {id}
      * @implements {username}
      * @implements {password}
      * @implements {email}
      * @implements {createdAt}
      * @implements {updatedAt}
+     *
      * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
 
         /**
          * The id of the user
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -43,7 +47,7 @@ module.exports = {
 
         /**
          * The username of the user
-         * @var username
+         * @var {STRING} username
          */
         username: {
             allowNull: false,
@@ -53,7 +57,7 @@ module.exports = {
 
         /**
          * The user's password
-         * @var password
+         * @var {STRING} password
          */
         password: {
             allowNull: false,
@@ -62,7 +66,7 @@ module.exports = {
 
         /**
          * The user's email adress
-         * @var email
+         * @var {STRING} email
          */
         email: {
             allowNull: false,
@@ -72,7 +76,7 @@ module.exports = {
 
         /**
          * The user's registration date
-         * @var createdAt
+         * @var {DATE} createdAt
          */
         createdAt: {
             allowNull: false,
@@ -81,7 +85,7 @@ module.exports = {
 
         /**
          * The date of the last update of the user's data
-         * @var updatedAt
+         * @var {DATE} updatedAt
          */
         updatedAt: {
             allowNull: false,

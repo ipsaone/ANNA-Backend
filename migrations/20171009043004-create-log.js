@@ -27,12 +27,15 @@ module.exports = {
      * @implements {createdAt}
      * @implements {authorId}
      * @implements {updatedAt}
+     *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Logs', {
 
         /**
          * The id of the log
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -43,7 +46,7 @@ module.exports = {
 
         /**
          * The title of the log
-         * @var title
+         * @var {STRING} title
          */
         title: {
             allowNull: false,
@@ -52,7 +55,7 @@ module.exports = {
 
         /**
          * The content sent by the author
-         * @var markdown
+         * @var {TEXT} markdown
          */
         markdown: {
             allowNull: false,
@@ -61,7 +64,7 @@ module.exports = {
 
         /**
          * The content seen by the user
-         * @var content
+         * @var {TEXT} content
          */
         content: {
             allowNull: false,
@@ -70,7 +73,7 @@ module.exports = {
 
         /**
          * The Id of the author of the log
-         * @var authorId
+         * @var {INTEGER} authorId
          */
         authorId: {
             allowNull: true,
@@ -85,7 +88,7 @@ module.exports = {
 
         /**
          * The creation date of the log
-         * @var createdAt
+         * @var {DATE} createdAt
          */
         createdAt: {
             allowNull: false,
@@ -94,7 +97,7 @@ module.exports = {
 
         /**
          * The date of the last update of the log
-         * @var updatedAt
+         * @var {DATE} updatedAt
          */
         updatedAt: {
             allowNull: false,
@@ -106,6 +109,8 @@ module.exports = {
      * Resets table 'Logs'.
      *
      * @function down
+     * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Logs')
 };

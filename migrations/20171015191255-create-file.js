@@ -25,12 +25,14 @@ module.exports = {
      * @implements {id}
      * @implements {isDir}
      *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Files', {
 
         /**
          * The id of the file
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -41,7 +43,7 @@ module.exports = {
 
         /**
          * ?
-         * @var isDir
+         * @var {BOOLEAN} isDir
          */
         isDir: {
             allowNull: false,
@@ -54,6 +56,7 @@ module.exports = {
      *
      * @function down
      * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Files')
 };
