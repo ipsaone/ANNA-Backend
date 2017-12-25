@@ -204,15 +204,16 @@ exports.addGroups = function (req, res, handle) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findById(userId)
-        .then((user) => {
-            if (user) {
-                return user.addGroups(req.body.groupsId);
-            }
-            throw res.boom.badRequest();
+    return policy.filterAddGroups(req.body.groupsId, req.session.auth)
+        .then((groups) => db.User.findById(userId)
+            .then((user) => {
+                if (user) {
+                    return user.addGroups(groups);
+                }
+                throw res.boom.badRequest();
 
-        })
-        .then(() => res.status(204).send())
+            })
+            .then(() => res.status(204).send()))
         .catch((err) => handle(err));
 };
 
@@ -233,8 +234,9 @@ exports.deleteGroups = function (req, res, handle) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findById(userId)
-        .then((user) => user.removeGroups(req.body.groupsId))
-        .then(() => res.status(204).send())
+    return policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth)
+        .then((groups) => db.User.findById(userId)
+            .then((user) => user.removeGroups(groups))
+            .then(() => res.status(204).send()))
         .catch((err) => handle(err));
 };

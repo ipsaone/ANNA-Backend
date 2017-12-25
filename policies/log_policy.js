@@ -110,5 +110,3 @@ exports.filterDelete = (userId) =>
             throw new Error('Unauthorized');
 
         });
-
-
