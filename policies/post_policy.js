@@ -30,10 +30,10 @@ const userIsAuthor = (userId) => db.User.findOne({
     // Return an error or the group
     .then((group) => typeof group !== 'undefined');
 
-exports.filterIndex = (req, res, posts) =>
+exports.filterIndex = (posts, userId) =>
 
     // Only show drafts is user is an author
-    userIsAuthor(req.session.auth)
+    userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return posts;
@@ -48,10 +48,10 @@ exports.filterIndex = (req, res, posts) =>
         });
 
 
-exports.filterShow = (req, post) =>
+exports.filterShow = (post, userId) =>
 
     // Only show drafts is user is an author
-    userIsAuthor(req.session.auth)
+    userIsAuthor(userId)
         .then((isAuthor) => {
             if (post.published || isAuthor) {
                 return post;
@@ -62,45 +62,45 @@ exports.filterShow = (req, post) =>
         });
 
 
-exports.filterStore = (req, res) =>
+exports.filterStore = (userId) =>
 
     // Only allow creation if user is an author
-    userIsAuthor(req.session.auth)
+    userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return true;
             }
 
-            return Promise.reject(res.boom.unauthorized());
+            throw new Error('Unauthorized');
 
         });
 
 
-exports.filterUpdate = (req, res) =>
+exports.filterUpdate = (userId) =>
 
     // Only allow update if user is an author
-    userIsAuthor(req.session.auth)
+    userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return true;
             }
 
-            throw res.boom.unauthorized();
+            throw new Error('Unauthorized');
 
 
         });
 
 
-exports.filterDelete = (req, res) =>
+exports.filterDelete = (userId) =>
 
     // Only allow delete if user is an author
-    userIsAuthor(req.session.auth)
+    userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return true;
             }
 
-            return Promise.reject(res.boom.unauthorized());
+            throw new Error('Unauthorized');
         });
 
 

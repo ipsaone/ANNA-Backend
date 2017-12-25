@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../models');
+const policy = require('../policies/log_policy');
 
 /**
  *
@@ -15,6 +16,7 @@ const db = require('../models');
  */
 exports.index = function (req, res, handle) {
     return db.Log.findAll({include: ['author']})
+        .then((logs) => policy.filterIndex(logs, req.session.auth))
         .then((logs) => res.status(200).json(logs))
         .catch((err) => handle(err));
 };
@@ -62,7 +64,8 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    return db.Log.create(req.body)
+    return policy.filterStore(req.body, req.session.auth)
+        .then((builder) => db.Log.create(builder))
         .then((log) => res.status(201).json(log))
         .catch(db.Sequelize.ValidationError, (err) => res.boom.badRequest(err))
         .catch((err) => handle(err));
@@ -80,12 +83,13 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.params.logId !== 'number') {
-
-        return handle(res.boom.badRequest());
+    if (isNaN(parseInt(req.params.logId, 10))) {
+        throw res.boom.badRequest();
     }
+    const logId = parseInt(req.params.logId, 10);
 
-    return db.Log.update(req.body, {where: {id: req.params.logId}})
+    return policy.filterUpdate(req.body, logId, req.session.auth)
+        .then((builder) => db.Log.update(builder, {where: {id: logId}}))
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
@@ -107,7 +111,8 @@ exports.delete = function (req, res, handle) {
     }
     const logId = parseInt(req.params.logId, 10);
 
-    db.Log.destroy({where: {id: logId}})
+    return policy.filterDelete(req.session.auth)
+        .then(() => db.Log.destroy({where: {id: logId}}))
         .then((data) => {
             if (data === 1) {
                 return res.status(204).json({});

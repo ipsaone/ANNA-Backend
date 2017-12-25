@@ -39,7 +39,7 @@ exports.index = function (req, res, handle) {
             ]
         ]
     })
-        .then((postsResponse) => policy.filterIndex(req, res, postsResponse))
+        .then((postsResponse) => policy.filterIndex(postsResponse, req.session.auth))
         .then((postsFiltered) => res.status(200).json(postsFiltered))
         .catch((err) => handle(err));
 };
@@ -72,7 +72,7 @@ exports.show = function (req, res, handle) {
 
             return post;
         })
-        .then((post) => policy.filterShow(req, post))
+        .then((post) => policy.filterShow(post, req.session.auth))
         .then((post) => res.status(200).json(post))
         .catch((err) => handle(err));
 };
@@ -113,7 +113,7 @@ exports.update = function (req, res, handle) {
     }
     const postId = parseInt(req.params.postId, 10);
 
-    return policy.filterUpdate(req, res)
+    return policy.filterUpdate(req.session.auth)
         .then(() => db.Post.update(req.body, {where: {id: postId}}))
         .then((post) => {
             if (post === 1) {
@@ -145,7 +145,7 @@ exports.delete = function (req, res, handle) {
     }
     const postId = parseInt(req.params.postId, 10);
 
-    return policy.filterDelete(req, res)
+    return policy.filterDelete(req.session.auth)
         .then(() => db.Post.destroy({where: {id: postId}}))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
