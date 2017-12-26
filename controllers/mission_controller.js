@@ -13,11 +13,10 @@ const db = require('../models');
  * @returns {Object} promise
  *
  */
-exports.index = function (req, res, handle) {
-    return db.Missions.findAll()
+exports.index = (req, res, handle) =>
+    db.Mission.findAll()
         .then((missions) => res.status(200).json(missions))
         .catch((err) => handle(err));
-};
 
 /**
  *

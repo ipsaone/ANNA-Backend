@@ -2,6 +2,7 @@
 
 const db = require('../models');
 const escape = require('escape-html');
+const policy = require('../policies/storage_policy');
 
 const getChildrenData = (folderId) =>
     db.File.findAll() // Get all files
@@ -175,10 +176,10 @@ exports.uploadNew = (req, res, handle) => {
  */
 exports.list = (req, res, handle) => {
     // Fail if the folder isn't defined
-    if (!req.params.folderId || !parseInt(req.params.folderId, 10)) {
+    if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
         throw res.boom.badRequest();
     }
-
+    const folderId = parseInt(req.params.folderId, 10);
     const file = db.File;
 
     if (req.query.filesOnly) {
@@ -187,8 +188,6 @@ exports.list = (req, res, handle) => {
         file.scope('folders');
     }
 
-    const folderId = parseInt(req.params.folderId, 10);
-
     const childrenData = getChildrenData(folderId);
     const folderFile = db.File.findOne({
         where: {id: folderId},
@@ -196,13 +195,12 @@ exports.list = (req, res, handle) => {
     });
     const folderData = folderFile.then((thisFile) => thisFile.getData());
 
-    console.log('4');
-
-    return Promise.all([
-        folderFile,
-        folderData,
-        childrenData
-    ])
+    return policy.filterList(folderId, req.session.auth)
+        .then(() => Promise.all([
+            folderFile,
+            folderData,
+            childrenData
+        ]))
         .then((results) => {
             const response = results[1];
 

@@ -38,6 +38,7 @@ router.use('/storage', require('./storage'));
 router.use('/users', require('./users'));
 router.use('/logs', require('./logs'));
 router.use('/image', require('./image'));
+router.use('/mission', require('./mission'));
 
 // Export the router
 module.exports = router;
