@@ -26,18 +26,21 @@ exports.filterUploadRev = async (fileId, userId) => {
 
 };
 
-exports.filterDownload = async (fileId, userId) => {
+exports.filterDownloadMeta = async (fileId, userId) => {
 
-    /*
-     * Check if directory has 'read' permissions for metadata download
-     * Check if file has 'read' permission for file download
-     */
+    // Check if directory has 'read' permissions for metadata download
 
     const file = await db.File.findById(fileId);
 
-
     return storage.fileHasReadPermissions(file.dirId, userId);
 
+};
+
+exports.filterDownloadContents = async (fileId, userId) => {
+    // Check if file has 'read' permission
+    const file = await db.File.findById(fileId);
+
+    return storage.fileHasReadPermissions(file, userId);
 };
 
 exports.filterDelete = (folderId, userId) =>

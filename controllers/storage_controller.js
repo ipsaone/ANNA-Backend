@@ -77,12 +77,14 @@ exports.download = (req, res, handle) => {
     });
 
     if (dl) {
-        return data.then(() => data.getPath(true))
+        return policy.filterDownloadContents()
+            .then(() => data.then(() => data.getPath(true)))
             .then((path) => res.download(path))
             .catch((err) => handle(err));
     }
 
-    return data.then((contents) => res.json(contents))
+    return policy.filterDownloadMeta()
+        .then(() => data.then((contents) => res.json(contents)))
         .catch((err) => handle(err));
 
 
@@ -122,7 +124,8 @@ exports.uploadRev = (req, res, handle) => {
     });
 
     // Find the file in database and add new data
-    return db.File.findOne({where: {id: fileId}})
+    return policy.filterUploadRev()
+        .then(() => db.File.findOne({where: {id: fileId}}))
         .then((file) => {
             console.log(req.file);
 
@@ -238,7 +241,8 @@ exports.delete = (req, res, handle) => {
         throw res.boom.badRequest();
     }
 
-    return db.Data.destroy({where: {fileId: req.params.fileId}})
+    return policy.filterDelete()
+        .then(() => db.Data.destroy({where: {fileId: req.params.fileId}}))
         .then(() => db.File.destroy({where: {id: req.params.fileId}}))
         .then(() => res.status(204).send())
         .catch((err) => handle(err));
