@@ -101,15 +101,16 @@ exports.download = (req, res, handle) => {
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  * @todo for security, better escape req.body, like validating against a schema ?
+ * @todo handle file contents upload !
  *
  * @returns {obj} Promise.
  *
  */
 exports.uploadRev = (req, res, handle) => {
-    if (typeof req.params.fileId !== 'number') {
-
+    if (isNaN(parseInt(req.params.fileId, 10))) {
         return handle(res.boom.badRequest());
     }
+    const fileId = parseInt(req.params.fileId, 10);
 
     // Escape req.body strings
     Object.keys(req.body).map(function (key) {
@@ -121,7 +122,7 @@ exports.uploadRev = (req, res, handle) => {
     });
 
     // Find the file in database and add new data
-    return db.File.findOne({where: {id: req.params.fileId}})
+    return db.File.findOne({where: {id: fileId}})
         .then((file) => {
             console.log(req.file);
 

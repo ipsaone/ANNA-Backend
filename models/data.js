@@ -1,6 +1,6 @@
 'use strict';
 
-const Storage = require('../repositories/Storage');
+const Storage = require('../repositories/storage');
 const fs = require('fs');
 
 require('dotenv').config();
