@@ -144,6 +144,12 @@ exports.uploadRev = (req, res, handle) => {
  *
  */
 exports.uploadNew = (req, res, handle) => {
+
+    /*
+     * ATTENTION : NO INPUT VALIDATION !
+     * (Integer checking for dirId/groupId)
+     */
+
     if (!req.file) {
         throw res.boom.badRequest();
     }
@@ -158,7 +164,8 @@ exports.uploadNew = (req, res, handle) => {
     });
 
     // Create the file and its data
-    return db.File.createNew(req.body, req.file.path, req.session.auth, false)
+    return policy.filterUploadNew(req.body.dirId, req.session.auth)
+        .then(() => db.File.createNew(req.body, req.file.path, req.session.auth, false))
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };

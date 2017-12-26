@@ -71,9 +71,50 @@ exports.filterList = async (folderId, userId) => {
 
 };
 
-exports.filterUploadNew = () => {
+exports.filterUploadNew = async (folderId, userId) => {
     // Check if directory has 'write' permission
 
+    const folderP = db.File.findById(folderId);
+    const userP = db.User.findById(userId);
+    const [
+        folder,
+        user
+    ] = await Promise.all([
+        folderP,
+        userP
+    ]);
+
+    const folderDataP = folder.getData();
+    const userGroupsP = user.getGroups();
+    const [
+        folderData,
+        userGroups
+    ] = await Promise.all([
+        folderDataP,
+        userGroupsP
+    ]);
+
+
+    const folderRightsP = folderData.getRights();
+
+    const userGroupsIds = userGroups.map((group) => group.id);
+    const userIsInGroup = userGroupsIds.includes(folderData.groupId);
+    const userIsOwner = folderData.ownerId === userId;
+
+    const folderRights = await folderRightsP;
+
+
+    if (folderRights.allWrite === true) {
+        return true;
+    } else if (userIsInGroup === true && folderRights.groupWrite === true) {
+        return true;
+    } else if (userIsOwner === true && folderRights.ownerWrite === true) {
+        return true;
+    }
+
+    // Throw an error if the error isn't authorized
+
+    throw new Error('Unauthorized');
 
 };
 
