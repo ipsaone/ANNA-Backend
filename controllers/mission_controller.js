@@ -38,10 +38,7 @@ exports.show = function (req, res, handle) {
     const missionId = parseInt(req.params.missionId, 10);
 
     return policy.filterShow()
-        .then(() => db.Missions.findOne({
-            where: {id: missionId},
-            rejectOnEmpty: true
-        }))
+        .then(() => db.Mission.findOne({where: {id: missionId}}))
         .then((mission) => {
             if (mission) {
                 return res.status(200).json(mission);
@@ -64,7 +61,7 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    return policy.filterStore()
+    return policy.filterStore(req.session.auth)
         .then(() => db.Missions.create(req.body))
         .then((mission) => res.status(201).json(mission))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
@@ -83,13 +80,13 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.params.missionId !== 'number') {
-
-        return handle(res.boom.badRequest());
+    if (isNaN(parseInt(req.params.missionId, 10))) {
+        throw res.boom.badRequest();
     }
+    const missionId = parseInt(req.params.missionId, 10);
 
-    return policy.filterUpdate()
-        .then(() => db.Missions.update(req.body, {where: {id: req.params.missionId}}))
+    return policy.filterUpdate(req.session.auth)
+        .then(() => db.Missions.update(req.body, {where: {id: missionId}}))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -107,13 +104,13 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.missionId !== 'number') {
-
+    if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
+    const missionId = parseInt(req.params.missionId, 10);
 
-    return policy.filterDelete()
-        .then(() => db.Missions.destroy({where: {id: req.params.missionId}}))
+    return policy.filterDelete(req.session.auth)
+        .then(() => db.Missions.destroy({where: {id: missionId}}))
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
