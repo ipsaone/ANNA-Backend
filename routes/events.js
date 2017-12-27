@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const eventController = require('../controllers/auth_controller');
+const eventController = require('../controllers/event_controller');
 
 router.route('/')
     .get(eventController.index)
