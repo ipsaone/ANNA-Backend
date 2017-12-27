@@ -11,24 +11,24 @@ const db = require('../models');
  * Returns: promise (the author group if resolved, )
  *
  */
-const userIsAuthor = (userId) => db.User.findOne({
-    where: {id: userId},
-    include: ['groups']
-})
-    .then((user) => {
-        if (user && user.groups) {
-            return user.groups;
-        }
+const userIsAuthor = async (userId) => {
+    const user = await db.User.findById(userId, {include: ['groups']});
 
-        return [];
+    if (user && user.groups) {
 
-    })
+        /*
+         * Find the 'authors' group in the group names
+         * and cast the value to boolean
+         */
 
-    // No case checking needed, they are stored lowercase
-    .then((groups) => groups.find((group) => group.name === 'authors'))
+        return Boolean(user.groups
+            .map((group) => group.name)
+            .find((name) => name === 'authors'));
+    }
 
-    // Return an error or the group
-    .then((group) => typeof group !== 'undefined');
+    return [];
+
+};
 
 exports.filterIndex = (posts, userId) =>
 

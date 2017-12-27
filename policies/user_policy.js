@@ -2,25 +2,6 @@
 
 const db = require('../models');
 
-const userIsRoot = (userId) => db.User.findOne({
-    where: {id: userId},
-    include: ['groups']
-})
-    .then((user) => {
-        if (user && user.groups) {
-            return user.groups;
-        }
-
-        return [];
-
-    })
-
-    // No case checking needed, they are stored lowercase
-    .then((groups) => groups.find((group) => group.name === 'root'))
-
-    // Return an error or the group
-    .then((group) => typeof group !== 'undefined');
-
 exports.filterIndex = (users, userId) => Promise.resolve(users)
     .then((us) => us.map((u) => {
         const user = u.toJSON();
@@ -56,27 +37,32 @@ exports.filterStore = (user) => Promise.resolve(user);
 
 exports.filterDelete = (user) => Promise.resolve(user);
 
-exports.filterAddGroups = (groupsId, userId) =>
-    userIsRoot(userId)
-        .then((isRoot) => {
-            if (isRoot) {
-                return groupsId;
-            }
+exports.filterAddGroups = async (groupsId, userId) => {
+    const user = await db.User.findById(userId);
 
-            return db.User.findById(userId)
-                .then((user) => user.getGroups)
-                .then((groups) => groups.map((group) => group.id))
-                .then((groups) => groupsId.filter((group) => groups.includes(group)));
+    if (user && await user.isRoot()) {
+        return groupsId;
+    }
 
-        });
-
-exports.filterDeleteGroups = (groupsId, targetId, userId) =>
-    userIsRoot(userId)
-        .then((isRoot) => {
-            if (isRoot || targetId === userId) {
-                return groupsId;
-            }
-            throw new Error('Unauthorized');
+    const groups = await user.getGroups();
 
 
-        });
+    return groups.map((group) => group.id).filter((group) => groups.includes(group));
+
+};
+
+exports.filterDeleteGroups = async (groupsId, targetId, userId) => {
+    if (targetId === userId) {
+        return groupsId;
+    }
+    const user = await db.User.findById(userId);
+
+    if (user && await user.isRoot()) {
+        return groupsId;
+    }
+
+
+    throw new Error('Unauthorized');
+
+
+};
