@@ -75,7 +75,7 @@ Storage.getDataUrl = () => {
  *
  * @param {bool} full - Get full path or relative path.
  *
- * @returns {string} data path
+ * @returns {string} Data path.
  *
  */
 Storage.getDataPath = function (full = false) {
@@ -132,9 +132,9 @@ Storage.getFileDirTree = function () {
  *
  * Get all data for a file object.
  *
- * @param {integer} offset - how old the data is.
+ * @param {integer} offset - How old the data is.
  *
- * @returns {Object} promise to file data
+ * @returns {Object} Promise to file data.
  *
  */
 Storage.getFileData = function (offset = 0) {
@@ -184,7 +184,7 @@ Storage.getDataRights = function () {
  * Add data for a file object.
  *
  * @param {obj} fileChanges - The changes in this data.
- * @param {obj} filePath the path to the file to add data to
+ * @param {obj} filePath the path to the file to add data to.
  *
  * @todo finish and test
  * @returns {Object} promise to directory tree
@@ -311,7 +311,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  * Create a new file object.
  *
- * @param {Object} changes The file metadata.
+ * @param {Object} changes - The file metadata.
  * @param {string} filePath the file path to create.
  * @param {boolean} dir whether the file is a directory or not
  *

@@ -17,7 +17,7 @@ const db = require('../models');
  *
  * @function index
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
@@ -100,7 +100,7 @@ exports.store = function (req, res, handle) {
  * @function update
  *
  * @param {obj} req     The user request.
- * @param {obj} res     the response to be sent
+ * @param {obj} res     The response to be sent.
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise

@@ -64,9 +64,9 @@ exports.index = function (req, res, handle) {
  *
  * @function show
  *
- * @param {obj} req     the user request.
+ * @param {obj} req     The user request.
  * @param {obj} res     The response to be sent.
- * @param {obj} handle  the error handling function
+ * @param {obj} handle  the error handling function.
  *
  * @returns {Object} promise
  *
@@ -102,7 +102,7 @@ exports.show = function (req, res, handle) {
  *
  * @function store
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
@@ -126,7 +126,7 @@ exports.store = function (req, res, handle) {
  *
  * @function update
  *
- * @param {obj} req     - the user request
+ * @param {obj} req     - The user request.
  * @param {obj} res     the response to be sent
  * @param {obj} handle  - the error handling function
  *
@@ -155,7 +155,7 @@ exports.update = function (req, res, handle) {
  *
  * @function delete
  *
- * @param {obj} req     The user request.
+ * @param {obj} req     - The user request.
  * @param {obj} res     the response to be sent
  * @param {obj} handle  - the error handling function
  *
