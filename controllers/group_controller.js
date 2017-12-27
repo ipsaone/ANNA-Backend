@@ -31,13 +31,13 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.groupId !== 'number') {
-
+    if (isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
+    const groupId = parseInt(req.params.groupId, 10);
 
     return db.Group.findOne({
-        where: {id: req.params.groupId},
+        where: {id: groupId},
         include: ['users']
     })
         .then((group) => {
@@ -76,7 +76,12 @@ exports.store = function (req, res, handle) {
 
     return db.Group.create(req.body)
         .then((group) => res.status(201).json(group))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 
@@ -92,11 +97,10 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.body.name !== 'string' ||
-        typeof req.params.groupId !== 'number') {
-
+    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
+    const groupId = parseInt(req.params.groupId, 10);
 
     /*
      * To lower case to avoid security problems
@@ -104,7 +108,7 @@ exports.update = function (req, res, handle) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    return db.Group.update(req.body, {where: {id: req.params.groupId}})
+    return db.Group.update(req.body, {where: {id: groupId}})
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -122,12 +126,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.eventId !== 'number') {
-
+    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
+    const groupId = parseInt(req.params.groupId, 10);
 
-    return db.Group.destroy({where: {id: req.params.groupId}})
+    return db.Group.destroy({where: {id: groupId}})
         .then((data) => {
 
             /*

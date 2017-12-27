@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../models');
+const policy = require('../policies/user_policy');
 
 /**
  *
@@ -15,6 +16,7 @@ const db = require('../models');
  */
 exports.index = function (req, res, handle) {
     return db.User.findAll()
+        .then((users) => policy.filterIndex(users, req.session.auth))
         .then((users) => res.status(200).json(users))
         .catch((err) => handle(err));
 };
@@ -32,19 +34,21 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
+    if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
 
     return db.User.findOne({
-        where: {id: req.params.userId},
+        where: {id: userId},
         include: ['groups']
     })
+        .then((user) => policy.filterShow(user, req.session.auth))
         .then((user) => {
             if (user) {
                 return res.status(200).json(user);
             }
-            throw res.boom.badRequest();
+            throw res.boom.notFound();
 
         })
         .catch((err) => handle(err));
@@ -64,7 +68,12 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     return db.User.create(req.body)
         .then((user) => res.status(201).json(user))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 
@@ -80,12 +89,12 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
-
+    if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findOne({where: {id: req.params.userId}})
+    return db.User.findOne({where: {id: userId}})
         .then((record) => record.update(req.body))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
@@ -104,13 +113,13 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
-
+    if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
 
-    return db.UserGroup.destroy({where: {userId: req.params.userId}})
-        .then(() => db.User.destroy({where: {id: req.params.userId}}))
+    return db.UserGroup.destroy({where: {userId}})
+        .then(() => db.User.destroy({where: {id: userId}}))
         .then(() => res.status(204).send())
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -132,10 +141,11 @@ exports.delete = function (req, res, handle) {
  *
  */
 exports.posts = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
-
-        handle(res.boom.badRequest());
+    if (isNaN(parseInt(req.params.userId, 10))) {
+        throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
+
     let posts = db.Post;
 
     if (req.query.published) {
@@ -146,7 +156,7 @@ exports.posts = function (req, res, handle) {
         }
     }
 
-    return posts.findAll({where: {authorId: req.params.userId}})
+    return posts.findAll({where: {authorId: userId}})
         .then((response) => res.status(200).json(response))
         .catch((err) => handle(err));
 };
@@ -163,13 +173,13 @@ exports.posts = function (req, res, handle) {
  *
  */
 exports.getGroups = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
-
+    if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
 
     return db.User.findOne({
-        where: {id: req.params.userId},
+        where: {id: userId},
         include: ['groups']
     })
         .then((user) => {
@@ -194,20 +204,21 @@ exports.getGroups = function (req, res, handle) {
  *
  */
 exports.addGroups = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
-
+    if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findById(req.params.userId)
-        .then((user) => {
-            if (user) {
-                return user.addGroups(req.body.groupsId);
-            }
-            throw res.boom.badRequest();
+    return policy.filterAddGroups(req.body.groupsId, req.session.auth)
+        .then((groups) => db.User.findById(userId)
+            .then((user) => {
+                if (user) {
+                    return user.addGroups(groups);
+                }
+                throw res.boom.badRequest();
 
-        })
-        .then(() => res.status(204).send())
+            })
+            .then(() => res.status(204).send()))
         .catch((err) => handle(err));
 };
 
@@ -223,13 +234,14 @@ exports.addGroups = function (req, res, handle) {
  *
  */
 exports.deleteGroups = function (req, res, handle) {
-    if (typeof req.params.userId !== 'number') {
-
+    if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
+    const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findById(req.params.userId)
-        .then((user) => user.removeGroups(req.body.groupsId))
-        .then(() => res.status(204).send())
+    return policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth)
+        .then((groups) => db.User.findById(userId)
+            .then((user) => user.removeGroups(groups))
+            .then(() => res.status(204).send()))
         .catch((err) => handle(err));
 };

@@ -2,17 +2,19 @@
 
 const db = require('../models');
 const escape = require('escape-html');
-const Storage = require('../repositories/Storage');
+const policy = require('../policies/storage_policy');
 
-const getChildrenData = (req, res, folderId) =>
+const getChildrenData = (folderId) =>
     db.File.findAll() // Get all files
 
         // Check if file exists
         .then((files) => {
+            console.log('there !');
             if (files.map((item) => item.id).includes(folderId)) {
                 return files;
             }
-            throw res.boom.notFound();
+
+            return [];
 
         })
 
@@ -75,12 +77,14 @@ exports.download = (req, res, handle) => {
     });
 
     if (dl) {
-        return data.then(() => data.getPath(true))
+        return policy.filterDownloadContents()
+            .then(() => data.then(() => data.getPath(true)))
             .then((path) => res.download(path))
             .catch((err) => handle(err));
     }
 
-    return data.then((contents) => res.json(contents))
+    return policy.filterDownloadMeta()
+        .then(() => data.then((contents) => res.json(contents)))
         .catch((err) => handle(err));
 
 
@@ -98,21 +102,30 @@ exports.download = (req, res, handle) => {
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
+ * @todo for security, better escape req.body, like validating against a schema ?
+ * @todo handle file contents upload !
  *
  * @returns {obj} Promise.
  *
  */
 exports.uploadRev = (req, res, handle) => {
-    if (typeof req.params.fileId !== 'number') {
-
+    if (isNaN(parseInt(req.params.fileId, 10))) {
         return handle(res.boom.badRequest());
     }
+    const fileId = parseInt(req.params.fileId, 10);
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    Object.keys(req.body).map(function (key) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = escape(req.body[key]);
+        }
+
+        return true;
+    });
 
     // Find the file in database and add new data
-    return db.File.findOne({where: {id: req.params.fileId}})
+    return policy.filterUploadRev()
+        .then(() => db.File.findOne({where: {id: fileId}}))
         .then((file) => {
             console.log(req.file);
 
@@ -135,16 +148,29 @@ exports.uploadRev = (req, res, handle) => {
  *
  */
 exports.uploadNew = (req, res, handle) => {
+
+    /*
+     * ATTENTION : NO INPUT VALIDATION !
+     * (Integer checking for dirId/groupId)
+     */
+
     if (!req.file) {
         throw res.boom.badRequest();
     }
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    Object.keys(req.body).map(function (key) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = escape(req.body[key]);
+        }
+
+        return true;
+    });
 
     // Create the file and its data
-    return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.status(204))
+    return policy.filterUploadNew(req.body.dirId, req.session.auth)
+        .then(() => db.File.createNew(req.body, req.file.path, req.session.auth, false))
+        .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
 
@@ -161,10 +187,10 @@ exports.uploadNew = (req, res, handle) => {
  */
 exports.list = (req, res, handle) => {
     // Fail if the folder isn't defined
-    if (!req.params.folderId || !parseInt(req.params.folderId, 10)) {
+    if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
         throw res.boom.badRequest();
     }
-
+    const folderId = parseInt(req.params.folderId, 10);
     const file = db.File;
 
     if (req.query.filesOnly) {
@@ -173,17 +199,19 @@ exports.list = (req, res, handle) => {
         file.scope('folders');
     }
 
-    const folderId = parseInt(req.params.folderId, 10);
-
-    const childrenData = getChildrenData(req, res, folderId);
-    const folderFile = db.File.findOne({where: {id: folderId}});
+    const childrenData = getChildrenData(folderId);
+    const folderFile = db.File.findOne({
+        where: {id: folderId},
+        rejectOnEmpty: true
+    });
     const folderData = folderFile.then((thisFile) => thisFile.getData());
 
-    return Promise.all([
-        folderFile,
-        folderData,
-        childrenData
-    ])
+    return policy.filterList(folderId, req.session.auth)
+        .then(() => Promise.all([
+            folderFile,
+            folderData,
+            childrenData
+        ]))
         .then((results) => {
             const response = results[1];
 
@@ -213,7 +241,8 @@ exports.delete = (req, res, handle) => {
         throw res.boom.badRequest();
     }
 
-    return db.Data.destroy({where: {fileId: req.params.fileId}})
+    return policy.filterDelete()
+        .then(() => db.Data.destroy({where: {fileId: req.params.fileId}}))
         .then(() => db.File.destroy({where: {id: req.params.fileId}}))
         .then(() => res.status(204).send())
         .catch((err) => handle(err));

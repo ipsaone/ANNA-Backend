@@ -2,6 +2,7 @@
 
 const db = require('../models');
 
+
 exports.filterIndex = () => Promise.resolve(true);
 
 exports.filterShow = () => Promise.resolve(true);

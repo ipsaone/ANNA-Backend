@@ -1,7 +1,6 @@
 'use strict';
 
 const db = require('../models');
-const policy = require('../policies/event_policy.js');
 
 /**
  *
@@ -15,8 +14,7 @@ const policy = require('../policies/event_policy.js');
  *
  */
 exports.index = function (req, res, handle) {
-    return policy.filterIndex()
-        .then(() => db.Event.findAll())
+    return db.Event.findAll()
         .then((events) => res.json(events))
         .catch((err) => handle(err));
 };
@@ -33,13 +31,12 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    if (isNaN(parseInt(req.params.eventId, 10))) {
+    if (typeof req.params.eventId !== 'number') {
+
         throw res.boom.badRequest();
     }
-    const eventId = parseInt(req.params.eventId, 10);
 
-    return policy.filterShow()
-        .then(() => db.Event.findOne({where: {id: eventId}}))
+    return db.Event.findOne({where: {id: req.params.eventId}})
         .then((event) => {
             if (event) {
                 return res.status(200).json(event);
@@ -63,6 +60,7 @@ exports.show = function (req, res, handle) {
  */
 exports.store = function (req, res, handle) {
     if (typeof req.body.name !== 'string') {
+
         throw res.boom.badRequest();
     }
 
@@ -73,11 +71,13 @@ exports.store = function (req, res, handle) {
     req.body.name = req.body.name.toLowerCase();
 
 
-    return policy.filterStore(req.session.auth)
-        .then(() => db.Event.create(req.body))
+    return db.Event.create(req.body)
         .then((event) => res.status(201).json(event))
-        .catch(db.Sequelize.ValidationError, () => {
-            throw res.boom.badRequest();
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
         })
         .catch((err) => handle(err));
 };
@@ -94,10 +94,11 @@ exports.store = function (req, res, handle) {
  *
  */
 exports.update = function (req, res, handle) {
-    if (isNaN(parseInt(req.params.eventId, 10))) {
+    if (typeof req.body.name !== 'string' ||
+        typeof req.params.eventId !== 'number') {
+
         throw res.boom.badRequest();
     }
-    const eventId = parseInt(req.params.eventId, 10);
 
     /*
      * To lower case to avoid security problems
@@ -105,15 +106,9 @@ exports.update = function (req, res, handle) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    return policy.filterUpdate(req.session.auth)
-        .then(() => db.Event.update(req.body, {where: {id: eventId}}))
+    return db.Event.update(req.body, {where: {id: req.params.eventId}})
         .then(() => res.status(204).json({}))
-        .catch((err) => {
-            if (err instanceof db.Sequelize.ValidationError) {
-                res.boom.badRequest(err);
-            }
-            throw err;
-        })
+        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
 };
 
@@ -129,13 +124,12 @@ exports.update = function (req, res, handle) {
  *
  */
 exports.delete = function (req, res, handle) {
-    if (isNaN(parseInt(req.params.eventId, 10))) {
+    if (typeof req.params.eventId !== 'number') {
+
         throw res.boom.badRequest();
     }
-    const eventId = parseInt(req.params.eventId, 10);
 
-    return policy.filterDelete(req.session.auth)
-        .then(() => db.Event.destroy({where: {id: eventId}}))
+    return db.Event.destroy({where: {id: req.params.eventId}})
         .then((data) => {
 
             /*
