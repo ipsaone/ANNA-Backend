@@ -41,5 +41,7 @@ router.use('/image', require('./image'));
 router.use('/mission', require('./mission'));
 router.use('/events', require('./events'));
 
+router.all('*', (req, res) => res.boom.notFound());
+
 // Export the router
 module.exports = router;
