@@ -54,7 +54,7 @@ exports.filterStore = (builder, userId) => {
     const keys = Object.keys(builder);
 
     keys.forEach((key) => {
-        if (!allowed.contains(key)) {
+        if (!allowed.includes(key)) {
             delete builder[key];
         }
     });
