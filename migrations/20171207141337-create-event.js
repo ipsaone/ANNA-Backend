@@ -9,6 +9,14 @@ module.exports = {
             type: Sequelize.INTEGER
         },
         name: {type: Sequelize.STRING},
+        markdown: {
+            allowNull: false,
+            type: Sequelize.TEXT
+        },
+        content: {
+            allowNull: false,
+            type: Sequelize.TEXT
+        },
         createdAt: {
             allowNull: false,
             type: Sequelize.DATE
