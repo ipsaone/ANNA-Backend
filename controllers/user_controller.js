@@ -68,7 +68,12 @@ exports.show = function (req, res, handle) {
 exports.store = function (req, res, handle) {
     return db.User.create(req.body)
         .then((user) => res.status(201).json(user))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 

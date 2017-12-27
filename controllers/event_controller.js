@@ -108,7 +108,12 @@ exports.update = function (req, res, handle) {
     return policy.filterUpdate(req.session.auth)
         .then(() => db.Event.update(req.body, {where: {id: eventId}}))
         .then(() => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 

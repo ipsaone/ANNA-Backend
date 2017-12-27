@@ -11,7 +11,7 @@ module.exports = {
         logId: {
             allowNull: false,
             type: Sequelize.INTEGER,
-            onDelete: 'CASCADE',
+            onDelete: 'RESTRICT',
             references: {
                 model: 'Logs',
                 key: 'id'
@@ -20,7 +20,7 @@ module.exports = {
         userId: {
             allowNull: false,
             type: Sequelize.INTEGER,
-            onDelete: 'CASCADE',
+            onDelete: 'RESTRICT',
             references: {
                 model: 'Users',
                 key: 'id'

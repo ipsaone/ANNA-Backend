@@ -92,7 +92,12 @@ exports.store = function (req, res, handle) {
     return policy.filterStore(req.session.auth)
         .then(() => db.Post.create(req.body))
         .then((post) => res.status(201).json(post))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 

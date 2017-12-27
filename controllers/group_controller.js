@@ -76,7 +76,12 @@ exports.store = function (req, res, handle) {
 
     return db.Group.create(req.body)
         .then((group) => res.status(201).json(group))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 
