@@ -89,7 +89,7 @@ exports.show = function (req, res, handle) {
  *
  */
 exports.store = function (req, res, handle) {
-    return policy.filterStore(req, res)
+    return policy.filterStore(req.session.auth)
         .then(() => db.Post.create(req.body))
         .then((post) => res.status(201).json(post))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
