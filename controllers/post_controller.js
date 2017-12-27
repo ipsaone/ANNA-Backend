@@ -116,11 +116,12 @@ exports.update = function (req, res, handle) {
     return policy.filterUpdate(req.session.auth)
         .then(() => db.Post.update(req.body, {where: {id: postId}}))
         .then((post) => {
-            if (post === 1) {
-                return res.status(200).json(post);
-            } else if (post === 0) {
+            if (post.length === 1) {
+                return res.status(200).json(post[0]);
+            } else if (post.length === 0) {
                 throw res.boom.notFound();
             } else {
+                console.log(`Multiple posts edited ! (${post.length})`);
                 throw res.boom.badImplementation();
             }
         })
