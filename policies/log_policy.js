@@ -7,26 +7,6 @@ const allowed = [
     'markdown'
 ];
 
-const userIsRoot = (userId) => db.User.findOne({
-    where: {id: userId},
-    include: ['groups']
-})
-    .then((user) => {
-        if (user && user.groups) {
-            return user.groups;
-        }
-
-        return [];
-
-    })
-
-    // No case checking needed, they are stored lowercase
-    .then((groups) => groups.find((group) => group.name === 'root'))
-
-    // Return an error or the group
-    .then((group) => typeof group !== 'undefined');
-
-
 exports.filterIndex = (l, userId) => {
     const logs = l.map((log) => log.toJSON());
 
@@ -43,10 +23,12 @@ exports.filterIndex = (l, userId) => {
 };
 
 
-exports.filterShow = (logs) => {
-    logs.map((log) => log.toJSON());
+exports.filterShow = async (l, userId) => {
+    const log = l.toJSON();
 
-    return Promise.resolve(logs);
+    log.author = await userPolicy.filterShow(log.author, userId);
+
+    return Promise.resolve(log);
 };
 
 
@@ -65,48 +47,53 @@ exports.filterStore = (builder, userId) => {
 };
 
 
-exports.filterUpdate = (builder, logId, userId) => userIsRoot(userId)
+exports.filterUpdate = async (builder, logId, userId) => {
+
+    const user = await db.User.findById(userId);
+
+    return Promise.resolve()
     // Check the user is root or is the author of the log
-    .then((isRoot) => {
-        if (isRoot) {
-            return true;
-        }
-
-        return db.Log.findById(logId)
-            .then((log) => log.authorId)
-            .then((id) => {
-                if (id === userId) {
-                    return true;
-                }
-                throw new Error('Unauthorized');
-
-            });
-
-    })
-    // Remove unauthorized fields
-    .then(() => {
-        const keys = Object.keys(builder);
-
-        keys.forEach((key) => {
-            if (!allowed.contains(key)) {
-                delete builder[key];
-            }
-        });
-
-        return true;
-    })
-    // Return builder object
-    .then(() => builder);
-
-
-exports.filterDelete = (userId) =>
-
-    // Only root users can delete logs
-    userIsRoot(userId)
-        .then((isRoot) => {
-            if (isRoot) {
+        .then(async () => {
+            if (user && await user.isRoot()) {
                 return true;
             }
-            throw new Error('Unauthorized');
 
-        });
+            return db.Log.findById(logId)
+                .then((log) => log.authorId)
+                .then((id) => {
+                    if (id === userId) {
+                        return true;
+                    }
+                    throw new Error('Unauthorized');
+
+                });
+
+        })
+    // Remove unauthorized fields
+        .then(() => {
+            const keys = Object.keys(builder);
+
+            keys.forEach((key) => {
+                if (!allowed.contains(key)) {
+                    delete builder[key];
+                }
+            });
+
+            return true;
+        })
+    // Return builder object
+        .then(() => builder);
+};
+
+
+exports.filterDelete = async (userId) => {
+
+    const user = await db.User.findById(userId);
+
+    // Only root users can delete logs
+    if (user && await user.isRoot()) {
+        return true;
+    }
+    throw new Error('Unauthorized');
+
+};
