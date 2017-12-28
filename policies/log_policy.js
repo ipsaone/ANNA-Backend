@@ -43,10 +43,12 @@ exports.filterIndex = (l, userId) => {
 };
 
 
-exports.filterShow = (logs) => {
-    logs.map((log) => log.toJSON());
+exports.filterShow = async (l, userId) => {
+    const log = l.toJSON();
 
-    return Promise.resolve(logs);
+    log.author = await userPolicy.filterShow(log.author, userId);
+
+    return Promise.resolve(log);
 };
 
 

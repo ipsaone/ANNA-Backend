@@ -46,6 +46,7 @@ exports.show = function (req, res, handle) {
             'helpers'
         ]
     })
+        .then((log) => policy.filterShow(log, req.session.auth))
         .then((log) => {
             if (log) {
                 return res.status(200).json(log);
