@@ -10,6 +10,8 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 
+require('dotenv').config();
+
 const app = express();
 
 /*

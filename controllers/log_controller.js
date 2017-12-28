@@ -33,14 +33,18 @@ exports.index = function (req, res, handle) {
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.logId !== 'number') {
-
-        return handle(res.boom.badRequest());
+    if (isNaN(parseInt(req.params.logId, 10))) {
+        throw res.boom.badRequest();
     }
+    const logId = parseInt(req.params.logId, 10);
 
     return db.Log.findOne({
-        where: {id: req.params.logId},
-        include: ['author']
+        where: {id: logId},
+        include: [
+            'author',
+            'files',
+            'helpers'
+        ]
     })
         .then((log) => {
             if (log) {
