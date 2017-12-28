@@ -144,13 +144,13 @@ exports.delete = function (req, res, handle) {
              * [1] : number of affected rows
              */
 
-            if (!data[0]) {
+            if (!data) {
                 throw res.boom.badImplementation('Missing data !');
             }
 
-            if (data[0] === 1) {
+            if (data.length === 1) {
                 return res.status(204).json({});
-            } else if (data[0] === 0) {
+            } else if (data.length === 0) {
                 throw res.boom.notFound();
             } else {
                 throw res.boom.badImplementation('Too many rows deleted !');

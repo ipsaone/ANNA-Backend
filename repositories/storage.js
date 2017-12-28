@@ -10,7 +10,6 @@ const config = require('../config/config');
 const mmm = require('mmmagic');
 const Magic = mmm.Magic;
 const magic = new Magic(mmm.MAGIC_MIME_TYPE);
-const db = require('../models');
 
 
 class Storage {
@@ -96,6 +95,8 @@ Storage.computeSize = function (filePath) {
 };
 
 Storage.fileHasWritePermission = async (fileId, userId) => {
+    const db = require('../models');
+
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
     const [
@@ -138,6 +139,8 @@ Storage.fileHasWritePermission = async (fileId, userId) => {
 };
 
 Storage.fileHasReadPermission = async (fileId, userId) => {
+    const db = require('../models');
+
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
     const [
