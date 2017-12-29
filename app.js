@@ -31,7 +31,7 @@ app.use(require('express-request-id')({setHeader: false})); // Unique ID for eve
 /*
  * Options
  */
-app.set('trust proxy', 1); // Trust first proxy
+app.set('trust proxy', 1); // Trust reverse proxy
 app.options('*', require('./middlewares/cors')); // Pre-flight
 morgan.token('id', (req) => req.id.split('-')[0]);
 // Logging
@@ -47,6 +47,7 @@ app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'a
  * Routing and error catching
  */
 app.use(require('./routes'));
+// App.use(require('express-async-handler'));
 app.use(require('./middlewares/exception')); // Error handling
 
 const {host, port} = config.app.getConnection();

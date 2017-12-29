@@ -27,5 +27,15 @@ module.exports = (sequelize, DataTypes) => {
 
     });
 
+    event.associate = function (models) {
+        event.belongsToMany(models.User, {
+            foreignKey: 'eventId',
+            as: 'registered',
+            through: models.EventUser,
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
+    };
+
     return event;
 };

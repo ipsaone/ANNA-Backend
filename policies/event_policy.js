@@ -36,3 +36,35 @@ exports.filterDelete = async (userId) => {
 
     throw new Error('Unauthorized');
 };
+
+exports.filterStoreRegistered = async (eventId, targetId, userId) => {
+
+    if (userId === targetId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+    const userIsAdmin = await user.isRoot();
+
+    if (userIsAdmin) {
+        return true;
+    }
+
+    return false;
+};
+
+exports.filterDeleteRegistered = async (eventId, targetId, userId) => {
+
+    if (userId === targetId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+    const userIsAdmin = await user.isRoot();
+
+    if (userIsAdmin) {
+        return true;
+    }
+
+    return false;
+};

@@ -17,6 +17,7 @@
     "dotenv": "^4.0.0",
     "escape-html": "^1.0.3",
     "express": "^4.15.2",
+    "express-async-handler": "^1.0.0",
     "express-boom": "^2.0.0",
     "express-rate-limit": "^2.8.0",
     "express-request-id": "^1.4.0",

@@ -14,47 +14,36 @@ const bcrypt = require('bcrypt');
  * @returns {Object} promise
  *
  */
-exports.login = (req, res, handle) => {
+exports.login = async (req, res) => {
     if (typeof req.body.username !== 'string' ||
         typeof req.body.password !== 'string') {
 
         throw res.boom.badRequest();
     }
 
-    return db.User.findOne({
+
+    const user = await db.User.findOne({
         where: {'username': req.body.username},
         include: ['groups']
-    })
-        .then((user) => {
-            if (!user) {
-                throw res.boom.notFound('Bad username');
-            }
+    });
 
-            return user;
-        })
-        .then((user) =>
-            bcrypt.compare(req.body.password, user.password)
-            // Check password
-                .then((accept) => {
-                    if (!accept) {
-                        throw res.boom.unauthorized('Bad password');
-                    }
+    if (!user) {
+        throw res.boom.notFound('Bad username');
+    }
 
-                    return true;
-                })
-            // Set user session variables
-                .then(() => {
-                    req.session.auth = user.id;
+    const accept = await bcrypt.compare(req.body.password, user.password);
 
-                    return true;
-                })
-            // Send response
-                .then(() => res.status(200).json({
-                    id: user.id,
-                    username: user.username,
-                    groups: user.groups
-                })))
-        .catch((err) => handle(err));
+    if (!accept) {
+        throw res.boom.unauthorized('Bad password');
+    }
+
+    req.session.auth = user.id;
+
+    return res.status(200).json({
+        id: user.id,
+        username: user.username,
+        groups: user.groups
+    });
 };
 
 
@@ -85,31 +74,29 @@ exports.logout = (req, res) => {
  * @returns {obj} promise
  *
  */
-exports.check = (req, res, handle) => {
+exports.check = async (req, res) => {
     if (typeof req.body.username !== 'number') {
-
         throw res.boom.badRequest();
     }
 
-    if (req.session.auth) {
-        return db.User.findOne({
-            where: {id: req.session.auth},
-            include: ['groups']
-        })
-            .then((user) => {
-                if (user) {
-                    return res.json({
-                        id: user.id,
-                        username: user.username,
-                        groups: user.groups
-                    });
-
-                }
-                throw res.boom.notFound();
-
-            })
-            .catch((err) => handle(err));
+    if (!req.session.auth) {
+        throw res.boom.unauthorized();
     }
-    throw res.boom.unauthorized();
+
+    const user = await db.User.findOne({
+        where: {id: req.session.auth},
+        include: ['groups']
+    });
+
+    if (!user) {
+        throw res.boom.notFound();
+    }
+
+    return res.json({
+        id: user.id,
+        username: user.username,
+        groups: user.groups
+    });
+
 
 };

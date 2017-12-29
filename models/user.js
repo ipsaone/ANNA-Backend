@@ -45,6 +45,14 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'CASCADE'
         });
 
+        User.belongsToMany(models.Event, {
+            as: 'events',
+            through: models.EventUser,
+            foreignKey: 'userId',
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
+
         User.hasMany(models.Post, {
             foreignKey: 'authorId',
             as: 'posts',
