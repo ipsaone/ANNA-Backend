@@ -76,8 +76,12 @@ exports.store = function (req, res, handle) {
     return policy.filterStore(req.session.auth)
         .then(() => db.Event.create(req.body))
         .then((event) => res.status(201).json(event))
-        .catch(db.Sequelize.ValidationError, () => {
-            throw res.boom.badRequest();
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                throw res.boom.badRequest();
+            }
+
+            throw err;
         })
         .catch((err) => handle(err));
 };
@@ -135,22 +139,24 @@ exports.delete = function (req, res, handle) {
     const eventId = parseInt(req.params.eventId, 10);
 
     return policy.filterDelete(req.session.auth)
-        .then(() => db.Event.destroy({where: {id: eventId}}))
+        .then(() => db.Event.findById(eventId))
+        .then((event) => {
+            if (!event) {
+                throw res.boom.notFound();
+            }
+
+            return event.destroy();
+        })
         .then((data) => {
-
-            /*
-             *Data :
-             * [0] : number of rows corresponding to request
-             * [1] : number of affected rows
-             */
-
             if (!data) {
                 throw res.boom.badImplementation('Missing data !');
             }
 
-            if (data.length === 1) {
+            console.log('Data :', data);
+
+            if (data === 1) {
                 return res.status(204).json({});
-            } else if (data.length === 0) {
+            } else if (data === 0) {
                 throw res.boom.notFound();
             } else {
                 throw res.boom.badImplementation('Too many rows deleted !');

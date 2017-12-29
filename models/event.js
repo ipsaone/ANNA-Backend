@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         content: {
             allowNull: false,
             type: DataTypes.TEXT
+        },
+        maxRegistered: {
+            allowNull: true,
+            type: DataTypes.INTEGER
         }
 
     });
