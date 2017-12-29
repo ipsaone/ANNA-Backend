@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         maxRegistered: {
             allowNull: true,
             type: DataTypes.INTEGER
+        },
+        startDate: {
+            allowNull: false,
+            type: DataTypes.DATE
+        },
+        endDate: {
+            allowNull: true,
+            type: DataTypes.DATE
         }
 
     });

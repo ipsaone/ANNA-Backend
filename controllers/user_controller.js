@@ -14,11 +14,11 @@ const policy = require('../policies/user_policy');
  * @returns {Object} promise
  *
  */
-exports.index = function (req, res, handle) {
-    return db.User.findAll()
-        .then((users) => policy.filterIndex(users, req.session.auth))
-        .then((users) => res.status(200).json(users))
-        .catch((err) => handle(err));
+exports.index = async function (req, res) {
+    const users = await db.User.findAll();
+
+
+    return res.status(200).json(users);
 };
 
 
@@ -33,25 +33,26 @@ exports.index = function (req, res, handle) {
  * @returns {Object} promise
  *
  */
-exports.show = function (req, res, handle) {
+exports.show = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findOne({
+    const user = await db.User.findOne({
         where: {id: userId},
-        include: ['groups']
-    })
-        .then((user) => policy.filterShow(user, req.session.auth))
-        .then((user) => {
-            if (user) {
-                return res.status(200).json(user);
-            }
-            throw res.boom.notFound();
+        include: [
+            'groups',
+            'events'
+        ]
+    });
 
-        })
-        .catch((err) => handle(err));
+    if (!user) {
+        throw res.boom.notFound();
+    }
+
+    return res.status(200).json(user);
+
 };
 
 /**
