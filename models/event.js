@@ -2,7 +2,7 @@
 
 /**
  * @file Defines a model for 'events' table and it creates its associations with the other tables
- * @see {@link module:Event}
+ * @see {@link module:event}
  */
 
 /**
@@ -10,13 +10,14 @@
  */
 
 /**
- * Defines a mapping between model and table 'Event'
+ * Defines a mapping between model and table 'Event'.
+ *
  * @function exports
  *
  * @param {Object} sequelize - The Sequelize object.
- * @param {Object} DataTypes - DataTypes
+ * @param {Object} DataTypes - DataTypes.
  *
- * @returns {Object} Returns event
+ * @returns {Object} Returns event.
  *
  */
 module.exports = (sequelize, DataTypes) => {

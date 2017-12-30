@@ -2,23 +2,23 @@
 
 /**
  * @file Defines a model for 'File' table in database and its associations with the other tables
- * @see {@link module:File}
+ * @see {@link module:file}
  */
 
 /**
  * @module file
  */
 
- /**
-  * Defines a mapping between model and table 'File'
-  * @function exports
-  *
-  * @param {Object} sequelize - The Sequelize object.
-  * @param {Object} DataTypes - DataTypes
-  *
-  * @returns {Object} Returns File
-  *
-  */
+/**
+ * Defines a mapping between model and table 'File'
+ * @function exports
+ *
+ * @param {Object} sequelize - The Sequelize object.
+ * @param {Object} DataTypes - DataTypes
+ *
+ * @returns {Object} Returns File
+ *
+ */
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
@@ -44,19 +44,20 @@ module.exports = (sequelize, DataTypes) => {
      * Associates File to other tables.
      *
      * @function associate
-     * @param {Object} models This var regroups models of all tables
-     * @returns {Promise} The promise to create associations
+     * @param {Object} models - This var regroups models of all tables.
+     * @returns {Promise} The promise to create associations.
      */
     File.associate = function (models) {
 
-      /**
-       * Creates singular association with table 'User'
-       * @function belongsToUser
-       */
+        /**
+         * Creates singular association with table 'User'
+         * @function belongsToUser
+         */
         File.belongsTo(models.User, {
             foreignKey: 'ownerId',
             as: 'owner'
         });
+
         /**
          * Creates singular association with table 'Group'
          * @function belongsToGroup
@@ -65,6 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'groupId',
             as: 'group'
         });
+
         /**
          * Creates plural associations with table 'Log'
          * @function belongsToManyLog

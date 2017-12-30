@@ -19,7 +19,7 @@ const bcrypt = require('bcrypt');
  * @function login
  *
  * @param {obj} req      The user request.
- * @param {obj} res      the response to be sent
+ * @param {obj} res      The response to be sent.
  * @param {obj} handle   - the error handling function
  *
  * @returns {Object} promise
@@ -81,7 +81,7 @@ exports.login = (req, res, handle) => {
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:auth
  * @inner

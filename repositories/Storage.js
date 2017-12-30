@@ -188,10 +188,10 @@ Storage.getDataRights = function () {
  * Add data for a file object.
  *
  * @param {obj} fileChanges - The changes in this data.
- * @param {obj} filePath the path to the file to add data to.
+ * @param {obj} filePath - The path to the file to add data to.
  *
  * @todo finish and test
- * @returns {Object} promise to directory tree
+ * @returns {Object} Promise to directory tree.
  *
  */
 Storage.addFileData = function (fileChanges, filePath) {
@@ -317,7 +317,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  * @param {Object} changes - The file metadata.
  * @param {string} filePath the file path to create.
- * @param {boolean} dir whether the file is a directory or not
+ * @param {boolean} dir Whether the file is a directory or not.
  *
  * @returns {Object} promise to success boolean
  *
@@ -355,7 +355,7 @@ Storage.computeType = function (filePath) {
  *
  * Compute size for a file path.
  *
- * @param {Object} filePath the file to compute size
+ * @param {Object} filePath - the file to compute size
  *
  * @returns {Object} promise to file size
  *

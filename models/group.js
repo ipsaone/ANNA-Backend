@@ -10,13 +10,14 @@
  */
 
 /**
- * Defines a mapping between model and table 'Group'
+ * Defines a mapping between model and table 'Group'.
+ *
  * @function exports
  *
  * @param {Object} sequelize - The Sequelize object.
- * @param {Object} DataTypes - DataTypes
+ * @param {Object} DataTypes - DataTypes.
  *
- * @returns {Object} Returns Group
+ * @returns {Object} Returns Group.
  */
 module.exports = (sequelize, DataTypes) => {
     const Group = sequelize.define('Group', {
@@ -30,14 +31,15 @@ module.exports = (sequelize, DataTypes) => {
      * Associates Group to other tables.
      *
      * @function associate
-     * @param {Object} models This var regroups models of all tables
-     * @returns {Promise} The promise to create associations
+     * @param {Object} models - This var regroups models of all tables.
+     * @returns {Promise} The promise to create associations.
      */
     Group.associate = function (models) {
-      /**
-       * Creates plural associations with table 'User'
-       * @function belongsToManyUser
-       */
+
+        /**
+         * Creates plural associations with table 'User'
+         * @function belongsToManyUser
+         */
         Group.belongsToMany(models.User, {
             foreignKey: 'groupId',
             as: 'users',
@@ -45,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
+
         /**
          * Creates plural associations with table 'Data'
          * @function hasManyData
@@ -55,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
+
         /**
          * Creates plural associations with table 'Mission'
          * @function hasManyMission

@@ -2,12 +2,12 @@
 
 /**
  * @file Defines a model for 'Data' table in database and its associations with the other tables
- * @see {@link module:Data}
+ * @see {@link module:data}
  */
 
- /**
-  * @module data
-  */
+/**
+ * @module data
+ */
 
 /**
  * @constant computeValues
@@ -15,9 +15,10 @@
  */
 
 const computeValues = (data) => {
-  /**
-   * Require data in '../repositories/Storage'
-   */
+
+    /**
+     * Require data in '../repositories/Storage'
+     */
     const Storage = require('../repositories/Storage');
 
     /**
@@ -43,9 +44,9 @@ const computeValues = (data) => {
  * @function exports
  *
  * @param {Object} sequelize - The Sequelize object.
- * @param {Object} DataTypes - DataTypes
+ * @param {Object} DataTypes - DataTypes.
  *
- * @returns {Object} Returns Data
+ * @returns {Object} Returns Data.
  *
  */
 module.exports = (sequelize, DataTypes) => {
@@ -171,8 +172,8 @@ module.exports = (sequelize, DataTypes) => {
      * Associates Data to other tables.
      *
      * @function associate
-     * @param {Object} models This var regroups models of all tables
-     * @returns {Promise} The promise to create associations
+     * @param {Object} models - This var regroups models of all tables.
+     * @returns {Promise} The promise to create associations.
      */
     Data.associate = function (models) {
 
