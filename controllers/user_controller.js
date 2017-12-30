@@ -66,16 +66,19 @@ exports.show = async function (req, res) {
  * @returns {Object} promise
  *
  */
-exports.store = function (req, res, handle) {
-    return db.User.create(req.body)
-        .then((user) => res.status(201).json(user))
-        .catch((err) => {
-            if (err instanceof db.Sequelize.ValidationError) {
-                res.boom.badRequest(err);
-            }
-            throw err;
-        })
-        .catch((err) => handle(err));
+exports.store = async function (req, res) {
+
+    try {
+        const user = await db.User.create(req.body);
+
+
+        return res.status(201).json(user);
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest(err);
+        }
+        throw err;
+    }
 };
 
 /**
@@ -89,17 +92,25 @@ exports.store = function (req, res, handle) {
  * @returns {Object} promise
  *
  */
-exports.update = function (req, res, handle) {
+exports.update = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findOne({where: {id: userId}})
-        .then((record) => record.update(req.body))
-        .then(() => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
-        .catch((err) => handle(err));
+    const record = await db.User.findById(userId);
+
+    try {
+        await record.update(req.body);
+
+        return res.status(204).json({});
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest();
+        }
+
+        throw err;
+    }
 };
 
 /**
@@ -113,17 +124,22 @@ exports.update = function (req, res, handle) {
  * @returns {Object} promise
  *
  */
-exports.delete = function (req, res, handle) {
+exports.delete = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.UserGroup.destroy({where: {userId}})
-        .then(() => db.User.destroy({where: {id: userId}}))
-        .then(() => res.status(204).send())
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
-        .catch((err) => handle(err));
+    try {
+        await db.UserGroup.destroy({where: {userId}});
+        await db.User.destroy({where: {id: userId}});
+
+        return res.status(204).send();
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest();
+        }
+    }
 };
 
 /**

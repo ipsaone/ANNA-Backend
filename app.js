@@ -63,6 +63,7 @@ http.createServer(app).listen(port, host, function () {
 process.on('unhandledRejection', (err) => {
     console.error('unhandled exception : ');
     console.log(err);
+    console.trace();
 
     // eslint-disable-next-line no-process-exit
     process.exit(1);

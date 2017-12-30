@@ -14,7 +14,7 @@ exports.filterStore = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 exports.filterUpdate = async (userId) => {
@@ -24,7 +24,7 @@ exports.filterUpdate = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 exports.filterDelete = async (userId) => {
@@ -34,7 +34,7 @@ exports.filterDelete = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 exports.filterStoreRegistered = async (eventId, targetId, userId) => {
