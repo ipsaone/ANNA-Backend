@@ -4,37 +4,27 @@ const db = require('../models');
 const escape = require('escape-html');
 const policy = require('../policies/storage_policy');
 
-const getChildrenData = (folderId) =>
-    db.File.findAll() // Get all files
+const getChildrenData = async (folderId) => {
+    let files = await db.File.findAll();
 
-        // Check if file exists
-        .then((files) => {
-            console.log('there !');
-            if (files.map((item) => item.id).includes(folderId)) {
-                return files;
-            }
+    if (!files.map((item) => item.id).includes(folderId)) {
+        files = [];
+    }
 
-            return [];
+    let data = files.map(async (thisFile) => {
+        const thisData = await thisFile.getData();
 
-        })
+        thisData.isDir = thisFile.isDir;
 
-    // Get data corresponding to the files
-        .then((files) => files.map((thisFile) => thisFile.getData()
-            .then((data) => {
-                data.isDir = thisFile.isDir;
+        return thisData;
+    });
 
-                return data;
-            })
-            .catch((err) => {
-                console.log(`[badImplementation] No data corresponding to file #${thisFile.id}`, err);
+    data = data.filter((item) => item.dirId === folderId);
+    data = data.filter((item) => item.fileId !== 1);
 
-                return {};
-            })))
-        .then((data) => Promise.all(data))
+    return data;
 
-    // Get each one in the folder, exclude root folder
-        .then((data) => data.filter((item) => item.dirId === folderId))
-        .then((data) => data.filter((item) => item.fileId !== 1));
+};
 
 
 /**
@@ -48,51 +38,52 @@ const getChildrenData = (folderId) =>
  * @returns {Object} promise
  *
  */
-exports.download = (req, res, handle) => {
-    if (typeof req.params.fileId !== 'number') {
-
-        return handle(res.boom.badRequest());
+exports.download = async (req, res) => {
+    if (isNaN(parseInt(req.params.fileId, 10))) {
+        throw res.boom.badRequest();
     }
+    const fileId = parseInt(req.params.fileId, 10);
 
     // Revision parameter, to get an older version
     let rev = 0;
 
-    if (req.query.revision && parseInt(req.query.revision, 10)) {
-        rev = req.query.revision;
+    if (isNaN(parseInt(req.query.revision, 10))) {
+        rev = parseInt(req.query.revision, 10);
     }
 
     // Download parameter, to get file metadata or contents
     const dl = req.query.download && req.query.download === 'true';
 
     // Find the file in database
-    const findFile = db.File.findOne({where: {id: req.params.fileId}});
+    const file = await db.File.findById(fileId);
 
     // Send back the correct response, file or json
-    const data = findFile.then((file) => {
-        if (file) {
-            return file.getData(rev);
-        }
+    if (!file) {
         throw res.boom.notFound();
-
-    });
-
-    if (dl) {
-        return policy.filterDownloadContents()
-            .then(() => data.then(() => data.getPath(true)))
-            .then((path) => res.download(path))
-            .catch((err) => handle(err));
     }
 
-    return policy.filterDownloadMeta()
-        .then(() => data.then((contents) => res.json(contents)))
-        .catch((err) => handle(err));
+    const data = await file.getData(rev);
+
+    if (dl) {
+        const allowed = await policy.filterDownloadContents();
+
+        if (!allowed) {
+            throw res.boom.unauthorized();
+        }
+
+        const path = await data.getPath(true);
 
 
-    /*
-     * Had to comment and distribute the following line
-     * data.catch((err) => handle(err));
-     * to avoir eslint error
-     */
+        return res.download(path);
+    }
+
+    const allowed = policy.filterDownloadMeta();
+
+    if (!allowed) {
+        throw res.boom.unauthorized();
+    }
+
+    return res.json(data);
 };
 
 /**
@@ -108,9 +99,9 @@ exports.download = (req, res, handle) => {
  * @returns {obj} Promise.
  *
  */
-exports.uploadRev = (req, res, handle) => {
+exports.uploadRev = async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
-        return handle(res.boom.badRequest());
+        throw res.boom.badRequest();
     }
     const fileId = parseInt(req.params.fileId, 10);
 
@@ -124,16 +115,17 @@ exports.uploadRev = (req, res, handle) => {
     });
 
     // Find the file in database and add new data
-    return policy.filterUploadRev()
-        .then(() => db.File.findOne({where: {id: fileId}}))
-        .then((file) => {
-            console.log(req.file);
+    const allowed = await policy.filterUploadRev();
 
-            return file.addData(req.body, req.file.path);
-        })
-        .catch((err) => handle(err));
+    if (!allowed) {
+        throw res.boom.unauthorized();
+    }
 
+    const file = await db.File.findById(fileId);
 
+    await file.addData(req.body, req.file.path);
+
+    return res.status(200).json({});
 };
 
 /**
@@ -147,7 +139,7 @@ exports.uploadRev = (req, res, handle) => {
  * @returns {Object} promise
  *
  */
-exports.uploadNew = (req, res, handle) => {
+exports.uploadNew = async (req, res) => {
 
     /*
      * ATTENTION : NO INPUT VALIDATION !
@@ -168,10 +160,15 @@ exports.uploadNew = (req, res, handle) => {
     });
 
     // Create the file and its data
-    return policy.filterUploadNew(req.body.dirId, req.session.auth)
-        .then(() => db.File.createNew(req.body, req.file.path, req.session.auth, false))
-        .then(() => res.status(204).json({}))
-        .catch((err) => handle(err));
+    const allowed = await policy.filterUploadNew(req.body.dirId, req.session.auth);
+
+    if (!allowed) {
+        throw res.boom.unauthorized();
+    }
+
+    await db.File.createNew(req.body, req.file.path, req.session.auth, false);
+
+    return res.status(204).json({});
 };
 
 /**
@@ -185,7 +182,7 @@ exports.uploadNew = (req, res, handle) => {
  * @returns {Object} promise
  *
  */
-exports.list = (req, res, handle) => {
+exports.list = async (req, res) => {
     // Fail if the folder isn't defined
     if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
         throw res.boom.badRequest();
@@ -199,29 +196,28 @@ exports.list = (req, res, handle) => {
         file.scope('folders');
     }
 
-    const childrenData = getChildrenData(folderId);
-    const folderFile = db.File.findOne({
+    const childrenDataP = getChildrenData(folderId); // Start getting children data
+    const folderFile = await db.File.findOne({ // Do things in the middle
         where: {id: folderId},
         rejectOnEmpty: true
     });
-    const folderData = folderFile.then((thisFile) => thisFile.getData());
+    const childrenData = await childrenDataP; // Wait to actually have them
 
-    return policy.filterList(folderId, req.session.auth)
-        .then(() => Promise.all([
-            folderFile,
-            folderData,
-            childrenData
-        ]))
-        .then((results) => {
-            const response = results[1];
+    const authorized = policy.filterList(folderId, req.session.auth);
 
-            response.isDir = results[0].isDir;
-            response.children = results[2];
+    if (!authorized) {
+        throw res.boom.unauthorized();
+    }
 
-            return res.status(200).json(response);
-        })
-        .catch((err) => handle(err));
 
+    const folderData = folderFile.getData();
+
+    const response = folderData;
+
+    response.isDir = folderFile.isDir;
+    response.children = childrenData;
+
+    return res.status(200).json(response);
 };
 
 /**
@@ -235,15 +231,21 @@ exports.list = (req, res, handle) => {
  * @returns {Object} promise
  *
  */
-exports.delete = (req, res, handle) => {
-    if (typeof req.params.fileId !== 'number') {
+exports.delete = async (req, res) => {
+    if (isNaN(parseInt(req.params.fileId, 10))) {
 
         throw res.boom.badRequest();
     }
+    const fileId = parseInt(req.params.fileId, 10);
 
-    return policy.filterDelete()
-        .then(() => db.Data.destroy({where: {fileId: req.params.fileId}}))
-        .then(() => db.File.destroy({where: {id: req.params.fileId}}))
-        .then(() => res.status(204).send())
-        .catch((err) => handle(err));
+    const authorized = policy.filterDelete();
+
+    if (!authorized) {
+        throw res.boom.unauthorized();
+    }
+
+    await db.Data.destroy({where: {fileId}});
+    await db.File.destroy({where: {id: fileId}});
+
+    return res.status(204).send();
 };
