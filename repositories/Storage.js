@@ -2,6 +2,10 @@
 
 'use strict';
 
+/**
+ * @file
+ */
+
 require('dotenv').config();
 
 const fs = require('fs');

@@ -1,13 +1,13 @@
 'use strict';
 
 /**
- * @file
+ * @file Defines a model for 'Data' table in database and its associations with the other tables
  * @see {@link module:Data}
  */
 
-/**
- * @module modelData
- */
+ /**
+  * @module data
+  */
 
 /**
  * @constant computeValues
@@ -15,6 +15,9 @@
  */
 
 const computeValues = (data) => {
+  /**
+   * Require data in '../repositories/Storage'
+   */
     const Storage = require('../repositories/Storage');
 
     /**
@@ -35,10 +38,6 @@ const computeValues = (data) => {
         .then((size) => data.size === size)
         .catch(() => isNaN(data.size));
 };
-
-/**
- * @module Data
- */
 
 /**
  * @function exports
@@ -178,7 +177,7 @@ module.exports = (sequelize, DataTypes) => {
     Data.associate = function (models) {
 
         /**
-         * Creates association with table 'File'
+         * Creates singular association with table 'File'
          * @function belongsToFile
          */
         Data.belongsTo(models.File, {
@@ -189,7 +188,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         /**
-         * Creates association with table 'User'
+         * Creates singular association with table 'User'
          * @function belongsToUser
          */
         Data.belongsTo(models.User, {
@@ -200,7 +199,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         /**
-         * Creates association with table 'Right'
+         * Creates singular association with table 'Right'
          * @function belongsToRight
          */
         Data.belongsTo(models.Right, {
@@ -211,7 +210,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         /**
-         * Creates association with table 'Group'
+         * Createssingular  association with table 'Group'
          * @function belongsToGroup
          */
         Data.belongsTo(models.Group, {
