@@ -37,6 +37,10 @@ router.use('/posts', require('./posts'));
 router.use('/storage', require('./storage'));
 router.use('/users', require('./users'));
 router.use('/logs', require('./logs'));
+router.use('/missions', require('./mission'));
+router.use('/events', require('./events'));
+
+router.all('*', (req, res) => res.boom.notFound());
 
 // Export the router
 module.exports = router;

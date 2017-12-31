@@ -62,6 +62,8 @@
     "test": "node ./test",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "seed": "./node_modules/.bin/sequelize db:seed:all",
+    "init-db": "npm run migrate && npm run seed",
+    "clear-db": "./node_modules/.bin/sequelize db:migrate:undo:all",
     "lint": "./node_modules/.bin/eslint --fix .",
     "lint-nofix": "./node_modules/.bin/eslint .",
     "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",

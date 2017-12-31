@@ -48,6 +48,18 @@ module.exports = {
         isDir: {
             allowNull: false,
             type: Sequelize.BOOLEAN
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        deletedAt: {
+            allowNull: true,
+            type: Sequelize.DATE
         }
     }),
 

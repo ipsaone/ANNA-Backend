@@ -3,12 +3,14 @@
 const express = require('express'); // Web server
 const bodyParser = require('body-parser'); // X-form-data decoder
 const helmet = require('helmet');
-const https = require('https');
+const http = require('http');
 const config = require('./config/config');
 const boom = require('express-boom'); // Exception handling
 const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
+
+require('dotenv').config();
 
 const app = express();
 
@@ -47,16 +49,13 @@ app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'a
 app.use(require('./routes'));
 app.use(require('./middlewares/exception')); // Error handling
 
+const {host, port} = config.app.getConnection();
 
 /*
  * Server config
  */
 
-// Choose the right certificate depending on the environment
-const certificates = config.app.getCertificates();
-const {host, port} = config.app.getConnection();
-
-https.createServer(certificates, app).listen(port, host, function () {
+http.createServer(app).listen(port, host, function () {
     console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
 });
 

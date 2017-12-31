@@ -4,40 +4,47 @@
  * @file Defines a model for 'Data' table in database and its associations with the other tables
  * @see {@link module:data}
  */
+const Storage = require('../repositories/storage');
+const fs = require('fs');
 
 /**
  * @module data
  */
 
+require('dotenv').config();
+const config = require('../config/config');
+const path = require('path');
+
 /**
  * @constant computeValues
  * @implements {getPath}
  */
-
 const computeValues = (data) => {
-
-    /**
-     * Require data in '../repositories/Storage'
-     */
-    const Storage = require('../repositories/Storage');
-
-    /**
-     * @function getPath
-     * @returns {Promise} The promise to get data path or an error
-     */
     data.getPath()
-        .then((path) => Storage.computeType(path))
-        .then((type) => data.type === type)
-        .catch(() => data.type === '');
+        .then((dataPath) => Storage.computeType(path.join('..', config.storage.folder, dataPath)))
+        .then((type) => {
+            data.type = type;
 
-    /**
-     * @function getPath
-     * @returns {Promise} The promise to get data size or an error
-     */
+            return true;
+        })
+        .catch(() => {
+            data.type = '';
+
+            return true;
+        });
+
     data.getPath()
-        .then((path) => Storage.computeSize(path))
-        .then((size) => data.size === size)
-        .catch(() => isNaN(data.size));
+        .then((dataPath) => Storage.computeSize(path.join('..', config.storage.folder, dataPath)))
+        .then((size) => {
+            data.size = size;
+
+            return true;
+        })
+        .catch(() => {
+            data.size = -1;
+
+            return true;
+        });
 };
 
 /**
@@ -160,6 +167,7 @@ module.exports = (sequelize, DataTypes) => {
         children: DataTypes.VIRTUAL
     }, {
         timestamps: true,
+        paranoid: true,
         hooks: {
             beforeCreate: computeValues,
             beforeUpdate: computeValues
@@ -245,11 +253,76 @@ module.exports = (sequelize, DataTypes) => {
     };
 
 
-    const Storage = require('../repositories/Storage');
+    /**
+     *
+     * Get URL for a data object.
+     * Is designed to be bound to the data object.
+     *
+     * @returns {string} Data URL.
+     *
+     */
+    Data.prototype.getUrl = function () {
+        let url = '/storage/files/';
 
-    Object.defineProperty(Data, 'getRights', {get: Storage.getDataRights});
-    Object.defineProperty(Data, 'getPath', {get: Storage.getDataPath});
-    Object.defineProperty(Data, 'getUrl', {get: Storage.getDataUrl});
+        url += this.fileId;
+        url += '?revision=';
+        url += this.id;
+
+        // Force return of a promise
+        return Promise.resolve(url);
+    };
+
+    /**
+     *
+     * Get file system path for a data object.
+     * Is designed to be bound to the data object.
+     *
+     * @todo fix
+     *
+     * @param {bool} full - Get full path or relative path.
+     *
+     * @returns {string} data path
+     *
+     */
+    Data.prototype.getPath = function (full = false) {
+        let dataPath = '';
+
+        if (full) {
+            dataPath += Storage.root;
+        }
+        dataPath += `/${this.fileId}`;
+        dataPath += `/${this.id}`;
+        dataPath += `-${this.name}`;
+
+        console.log(dataPath);
+
+        // Check file exists
+        fs.access(dataPath, fs.constants.F_OK, (err) => {
+            if (err) {
+                return Promise.reject(err);
+            }
+
+
+            // Return file path if it exists
+            return Promise.resolve(dataPath);
+
+        });
+
+    };
+
+    /**
+     *
+     * Get rights for a data object.
+     *
+     * @returns {Object} Promise to rights.
+     *
+     */
+    Data.prototype.getRights = function () {
+        const db = require('../models');
+
+        // Only one right should exist for each data, no check needed
+        return db.Right.findOne({where: {id: this.rightsId}});
+    };
 
     return Data;
 };

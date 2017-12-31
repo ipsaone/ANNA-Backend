@@ -9,6 +9,8 @@
  * @module log
  */
 
+const marked = require('marked');
+
 /**
  * Defines a mapping between model and table 'File'.
  *
@@ -42,6 +44,14 @@ module.exports = (sequelize, DataTypes) => {
         title: {
             allowNull: false,
             type: DataTypes.STRING
+        },
+        markdown: {
+            allowNull: false,
+            type: DataTypes.TEXT,
+            set (val) {
+                this.setDataValue('markdown', val); // Set this field with the raw markdown
+                this.setDataValue('content', marked(val));
+            }
         },
 
         /**

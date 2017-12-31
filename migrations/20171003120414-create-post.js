@@ -53,7 +53,8 @@ module.exports = {
          */
         title: {
             allowNull: false,
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: true
         },
 
         /**

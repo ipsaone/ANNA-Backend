@@ -19,7 +19,7 @@ const http = require('http');
 // eslint-disable-next-line max-params
 module.exports = (err, req, res) => {
 
-    if (err instanceof http.ServerResponse) {
+    if (err instanceof http.ServerResponse || err instanceof http.IncomingMessage) {
 
         /*
          * Probably some construct like :

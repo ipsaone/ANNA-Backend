@@ -29,8 +29,8 @@ const config = {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            logging: false, // Prevent Sequelize from outputting the query on the console
-            // Logging: console.log,
+            // Logging: false, // Prevent Sequelize from outputting the query on the console
+            logging: console.log,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,

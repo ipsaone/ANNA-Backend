@@ -52,7 +52,8 @@ module.exports = {
          */
         name: {
             allowNull: false,
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: true
         },
 
         /**
@@ -119,6 +120,14 @@ module.exports = {
                 onDelete: 'RESTRICT',
                 onUpdate: 'CASCADE'
             }
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
         }
     }),
 
