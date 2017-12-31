@@ -123,7 +123,7 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing log.
  *
- *@function delete
+ *@Function delete.
  *
  * @param {obj} req     - the user request
  * @param {obj} res     - the response to be sent

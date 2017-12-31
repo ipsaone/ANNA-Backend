@@ -355,7 +355,7 @@ Storage.computeType = function (filePath) {
  *
  * Compute size for a file path.
  *
- * @param {Object} filePath - the file to compute size
+ * @param {Object} filePath - The file to compute size.
  *
  * @returns {Object} promise to file size
  *

@@ -43,7 +43,7 @@ exports.index = function (req, res, handle) {
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:group
  * @inner
@@ -79,7 +79,7 @@ exports.show = function (req, res, handle) {
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:group
  * @inner
@@ -114,7 +114,7 @@ exports.store = function (req, res, handle) {
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:group
  * @inner
@@ -149,7 +149,7 @@ exports.update = function (req, res, handle) {
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:group
  * @inner

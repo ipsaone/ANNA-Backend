@@ -8,7 +8,7 @@ const config = require('../config/config');
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     The response to be sent.
- * @param {obj} next    the next middleware function
+ * @param {obj} next    The next middleware function.
  *
  * @returns {obj} call to next
  *

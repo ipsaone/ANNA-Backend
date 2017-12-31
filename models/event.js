@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @file Defines a model for 'events' table and it creates its associations with the other tables
+ * @file Defines a model for 'events' table and creates its associations with the other tables
  * @see {@link module:event}
  */
 
