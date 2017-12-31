@@ -157,7 +157,7 @@ exports.update = function (req, res, handle) {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - the error handling function
+ * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} promise
  *

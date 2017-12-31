@@ -77,7 +77,7 @@ exports.show = function (req, res, handle) {
  * @function store
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
@@ -128,7 +128,7 @@ exports.update = function (req, res, handle) {
  * @function delete
  *
  * @param {obj} req     - the user request
- * @param {obj} res     the response to be sent
+ * @param {obj} res     - the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise

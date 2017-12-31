@@ -7,10 +7,10 @@ const config = require('../config/config');
  * Checks the request to see if the user is logged in.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     The response to be sent.
- * @param {obj} next    The next middleware function.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} next    - The next middleware function.
  *
- * @returns {obj} call to next
+ * @returns {obj} Call to next.
  *
  */
 module.exports = (req, res, next) => {

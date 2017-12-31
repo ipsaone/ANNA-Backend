@@ -21,7 +21,7 @@ const db = require('../models');
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:user
  * @inner
@@ -267,7 +267,7 @@ exports.addGroups = function (req, res, handle) {
  * @function deleteGroups
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
