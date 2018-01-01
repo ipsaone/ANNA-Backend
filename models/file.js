@@ -39,11 +39,12 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Object} promise to directory tree
      *
      */
-    File.prototype.addData = function (fileChanges, filePath, userId) {
+    File.prototype.addData = async function (fileChanges, filePath, userId) {
         const db = require('../models');
 
         fileChanges.fileId = this.id;
         fileChanges.ownerId = userId;
+
 
         const fileBuilder = (changes, builderPath) =>
             new Promise((resolve) => {
@@ -103,41 +104,42 @@ module.exports = (sequelize, DataTypes) => {
                 });
         };
 
-        // Build the rights and file properties
-        return Promise.all([
-            rightsBuilder(fileChanges, filePath),
-            fileBuilder(fileChanges, filePath)
-        ])
 
-            // Create the data and save it
-            .then(() => db.Data.create(fileChanges))
+        const fileBuilderP = fileBuilder(fileChanges, filePath);
+        const rightsBuilderP = rightsBuilder(fileChanges, filePath);
 
-            // Get destination
-            .then((data) => data.getPath())
+        await rightsBuilderP;
+        await fileBuilderP;
 
-            // Move file from temp
-            .then((dest) => {
-                if (fileChanges.fileExists) {
-                    mv(
-                        // Make directory if needed, error if exists
-                        filePath, dest,
-                        {
-                            mkdirp: true,
-                            clobber: false
-                        },
-                        (err) => {
-                            if (err) {
-                                throw err;
-                            }
+        const data = await db.Data.build(fileChanges);
+        const dest = await data.getPath();
 
-                            return true;
+        if (fileChanges.fileExists) {
+            return new Promise((resolve, reject) => {
+                console.log(`Moving from ${filePath} to ${dest}`);
+
+                mv(
+                    // Make directory if needed, error if exists
+                    filePath, dest,
+                    {
+                        mkdirp: true,
+                        clobber: false
+                    },
+                    (err) => {
+                        if (err) {
+                            console.log('Error while moving file : ', err);
+                            throw err;
                         }
-                    );
 
-                }
-
-                return true;
+                        return data.save().then(() => resolve())
+                            .catch((e) => reject(e));
+                    }
+                );
             });
+
+        }
+        throw new Error('Upload failed !');
+
     };
 
 
@@ -171,7 +173,7 @@ module.exports = (sequelize, DataTypes) => {
             // FindAll is limited, so there will always be one result (or none -> undefined)
             .then((data) => {
                 if (data.length === 0) {
-                    throw new Error();
+                    return {};
                 }
 
                 return data[0];

@@ -18,4 +18,9 @@ router.route('/:eventId([0-9]+)/register/:userId([0-9]+)')
     .put(eventController.storeRegistered)
     .delete(eventController.deleteRegistered);
 
+router.route('/:eventId([0-9]+)/register')
+    .put(eventController.storeRegistered)
+    .delete(eventController.deleteRegistered);
+
+
 module.exports = router;

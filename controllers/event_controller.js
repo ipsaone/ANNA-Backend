@@ -196,10 +196,14 @@ exports.storeRegistered = async function (req, res) {
     }
     const eventId = parseInt(req.params.eventId, 10);
 
-    if (isNaN(parseInt(req.params.userId, 10))) {
+    let userId = req.session.auth;
+
+    if (typeof req.params.userId !== 'undefined' && isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
+    } else if (typeof req.params.userId !== 'undefined') {
+        userId = parseInt(req.params.userId, 10);
     }
-    const userId = parseInt(req.params.userId, 10);
+
 
     const allowed = await policy.filterStoreRegistered(eventId, userId, req.session.auth);
 
@@ -220,10 +224,13 @@ exports.deleteRegistered = async function (req, res) {
     }
     const eventId = parseInt(req.params.eventId, 10);
 
-    if (isNaN(parseInt(req.params.userId, 10))) {
+    let userId = req.session.auth;
+
+    if (typeof req.params.userId !== 'undefined' && isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
+    } else if (typeof req.params.userId !== 'undefined') {
+        userId = parseInt(req.params.userId, 10);
     }
-    const userId = parseInt(req.params.userId, 10);
 
 
     const allowed = await policy.filterDeleteRegistered(eventId, userId, req.session.auth);

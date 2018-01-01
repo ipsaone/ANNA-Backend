@@ -75,10 +75,6 @@ exports.logout = (req, res) => {
  *
  */
 exports.check = async (req, res) => {
-    if (typeof req.body.username !== 'number') {
-        throw res.boom.badRequest();
-    }
-
     if (!req.session.auth) {
         throw res.boom.unauthorized();
     }

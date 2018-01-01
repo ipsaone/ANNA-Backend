@@ -210,7 +210,7 @@ exports.list = async (req, res) => {
     }
 
 
-    const folderData = folderFile.getData();
+    const folderData = await folderFile.getData();
 
     const response = folderData;
 

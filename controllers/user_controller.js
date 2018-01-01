@@ -139,6 +139,7 @@ exports.delete = async function (req, res) {
         if (err instanceof db.Sequelize.ValidationError) {
             throw res.boom.badRequest();
         }
+        throw err;
     }
 };
 
