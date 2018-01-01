@@ -12,9 +12,8 @@
 const cors = require('cors'); // Cross Origin Resource Sharing
 
 /**
- *
  * Manages the Cross-Origin Request Security settings
- *
+ * @function exports
  */
 module.exports = cors({
     origin (origin, cb) {

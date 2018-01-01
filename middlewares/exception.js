@@ -16,6 +16,7 @@ const http = require('http');
  * Handles a raised exception
  * If possible, send an error to the client
  * Logs the errors to console
+ * @function exports
  *
  * @param {obj} err     the exception that was raised
  * @param {obj} req     the user request
