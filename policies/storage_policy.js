@@ -1,15 +1,41 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:storage}
+ */
+
+/**
+ * @module storage
+ */
+
 const storage = require('../repositories/storage');
 const db = require('../models');
 
-
+/**
+ * List files in directory.
+ *
+ * @function filterList
+ * @param {INTEGER} folderId - The id of the selected folder.
+ * @param {INTEGER} userId - The id of the user.
+ * @returns {Promise} ?.
+ */
 exports.filterList = (folderId, userId) =>
-    // Check if directory has 'read' permission
+
+    /** Check if directory has 'read' permission */
     storage.fileHasReadPermission(folderId, userId);
 
+/**
+ * Uploads a file in directory.
+ *
+ * @function filterUploadNew
+ * @param {INTEGER} folderId - The id of the selected folder.
+ * @param {INTEGER} userId - The id of the user.
+ * @returns {Promise} ?.
+ */
 exports.filterUploadNew = (folderId, userId) =>
-    // Check if directory has 'write' permission
+
+    /** Check if directory has 'write' permission */
     storage.fileHasWritePermission(folderId, userId);
 
 exports.filterUploadRev = async (fileId, userId) => {

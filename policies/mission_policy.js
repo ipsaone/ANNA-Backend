@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:mission}
+ */
+
+/**
+ * @module mission
+ */
+
 const db = require('../models');
 
 exports.filterIndex = () => Promise.resolve(true);

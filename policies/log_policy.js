@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:log}
+ */
+
+/**
+ * @module log
+ */
+
 const db = require('../models');
 const userPolicy = require('./user_policy');
 const allowed = [

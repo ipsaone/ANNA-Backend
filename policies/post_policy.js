@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:post}
+ */
+
+/**
+ * @module post
+ */
+
 const db = require('../models');
 
 
@@ -102,5 +111,3 @@ exports.filterDelete = (userId) =>
 
             throw new Error('Unauthorized');
         });
-
-

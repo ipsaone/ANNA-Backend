@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:user}
+ */
+
+/**
+ * @module user
+ */
+
 const db = require('../models');
 
 exports.filterIndex = (users, userId) => Promise.resolve(users)

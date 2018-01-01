@@ -4,6 +4,11 @@
 
 /**
  * @file
+ * @see {@link module:storage}
+ */
+
+/**
+ * @module storage
  */
 
 require('dotenv').config();
@@ -21,9 +26,11 @@ class Storage {
 
 /**
  *
- * Get root Storage path. in file system.
+ * Get root Storage path. In file system.
  *
- * @returns {string} storage path
+ * @function getRoot
+ * @returns {string} Storage path.
+ * @static
  *
  */
     static get root () {
@@ -31,11 +38,11 @@ class Storage {
     }
 
     /**
-     *
      * Get base url for storage requests.
      *
+     * @function getBaseurl
      * @returns {string} Storage url.
-     *
+     * @static
      */
     static get baseUrl () {
         let conf = config.env.prod;
@@ -56,6 +63,7 @@ module.exports = Storage;
  * Get URL for a data object.
  * Is designed to be bound to the data object.
  *
+ * @function getDataUrl
  * @returns {string} Data URL.
  *
  */
@@ -71,15 +79,14 @@ Storage.getDataUrl = () => {
 };
 
 /**
- *
  * Get file system path for a data object.
  * Is designed to be bound to the data object.
  *
- * @todo fix
- *
+ * @function getDataPath
  * @param {bool} full - Get full path or relative path.
  *
  * @returns {string} Data path.
+ * @todo fix
  *
  */
 Storage.getDataPath = function (full = false) {
@@ -112,6 +119,7 @@ Storage.getDataPath = function (full = false) {
  *
  * Get diretory tree for a file object.
  *
+ * @function getFileDirTree
  * @returns {Object} Promise to directory tree.
  *
  */
@@ -135,6 +143,8 @@ Storage.getFileDirTree = function () {
 /**
  *
  * Get all data for a file object.
+ *
+ * @function getFileData
  *
  * @param {integer} offset - How old the data is.
  *
@@ -173,6 +183,7 @@ Storage.getFileData = function (offset = 0) {
  *
  * Get rights for a data object.
  *
+ * @function getDataRights
  * @returns {Object} Promise to rights.
  *
  */
@@ -186,6 +197,8 @@ Storage.getDataRights = function () {
 /**
  *
  * Add data for a file object.
+ *
+ * @function addFileData
  *
  * @param {obj} fileChanges - The changes in this data.
  * @param {obj} filePath - The path to the file to add data to.
@@ -317,7 +330,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  * @param {Object} changes - The file metadata.
  * @param {string} filePath the file path to create.
- * @param {boolean} dir Whether the file is a directory or not.
+ * @param {boolean} dir - Whether the file is a directory or not.
  *
  * @returns {Object} promise to success boolean
  *
@@ -332,6 +345,8 @@ Storage.createNewFile = function (changes, filePath, dir = false) {
 /**
  *
  * Compute type for a file path.
+ *
+ * @function computeType
  *
  * @param {Object} filePath - The file to compute size.
  *
@@ -354,6 +369,8 @@ Storage.computeType = function (filePath) {
 /**
  *
  * Compute size for a file path.
+ *
+ * @function computeSize
  *
  * @param {Object} filePath - The file to compute size.
  *

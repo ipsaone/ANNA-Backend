@@ -1,7 +1,15 @@
 'use strict';
 
-const db = require('../models');
+/**
+ * @file
+ * @see {@link module:event}
+ */
 
+/**
+ * @module event
+ */
+
+const db = require('../models');
 
 exports.filterIndex = () => Promise.resolve(true);
 
