@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:cors}
+ */
+
+/**
+ * @module cors
+ */
+
 const cors = require('cors'); // Cross Origin Resource Sharing
 
 /**

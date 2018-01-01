@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:auth}
+ */
+
+/**
+ * @module auth
+ */
+
 const config = require('../config/config');
 
 /**

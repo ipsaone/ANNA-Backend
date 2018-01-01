@@ -73,12 +73,12 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Add data for a file object.
      *
-     * @param {obj} fileChanges the changes in this data.
-     * @param {obj} filePath the path to the file to add data to
-     * @param {obj} userId - the user identifier
+     * @param {obj} fileChanges - The changes in this data.
+     * @param {obj} filePath - The path to the file to add data to.
+     * @param {obj} userId - The user identifier.
      *
      * @todo finish and test
-     * @returns {Object} promise to directory tree
+     * @returns {Object} Promise to directory tree.
      *
      */
     File.prototype.addData = function (fileChanges, filePath, userId) {
@@ -187,9 +187,9 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Get all data for a file object.
      *
-     * @param {integer} offset - how old the data is
+     * @param {integer} offset - How old the data is.
      *
-     * @returns {Object} promise to file data
+     * @returns {Object} Promise to file data.
      *
      */
     File.prototype.getData = function (offset = 0) {

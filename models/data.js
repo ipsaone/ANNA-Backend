@@ -17,7 +17,9 @@ const path = require('path');
 
 /**
  * @constant computeValues
+ * @param {Object} data - Data.
  * @implements {getPath}
+ * @returns {Promise} The promise to retur data path or an error.
  */
 const computeValues = (data) => {
     data.getPath()
@@ -281,7 +283,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      * @param {bool} full - Get full path or relative path.
      *
-     * @returns {string} data path
+     * @returns {string} Data path.
      *
      */
     Data.prototype.getPath = function (full = false) {

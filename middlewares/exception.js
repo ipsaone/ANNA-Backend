@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:exception}
+ */
+
+/**
+ * @module exception
+ */
+
 const http = require('http');
 
 /**
@@ -11,7 +20,6 @@ const http = require('http');
  * @param {obj} err     the exception that was raised
  * @param {obj} req     the user request
  * @param {obj} res     the response to be sent
- *
  *
  */
 
@@ -30,7 +38,9 @@ module.exports = (err, req, res) => {
         return;
     }
 
-    /* CONSOLE OUTPUT */
+    /**
+     * CONSOLE OUTPUT
+     */
     console.log('-------------------------------');
     console.log('Exception received by handler :');
     if (err instanceof Error) {
@@ -41,7 +51,9 @@ module.exports = (err, req, res) => {
     }
     console.log('-------------------------------');
 
-    /* CLIENT OUTPUT */
+    /**
+     * CLIENT OUTPUT
+     */
     if (!res.headersSent && typeof res !== 'undefined' && typeof res.boom !== 'undefined') {
         res.boom.badImplementation(err.message);
     } else {

@@ -243,7 +243,7 @@ exports.getGroups = function (req, res, handle) {
  * @function addGroups
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
@@ -272,7 +272,6 @@ exports.addGroups = function (req, res, handle) {
 };
 
 /**
- *
  * Remove user from groups.
  *
  * @function deleteGroups
@@ -285,7 +284,6 @@ exports.addGroups = function (req, res, handle) {
  *
  * @memberof module:user
  * @inner
- *
  */
 exports.deleteGroups = function (req, res, handle) {
     if (isNaN(parseInt(req.params.userId, 10))) {
