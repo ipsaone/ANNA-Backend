@@ -99,24 +99,13 @@ Storage.fileHasWritePermission = async (fileId, userId) => {
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
-    const [
-        file,
-        user
-    ] = await Promise.all([
-        fileP,
-        userP
-    ]);
+    const file = await fileP;
+    const user = await userP;
 
     const fileDataP = file.getData();
     const userGroupsP = user.getGroups();
-    const [
-        fileData,
-        userGroups
-    ] = await Promise.all([
-        fileDataP,
-        userGroupsP
-    ]);
-
+    const userGroups = await userGroupsP;
+    const fileData = await fileDataP;
 
     const fileRightsP = fileData.getRights();
 
@@ -143,24 +132,13 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
-    const [
-        file,
-        user
-    ] = await Promise.all([
-        fileP,
-        userP
-    ]);
+    const file = await fileP;
+    const user = await userP;
 
     const fileDataP = file.getData();
     const userGroupsP = user.getGroups();
-    const [
-        fileData,
-        userGroups
-    ] = await Promise.all([
-        fileDataP,
-        userGroupsP
-    ]);
-
+    const userGroups = await userGroupsP;
+    const fileData = await fileDataP;
 
     const fileRightsP = fileData.getRights();
 
@@ -169,7 +147,6 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
     const userIsOwner = fileData.ownerId === userId;
 
     const fileRights = await fileRightsP;
-
 
     if (fileRights.allRead === true) {
         return true;

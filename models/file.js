@@ -42,79 +42,77 @@ module.exports = (sequelize, DataTypes) => {
     File.prototype.addData = async function (fileChanges, filePath, userId) {
         const db = require('../models');
 
+        /*
+         * Check group ID input
+         * Other integer inputs are replaced anyway
+         */
+        if (isNaN(parseInt(fileChanges.groupId, 10))) {
+            throw new Error('Group is not an integer');
+        }
+        fileChanges.groupId = parseInt(fileChanges.groupId, 10);
+
+        // Check isDir
+        if (fileChanges.isDir === 'true') {
+            fileChanges.isDir = true;
+        } else {
+            fileChanges.isDir = false;
+        }
+
+        // Replace fileId and otherId, they are not needed
         fileChanges.fileId = this.id;
         fileChanges.ownerId = userId;
 
+        // Find if creating a right is needed
+        let newRight = false;
+        const rights = [
+            'ownerRead',
+            'ownerWrite',
+            'groupRead',
+            'groupWrite',
+            'allRead',
+            'allWrite'
+        ];
 
-        const fileBuilder = (changes, builderPath) =>
-            new Promise((resolve) => {
-                fs.access(builderPath, (err) => {
-                    fileChanges.fileExists = !err;
-                    resolve();
-                });
-            });
-
-        const rightsBuilder = (changes) => {
-            let newRight = false;
-            const rights = [
-                'ownerRead',
-                'ownerWrite',
-                'groupRead',
-                'groupWrite',
-                'allRead',
-                'allWrite'
-            ];
-
-            for (const i of rights) {
-                if (typeof changes[i] !== 'undefined') {
-                    newRight = true;
-                    break;
-                }
+        for (const i of rights) {
+            if (typeof fileChanges[i] !== 'undefined') {
+                newRight = true;
+                break;
             }
+        }
 
+        // Get groups for user and check groupId is legitimate
+        const user = await db.User.findById(fileChanges.ownerId);
+        const groups = await user.getGroups();
 
-            return db.User.findById(userId).then((user) => user.getGroups())
-                // Check user is in group
-                .then((groups) => {
-                    if (isNaN(parseInt(changes.groupId, 10))) {
-                        throw new RangeError('Group is not an integer');
-                    }
-                    changes.groupId = parseInt(changes.groupId, 10);
-                    const groupIds = groups.map((grp) => grp.id);
+        if (!groups.map((grp) => grp.id).includes(fileChanges.groupId)) {
+            throw new Error('Invalid group');
+        }
 
-                    if (!groupIds.includes(changes.groupId)) {
-                        throw new RangeError('Invalid group');
-                    }
+        // Create new right, or find the previous right and keep it
+        let right = {};
 
-                    return true;
-                })
-                // Find right or create it
-                .then(() => {
-                    if (newRight) {
-                        return db.Right.create(changes);
-                    }
+        if (newRight) {
+            right = await db.Right.create(fileChanges);
+        } else {
+            const file = await db.File.findById(fileChanges.fileId);
+            const fileData = await file.getData();
 
-                    return db.File.findOne({where: {id: changes.fileId}}).then((file) => file.getData());
+            right = await fileData.getRights();
+        }
+        fileChanges.rightsId = right.id;
 
-                })
-                .then((right) => {
-                    changes.rightsId = right.id;
+        // Check file upload
+        await new Promise((resolve) => {
+            fs.access(filePath, (err) => {
+                fileChanges.fileExists = !err;
+                resolve();
+            });
+        });
 
-                    return true;
-                });
-        };
-
-
-        const fileBuilderP = fileBuilder(fileChanges, filePath);
-        const rightsBuilderP = rightsBuilder(fileChanges, filePath);
-
-        await rightsBuilderP;
-        await fileBuilderP;
-
-        const data = await db.Data.build(fileChanges);
+        const data = await db.Data.create(fileChanges);
         const dest = await data.getPath();
 
-        if (fileChanges.fileExists) {
+        if (fileChanges.fileExists && !fileChanges.isDir) {
             return new Promise((resolve, reject) => {
                 console.log(`Moving from ${filePath} to ${dest}`);
 
@@ -131,14 +129,17 @@ module.exports = (sequelize, DataTypes) => {
                             throw err;
                         }
 
-                        return data.save().then(() => resolve())
+                        return data.save().then(() => resolve(data))
                             .catch((e) => reject(e));
                     }
                 );
             });
 
+        } else if (!fileChanges.fileExists && fileChanges.isDir) {
+            return Promise.resolve(data);
         }
         throw new Error('Upload failed !');
+
 
     };
 

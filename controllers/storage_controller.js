@@ -146,10 +146,6 @@ exports.uploadNew = async (req, res) => {
      * (Integer checking for dirId/groupId)
      */
 
-    if (!req.file) {
-        throw res.boom.badRequest();
-    }
-
     // Escape req.body strings
     Object.keys(req.body).map(function (key) {
         if (typeof req.body[key] === 'string') {
@@ -166,7 +162,13 @@ exports.uploadNew = async (req, res) => {
         throw res.boom.unauthorized();
     }
 
-    await db.File.createNew(req.body, req.file.path, req.session.auth, false);
+    let filePath = '';
+
+    if (req.file) {
+        filePath = req.file.path;
+    }
+
+    await db.File.createNew(req.body, filePath, req.session.auth, false);
 
     return res.status(204).json({});
 };

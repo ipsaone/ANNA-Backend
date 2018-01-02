@@ -241,7 +241,7 @@ module.exports = (sequelize, DataTypes) => {
         const db = require('../models');
 
         // Only one right should exist for each data, no check needed
-        return db.Right.findOne({where: {id: this.rightsId}});
+        return db.Right.findById(this.rightsId);
     };
 
     return Data;

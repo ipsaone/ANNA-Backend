@@ -47,7 +47,7 @@ app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'a
  * Routing and error catching
  */
 app.use(require('./routes'));
-// App.use(require('express-async-handler'));
+app.use(require('express-async-handler'));
 app.use(require('./middlewares/exception')); // Error handling
 
 const {host, port} = config.app.getConnection();
