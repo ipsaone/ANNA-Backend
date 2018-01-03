@@ -5,7 +5,7 @@ const db = require('../models');
 
 exports.filterIndex = () => Promise.resolve(true);
 
-exports.filterShow = () => Promise.resolve(true);
+exports.filterShow = (event) => Promise.resolve(event);
 
 exports.filterStore = async (userId) => {
     const user = await db.User.findById(userId);

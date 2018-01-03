@@ -54,6 +54,12 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
+        Mission.hasMany(models.Task, {
+            as: 'tasks',
+            foreignKey: 'missionId',
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
     };
 
     return Mission;

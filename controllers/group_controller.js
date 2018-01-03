@@ -6,7 +6,7 @@ const db = require('../models');
  *
  * Get all existing groups.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - the user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *

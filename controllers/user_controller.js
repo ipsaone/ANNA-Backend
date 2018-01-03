@@ -7,7 +7,7 @@ const policy = require('../policies/user_policy');
  *
  * Get all existing users.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
@@ -26,9 +26,9 @@ exports.index = async function (req, res) {
  *
  * Get a single user.
  *
- * @param {obj} req     - the user request
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} promise
  *
@@ -59,7 +59,7 @@ exports.show = async function (req, res) {
  *
  * Create a store a new user.
  *
- * @param {obj} req     - the user request.
+ * @param {obj} req     - The user request.
  * @param {obj} res     - the response to be sent
  * @param {obj} handle  - the error handling function
  *
@@ -86,7 +86,7 @@ exports.store = async function (req, res) {
  * Updates an existing user.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     the response to be sent.
+ * @param {obj} res     The response to be sent.
  * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
@@ -117,7 +117,7 @@ exports.update = async function (req, res) {
  *
  * Deletes an existing user.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
@@ -183,9 +183,9 @@ exports.posts = function (req, res, handle) {
  *
  * Get all user's groups.
  *
- * @param {obj} req     the user request.
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     the response to be sent.
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -214,30 +214,30 @@ exports.getGroups = function (req, res, handle) {
  *
  * Add user to group.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
  *
  */
-exports.addGroups = function (req, res, handle) {
+exports.addGroups = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return policy.filterAddGroups(req.body.groupsId, req.session.auth)
-        .then((groups) => db.User.findById(userId)
-            .then((user) => {
-                if (user) {
-                    return user.addGroups(groups);
-                }
-                throw res.boom.badRequest();
+    const groups = await policy.filterAddGroups(req.body.groupsId, req.session.auth);
+    const user = await db.User.findById(userId);
 
-            })
-            .then(() => res.status(204).send()))
-        .catch((err) => handle(err));
+    if (!user) {
+        throw res.boom.badRequest();
+    }
+
+
+    await user.addGroups(groups);
+
+    return res.status(204).send();
 };
 
 /**
@@ -251,15 +251,16 @@ exports.addGroups = function (req, res, handle) {
  * @returns {Object} promise
  *
  */
-exports.deleteGroups = function (req, res, handle) {
+exports.deleteGroups = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth)
-        .then((groups) => db.User.findById(userId)
-            .then((user) => user.removeGroups(groups))
-            .then(() => res.status(204).send()))
-        .catch((err) => handle(err));
+    const groups = await policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth);
+    const user = await db.User.findById(userId);
+
+    await user.removeGroups(groups);
+
+    return res.status(204).send();
 };

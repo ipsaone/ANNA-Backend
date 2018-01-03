@@ -7,9 +7,9 @@ const bcrypt = require('bcrypt');
  *
  * Logs in a user.
  *
- * @param {obj} req      the user request
+ * @param {obj} req      the user request.
  * @param {obj} res      the response to be sent
- * @param {obj} handle   the error handling function
+ * @param {obj} handle   - the error handling function
  *
  * @returns {Object} promise
  *
@@ -88,7 +88,7 @@ exports.check = async (req, res) => {
         throw res.boom.notFound();
     }
 
-    return res.json({
+    return res.status(200).json({
         id: user.id,
         username: user.username,
         groups: user.groups

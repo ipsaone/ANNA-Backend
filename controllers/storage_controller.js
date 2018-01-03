@@ -11,13 +11,14 @@ const getChildrenData = async (folderId) => {
         files = [];
     }
 
-    let data = files.map(async (thisFile) => {
+    let data = await Promise.all(files.map(async (thisFile) => {
         const thisData = await thisFile.getData();
 
         thisData.isDir = thisFile.isDir;
 
         return thisData;
-    });
+    }));
+
 
     data = data.filter((item) => item.dirId === folderId);
     data = data.filter((item) => item.fileId !== 1);
@@ -32,10 +33,10 @@ const getChildrenData = async (folderId) => {
  * Download a file or its metadata.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     - the response to be sent.
- * @param {obj} handle  - the error handling function
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.download = async (req, res) => {

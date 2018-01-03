@@ -119,3 +119,51 @@ exports.delete = function (req, res, handle) {
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
+
+
+exports.showTask = async function (req, res) {
+    if (isNaN(parseInt(req.params.missionId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const missionId = parseInt(req.params.missionId, 10);
+
+    const mission = await db.Mission.findById(missionId);
+
+    await res.status(200).json(mission);
+};
+
+exports.updateTask = async function (req, res) {
+    if (isNaN(parseInt(req.params.missionId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const missionId = parseInt(req.params.missionId, 10);
+
+
+    const mission = await db.Mission.findById(missionId);
+
+    await res.status(200).json(mission);
+};
+
+exports.storeTask = async function (req, res) {
+    if (isNaN(parseInt(req.params.missionId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const missionId = parseInt(req.params.missionId, 10);
+
+
+    const mission = await db.Mission.findById(missionId);
+
+    await res.status(200).json(mission);
+};
+
+exports.deleteTask = async function (req, res) {
+    if (isNaN(parseInt(req.params.missionId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const missionId = parseInt(req.params.missionId, 10);
+
+
+    const mission = await db.Mission.findById(missionId);
+
+    await res.status(200).json(mission);
+};

@@ -14,7 +14,7 @@ const magic = new Magic(mmm.MAGIC_MIME_TYPE);
  *
  * Compute type for a file path.
  *
- * @param {object} filePath the file to compute size
+ * @param {Object} filePath the file to compute size
  *
  * @returns {object} promise to file type
  *
@@ -36,7 +36,7 @@ const computeType = function (filePath) {
 
 /**
  *
- * Compute size for a file path
+ * Compute size for a file path.
  *
  * @param {Object} filePath the file to compute size
  *

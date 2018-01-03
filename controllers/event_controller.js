@@ -2,16 +2,17 @@
 
 const db = require('../models');
 const policy = require('../policies/event_policy.js');
+const userPolicy = require('../policies/user_policy.js');
 
 /**
  *
  * Gets all events.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.index = async function (req, res) {
@@ -44,7 +45,9 @@ exports.show = async function (req, res) {
     }
     const eventId = parseInt(req.params.eventId, 10);
 
-    const event = await db.Event.findById(eventId);
+    let event = await db.Event.findById(eventId, {include: ['registered']});
+
+    event = event.toJSON();
 
     if (!event) {
         throw res.boom.notFound();
@@ -56,6 +59,19 @@ exports.show = async function (req, res) {
     if (!filtered) {
         throw res.boom.unauthorized();
     }
+
+    const promises = [];
+
+    for (let i = 0; i < event.registered.length; i++) {
+        promises.push(userPolicy.filterShow(event.registered[i], req.session.auth).then((reg) => {
+            event.registered[i] = reg;
+
+            return true;
+        }));
+    }
+
+    await Promise.all(promises);
+
 
     return res.status(200).json(filtered);
 };
@@ -109,11 +125,11 @@ exports.store = async function (req, res) {
  *
  * Updates an existing event.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.update = async function (req, res) {
@@ -153,11 +169,11 @@ exports.update = async function (req, res) {
  *
  * Deletes an event.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.delete = async function (req, res) {
@@ -212,6 +228,10 @@ exports.storeRegistered = async function (req, res) {
     }
 
     const event = await db.Event.findById(eventId);
+
+    if (!event) {
+        throw res.boom.notFound();
+    }
 
     await event.addRegistered(userId);
 

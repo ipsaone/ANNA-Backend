@@ -45,6 +45,14 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'CASCADE'
         });
 
+        User.belongsToMany(models.Mission, {
+            as: 'ParticipatingMissions',
+            through: models.UserMission,
+            foreignKey: 'userId',
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
+
         User.belongsToMany(models.Event, {
             as: 'events',
             through: models.EventUser,
@@ -78,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'userId'
         });
         User.hasMany(models.Mission, {
-            as: 'missions',
+            as: 'LeaderMissions',
             foreignKey: 'leaderId',
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'

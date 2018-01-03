@@ -16,9 +16,9 @@ class Storage {
 
 /**
  *
- * Get root Storage path. in file system.
+ * Get root Storage path. In file system.
  *
- * @returns {string} storage path
+ * @returns {string} Storage path.
  *
  */
     static get root () {
@@ -51,9 +51,9 @@ module.exports = Storage;
  *
  * Compute type for a file path.
  *
- * @param {object} filePath the file to compute size
+ * @param {Object} filePath the file to compute size
  *
- * @returns {object} promise to file type
+ * @returns {Object} promise to file type
  *
  */
 Storage.computeType = function (filePath) {
@@ -73,7 +73,7 @@ Storage.computeType = function (filePath) {
 
 /**
  *
- * Compute size for a file path
+ * Compute size for a file path.
  *
  * @param {Object} filePath the file to compute size
  *

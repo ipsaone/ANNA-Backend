@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Add data for a file object.
      *
-     * @param {obj} fileChanges the changes in this data.
+     * @param {obj} fileChanges The changes in this data.
      * @param {obj} filePath the path to the file to add data to
      * @param {obj} userId - the user identifier
      *
@@ -109,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
             });
         });
 
-        const data = await db.Data.create(fileChanges);
+        const data = await db.Data.build(fileChanges);
         const dest = await data.getPath();
 
         if (fileChanges.fileExists && !fileChanges.isDir) {
@@ -188,21 +188,22 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Object} Promise to directory tree.
      *
      */
-    File.prototype.getDirTree = function () {
+    File.prototype.getDirTree = async function () {
         const db = require('../models');
 
-        return this.getData()
-            .then((data) => {
-                // Get parents' directory tree
-                let fileDirTree = Promise.resolve([]);
+        const data = await this.getData();
 
-                if (data.dirId !== 1) {
-                    fileDirTree = db.File.findById(data.dirId).then((file) => file.getDirTree());
-                }
+        // Get parents' directory tree
+        let fileDirTree = [];
 
-                // Add own directory name
-                return fileDirTree.then((tree) => tree.concat(data.name));
-            });
+        if (data.dirId !== 1) {
+            const file = await db.File.findById(data.dirId);
+
+            fileDirTree = await file.getDirTree();
+        }
+
+        // Add own directory name
+        return fileDirTree.concat(data.name);
     };
 
 

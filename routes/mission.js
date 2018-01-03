@@ -14,4 +14,10 @@ router.route('/:missionId([0-9]+)')
     .put(missionController.update)
     .delete(missionController.delete);
 
+router.route('/:missionId([0-9]+)/tasks/:taskId([0-9]+)')
+    .get(missionController.showTask)
+    .put(missionController.updateTask)
+    .post(missionController.storeTask)
+    .delete(missionController.deleteTask);
+
 module.exports = router;
