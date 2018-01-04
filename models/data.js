@@ -220,7 +220,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     Data.prototype.getPath = async function () {
         let dataPath = '';
-
         const count = await Data.count({where: {fileId: this.fileId}});
 
         dataPath += `/${this.fileId}`;

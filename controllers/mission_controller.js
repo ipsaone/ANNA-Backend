@@ -7,11 +7,11 @@ const policy = require('../policies/mission_policy');
  *
  * Get all existing missions.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.index = (req, res, handle) =>
@@ -24,11 +24,11 @@ exports.index = (req, res, handle) =>
  *
  * Get a single mission.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.show = function (req, res, handle) {
@@ -53,7 +53,7 @@ exports.show = function (req, res, handle) {
  *
  * Create and store a new mission.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
@@ -62,7 +62,7 @@ exports.show = function (req, res, handle) {
  */
 exports.store = function (req, res, handle) {
     return policy.filterStore(req.session.auth)
-        .then(() => db.Missions.create(req.body))
+        .then(() => db.Mission.create(req.body))
         .then((mission) => res.status(201).json(mission))
         .catch((err) => {
             if (err instanceof db.Sequelize.ValidationError) {
@@ -77,11 +77,11 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing mission.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.update = function (req, res, handle) {
@@ -102,7 +102,7 @@ exports.update = function (req, res, handle) {
  * Delete an existing mission.
  *
  * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
+ * @param {obj} res     - the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
@@ -122,33 +122,69 @@ exports.delete = function (req, res, handle) {
 
 
 exports.showTask = async function (req, res) {
+    // Check mission ID
     if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
 
-    const mission = await db.Mission.findById(missionId);
+    // Check task ID
+    if (isNaN(parseInt(req.params.taskId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const taskId = parseInt(req.params.taskId, 10);
 
-    await res.status(200).json(mission);
+    // Check mission and task are associated
+    const task = await db.Task.findById(taskId);
+
+    if (!task.missionId === missionId) {
+        throw res.boom.badRequest();
+    }
+
+    // Check user has permissions to see the task
+    const allowed = policy.filterShowTask(req.session.auth);
+
+    if (!allowed) {
+        throw res.boom.unauthorized();
+    }
+
+    // Delete the task and answer accordingly
+    await res.status(204).json(task);
 };
 
+// --- TODO ---
 exports.updateTask = async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
 
+    /*
+     * If (isNaN(parseInt(req.params.taskId, 10))) {
+     * throw res.boom.badRequest();
+     * }
+     * const taskId = parseInt(req.params.taskId, 10);
+     */
+
 
     const mission = await db.Mission.findById(missionId);
 
     await res.status(200).json(mission);
 };
 
+// --- TODO ---
 exports.storeTask = async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
+
+    /*
+     * If (isNaN(parseInt(req.params.taskId, 10))) {
+     * throw res.boom.badRequest();
+     * }
+     * const taskId = parseInt(req.params.taskId, 10);
+     */
 
 
     const mission = await db.Mission.findById(missionId);
@@ -157,13 +193,36 @@ exports.storeTask = async function (req, res) {
 };
 
 exports.deleteTask = async function (req, res) {
+
+    // Check mission ID
     if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
 
+    // Check task ID
+    if (isNaN(parseInt(req.params.taskId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const taskId = parseInt(req.params.taskId, 10);
 
-    const mission = await db.Mission.findById(missionId);
+    // Check mission and task are associated
+    const task = await db.Task.findById(taskId);
 
-    await res.status(200).json(mission);
+    if (!task.missionId === missionId) {
+        throw res.boom.badRequest();
+    }
+
+    // Check user has permissions to delete the task
+    const allowed = policy.filterDeleteTask(req.session.auth);
+
+    if (!allowed) {
+        throw res.boom.unauthorized();
+    }
+
+    // Delete the task and answer accordingly
+    await task.destroy();
+    await res.status(204).json({});
+
+
 };

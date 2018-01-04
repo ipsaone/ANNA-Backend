@@ -18,6 +18,7 @@
     "escape-html": "^1.0.3",
     "express": "^4.15.2",
     "express-async-await": "^1.1.0",
+    "express-async-errors": "^2.1.0",
     "express-async-handler": "^1.0.0",
     "express-boom": "^2.0.0",
     "express-rate-limit": "^2.11.0",

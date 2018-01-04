@@ -1,7 +1,5 @@
 'use strict';
 
-const http = require('http');
-
 /**
  *
  * Handles a raised exception
@@ -17,17 +15,10 @@ const http = require('http');
 
 // No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
-module.exports = (err, req, res) => {
+module.exports = (err, req, res, next) => {
 
-    if (err instanceof http.ServerResponse || err instanceof http.IncomingMessage) {
-
-        /*
-         * Probably some construct like :
-         * throw res.boom.something()
-         * Console output should already be managed by Morgan
-         */
-
-        return;
+    if (res.headersSent) {
+        return next(err);
     }
 
     /* CONSOLE OUTPUT */
@@ -46,6 +37,8 @@ module.exports = (err, req, res) => {
         res.boom.badImplementation(err.message);
     } else {
         console.log('Couldn\'t send error to client');
+
+        return next();
     }
 
 

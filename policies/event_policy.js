@@ -50,6 +50,8 @@ exports.filterStoreRegistered = async (eventId, targetId, userId) => {
         return true;
     }
 
+    console.log('False !!!!!');
+
     return false;
 };
 

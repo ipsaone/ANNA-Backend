@@ -9,7 +9,8 @@ const boom = require('express-boom'); // Exception handling
 const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
-const expressaa = require('express-async-await');
+
+require('express-async-errors');
 
 require('dotenv').config();
 
@@ -18,12 +19,13 @@ require('dotenv').config();
  * Server config
  */
 
-const app = expressaa(express());
+const app = express();
 const {host, port} = config.app.getConnection();
 
 http.createServer(app).listen(port, host, function () {
     console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
 });
+
 module.exports = app;
 
 

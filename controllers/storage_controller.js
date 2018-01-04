@@ -41,7 +41,7 @@ const getChildrenData = async (folderId) => {
  */
 exports.download = async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
     const fileId = parseInt(req.params.fileId, 10);
 
@@ -60,7 +60,7 @@ exports.download = async (req, res) => {
 
     // Send back the correct response, file or json
     if (!file) {
-        throw res.boom.notFound();
+        return res.boom.notFound();
     }
 
     const data = await file.getData(rev);
@@ -69,7 +69,7 @@ exports.download = async (req, res) => {
         const allowed = await policy.filterDownloadContents();
 
         if (!allowed) {
-            throw res.boom.unauthorized();
+            return res.boom.unauthorized();
         }
 
         const path = await data.getPath(true);
@@ -78,7 +78,7 @@ exports.download = async (req, res) => {
         return res.download(path);
     }
 
-    const allowed = policy.filterDownloadMeta();
+    const allowed = await policy.filterDownloadMeta();
 
     if (!allowed) {
         throw res.boom.unauthorized();
@@ -148,7 +148,7 @@ exports.uploadNew = async (req, res) => {
      */
 
     // Escape req.body strings
-    Object.keys(req.body).map(function (key) {
+    req.body = Object.keys(req.body).map(function (key) {
         if (typeof req.body[key] === 'string') {
             req.body[key] = escape(req.body[key]);
         }

@@ -41,7 +41,7 @@ exports.index = async function (req, res) {
  */
 exports.show = async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
     const eventId = parseInt(req.params.eventId, 10);
 
@@ -50,14 +50,14 @@ exports.show = async function (req, res) {
     event = event.toJSON();
 
     if (!event) {
-        throw res.boom.notFound();
+        return res.boom.notFound();
     }
 
 
     const filtered = await policy.filterShow(event, req.session.id);
 
     if (!filtered) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized();
     }
 
     const promises = [];
@@ -89,7 +89,7 @@ exports.show = async function (req, res) {
  */
 exports.store = async function (req, res) {
     if (typeof req.body.name !== 'string') {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
 
     /*
@@ -102,7 +102,7 @@ exports.store = async function (req, res) {
     const authorized = policy.filterStore(req.session.auth);
 
     if (!authorized) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized();
     }
     try {
         const event = await db.Event.create(req.body);
@@ -111,11 +111,11 @@ exports.store = async function (req, res) {
 
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest();
+            return res.boom.badRequest();
         }
 
         // Send to standard error handler
-        throw err;
+        return err;
     }
 
 
@@ -134,7 +134,7 @@ exports.store = async function (req, res) {
  */
 exports.update = async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
     const eventId = parseInt(req.params.eventId, 10);
 
@@ -147,7 +147,7 @@ exports.update = async function (req, res) {
     const authorized = await policy.filterUpdate(req.session.auth);
 
     if (!authorized) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized();
     }
 
     try {
@@ -157,9 +157,10 @@ exports.update = async function (req, res) {
 
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest(err);
+            return res.boom.badRequest(err);
         }
-        throw err;
+
+        return err;
     }
 
 
@@ -208,15 +209,13 @@ exports.delete = async function (req, res) {
 
 exports.storeRegistered = async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
     const eventId = parseInt(req.params.eventId, 10);
 
     let userId = req.session.auth;
 
-    if (typeof req.params.userId !== 'undefined' && isNaN(parseInt(req.params.userId, 10))) {
-        throw res.boom.badRequest();
-    } else if (typeof req.params.userId !== 'undefined') {
+    if (!isNaN(parseInt(req.params.userId, 10))) {
         userId = parseInt(req.params.userId, 10);
     }
 
@@ -224,13 +223,19 @@ exports.storeRegistered = async function (req, res) {
     const allowed = await policy.filterStoreRegistered(eventId, userId, req.session.auth);
 
     if (!allowed) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized();
     }
 
     const event = await db.Event.findById(eventId);
 
     if (!event) {
-        throw res.boom.notFound();
+        return res.boom.notFound('Event not found');
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (!user) {
+        return res.boom.notFound('User not found');
     }
 
     await event.addRegistered(userId);
@@ -240,14 +245,14 @@ exports.storeRegistered = async function (req, res) {
 
 exports.deleteRegistered = async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
     const eventId = parseInt(req.params.eventId, 10);
 
     let userId = req.session.auth;
 
     if (typeof req.params.userId !== 'undefined' && isNaN(parseInt(req.params.userId, 10))) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     } else if (typeof req.params.userId !== 'undefined') {
         userId = parseInt(req.params.userId, 10);
     }
@@ -256,7 +261,7 @@ exports.deleteRegistered = async function (req, res) {
     const allowed = await policy.filterDeleteRegistered(eventId, userId, req.session.auth);
 
     if (!allowed) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized();
     }
 
     const event = await db.Event.findById(eventId);
