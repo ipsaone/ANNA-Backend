@@ -133,7 +133,7 @@ exports.uploadRev = async (req, res) => {
  *
  * Upload a new file.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
@@ -148,7 +148,7 @@ exports.uploadNew = async (req, res) => {
      */
 
     // Escape req.body strings
-    req.body = Object.keys(req.body).map(function (key) {
+    Object.keys(req.body).map((key) => {
         if (typeof req.body[key] === 'string') {
             req.body[key] = escape(req.body[key]);
         }
@@ -169,7 +169,7 @@ exports.uploadNew = async (req, res) => {
         filePath = req.file.path;
     }
 
-    await db.File.createNew(req.body, filePath, req.session.auth, false);
+    await db.File.createNew(req.body, filePath, req.session.auth);
 
     return res.status(204).json({});
 };
@@ -227,8 +227,8 @@ exports.list = async (req, res) => {
  *
  * Deletes a file or folder.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
