@@ -102,6 +102,10 @@ Storage.fileHasWritePermission = async (fileId, userId) => {
     const file = await fileP;
     const user = await userP;
 
+    if (!file || !user) {
+        return false;
+    }
+
     const fileDataP = file.getData();
     const userGroupsP = user.getGroups();
     const userGroups = await userGroupsP;
@@ -134,6 +138,10 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
     const userP = db.User.findById(userId);
     const file = await fileP;
     const user = await userP;
+
+    if (!file || !user) {
+        return false;
+    }
 
     const fileDataP = file.getData();
     const userGroupsP = user.getGroups();

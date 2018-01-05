@@ -7,8 +7,8 @@ const bcrypt = require('bcrypt');
  *
  * Logs in a user.
  *
- * @param {obj} req      the user request.
- * @param {obj} res      the response to be sent
+ * @param {obj} req      The user request.
+ * @param {obj} res      the response to be sent.
  * @param {obj} handle   - the error handling function
  *
  * @returns {Object} promise
@@ -59,7 +59,8 @@ exports.login = async (req, res) => {
  */
 exports.logout = (req, res) => {
     req.session.auth = null;
-    res.status(200).json({});
+
+    return res.status(200).json({});
 };
 
 

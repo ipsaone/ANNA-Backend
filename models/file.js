@@ -211,20 +211,30 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Create a new file object.
      *
-     * @param {Object} changes the file metadata.
+     * @param {Object} changes The file metadata.
      * @param {string} filePath the file path to create
      * @param {integer} userId the user id
-     * @param {boolean} dir whether the file is a directory or not
+     * @param {boolean} dir - whether the file is a directory or not
      * @todo max-params
      *
      * @returns {Object} promise to success boolean
      *
      */
-    // eslint-disable-next-line max-params
-    File.createNew = function (changes, filePath, userId, dir = false) {
+    File.createNew = function (changes, filePath, userId) {
         const db = require('../models');
 
-        return db.File.create({isDir: dir})
+        console.log(changes);
+
+        let isDir = false;
+
+        if (typeof changes.isDir !== 'undefined' && (changes.isDir === 'true' || changes.isDir === true)) {
+            isDir = true;
+        }
+
+        console.log(isDir);
+
+
+        return db.File.create({isDir})
             .then((file) => file.addData(changes, filePath, userId));
     };
 
