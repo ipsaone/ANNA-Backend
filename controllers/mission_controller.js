@@ -78,6 +78,11 @@ exports.store = async (req, res) => {
         return res.boom.unauthorized();
     }
 
+
+    if (typeof req.body.leaderId === 'undefined') {
+        req.body.leaderId = req.session.auth;
+    }
+
     try {
         const mission = await db.Mission.create(req.body);
 
