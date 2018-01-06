@@ -24,7 +24,11 @@ exports.login = async (req, res) => {
 
     const user = await db.User.findOne({
         where: {'username': req.body.username},
-        include: ['groups']
+        include: [
+            'groups',
+            'events',
+            'participatingMissions'
+        ]
     });
 
     if (!user) {
@@ -40,11 +44,7 @@ exports.login = async (req, res) => {
     req.session.auth = user.id;
     req.session.save();
 
-    return res.status(200).json({
-        id: user.id,
-        username: user.username,
-        groups: user.groups
-    });
+    return res.status(200).json(user);
 };
 
 
@@ -84,18 +84,18 @@ exports.check = async (req, res) => {
 
     const user = await db.User.findOne({
         where: {id: req.session.auth},
-        include: ['groups']
+        include: [
+            'groups',
+            'events',
+            'participatingMissions'
+        ]
     });
 
     if (!user) {
         throw res.boom.notFound();
     }
 
-    return res.status(200).json({
-        id: user.id,
-        username: user.username,
-        groups: user.groups
-    });
+    return res.status(200).json(user);
 
 
 };
