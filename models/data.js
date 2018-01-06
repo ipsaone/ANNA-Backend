@@ -133,7 +133,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
 
-        isDir: DataTypes.VIRTUAL,
+        isDir: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN
+        },
         children: DataTypes.VIRTUAL
     }, {
         timestamps: true,

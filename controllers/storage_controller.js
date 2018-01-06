@@ -81,7 +81,7 @@ exports.download = async (req, res) => {
         const path = await data.getPath(true);
 
 
-        return res.download(path);
+        return res.download(path, data.name);
     }
 
     const allowed = await policy.filterDownloadMeta(fileId, req.session.auth);
