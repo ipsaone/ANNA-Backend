@@ -12,18 +12,17 @@ exports.filterUploadNew = async (folderId, userId) => {
     // Check if directory has 'write' permission
     const canWriteP = storage.fileHasWritePermission(folderId, userId);
     const folder = await db.File.findById(folderId);
-    const data = await folder.getData();
     const canWrite = await canWriteP;
 
-    if (!data) {
-        console.log(`no data for file #${folderId}`);
+    if (!folder) {
+        console.log(`no file #${folderId}`);
     }
 
-    console.log(data);
+    console.log(folder);
     console.log(`canWrite : ${canWrite}`);
-    console.log(`isDir : ${data.isDir}`);
+    console.log(`isDir : ${folder.isDir}`);
 
-    return await canWriteP && data.isDir;
+    return await canWriteP && folder.isDir;
 
 };
 
