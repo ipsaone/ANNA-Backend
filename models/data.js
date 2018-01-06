@@ -215,7 +215,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      * @param {bool} full - Get full path or relative path.
      *
-     * @returns {string} data path
+     * @returns {string} Data path.
      *
      */
     Data.prototype.getPath = async function () {
@@ -255,12 +255,14 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Object} Promise to rights.
      *
      */
-    Data.prototype.getRights = function () {
-        const db = require('../models');
-
-        // Only one right should exist for each data, no check needed
-        return db.Right.findById(this.rightsId);
-    };
+    /*
+     * Data.prototype.getRights = function () {
+     * const db = require('../models');
+     *
+     * // Only one right should exist for each data, no check needed
+     * return db.Right.findById(this.rightsId);
+     * };
+     */
 
     return Data;
 };

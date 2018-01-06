@@ -159,6 +159,8 @@ module.exports = (sequelize, DataTypes) => {
     File.prototype.getData = function (offset = 0) {
         const db = require('../models');
 
+        console.log(`Finding data with offset ${offset}`);
+
         return db.Data
 
         // Like findOne, but with order + offset

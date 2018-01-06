@@ -75,7 +75,7 @@ Storage.computeType = function (filePath) {
  *
  * Compute size for a file path.
  *
- * @param {Object} filePath the file to compute size
+ * @param {Object} filePath - the file to compute size
  *
  * @returns {Object} promise to file size
  *
@@ -140,6 +140,8 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
     const user = await userP;
 
     if (!file || !user) {
+        console.log(`Couldn't find file or user for file id ${fileId} and user id ${userId}`);
+
         return false;
     }
 
@@ -147,6 +149,12 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
     const userGroupsP = user.getGroups();
     const userGroups = await userGroupsP;
     const fileData = await fileDataP;
+
+    if (!fileData || !userGroups) {
+        console.log(`No fileData or userGroups for id ${fileId}`);
+
+        return false;
+    }
 
     const fileRightsP = fileData.getRights();
 
@@ -156,6 +164,12 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
 
     const fileRights = await fileRightsP;
 
+    if (!fileRights) {
+        console.log('Couldn\'t find associated rights !');
+
+        return false;
+    }
+
     if (fileRights.allRead === true) {
         return true;
     } else if (userIsInGroup === true && fileRights.groupRead === true) {
@@ -163,6 +177,8 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
     } else if (userIsOwner === true && fileRights.ownerRead === true) {
         return true;
     }
+
+    console.log('unauthorized !');
 
     return false;
 };

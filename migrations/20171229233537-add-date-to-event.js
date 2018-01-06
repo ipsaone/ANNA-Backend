@@ -15,6 +15,6 @@ module.exports = {
 
     down: (queryInterface) => {
         queryInterface.removeColumn('Events', 'startDate');
-        queryInterface.removeColumnt('Events', 'endDate');
+        queryInterface.removeColumn('Events', 'endDate');
     }
 };

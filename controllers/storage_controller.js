@@ -48,9 +48,10 @@ exports.download = async (req, res) => {
     // Revision parameter, to get an older version
     let rev = 0;
 
-    if (isNaN(parseInt(req.query.revision, 10))) {
+    if (!isNaN(parseInt(req.query.revision, 10))) {
         rev = parseInt(req.query.revision, 10);
     }
+
 
     // Download parameter, to get file metadata or contents
     const dl = req.query.download && req.query.download === 'true';
@@ -65,8 +66,13 @@ exports.download = async (req, res) => {
 
     const data = await file.getData(rev);
 
+
+    if (!data) {
+        return res.boom.notFound('This revision doesn\'t exist');
+    }
+
     if (dl) {
-        const allowed = await policy.filterDownloadContents();
+        const allowed = await policy.filterDownloadContents(fileId, req.session.auth);
 
         if (!allowed) {
             return res.boom.unauthorized();
@@ -78,7 +84,7 @@ exports.download = async (req, res) => {
         return res.download(path);
     }
 
-    const allowed = await policy.filterDownloadMeta();
+    const allowed = await policy.filterDownloadMeta(fileId, req.session.auth);
 
     if (!allowed) {
         throw res.boom.unauthorized();
