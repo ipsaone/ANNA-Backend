@@ -255,14 +255,12 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Object} Promise to rights.
      *
      */
-    /*
-     * Data.prototype.getRights = function () {
-     * const db = require('../models');
-     *
-     * // Only one right should exist for each data, no check needed
-     * return db.Right.findById(this.rightsId);
-     * };
-     */
+    Data.prototype.getRights = function () {
+        const db = require('../models');
+        // Only one right should exist for each data, no check needed
+
+        return db.Right.findById(this.rightsId);
+    };
 
     return Data;
 };
