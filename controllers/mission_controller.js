@@ -50,7 +50,12 @@ exports.show = async (req, res) => {
         return req.boom.unauthorized();
     }
 
-    const mission = await db.Mission.findOne({where: {id: missionId}});
+    const mission = await db.Mission.findById(missionId, {
+        include: [
+            'tasks',
+            'members'
+        ]
+    });
 
     if (!mission) {
         return res.boom.notFound();
@@ -65,7 +70,7 @@ exports.show = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - the error handling function
+ * @param {Object} handle - The error handling function.
  *
  * @returns {Object} promise
  *
@@ -125,11 +130,11 @@ exports.update = function (req, res, handle) {
  *
  * Delete an existing mission.
  *
- * @param {obj} req     the user request.
+ * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.delete = function (req, res, handle) {
