@@ -14,16 +14,16 @@ const magic = new Magic(mmm.MAGIC_MIME_TYPE);
  *
  * Compute type for a file path.
  *
- * @param {Object} filePath the file to compute size
+ * @param {Object} filePath - The file to compute size.
  *
- * @returns {object} promise to file type
+ * @returns {Object} Promise to file type.
  *
  */
 const computeType = function (filePath) {
     return new Promise((resolve) => {
         magic.detectFile(filePath, (err, res) => {
             if (err) {
-                throw err;
+                resolve();
             }
 
             resolve(res);
@@ -38,16 +38,16 @@ const computeType = function (filePath) {
  *
  * Compute size for a file path.
  *
- * @param {Object} filePath the file to compute size
+ * @param {Object} filePath - The file to compute size.
  *
- * @returns {Object} promise to file size
+ * @returns {Object} Promise to file size.
  *
  */
 const computeSize = function (filePath) {
     return new Promise((resolve) => {
         fs.stat(filePath, (err, res) => {
             if (err) {
-                throw err;
+                resolve();
             } else {
 
                 // Return file size
@@ -220,10 +220,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     Data.prototype.getPath = async function () {
         let dataPath = '';
-        const count = await Data.count({where: {fileId: this.fileId}});
+
+        let id = 0;
+
+        if (this.id) {
+            id = this.id;
+        } else {
+
+            /*
+             * Get next ID by getting Auto_increment value of the table
+             * ATTENTION : race condition here ?
+             */
+            const data = await sequelize.query('SHOW TABLE STATUS LIKE \'Data\'', {type: sequelize.QueryTypes.SELECT});
+
+            if (!data || data.length !== 1) {
+                throw new Error('Failed to find path');
+            }
+            id = data[0].Auto_increment;
+        }
+
+        console.log(`ID : ${id}`);
 
         dataPath += `/${this.fileId}`;
-        dataPath += `/${this.name}-v${count + 1}`;
+        dataPath += `/${this.name}-#${id}`;
 
         return Promise.resolve(path.join(config.storage.folder, dataPath));
 

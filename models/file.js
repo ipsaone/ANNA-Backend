@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Add data for a file object.
      *
-     * @param {obj} fileChanges The changes in this data.
+     * @param {obj} fileChanges - The changes in this data.
      * @param {obj} filePath the path to the file to add data to
      * @param {obj} userId - the user identifier
      *
@@ -105,6 +105,7 @@ module.exports = (sequelize, DataTypes) => {
         await new Promise((resolve) => {
             fs.access(filePath, (err) => {
                 fileChanges.fileExists = !err;
+                console.log(`File exists : ${!err}`);
                 resolve();
             });
         });
@@ -136,7 +137,9 @@ module.exports = (sequelize, DataTypes) => {
             });
 
         } else if (!fileChanges.fileExists && fileChanges.isDir) {
-            return Promise.resolve(data);
+            await data.save();
+
+            return data;
         }
         throw new Error('Upload failed !');
 
@@ -148,9 +151,9 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Get all data for a file object.
      *
-     * @param {integer} offset - how old the data is
+     * @param {integer} offset - How old the data is.
      *
-     * @returns {Object} promise to file data
+     * @returns {Object} Promise to file data.
      *
      */
     File.prototype.getData = function (offset = 0) {
@@ -211,27 +214,23 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Create a new file object.
      *
-     * @param {Object} changes The file metadata.
-     * @param {string} filePath the file path to create
-     * @param {integer} userId the user id
-     * @param {boolean} dir - whether the file is a directory or not
+     * @param {Object} changes - The file metadata.
+     * @param {string} filePath - The file path to create.
+     * @param {integer} userId - The user id.
+     * @param {boolean} dir - Whether the file is a directory or not.
      * @todo max-params
      *
-     * @returns {Object} promise to success boolean
+     * @returns {Object} Promise to success boolean.
      *
      */
     File.createNew = function (changes, filePath, userId) {
         const db = require('../models');
 
-        console.log(changes);
-
         let isDir = false;
 
-        if (typeof changes.isDir !== 'undefined' && (changes.isDir === 'true' || changes.isDir === true)) {
+        if (typeof changes.isDir !== 'undefined' && changes.isDir === true) {
             isDir = true;
         }
-
-        console.log(isDir);
 
 
         return db.File.create({isDir})

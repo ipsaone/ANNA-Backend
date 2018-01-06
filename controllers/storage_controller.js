@@ -169,9 +169,9 @@ exports.uploadNew = async (req, res) => {
         filePath = req.file.path;
     }
 
-    await db.File.createNew(req.body, filePath, req.session.auth);
+    const data = await db.File.createNew(req.body, filePath, req.session.auth);
 
-    return res.status(204).json({});
+    return res.status(204).json(data);
 };
 
 /**
