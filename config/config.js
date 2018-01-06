@@ -6,6 +6,20 @@ require('dotenv').config();
 
 const fs = require('fs');
 
+/*
+ * Logs a SQL request.
+ *
+ * @param data - The data to log.
+ * @returns True.
+ */
+const log = (data) => {
+    const now = new Date();
+
+    console.log(`[${now.toISOString()}] ${data}\n`);
+
+    return true;
+};
+
 const config = {
     app: {
         name: 'A.N.N.A',
@@ -30,7 +44,7 @@ const config = {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             // Logging: false, // Prevent Sequelize from outputting the query on the console
-            logging: console.log,
+            logging: log,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
