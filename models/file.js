@@ -159,7 +159,7 @@ module.exports = (sequelize, DataTypes) => {
     File.prototype.getData = function (offset = 0) {
         const db = require('../models');
 
-        console.log(`Finding data with offset ${offset}`);
+        console.log(`Finding data of file #${this.id} with offset ${offset}`);
 
         return db.Data
 
@@ -230,10 +230,9 @@ module.exports = (sequelize, DataTypes) => {
 
         let isDir = false;
 
-        if (typeof changes.isDir !== 'undefined' && changes.isDir === true) {
+        if (typeof changes.isDir !== 'undefined' && (changes.isDir === true || changes.isDir === 'true')) {
             isDir = true;
         }
-
 
         return db.File.create({isDir})
             .then((file) => file.addData(changes, filePath, userId));
