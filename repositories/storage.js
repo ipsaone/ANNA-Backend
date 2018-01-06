@@ -16,9 +16,9 @@ class Storage {
 
 /**
  *
- * Get root Storage path. in file system.
+ * Get root Storage path. In file system.
  *
- * @returns {string} storage path
+ * @returns {string} Storage path.
  *
  */
     static get root () {
@@ -51,9 +51,9 @@ module.exports = Storage;
  *
  * Compute type for a file path.
  *
- * @param {object} filePath the file to compute size
+ * @param {Object} filePath the file to compute size
  *
- * @returns {object} promise to file type
+ * @returns {Object} promise to file type
  *
  */
 Storage.computeType = function (filePath) {
@@ -73,9 +73,9 @@ Storage.computeType = function (filePath) {
 
 /**
  *
- * Compute size for a file path
+ * Compute size for a file path.
  *
- * @param {Object} filePath the file to compute size
+ * @param {Object} filePath - the file to compute size
  *
  * @returns {Object} promise to file size
  *
@@ -99,24 +99,17 @@ Storage.fileHasWritePermission = async (fileId, userId) => {
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
-    const [
-        file,
-        user
-    ] = await Promise.all([
-        fileP,
-        userP
-    ]);
+    const file = await fileP;
+    const user = await userP;
+
+    if (!file || !user) {
+        return false;
+    }
 
     const fileDataP = file.getData();
     const userGroupsP = user.getGroups();
-    const [
-        fileData,
-        userGroups
-    ] = await Promise.all([
-        fileDataP,
-        userGroupsP
-    ]);
-
+    const userGroups = await userGroupsP;
+    const fileData = await fileDataP;
 
     const fileRightsP = fileData.getRights();
 
@@ -143,24 +136,25 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
-    const [
-        file,
-        user
-    ] = await Promise.all([
-        fileP,
-        userP
-    ]);
+    const file = await fileP;
+    const user = await userP;
+
+    if (!file || !user) {
+        console.log(`Couldn't find file or user for file id ${fileId} and user id ${userId}`);
+
+        return false;
+    }
 
     const fileDataP = file.getData();
     const userGroupsP = user.getGroups();
-    const [
-        fileData,
-        userGroups
-    ] = await Promise.all([
-        fileDataP,
-        userGroupsP
-    ]);
+    const userGroups = await userGroupsP;
+    const fileData = await fileDataP;
 
+    if (!fileData || !userGroups) {
+        console.log(`No fileData or userGroups for id ${fileId}`);
+
+        return false;
+    }
 
     const fileRightsP = fileData.getRights();
 
@@ -170,6 +164,11 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
 
     const fileRights = await fileRightsP;
 
+    if (!fileRights) {
+        console.log('Couldn\'t find associated rights !');
+
+        return false;
+    }
 
     if (fileRights.allRead === true) {
         return true;
@@ -178,6 +177,8 @@ Storage.fileHasReadPermission = async (fileId, userId) => {
     } else if (userIsOwner === true && fileRights.ownerRead === true) {
         return true;
     }
+
+    console.log('unauthorized !');
 
     return false;
 };

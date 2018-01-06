@@ -7,18 +7,18 @@ const policy = require('../policies/user_policy');
  *
  * Get all existing users.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
  *
  */
-exports.index = function (req, res, handle) {
-    return db.User.findAll()
-        .then((users) => policy.filterIndex(users, req.session.auth))
-        .then((users) => res.status(200).json(users))
-        .catch((err) => handle(err));
+exports.index = async function (req, res) {
+    const users = await db.User.findAll();
+
+
+    return res.status(200).json(users);
 };
 
 
@@ -26,55 +26,59 @@ exports.index = function (req, res, handle) {
  *
  * Get a single user.
  *
- * @param {obj} req     - the user request
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} promise
  *
  */
-exports.show = function (req, res, handle) {
+exports.show = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findOne({
+    const user = await db.User.findOne({
         where: {id: userId},
-        include: ['groups']
-    })
-        .then((user) => policy.filterShow(user, req.session.auth))
-        .then((user) => {
-            if (user) {
-                return res.status(200).json(user);
-            }
-            throw res.boom.notFound();
+        include: [
+            'groups',
+            'events'
+        ]
+    });
 
-        })
-        .catch((err) => handle(err));
+    if (!user) {
+        throw res.boom.notFound();
+    }
+
+    return res.status(200).json(user);
+
 };
 
 /**
  *
  * Create a store a new user.
  *
- * @param {obj} req     - the user request.
+ * @param {obj} req     - The user request.
  * @param {obj} res     - the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
  */
-exports.store = function (req, res, handle) {
-    return db.User.create(req.body)
-        .then((user) => res.status(201).json(user))
-        .catch((err) => {
-            if (err instanceof db.Sequelize.ValidationError) {
-                res.boom.badRequest(err);
-            }
-            throw err;
-        })
-        .catch((err) => handle(err));
+exports.store = async function (req, res) {
+
+    try {
+        const user = await db.User.create(req.body);
+
+
+        return res.status(201).json(user);
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest(err);
+        }
+        throw err;
+    }
 };
 
 /**
@@ -82,47 +86,61 @@ exports.store = function (req, res, handle) {
  * Updates an existing user.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     the response to be sent.
+ * @param {obj} res     The response to be sent.
  * @param {obj} handle  the error handling function
  *
  * @returns {Object} promise
  *
  */
-exports.update = function (req, res, handle) {
+exports.update = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.User.findOne({where: {id: userId}})
-        .then((record) => record.update(req.body))
-        .then(() => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
-        .catch((err) => handle(err));
+    const record = await db.User.findById(userId);
+
+    try {
+        await record.update(req.body);
+
+        return res.status(204).json({});
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest();
+        }
+
+        throw err;
+    }
 };
 
 /**
  *
  * Deletes an existing user.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
  *
  */
-exports.delete = function (req, res, handle) {
+exports.delete = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return db.UserGroup.destroy({where: {userId}})
-        .then(() => db.User.destroy({where: {id: userId}}))
-        .then(() => res.status(204).send())
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
-        .catch((err) => handle(err));
+    try {
+        await db.UserGroup.destroy({where: {userId}});
+        await db.User.destroy({where: {id: userId}});
+
+        return res.status(204).send();
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest();
+        }
+        throw err;
+    }
 };
 
 /**
@@ -165,9 +183,9 @@ exports.posts = function (req, res, handle) {
  *
  * Get all user's groups.
  *
- * @param {obj} req     the user request.
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     the response to be sent.
+ * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
  *
@@ -196,30 +214,30 @@ exports.getGroups = function (req, res, handle) {
  *
  * Add user to group.
  *
- * @param {Object} req - the user request
+ * @param {Object} req - The user request.
  * @param {Object} res - the response to be sent
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
  *
  */
-exports.addGroups = function (req, res, handle) {
+exports.addGroups = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return policy.filterAddGroups(req.body.groupsId, req.session.auth)
-        .then((groups) => db.User.findById(userId)
-            .then((user) => {
-                if (user) {
-                    return user.addGroups(groups);
-                }
-                throw res.boom.badRequest();
+    const groups = await policy.filterAddGroups(req.body.groupsId, req.session.auth);
+    const user = await db.User.findById(userId);
 
-            })
-            .then(() => res.status(204).send()))
-        .catch((err) => handle(err));
+    if (!user) {
+        throw res.boom.badRequest();
+    }
+
+
+    await user.addGroups(groups);
+
+    return res.status(204).send();
 };
 
 /**
@@ -233,15 +251,16 @@ exports.addGroups = function (req, res, handle) {
  * @returns {Object} promise
  *
  */
-exports.deleteGroups = function (req, res, handle) {
+exports.deleteGroups = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    return policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth)
-        .then((groups) => db.User.findById(userId)
-            .then((user) => user.removeGroups(groups))
-            .then(() => res.status(204).send()))
-        .catch((err) => handle(err));
+    const groups = await policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth);
+    const user = await db.User.findById(userId);
+
+    await user.removeGroups(groups);
+
+    return res.status(204).send();
 };

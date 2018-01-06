@@ -10,9 +10,24 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 
+require('express-async-errors');
+
 require('dotenv').config();
 
+
+/*
+ * Server config
+ */
+
 const app = express();
+const {host, port} = config.app.getConnection();
+
+http.createServer(app).listen(port, host, function () {
+    console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+});
+
+module.exports = app;
+
 
 /*
  * Middleware
@@ -26,12 +41,12 @@ app.use(bodyParser.json());
 app.use(require('./middlewares/cors')); // CORS headers
 app.use(require('./middlewares/session')); // Session management
 app.use(require('./middlewares/auth')); // Auth check
-app.use(require('express-request-id')({setHeader: false})); // Unique ID for every request
+app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
 
 /*
  * Options
  */
-app.set('trust proxy', 1); // Trust first proxy
+app.set('trust proxy', 1); // Trust reverse proxy
 app.options('*', require('./middlewares/cors')); // Pre-flight
 morgan.token('id', (req) => req.id.split('-')[0]);
 // Logging
@@ -48,23 +63,3 @@ app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'a
  */
 app.use(require('./routes'));
 app.use(require('./middlewares/exception')); // Error handling
-
-const {host, port} = config.app.getConnection();
-
-/*
- * Server config
- */
-
-http.createServer(app).listen(port, host, function () {
-    console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
-});
-
-process.on('unhandledRejection', (err) => {
-    console.error('unhandled exception : ');
-    console.log(err);
-
-    // eslint-disable-next-line no-process-exit
-    process.exit(1);
-});
-
-module.exports = app;

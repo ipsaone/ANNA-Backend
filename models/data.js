@@ -1,15 +1,66 @@
 'use strict';
 
-const Storage = require('../repositories/storage');
 const fs = require('fs');
 
 require('dotenv').config();
 const config = require('../config/config');
 const path = require('path');
+const mmm = require('mmmagic');
+const Magic = mmm.Magic;
+const magic = new Magic(mmm.MAGIC_MIME_TYPE);
+
+
+/**
+ *
+ * Compute type for a file path.
+ *
+ * @param {Object} filePath - The file to compute size.
+ *
+ * @returns {Object} Promise to file type.
+ *
+ */
+const computeType = function (filePath) {
+    return new Promise((resolve) => {
+        magic.detectFile(filePath, (err, res) => {
+            if (err) {
+                resolve();
+            }
+
+            resolve(res);
+
+        });
+    });
+
+
+};
+
+/**
+ *
+ * Compute size for a file path.
+ *
+ * @param {Object} filePath - The file to compute size.
+ *
+ * @returns {Object} Promise to file size.
+ *
+ */
+const computeSize = function (filePath) {
+    return new Promise((resolve) => {
+        fs.stat(filePath, (err, res) => {
+            if (err) {
+                resolve();
+            } else {
+
+                // Return file size
+                resolve(res.size);
+            }
+        });
+    });
+};
+
 
 const computeValues = (data) => {
-    data.getPath()
-        .then((dataPath) => Storage.computeType(path.join('..', config.storage.folder, dataPath)))
+    const typeP = data.getPath()
+        .then((dataPath) => computeType(dataPath))
         .then((type) => {
             data.type = type;
 
@@ -21,8 +72,8 @@ const computeValues = (data) => {
             return true;
         });
 
-    data.getPath()
-        .then((dataPath) => Storage.computeSize(path.join('..', config.storage.folder, dataPath)))
+    const sizeP = data.getPath()
+        .then((dataPath) => computeSize(dataPath))
         .then((size) => {
             data.size = size;
 
@@ -33,6 +84,11 @@ const computeValues = (data) => {
 
             return true;
         });
+
+    return Promise.all([
+        sizeP,
+        typeP
+    ]);
 };
 
 module.exports = (sequelize, DataTypes) => {
@@ -159,32 +215,36 @@ module.exports = (sequelize, DataTypes) => {
      *
      * @param {bool} full - Get full path or relative path.
      *
-     * @returns {string} data path
+     * @returns {string} Data path.
      *
      */
-    Data.prototype.getPath = function (full = false) {
+    Data.prototype.getPath = async function () {
         let dataPath = '';
 
-        if (full) {
-            dataPath += Storage.root;
-        }
-        dataPath += `/${this.fileId}`;
-        dataPath += `/${this.id}`;
-        dataPath += `-${this.name}`;
+        let id = 0;
 
-        console.log(dataPath);
+        if (this.id) {
+            id = this.id;
+        } else {
 
-        // Check file exists
-        fs.access(dataPath, fs.constants.F_OK, (err) => {
-            if (err) {
-                return Promise.reject(err);
+            /*
+             * Get next ID by getting Auto_increment value of the table
+             * ATTENTION : race condition here ?
+             */
+            const data = await sequelize.query('SHOW TABLE STATUS LIKE \'Data\'', {type: sequelize.QueryTypes.SELECT});
+
+            if (!data || data.length !== 1) {
+                throw new Error('Failed to find path');
             }
+            id = data[0].Auto_increment;
+        }
 
+        console.log(`ID : ${id}`);
 
-            // Return file path if it exists
-            return Promise.resolve(dataPath);
+        dataPath += `/${this.fileId}`;
+        dataPath += `/${this.name}-#${id}`;
 
-        });
+        return Promise.resolve(path.join(config.storage.folder, dataPath));
 
     };
 
@@ -197,9 +257,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     Data.prototype.getRights = function () {
         const db = require('../models');
-
         // Only one right should exist for each data, no check needed
-        return db.Right.findOne({where: {id: this.rightsId}});
+
+        return db.Right.findById(this.rightsId);
     };
 
     return Data;

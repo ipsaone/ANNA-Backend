@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Add data for a file object.
      *
-     * @param {obj} fileChanges the changes in this data.
+     * @param {obj} fileChanges - The changes in this data.
      * @param {obj} filePath the path to the file to add data to
      * @param {obj} userId - the user identifier
      *
@@ -39,105 +39,111 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Object} promise to directory tree
      *
      */
-    File.prototype.addData = function (fileChanges, filePath, userId) {
+    File.prototype.addData = async function (fileChanges, filePath, userId) {
         const db = require('../models');
 
+        /*
+         * Check group ID input
+         * Other integer inputs are replaced anyway
+         */
+        if (isNaN(parseInt(fileChanges.groupId, 10))) {
+            throw new Error('Group is not an integer');
+        }
+        fileChanges.groupId = parseInt(fileChanges.groupId, 10);
+
+        // Check isDir
+        if (fileChanges.isDir === 'true') {
+            fileChanges.isDir = true;
+        } else {
+            fileChanges.isDir = false;
+        }
+
+        // Replace fileId and otherId, they are not needed
         fileChanges.fileId = this.id;
         fileChanges.ownerId = userId;
 
-        const fileBuilder = (changes, builderPath) =>
-            new Promise((resolve) => {
-                fs.access(builderPath, (err) => {
-                    fileChanges.fileExists = !err;
-                    resolve();
-                });
-            });
+        // Find if creating a right is needed
+        let newRight = false;
+        const rights = [
+            'ownerRead',
+            'ownerWrite',
+            'groupRead',
+            'groupWrite',
+            'allRead',
+            'allWrite'
+        ];
 
-        const rightsBuilder = (changes) => {
-            let newRight = false;
-            const rights = [
-                'ownerRead',
-                'ownerWrite',
-                'groupRead',
-                'groupWrite',
-                'allRead',
-                'allWrite'
-            ];
-
-            for (const i of rights) {
-                if (typeof changes[i] !== 'undefined') {
-                    newRight = true;
-                    break;
-                }
+        for (const i of rights) {
+            if (typeof fileChanges[i] !== 'undefined') {
+                newRight = true;
+                break;
             }
+        }
 
+        // Get groups for user and check groupId is legitimate
+        const user = await db.User.findById(fileChanges.ownerId);
+        const groups = await user.getGroups();
 
-            return db.User.findById(userId).then((user) => user.getGroups())
-                // Check user is in group
-                .then((groups) => {
-                    if (isNaN(parseInt(changes.groupId, 10))) {
-                        throw new RangeError('Group is not an integer');
-                    }
-                    changes.groupId = parseInt(changes.groupId, 10);
-                    const groupIds = groups.map((grp) => grp.id);
+        if (!groups.map((grp) => grp.id).includes(fileChanges.groupId)) {
+            throw new Error('Invalid group');
+        }
 
-                    if (!groupIds.includes(changes.groupId)) {
-                        throw new RangeError('Invalid group');
-                    }
+        // Create new right, or find the previous right and keep it
+        let right = {};
 
-                    return true;
-                })
-                // Find right or create it
-                .then(() => {
-                    if (newRight) {
-                        return db.Right.create(changes);
-                    }
+        if (newRight) {
+            right = await db.Right.create(fileChanges);
+        } else {
+            const file = await db.File.findById(fileChanges.fileId);
+            const fileData = await file.getData();
 
-                    return db.File.findOne({where: {id: changes.fileId}}).then((file) => file.getData());
+            right = await fileData.getRights();
+        }
+        fileChanges.rightsId = right.id;
 
-                })
-                .then((right) => {
-                    changes.rightsId = right.id;
-
-                    return true;
-                });
-        };
-
-        // Build the rights and file properties
-        return Promise.all([
-            rightsBuilder(fileChanges, filePath),
-            fileBuilder(fileChanges, filePath)
-        ])
-
-            // Create the data and save it
-            .then(() => db.Data.create(fileChanges))
-
-            // Get destination
-            .then((data) => data.getPath())
-
-            // Move file from temp
-            .then((dest) => {
-                if (fileChanges.fileExists) {
-                    mv(
-                        // Make directory if needed, error if exists
-                        filePath, dest,
-                        {
-                            mkdirp: true,
-                            clobber: false
-                        },
-                        (err) => {
-                            if (err) {
-                                throw err;
-                            }
-
-                            return true;
-                        }
-                    );
-
-                }
-
-                return true;
+        // Check file upload
+        await new Promise((resolve) => {
+            fs.access(filePath, (err) => {
+                fileChanges.fileExists = !err;
+                console.log(`File exists : ${!err}`);
+                resolve();
             });
+        });
+
+        const data = await db.Data.build(fileChanges);
+        const dest = await data.getPath();
+
+        if (fileChanges.fileExists && !fileChanges.isDir) {
+            return new Promise((resolve, reject) => {
+                console.log(`Moving from ${filePath} to ${dest}`);
+
+                mv(
+                    // Make directory if needed, error if exists
+                    filePath, dest,
+                    {
+                        mkdirp: true,
+                        clobber: false
+                    },
+                    (err) => {
+                        if (err) {
+                            console.log('Error while moving file : ', err);
+                            throw err;
+                        }
+
+                        return data.save().then(() => resolve(data))
+                            .catch((e) => reject(e));
+                    }
+                );
+            });
+
+        } else if (!fileChanges.fileExists && fileChanges.isDir) {
+            await data.save();
+
+            return data;
+        }
+        throw new Error('Upload failed !');
+
+
     };
 
 
@@ -145,13 +151,15 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Get all data for a file object.
      *
-     * @param {integer} offset - how old the data is
+     * @param {integer} offset - How old the data is.
      *
-     * @returns {Object} promise to file data
+     * @returns {Object} Promise to file data.
      *
      */
     File.prototype.getData = function (offset = 0) {
         const db = require('../models');
+
+        console.log(`Finding data of file #${this.id} with offset ${offset}`);
 
         return db.Data
 
@@ -171,7 +179,7 @@ module.exports = (sequelize, DataTypes) => {
             // FindAll is limited, so there will always be one result (or none -> undefined)
             .then((data) => {
                 if (data.length === 0) {
-                    throw new Error();
+                    return {};
                 }
 
                 return data[0];
@@ -185,21 +193,22 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Object} Promise to directory tree.
      *
      */
-    File.prototype.getDirTree = function () {
+    File.prototype.getDirTree = async function () {
         const db = require('../models');
 
-        return this.getData()
-            .then((data) => {
-                // Get parents' directory tree
-                let fileDirTree = Promise.resolve([]);
+        const data = await this.getData();
 
-                if (data.dirId !== 1) {
-                    fileDirTree = db.File.findById(data.dirId).then((file) => file.getDirTree());
-                }
+        // Get parents' directory tree
+        let fileDirTree = [];
 
-                // Add own directory name
-                return fileDirTree.then((tree) => tree.concat(data.name));
-            });
+        if (data.dirId !== 1) {
+            const file = await db.File.findById(data.dirId);
+
+            fileDirTree = await file.getDirTree();
+        }
+
+        // Add own directory name
+        return fileDirTree.concat(data.name);
     };
 
 
@@ -207,20 +216,25 @@ module.exports = (sequelize, DataTypes) => {
      *
      * Create a new file object.
      *
-     * @param {Object} changes the file metadata.
-     * @param {string} filePath the file path to create
-     * @param {integer} userId the user id
-     * @param {boolean} dir whether the file is a directory or not
+     * @param {Object} changes - The file metadata.
+     * @param {string} filePath - The file path to create.
+     * @param {integer} userId - The user id.
+     * @param {boolean} dir - Whether the file is a directory or not.
      * @todo max-params
      *
-     * @returns {Object} promise to success boolean
+     * @returns {Object} Promise to success boolean.
      *
      */
-    // eslint-disable-next-line max-params
-    File.createNew = function (changes, filePath, userId, dir = false) {
+    File.createNew = function (changes, filePath, userId) {
         const db = require('../models');
 
-        return db.File.create({isDir: dir})
+        let isDir = false;
+
+        if (typeof changes.isDir !== 'undefined' && (changes.isDir === true || changes.isDir === 'true')) {
+            isDir = true;
+        }
+
+        return db.File.create({isDir})
             .then((file) => file.addData(changes, filePath, userId));
     };
 

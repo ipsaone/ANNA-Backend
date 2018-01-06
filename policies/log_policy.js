@@ -49,40 +49,27 @@ exports.filterStore = (builder, userId) => {
 
 exports.filterUpdate = async (builder, logId, userId) => {
 
+    const keys = Object.keys(builder);
+
+    keys.forEach((key) => {
+        if (!allowed.contains(key)) {
+            delete builder[key];
+        }
+    });
+
     const user = await db.User.findById(userId);
 
-    return Promise.resolve()
-    // Check the user is root or is the author of the log
-        .then(async () => {
-            if (user && await user.isRoot()) {
-                return true;
-            }
+    if (user && await user.isRoot()) {
+        return builder;
+    }
 
-            return db.Log.findById(logId)
-                .then((log) => log.authorId)
-                .then((id) => {
-                    if (id === userId) {
-                        return true;
-                    }
-                    throw new Error('Unauthorized');
+    const log = await db.Log.findById(logId);
 
-                });
+    if (log.authorId === userId) {
+        return builder;
+    }
 
-        })
-    // Remove unauthorized fields
-        .then(() => {
-            const keys = Object.keys(builder);
-
-            keys.forEach((key) => {
-                if (!allowed.contains(key)) {
-                    delete builder[key];
-                }
-            });
-
-            return true;
-        })
-    // Return builder object
-        .then(() => builder);
+    return false;
 };
 
 
@@ -94,6 +81,7 @@ exports.filterDelete = async (userId) => {
     if (user && await user.isRoot()) {
         return true;
     }
-    throw new Error('Unauthorized');
+
+    return false;
 
 };

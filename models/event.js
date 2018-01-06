@@ -19,9 +19,31 @@ module.exports = (sequelize, DataTypes) => {
         content: {
             allowNull: false,
             type: DataTypes.TEXT
+        },
+        maxRegistered: {
+            allowNull: true,
+            type: DataTypes.INTEGER
+        },
+        startDate: {
+            allowNull: false,
+            type: DataTypes.DATE
+        },
+        endDate: {
+            allowNull: true,
+            type: DataTypes.DATE
         }
 
     });
+
+    event.associate = function (models) {
+        event.belongsToMany(models.User, {
+            foreignKey: 'eventId',
+            as: 'registered',
+            through: models.EventUser,
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
+    };
 
     return event;
 };

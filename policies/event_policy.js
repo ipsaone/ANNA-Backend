@@ -5,7 +5,7 @@ const db = require('../models');
 
 exports.filterIndex = () => Promise.resolve(true);
 
-exports.filterShow = () => Promise.resolve(true);
+exports.filterShow = (event) => Promise.resolve(event);
 
 exports.filterStore = async (userId) => {
     const user = await db.User.findById(userId);
@@ -14,7 +14,7 @@ exports.filterStore = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 exports.filterUpdate = async (userId) => {
@@ -24,7 +24,7 @@ exports.filterUpdate = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 exports.filterDelete = async (userId) => {
@@ -34,5 +34,39 @@ exports.filterDelete = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
+};
+
+exports.filterStoreRegistered = async (eventId, targetId, userId) => {
+
+    if (userId === targetId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+    const userIsAdmin = await user.isRoot();
+
+    if (userIsAdmin) {
+        return true;
+    }
+
+    console.log('False !!!!!');
+
+    return false;
+};
+
+exports.filterDeleteRegistered = async (eventId, targetId, userId) => {
+
+    if (userId === targetId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+    const userIsAdmin = await user.isRoot();
+
+    if (userIsAdmin) {
+        return true;
+    }
+
+    return false;
 };
