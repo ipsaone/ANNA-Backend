@@ -8,7 +8,7 @@ const policy = require('../policies/user_policy');
  * Get all existing users.
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
@@ -30,7 +30,7 @@ exports.index = async function (req, res) {
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.show = async function (req, res) {
@@ -61,10 +61,10 @@ exports.show = async function (req, res) {
  * Create a store a new user.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.store = async function (req, res) {
@@ -87,10 +87,10 @@ exports.store = async function (req, res) {
  * Updates an existing user.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     The response to be sent.
- * @param {obj} handle  the error handling function
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.update = async function (req, res) {
@@ -99,10 +99,14 @@ exports.update = async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const record = await db.User.findById(userId);
+    const user = await db.User.findById(userId);
+
+    if (!user) {
+        return res.boom.notFound();
+    }
 
     try {
-        await record.update(req.body);
+        await user.update(req.body);
 
         return res.status(204).json({});
     } catch (err) {
@@ -119,7 +123,7 @@ exports.update = async function (req, res) {
  * Deletes an existing user.
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
@@ -185,8 +189,8 @@ exports.posts = function (req, res, handle) {
  * Get all user's groups.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     the response to be sent.
- * @param {obj} handle  - the error handling function
+ * @param {obj} res     The response to be sent.
+ * @param {obj} handle  - the error handling function.
  *
  * @returns {Object} promise
  *
