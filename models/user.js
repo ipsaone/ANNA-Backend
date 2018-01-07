@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         User.belongsToMany(models.Mission, {
-            as: 'ParticipatingMissions',
+            as: 'participatingMissions',
             through: models.UserMission,
             foreignKey: 'userId',
             onDelete: 'RESTRICT',

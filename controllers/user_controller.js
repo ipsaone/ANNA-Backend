@@ -43,7 +43,8 @@ exports.show = async function (req, res) {
         where: {id: userId},
         include: [
             'groups',
-            'events'
+            'events',
+            'participatingMissions'
         ]
     });
 

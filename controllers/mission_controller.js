@@ -50,7 +50,12 @@ exports.show = async (req, res) => {
         return req.boom.unauthorized();
     }
 
-    const mission = await db.Mission.findOne({where: {id: missionId}});
+    const mission = await db.Mission.findById(missionId, {
+        include: [
+            'tasks',
+            'members'
+        ]
+    });
 
     if (!mission) {
         return res.boom.notFound();
@@ -65,7 +70,7 @@ exports.show = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - the error handling function
+ * @param {Object} handle - The error handling function.
  *
  * @returns {Object} promise
  *
@@ -108,40 +113,57 @@ exports.store = async (req, res) => {
  * @returns {Object} Promise.
  *
  */
-exports.update = function (req, res, handle) {
+exports.update = async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
         return res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
 
-    return policy.filterUpdate(req.session.auth)
-        .then(() => db.Missions.update(req.body, {where: {id: missionId}}))
-        .then(() => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
-        .catch((err) => handle(err));
+    const allowed = await policy.filterUpdate(req.session.auth);
+
+    if (!allowed) {
+        return res.boom.unauthorized();
+    }
+
+    try {
+        await db.Missions.update(req.body, {where: {id: missionId}});
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            return res.boom.badRequest();
+        }
+
+        throw err;
+    }
+
+    return res.status(204).json({});
 };
 
 /**
  *
  * Delete an existing mission.
  *
- * @param {obj} req     the user request.
+ * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
-exports.delete = function (req, res, handle) {
+exports.delete = async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
         return res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
 
-    return policy.filterDelete(req.session.auth)
-        .then(() => db.Missions.destroy({where: {id: missionId}}))
-        .then(() => res.status(204).json({}))
-        .catch((err) => handle(err));
+    const allowed = await policy.filterDelete(req.session.auth);
+
+    if (!allowed) {
+        return res.boom.unauthorized();
+    }
+
+    await db.Missions.destroy({where: {id: missionId}});
+
+    return res.status(204).json({});
 };
 
 exports.indexTasks = async function (req, res) {

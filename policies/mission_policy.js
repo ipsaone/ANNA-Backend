@@ -38,7 +38,20 @@ exports.filterDelete = async (userId) => {
 
 exports.filterIndexTasks = () => true;
 exports.filterShowTask = () => true;
-exports.filterStoreTask = () => true;
+exports.filterStoreTask = async (contents, mission, userId) => {
+
+    if (userId === mission.leaderId) {
+        return contents;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return contents;
+    }
+
+    return [];
+};
 exports.filterUpdateTask = async (contents, mission, userId) => {
 
     if (userId === mission.leaderId) {
@@ -53,4 +66,17 @@ exports.filterUpdateTask = async (contents, mission, userId) => {
 
     return [];
 };
-exports.filterDeleteTask = () => true;
+exports.filterDeleteTask = async (contents, mission, userId) => {
+
+    if (userId === mission.leaderId) {
+        return contents;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return contents;
+    }
+
+    return [];
+};

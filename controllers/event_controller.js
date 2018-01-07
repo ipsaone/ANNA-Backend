@@ -24,8 +24,19 @@ exports.index = async function (req, res) {
 
     const events = await db.Event.findAll();
 
+    const toReturn = await Promise.all(events.map(async (ev) => {
 
-    return res.json(events);
+        const registeredP = ev.getRegistered();
+        const newEvent = await ev.toJSON();
+        const registered = await registeredP;
+
+        newEvent.registeredCount = registered.length;
+
+        return newEvent;
+    }));
+
+
+    return res.status(200).json(toReturn);
 };
 
 /*
