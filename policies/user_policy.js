@@ -11,6 +11,16 @@
 
 const db = require('../models');
 
+/**
+ * Gets all users.
+ *
+ * @function filterIndex
+ *
+ * @param {Object} users - The users.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} Users.
+ */
 exports.filterIndex = (users, userId) => Promise.resolve(users)
     .then((us) => us.map((u) => {
         const user = u.toJSON();
@@ -23,6 +33,16 @@ exports.filterIndex = (users, userId) => Promise.resolve(users)
         return user;
     }));
 
+/**
+ * Gets one user.
+ *
+ * @function filterShow
+ *
+ * @param {Object} us - The us object from filterIndex function.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} Returns a user.
+ */
 exports.filterShow = (us, userId) => Promise.resolve(us)
     .then((u) => {
         let user = {};
@@ -42,10 +62,39 @@ exports.filterShow = (us, userId) => Promise.resolve(us)
         return user;
     });
 
+/**
+ * Filters users who can create users.
+ *
+ * @function filterStore
+ *
+ * @param {Object} user - A user.
+ *
+ * @returns {Object} Returns all users.
+ */
 exports.filterStore = (user) => Promise.resolve(user);
 
+/**
+ * Filters users who can delete users.
+ *
+ * @function filterDelete
+ *
+ * @param {Object} user - A user.
+ *
+ * @returns {Object} Returns all users.
+ */
 exports.filterDelete = (user) => Promise.resolve(user);
 
+/**
+ * Filters users who can create groups.
+ *
+ * @function filterAddGroups
+ * @async
+ *
+ * @param {Array} groupsId - The id of all groups.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} An array containing groups to which the user belongs.
+ */
 exports.filterAddGroups = async (groupsId, userId) => {
     const user = await db.User.findById(userId);
 
@@ -60,6 +109,18 @@ exports.filterAddGroups = async (groupsId, userId) => {
 
 };
 
+/**
+ * Filters users who can delete a user from a group.
+ *
+ * @function filterDeleteGroups
+ * @async
+ *
+ * @param {Array} groupsId - The id of all groups.
+ * @param {INTEGER} targetId - The id of the user that the user wants to delete from a group.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} A user can delete himself from a group but only root can delete other users from groups.
+ */
 exports.filterDeleteGroups = async (groupsId, targetId, userId) => {
     if (targetId === userId) {
         return groupsId;

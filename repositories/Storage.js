@@ -329,10 +329,10 @@ Storage.addFileData = function (fileChanges, filePath) {
  * Create a new file object.
  *
  * @param {Object} changes - The file metadata.
- * @param {string} filePath the file path to create.
+ * @param {string} filePath - The file path to create.
  * @param {boolean} dir - Whether the file is a directory or not.
  *
- * @returns {Object} promise to success boolean
+ * @returns {Object} Promise to success boolean.
  *
  */
 Storage.createNewFile = function (changes, filePath, dir = false) {

@@ -4,7 +4,7 @@
  * @file Defines a model for 'Data' table in database and its associations with the other tables
  * @see {@link module:data}
  */
-const Storage = require('../repositories/storage');
+const Storage = require('../repositories/Storage');
 const fs = require('fs');
 
 /**
