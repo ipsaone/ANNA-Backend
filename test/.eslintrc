@@ -1,5 +1,6 @@
 {
     "rules": {
-        "max-statements": "off"
+        "max-statements": "off",
+        "node/no-unpublished-require": "off"
     }
 }
