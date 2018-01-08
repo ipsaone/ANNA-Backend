@@ -99,12 +99,12 @@ exports.update = async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const record = await db.User.findById(userId);
+    const user = await db.User.findById(userId);
 
     try {
-        await record.update(req.body);
+        await user.update(req.body);
 
-        return res.status(204).json({});
+        return res.status(204).json(user);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
             throw res.boom.badRequest();

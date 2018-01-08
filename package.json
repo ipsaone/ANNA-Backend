@@ -25,6 +25,7 @@
     "express-request-id": "^1.4.0",
     "express-session": "^1.15.4",
     "helmet": "^3.8.0",
+    "joi": "^13.1.0",
     "marked": "^0.3.9",
     "mmmagic": "^0.4.6",
     "morgan": "^1.9.0",
