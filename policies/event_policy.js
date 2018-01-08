@@ -33,9 +33,9 @@ exports.filterShow = () => Promise.resolve(true);
  *
  * @function filterStore
  *
- * @param {INTEGER} userId The id of ther user verified by the function.
+ * @param {INTEGER} userId - The id of ther user verified by the function.
  *
- * @returns {boolean} root user or error : 'Unauthorized'
+ * @returns {boolean} Root user or error : 'Unauthorized'.
  *
  * @async
  */
