@@ -23,7 +23,14 @@ const db = require('../models');
  */
 exports.filterIndex = (users, userId) => Promise.resolve(users)
     .then((us) => us.map((u) => {
-        const user = u.toJSON();
+        let user = {};
+
+        if (u instanceof db.User) {
+            user = u.toJSON();
+        } else {
+            // Else, assume it's already JSON !
+            user = u;
+        }
 
         delete user.password;
         if (user.id !== userId) {

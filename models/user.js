@@ -116,6 +116,22 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'CASCADE'
         });
 
+        User.belongsToMany(models.Mission, {
+            as: 'participatingMissions',
+            through: models.UserMission,
+            foreignKey: 'userId',
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
+
+        User.belongsToMany(models.Event, {
+            as: 'events',
+            through: models.EventUser,
+            foreignKey: 'userId',
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+        });
+
         /**
          * Creates plural associations between tables 'User' and 'Post'
          * @function hasManyPost
@@ -164,7 +180,7 @@ module.exports = (sequelize, DataTypes) => {
          * @function hasManyMission
          */
         User.hasMany(models.Mission, {
-            as: 'missions',
+            as: 'LeaderMissions',
             foreignKey: 'leaderId',
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'

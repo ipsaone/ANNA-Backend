@@ -45,7 +45,7 @@ exports.filterStore = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 /**
@@ -66,7 +66,7 @@ exports.filterUpdate = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 /**
@@ -87,5 +87,50 @@ exports.filterDelete = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
+};
+
+exports.filterIndexTasks = () => true;
+exports.filterShowTask = () => true;
+exports.filterStoreTask = async (contents, mission, userId) => {
+
+    if (userId === mission.leaderId) {
+        return contents;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return contents;
+    }
+
+    return [];
+};
+exports.filterUpdateTask = async (contents, mission, userId) => {
+
+    if (userId === mission.leaderId) {
+        return contents;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return contents;
+    }
+
+    return [];
+};
+exports.filterDeleteTask = async (contents, mission, userId) => {
+
+    if (userId === mission.leaderId) {
+        return contents;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return contents;
+    }
+
+    return [];
 };

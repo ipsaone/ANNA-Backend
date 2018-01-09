@@ -27,10 +27,10 @@ const db = require('../models');
  * @inner
  *
  */
-exports.index = function (req, res, handle) {
-    return db.Group.findAll({include: ['users']})
-        .then((group) => res.json(group))
-        .catch((err) => handle(err));
+exports.index = async function (req, res) {
+    const groups = await db.Group.findAll({include: ['users']});
+
+    return res.json(groups);
 };
 
 /**
@@ -49,24 +49,23 @@ exports.index = function (req, res, handle) {
  * @inner
  *
  */
-exports.show = function (req, res, handle) {
+exports.show = async function (req, res) {
     if (isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
     const groupId = parseInt(req.params.groupId, 10);
 
-    return db.Group.findOne({
+
+    const group = await db.Group.findOne({
         where: {id: groupId},
         include: ['users']
-    })
-        .then((group) => {
-            if (group) {
-                return res.status(200).json(group);
-            }
-            throw res.boom.notFound();
+    });
 
-        })
-        .catch((err) => handle(err));
+    if (!group) {
+        throw res.boom.notFound();
+    }
+
+    return res.status(200).json(group);
 };
 
 /**
@@ -85,7 +84,7 @@ exports.show = function (req, res, handle) {
  * @inner
  *
  */
-exports.store = function (req, res, handle) {
+exports.store = async function (req, res) {
     if (typeof req.body.name !== 'string') {
 
         throw res.boom.badRequest();
@@ -97,16 +96,17 @@ exports.store = function (req, res, handle) {
      */
     req.body.name = req.body.name.toLowerCase();
 
+    const group = await db.Group.create(req.body);
 
-    return db.Group.create(req.body)
-        .then((group) => res.status(201).json(group))
-        .catch((err) => {
-            if (err instanceof db.Sequelize.ValidationError) {
-                res.boom.badRequest(err);
-            }
-            throw err;
-        })
-        .catch((err) => handle(err));
+    try {
+        res.status(201).json(group);
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest(err);
+        }
+
+        throw err;
+    }
 };
 
 /**
@@ -125,7 +125,7 @@ exports.store = function (req, res, handle) {
  * @inner
  *
  */
-exports.update = function (req, res, handle) {
+exports.update = async function (req, res) {
     if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
@@ -137,10 +137,16 @@ exports.update = function (req, res, handle) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    return db.Group.update(req.body, {where: {id: groupId}})
-        .then(() => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
-        .catch((err) => handle(err));
+    try {
+        await db.Group.update(req.body, {where: {id: groupId}});
+
+        return res.status(204).json({});
+    } catch (err) {
+        if (err instanceof db.Sequelize.ValidationError) {
+            throw res.boom.badRequest();
+        }
+        throw err;
+    }
 };
 
 /**
@@ -159,32 +165,20 @@ exports.update = function (req, res, handle) {
  * @inner
  *
  */
-exports.delete = function (req, res, handle) {
+exports.delete = async function (req, res) {
     if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
     const groupId = parseInt(req.params.groupId, 10);
 
-    return db.Group.destroy({where: {id: groupId}})
-        .then((data) => {
+    const group = await db.Group.findById(groupId);
 
-            /*
-             *Data :
-             * [0] : number of rows corresponding to request
-             * [1] : number of affected rows
-             */
+    if (!group) {
+        throw res.boom.notFound();
+    }
 
-            if (!data[0]) {
-                throw res.boom.badImplementation('Missing data !');
-            }
+    await group.destroy({where: {id: groupId}});
 
-            if (data[0] === 1) {
-                return res.status(204).json({});
-            } else if (data[0] === 0) {
-                throw res.boom.notFound();
-            } else {
-                throw res.boom.badImplementation('Too many rows deleted !');
-            }
-        })
-        .catch((err) => handle(err));
+    return res.status(204).json({});
+
 };

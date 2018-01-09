@@ -46,7 +46,7 @@ exports.filterStore = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 /**
@@ -55,9 +55,9 @@ exports.filterStore = async (userId) => {
  *
  * @function filterUpdate
  *
- * @param {INTEGER} userId The id of ther user verified by the function.
+ * @param {INTEGER} userId - The id of ther user verified by the function.
  *
- * @returns {boolean} root user or error : 'Unauthorized'
+ * @returns {boolean} Root user or error : 'Unauthorized'.
  *
  * @async
  */
@@ -68,7 +68,7 @@ exports.filterUpdate = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
 };
 
 /**
@@ -77,9 +77,9 @@ exports.filterUpdate = async (userId) => {
  *
  * @function filterDelete
  *
- * @param {INTEGER} userId The id of ther user verified by the function.
+ * @param {INTEGER} userId - The id of ther user verified by the function.
  *
- * @returns {boolean} root user or error : 'Unauthorized'
+ * @returns {boolean} Root user or error : 'Unauthorized'.
  *
  * @async
  */
@@ -90,5 +90,39 @@ exports.filterDelete = async (userId) => {
         return true;
     }
 
-    throw new Error('Unauthorized');
+    return false;
+};
+
+exports.filterStoreRegistered = async (eventId, targetId, userId) => {
+
+    if (userId === targetId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+    const userIsAdmin = await user.isRoot();
+
+    if (userIsAdmin) {
+        return true;
+    }
+
+    console.log('False !!!!!');
+
+    return false;
+};
+
+exports.filterDeleteRegistered = async (eventId, targetId, userId) => {
+
+    if (userId === targetId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+    const userIsAdmin = await user.isRoot();
+
+    if (userIsAdmin) {
+        return true;
+    }
+
+    return false;
 };

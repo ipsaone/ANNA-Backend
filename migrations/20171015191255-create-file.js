@@ -42,21 +42,33 @@ module.exports = {
         },
 
         /**
-         * ?
+         * Is it a directory ?
          * @var {BOOLEAN} isDir
          */
         isDir: {
             allowNull: false,
             type: Sequelize.BOOLEAN
         },
+        /**
+         * The creation date of the file
+         * @var {DATE} createdAt
+         */
         createdAt: {
             allowNull: false,
             type: Sequelize.DATE
         },
+        /**
+         * The date of the last update of the file
+         * @var {DATE} updatedAt
+         */
         updatedAt: {
             allowNull: false,
             type: Sequelize.DATE
         },
+        /**
+         * The date of deletion of the file
+         * @var {DATE} deletedAt
+         */
         deletedAt: {
             allowNull: true,
             type: Sequelize.DATE
