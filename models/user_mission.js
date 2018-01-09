@@ -11,13 +11,13 @@
  * @module userMission
  */
 
- /**
-  * Defines a mapping between model and table 'UserMission'.
-  *
-  * @function exports
-  * @param {Object} sequelize - The Sequelize object.
-  * @returns {Promise} The promise to define a mapping.
-  */
+/**
+ * Defines a mapping between model and table 'UserMission'.
+ *
+ * @function exports
+ * @param {Object} sequelize - The Sequelize object.
+ * @returns {Promise} The promise to define a mapping.
+ */
 module.exports = (sequelize) => sequelize.define('UserMission', {}, {
     freezeTableName: true,
     timestamps: false,

@@ -10,7 +10,7 @@
  * @implements {up}
  * @implements {down}
  */
- 
+
 module.exports = {
 
     /**

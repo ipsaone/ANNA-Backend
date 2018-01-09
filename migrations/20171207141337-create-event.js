@@ -6,7 +6,7 @@
  */
 
 /**
- * Creates table 'events'
+ * Creates table 'Events'
  * @module createEvents
  * @implements {up}
  * @implements {down}
@@ -15,7 +15,7 @@
 module.exports = {
 
     /**
-     * Sets table 'events'.
+     * Sets table 'Events'.
      *
      * @function up
      *
@@ -30,7 +30,7 @@ module.exports = {
      * @returns {Promise} The promise to create a table.
      *
      */
-    up: (queryInterface, Sequelize) => queryInterface.createTable('events', {
+    up: (queryInterface, Sequelize) => queryInterface.createTable('Events', {
 
         /**
          * The id of the event

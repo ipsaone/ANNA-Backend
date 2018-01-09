@@ -33,7 +33,7 @@ exports.filterList = (folderId, userId) =>
  * @param {INTEGER} userId - The id of the user.
  * @returns {Promise} Uploads a file if directory has 'write' Permission.
  */
-exports.filterUploadNew = (folderId, userId) =>
+exports.filterUploadNew = (folderId, userId) => {
 
     /** Check if directory has 'write' permission */
     const canWriteP = storage.fileHasWritePermission(folderId, userId);

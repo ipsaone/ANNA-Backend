@@ -49,6 +49,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.BOOLEAN
         },
+
         /**
          * The creation date of the file
          * @var {DATE} createdAt
@@ -57,6 +58,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         },
+
         /**
          * The date of the last update of the file
          * @var {DATE} updatedAt
@@ -65,6 +67,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         },
+
         /**
          * The date of deletion of the file
          * @var {DATE} deletedAt

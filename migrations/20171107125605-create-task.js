@@ -15,7 +15,7 @@
 module.exports = {
 
     /**
-     * Sets table 'Up'.
+     * Sets table 'Tasks'.
      *
      * @function up
      *

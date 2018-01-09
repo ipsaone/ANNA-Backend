@@ -168,6 +168,7 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         },
+
         /**
          * The date of deletion of the file
          * @var {DATE} deletedAt
