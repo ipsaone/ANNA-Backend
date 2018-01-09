@@ -9,7 +9,7 @@ const policy = require('../policies/user_policy');
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - the error handling function
+ * @param {Object} handle - The error handling function.
  *
  * @returns {Object} promise
  *
@@ -17,8 +17,10 @@ const policy = require('../policies/user_policy');
 exports.index = async function (req, res) {
     const users = await db.User.findAll();
 
+    const filteredUsers = await policy.filterIndex(users, req.session.auth);
 
-    return res.status(200).json(users);
+
+    return res.status(200).json(filteredUsers);
 };
 
 
@@ -52,7 +54,9 @@ exports.show = async function (req, res) {
         throw res.boom.notFound();
     }
 
-    return res.status(200).json(user);
+    const filteredUser = await policy.filterShow(user, req.session.auth);
+
+    return res.status(200).json(filteredUser);
 
 };
 
@@ -189,10 +193,10 @@ exports.posts = function (req, res, handle) {
  * Get all user's groups.
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     The response to be sent.
- * @param {obj} handle  - the error handling function.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.getGroups = function (req, res, handle) {
@@ -220,7 +224,7 @@ exports.getGroups = function (req, res, handle) {
  * Add user to group.
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
+ * @param {Object} res - The response to be sent.
  * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
