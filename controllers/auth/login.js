@@ -4,11 +4,10 @@ const db = require('../../models');
 const bcrypt = require('bcrypt');
 const joi = require('joi');
 
-const loginSchema = joi.object().keys({
-    username: joi.string(),
-    password: joi.string()
-})
-    .with('username', 'password');
+const schema = joi.object().keys({
+    username: joi.string().required(),
+    password: joi.string().required()
+});
 
 /**
  *
@@ -24,7 +23,7 @@ const loginSchema = joi.object().keys({
 module.exports = async (req, res) => {
 
     // Validate user input
-    const validation = joi.validate(req.body, loginSchema);
+    const validation = joi.validate(req.body, schema);
 
     if (validation.error) {
         return res.boom.badRequest(validation.error);
