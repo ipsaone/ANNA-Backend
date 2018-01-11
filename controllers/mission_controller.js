@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file Manages missions
+ * @see {@link module:mission}
+ */
+
+/**
+ * @module mission
+ */
+
 const db = require('../models');
 const policy = require('../policies/mission_policy');
 
@@ -7,11 +16,16 @@ const policy = require('../policies/mission_policy');
  *
  * Get all existing missions.
  *
+ * @function index
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.index = async (req, res) => {
@@ -31,11 +45,16 @@ exports.index = async (req, res) => {
  *
  * Get a single mission.
  *
+ * @function show
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.show = async (req, res) => {
@@ -68,11 +87,16 @@ exports.show = async (req, res) => {
  *
  * Create and store a new mission.
  *
+ * @function store
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.store = async (req, res) => {
@@ -106,11 +130,16 @@ exports.store = async (req, res) => {
  *
  * Updates an existing mission.
  *
+ * @function update
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.update = async function (req, res) {
@@ -142,11 +171,16 @@ exports.update = async function (req, res) {
  *
  * Delete an existing mission.
  *
+ * @function delete
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.delete = async function (req, res) {

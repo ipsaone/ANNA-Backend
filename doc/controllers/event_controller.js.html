@@ -28,43 +28,65 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+/**
+ * @file Manages events
+ * @see {@link module:event}
+ */
+
+/**
+ * @module event
+ */
+
 const db = require('../models');
+const policy = require('../policies/event_policy.js');
 
 /**
  *
- * Gets all events
+ * Gets all events.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function index
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
-    return db.Event.findAll()
+    return policy.filterIndex()
+        .then(() => db.Event.findAll())
         .then((events) => res.json(events))
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
- * Gets a single event
+ * Gets a single event.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function show
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.eventId !== 'number') {
-
+    if (isNaN(parseInt(req.params.eventId, 10))) {
         throw res.boom.badRequest();
     }
+    const eventId = parseInt(req.params.eventId, 10);
 
-    return db.Event.findOne({where: {id: req.params.eventId}})
+    return policy.filterShow()
+        .then(() => db.Event.findOne({where: {id: eventId}}))
         .then((event) => {
             if (event) {
                 return res.status(200).json(event);
@@ -75,20 +97,24 @@ exports.show = function (req, res, handle) {
         .catch((err) => handle(err));
 };
 
-/*
+/**
  *
- * Creates a new event and stores it
+ * Creates a new event and stores it.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function store
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
     if (typeof req.body.name !== 'string') {
-
         throw res.boom.badRequest();
     }
 
@@ -99,7 +125,8 @@ exports.store = function (req, res, handle) {
     req.body.name = req.body.name.toLowerCase();
 
 
-    return db.Event.create(req.body)
+    return policy.filterStore(req.session.auth)
+        .then(() => db.Event.create(req.body))
         .then((event) => res.status(201).json(event))
         .catch(db.Sequelize.ValidationError, () => {
             throw res.boom.badRequest();
@@ -109,21 +136,25 @@ exports.store = function (req, res, handle) {
 
 /**
  *
- * Updates an existing event
+ * Updates an existing event.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function update
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.body.name !== 'string' ||
-        typeof req.params.eventId !== 'number') {
-
+    if (isNaN(parseInt(req.params.eventId, 10))) {
         throw res.boom.badRequest();
     }
+    const eventId = parseInt(req.params.eventId, 10);
 
     /*
      * To lower case to avoid security problems
@@ -131,45 +162,57 @@ exports.update = function (req, res, handle) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    return db.Event.update(req.body, {where: {id: req.params.eventId}})
+    return policy.filterUpdate(req.session.auth)
+        .then(() => db.Event.update(req.body, {where: {id: eventId}}))
         .then(() => res.status(204).json({}))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 
 /**
  *
- * Deletes an event
+ * Deletes an event.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function delete
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.eventId !== 'number') {
-
+    if (isNaN(parseInt(req.params.eventId, 10))) {
         throw res.boom.badRequest();
     }
+    const eventId = parseInt(req.params.eventId, 10);
 
-    return db.Event.destroy({where: {id: req.params.eventId}})
+    return policy.filterDelete(req.session.auth)
+        .then(() => db.Event.destroy({where: {id: eventId}}))
         .then((data) => {
 
             /*
-             *Data :
-             * [0] : number of rows corresponding to request
-             * [1] : number of affected rows
+             * Data :
+             *  [0] : number of rows corresponding to request
+             *  [1] : number of affected rows
              */
 
-            if (!data[0]) {
+            if (!data) {
                 throw res.boom.badImplementation('Missing data !');
             }
 
-            if (data[0] === 1) {
+            if (data.length === 1) {
                 return res.status(204).json({});
-            } else if (data[0] === 0) {
+            } else if (data.length === 0) {
                 throw res.boom.notFound();
             } else {
                 throw res.boom.badImplementation('Too many rows deleted !');
@@ -187,13 +230,13 @@ exports.delete = function (req, res, handle) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addGroups">addGroups</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteGroups">deleteGroups</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#getGroups">getGroups</a></li><li><a href="global.html#index">index</a></li><li><a href="global.html#list">list</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#posts">posts</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#store">store</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#uploadNew">uploadNew</a></li><li><a href="global.html#uploadRev">uploadRev</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-auth.html">auth</a></li><li><a href="module-event.html">event</a></li><li><a href="module-group.html">group</a></li><li><a href="module-log.html">log</a></li><li><a href="module-mission.html">mission</a></li><li><a href="module-post.html">post</a></li><li><a href="module-storage.html">storage</a></li><li><a href="module-user.html">user</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 21 2017 13:58:06 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 08 2018 12:09:10 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>

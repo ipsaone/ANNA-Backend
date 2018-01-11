@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file Manages users
+ * @see {@link module:user}
+ */
+
+/**
+ * @module user
+ */
+
 const db = require('../models');
 const policy = require('../policies/user_policy');
 
@@ -7,20 +16,23 @@ const policy = require('../policies/user_policy');
  *
  * Get all existing users.
  *
+ * @function index
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.index = async function (req, res) {
     const users = await db.User.findAll();
 
-    const filteredUsers = await policy.filterIndex(users, req.session.auth);
 
-
-    return res.status(200).json(filteredUsers);
+    return res.status(200).json(users);
 };
 
 
@@ -28,11 +40,16 @@ exports.index = async function (req, res) {
  *
  * Get a single user.
  *
+ * @function show
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.show = async function (req, res) {
@@ -54,9 +71,7 @@ exports.show = async function (req, res) {
         throw res.boom.notFound();
     }
 
-    const filteredUser = await policy.filterShow(user, req.session.auth);
-
-    return res.status(200).json(filteredUser);
+    return res.status(200).json(user);
 
 };
 
@@ -64,11 +79,16 @@ exports.show = async function (req, res) {
  *
  * Create a store a new user.
  *
+ * @function store
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.store = async function (req, res) {
@@ -90,11 +110,16 @@ exports.store = async function (req, res) {
  *
  * Updates an existing user.
  *
+ * @function update
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.update = async function (req, res) {
@@ -126,11 +151,16 @@ exports.update = async function (req, res) {
  *
  * Deletes an existing user.
  *
+ * @function delete
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - the error handling function
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.delete = async function (req, res) {
@@ -157,6 +187,8 @@ exports.delete = async function (req, res) {
  * Get all user's posts
  * Can get altered with scopes.
  *
+ * @function posts
+ *
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
@@ -165,6 +197,9 @@ exports.delete = async function (req, res) {
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.posts = function (req, res, handle) {
@@ -192,11 +227,16 @@ exports.posts = function (req, res, handle) {
  *
  * Get all user's groups.
  *
+ * @function getGroups
+ *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.getGroups = function (req, res, handle) {
@@ -223,11 +263,16 @@ exports.getGroups = function (req, res, handle) {
  *
  * Add user to group.
  *
+ * @function addGroups
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - the error handling function
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  *
  */
 exports.addGroups = async function (req, res) {
@@ -250,15 +295,18 @@ exports.addGroups = async function (req, res) {
 };
 
 /**
- *
  * Remove user from groups.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function deleteGroups
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:user
+ * @inner
  */
 exports.deleteGroups = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {

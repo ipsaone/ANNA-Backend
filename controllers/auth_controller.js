@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file Manages authentification
+ * @see {@link module:auth}
+ */
+
+/**
+ * @module auth
+ */
+
 const db = require('../models');
 const bcrypt = require('bcrypt');
 
@@ -7,11 +16,16 @@ const bcrypt = require('bcrypt');
  *
  * Logs in a user.
  *
- * @param {obj} req      - The user request.
- * @param {obj} res      the response to be sent.
- * @param {obj} handle   - the error handling function
+ * @function login
  *
- * @returns {Object} promise
+ * @param {obj} req      - The user request.
+ * @param {obj} res      - The response to be sent.
+ * @param {obj} handle   - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:auth
+ * @inner
  *
  */
 exports.login = async (req, res) => {
@@ -52,10 +66,15 @@ exports.login = async (req, res) => {
  *
  * Logs out a user.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
+ * @function logout
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:auth
+ * @inner
  *
  */
 exports.logout = (req, res) => {
@@ -70,11 +89,16 @@ exports.logout = (req, res) => {
  *
  * Checks a user is connected.
  *
- * @param {obj} req - the user request
- * @param {obj} res - the response to be sent
- * @param {obj} handle - the error handling function
+ * @function  check
  *
- * @returns {obj} promise
+ * @param {obj} req - The user request.
+ * @param {obj} res - The response to be sent.
+ * @param {obj} handle - The error handling function.
+ *
+ * @returns {obj} Promise.
+ *
+ * @memberof module:auth
+ * @inner
  *
  */
 exports.check = async (req, res) => {

@@ -28,17 +28,31 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+/**
+ * @file Manages groups
+ * @see {@link module:group}
+ */
+
+/**
+ * @module group
+ */
+
 const db = require('../models');
 
 /**
  *
- * Get all existing groups
+ * Get all existing groups.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function index
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -49,23 +63,28 @@ exports.index = function (req, res, handle) {
 
 /**
  *
- * Get an existing group
+ * Get an existing group.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function show
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.groupId !== 'number') {
-
+    if (isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
+    const groupId = parseInt(req.params.groupId, 10);
 
     return db.Group.findOne({
-        where: {id: req.params.groupId},
+        where: {id: groupId},
         include: ['users']
     })
         .then((group) => {
@@ -80,13 +99,18 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Creates a new group and stores it
+ * Creates a new group and stores it.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function store
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -104,35 +128,44 @@ exports.store = function (req, res, handle) {
 
     return db.Group.create(req.body)
         .then((group) => res.status(201).json(group))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 
 /**
  *
- * Updates an existing group
+ * Updates an existing group.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function update
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.body.name !== 'string' ||
-        typeof req.params.groupId !== 'number') {
-
+    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
+    const groupId = parseInt(req.params.groupId, 10);
 
     /*
-     * To lower case to avoid security problems
+     * To lower case to avoid segroupty problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
     req.body.name = req.body.name.toLowerCase();
 
-    return db.Group.update(req.body, {where: {id: req.params.groupId}})
+    return db.Group.update(req.body, {where: {id: groupId}})
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -140,22 +173,27 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Deletes an existing group
+ * Deletes an existing group.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function delete
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.eventId !== 'number') {
-
+    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
+    const groupId = parseInt(req.params.groupId, 10);
 
-    return db.Group.destroy({where: {id: req.params.groupId}})
+    return db.Group.destroy({where: {id: groupId}})
         .then((data) => {
 
             /*
@@ -188,13 +226,13 @@ exports.delete = function (req, res, handle) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addGroups">addGroups</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteGroups">deleteGroups</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#getGroups">getGroups</a></li><li><a href="global.html#index">index</a></li><li><a href="global.html#list">list</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#posts">posts</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#store">store</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#uploadNew">uploadNew</a></li><li><a href="global.html#uploadRev">uploadRev</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-auth.html">auth</a></li><li><a href="module-event.html">event</a></li><li><a href="module-group.html">group</a></li><li><a href="module-log.html">log</a></li><li><a href="module-mission.html">mission</a></li><li><a href="module-post.html">post</a></li><li><a href="module-storage.html">storage</a></li><li><a href="module-user.html">user</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 21 2017 13:58:06 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 08 2018 12:09:10 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>

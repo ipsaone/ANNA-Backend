@@ -1,16 +1,30 @@
 'use strict';
 
+/**
+ * @file Manages groups
+ * @see {@link module:group}
+ */
+
+/**
+ * @module group
+ */
+
 const db = require('../models');
 
 /**
  *
  * Get all existing groups.
  *
- * @param {Object} req - the user request.
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function index
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.index = async function (req, res) {
@@ -23,11 +37,16 @@ exports.index = async function (req, res) {
  *
  * Get an existing group.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function show
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.show = async function (req, res) {
@@ -53,11 +72,16 @@ exports.show = async function (req, res) {
  *
  * Creates a new group and stores it.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function store
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.store = async function (req, res) {
@@ -89,11 +113,16 @@ exports.store = async function (req, res) {
  *
  * Updates an existing group.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function update
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.update = async function (req, res) {
@@ -103,7 +132,7 @@ exports.update = async function (req, res) {
     const groupId = parseInt(req.params.groupId, 10);
 
     /*
-     * To lower case to avoid security problems
+     * To lower case to avoid segroupty problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
     req.body.name = req.body.name.toLowerCase();
@@ -124,11 +153,16 @@ exports.update = async function (req, res) {
  *
  * Deletes an existing group.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function delete
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:group
+ * @inner
  *
  */
 exports.delete = async function (req, res) {

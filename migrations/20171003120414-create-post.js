@@ -1,18 +1,27 @@
 'use strict';
 
 /**
+ * @file Manages the table containing all posts in the database
+ * @see {@link module:createPosts}
+ */
+
+/**
  * Creates table 'Posts'
  * @module createPosts
  * @implements {up}
  * @implements {down}
  */
 
-
 module.exports = {
 
-    /*
-     * Set table 'Posts'
+    /**
+     * Sets table 'Posts'.
+     *
      * @function up
+     *
+     * @param {Object} queryInterface - A query interface.
+     * @param {Object} Sequelize - The Sequelize object.
+     *
      * @implements {id}
      * @implements {title}
      * @implements {markdown}
@@ -21,12 +30,15 @@ module.exports = {
      * @implements {published}
      * @implements {publishedAt}
      * @implements {updatedAt}
+     *
+     * @returns {Promise} The promise to create a table.
+     *
      */
     up: (queryInterface, Sequelize) => queryInterface.createTable('Posts', {
 
         /**
          * The id of the post
-         * @var id
+         * @var {INTEGER} id
          */
         id: {
             allowNull: false,
@@ -37,7 +49,7 @@ module.exports = {
 
         /**
          * The title of the post
-         * @var title
+         * @var {STRING} title
          */
         title: {
             allowNull: false,
@@ -47,7 +59,7 @@ module.exports = {
 
         /**
          * The content sent by the author
-         * @var markdown
+         * @var {TEXT} markdown
          */
         markdown: {
             allowNull: false,
@@ -56,7 +68,7 @@ module.exports = {
 
         /**
          * The content seen by the user
-         * @var content
+         * @var {TEXT} content
          */
         content: {
             allowNull: false,
@@ -65,7 +77,7 @@ module.exports = {
 
         /**
          * The id of the author
-         * @var authorId
+         * @var {INTEGER} authorId
          */
         authorId: {
             allowNull: true,
@@ -80,7 +92,7 @@ module.exports = {
 
         /**
          * Boolean that indicates if the post is published or a draft
-         * @var published
+         * @var {BOOLEAN} published
          */
         published: {
             allowNull: false,
@@ -90,7 +102,7 @@ module.exports = {
 
         /**
          * The date of publication of the Posts
-         * @var publishedAt
+         * @var {DATE} publishedAt
          */
         publishedAt: {type: Sequelize.DATE},
         createdAt: {
@@ -100,7 +112,7 @@ module.exports = {
 
         /**
          * The date of the last update of the post
-         * @var updatedAt
+         * @var {DATE} updatedAt
          */
         updatedAt: {
             allowNull: false,
@@ -108,9 +120,12 @@ module.exports = {
         }
     }),
 
-    /*
-     * Reset the table 'Posts'
+    /**
+     * Resets the table 'Posts'.
+     *
      * @function down
+     * @param {Object} queryInterface - A query interface.
+     * @returns {Promise} The promise to drop a table.
      */
     down: (queryInterface) => queryInterface.dropTable('Posts')
 };

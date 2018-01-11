@@ -1,16 +1,27 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:auth}
+ */
+
+/**
+ * @module auth
+ */
+
 const config = require('../config/config');
 
 /**
  *
  * Checks the request to see if the user is logged in.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} next    the next middleware function
+ * @function exports
  *
- * @returns {obj} call to next
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} next    - The next middleware function.
+ *
+ * @returns {obj} Call to next.
  *
  */
 module.exports = (req, res, next) => {

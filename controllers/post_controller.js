@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file Manages posts
+ * @see {@link module:post}
+ */
+
+/**
+ * @module post
+ */
+
 const db = require('../models');
 const policy = require('../policies/post_policy');
 
@@ -9,6 +18,8 @@ const policy = require('../policies/post_policy');
  * Get all existing posts
  * Can get altered with scopes to filter publishing.
  *
+ * @function index
+ *
  * @example GET /posts?published=true  -> return all published posts
  * @example GET /posts?published=false -> return all drafter posts
  *
@@ -17,6 +28,9 @@ const policy = require('../policies/post_policy');
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -48,11 +62,16 @@ exports.index = function (req, res, handle) {
  *
  * Get an existing post.
  *
- * @param {obj} req     the user request.
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function show
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -81,11 +100,16 @@ exports.show = function (req, res, handle) {
  *
  * Create and store a new post.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function store
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -105,11 +129,16 @@ exports.store = function (req, res, handle) {
  *
  * Updates an existing post.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  - the error handling function
+ * @function update
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -138,11 +167,16 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing post.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  - the error handling function
+ * @function delete
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:post
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {

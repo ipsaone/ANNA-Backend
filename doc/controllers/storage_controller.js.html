@@ -28,19 +28,30 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+/**
+ * @file Manages files in the database
+ * @see {@link module:storage}
+ */
+
+/**
+ * @module storage
+ */
+
 const db = require('../models');
 const escape = require('escape-html');
-const Storage = require('../repositories/Storage');
+const policy = require('../policies/storage_policy');
 
-const getChildrenData = (req, res, folderId) =>
+const getChildrenData = (folderId) =>
     db.File.findAll() // Get all files
 
         // Check if file exists
         .then((files) => {
+            console.log('there !');
             if (files.map((item) => item.id).includes(folderId)) {
                 return files;
             }
-            throw res.boom.notFound();
+
+            return [];
 
         })
 
@@ -65,13 +76,18 @@ const getChildrenData = (req, res, folderId) =>
 
 /**
  *
- * Download a file or its metadata
+ * Download a file or its metadata.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function download
  *
- * @returns {obj} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.download = (req, res, handle) => {
@@ -103,12 +119,14 @@ exports.download = (req, res, handle) => {
     });
 
     if (dl) {
-        return data.then(() => data.getPath(true))
+        return policy.filterDownloadContents()
+            .then(() => data.then(() => data.getPath(true)))
             .then((path) => res.download(path))
             .catch((err) => handle(err));
     }
 
-    return data.then((contents) => res.json(contents))
+    return policy.filterDownloadMeta()
+        .then(() => data.then((contents) => res.json(contents)))
         .catch((err) => handle(err));
 
 
@@ -121,26 +139,40 @@ exports.download = (req, res, handle) => {
 
 /**
  *
- * Upload a new revision for an existing file
+ * Upload a new revision for an existing file.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function uploadRev
  *
- * @returns {obj} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ * @todo for security, better escape req.body, like validating against a schema ?
+ * @todo handle file contents upload !
+ *
+ * @returns {obj} Promise.
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.uploadRev = (req, res, handle) => {
-    if (typeof req.params.fileId !== 'number') {
-
+    if (isNaN(parseInt(req.params.fileId, 10))) {
         return handle(res.boom.badRequest());
     }
+    const fileId = parseInt(req.params.fileId, 10);
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    Object.keys(req.body).map(function (key) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = escape(req.body[key]);
+        }
+
+        return true;
+    });
 
     // Find the file in database and add new data
-    return db.File.findOne({where: {id: req.params.fileId}})
+    return policy.filterUploadRev()
+        .then(() => db.File.findOne({where: {id: fileId}}))
         .then((file) => {
             console.log(req.file);
 
@@ -153,46 +185,69 @@ exports.uploadRev = (req, res, handle) => {
 
 /**
  *
- * Upload a new file
+ * Upload a new file.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function uploadNew
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.uploadNew = (req, res, handle) => {
+
+    /*
+     * ATTENTION : NO INPUT VALIDATION !
+     * (Integer checking for dirId/groupId)
+     */
+
     if (!req.file) {
         throw res.boom.badRequest();
     }
 
     // Escape req.body strings
-    req.body = req.body.map((elem) => escape(elem));
+    Object.keys(req.body).map(function (key) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = escape(req.body[key]);
+        }
+
+        return true;
+    });
 
     // Create the file and its data
-    return Storage.createNewFile(req.body, req.file.path)
-        .then(() => res.status(204))
+    return policy.filterUploadNew(req.body.dirId, req.session.auth)
+        .then(() => db.File.createNew(req.body, req.file.path, req.session.auth, false))
+        .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
 
 /**
  *
- * List contents of a folder
+ * List contents of a folder.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function list
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.list = (req, res, handle) => {
     // Fail if the folder isn't defined
-    if (!req.params.folderId || !parseInt(req.params.folderId, 10)) {
+    if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
         throw res.boom.badRequest();
     }
-
+    const folderId = parseInt(req.params.folderId, 10);
     const file = db.File;
 
     if (req.query.filesOnly) {
@@ -201,17 +256,19 @@ exports.list = (req, res, handle) => {
         file.scope('folders');
     }
 
-    const folderId = parseInt(req.params.folderId, 10);
-
-    const childrenData = getChildrenData(req, res, folderId);
-    const folderFile = db.File.findOne({where: {id: folderId}});
+    const childrenData = getChildrenData(folderId);
+    const folderFile = db.File.findOne({
+        where: {id: folderId},
+        rejectOnEmpty: true
+    });
     const folderData = folderFile.then((thisFile) => thisFile.getData());
 
-    return Promise.all([
-        folderFile,
-        folderData,
-        childrenData
-    ])
+    return policy.filterList(folderId, req.session.auth)
+        .then(() => Promise.all([
+            folderFile,
+            folderData,
+            childrenData
+        ]))
         .then((results) => {
             const response = results[1];
 
@@ -226,13 +283,18 @@ exports.list = (req, res, handle) => {
 
 /**
  *
- * Deletes a file or folder
+ * Deletes a file or folder.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function delete
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:storage
+ * @inner
  *
  */
 exports.delete = (req, res, handle) => {
@@ -241,7 +303,8 @@ exports.delete = (req, res, handle) => {
         throw res.boom.badRequest();
     }
 
-    return db.Data.destroy({where: {fileId: req.params.fileId}})
+    return policy.filterDelete()
+        .then(() => db.Data.destroy({where: {fileId: req.params.fileId}}))
         .then(() => db.File.destroy({where: {id: req.params.fileId}}))
         .then(() => res.status(204).send())
         .catch((err) => handle(err));
@@ -256,13 +319,13 @@ exports.delete = (req, res, handle) => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addGroups">addGroups</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteGroups">deleteGroups</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#getGroups">getGroups</a></li><li><a href="global.html#index">index</a></li><li><a href="global.html#list">list</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#posts">posts</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#store">store</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#uploadNew">uploadNew</a></li><li><a href="global.html#uploadRev">uploadRev</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-auth.html">auth</a></li><li><a href="module-event.html">event</a></li><li><a href="module-group.html">group</a></li><li><a href="module-log.html">log</a></li><li><a href="module-mission.html">mission</a></li><li><a href="module-post.html">post</a></li><li><a href="module-storage.html">storage</a></li><li><a href="module-user.html">user</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 21 2017 13:58:06 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 08 2018 12:09:10 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>

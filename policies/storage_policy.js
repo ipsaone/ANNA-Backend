@@ -1,15 +1,42 @@
 'use strict';
 
-const storage = require('../repositories/storage');
+/**
+ * @file
+ * @see {@link module:storage}
+ */
+
+/**
+ * @module storage
+ */
+
+const storage = require('../repositories/Storage');
 const db = require('../models');
 
-
+/**
+ * List files in directory.
+ *
+ * @function filterList
+ * @param {INTEGER} folderId - The id of the selected folder.
+ * @param {INTEGER} userId - The id of the user.
+ * @returns {Promise} List all files.
+ */
 exports.filterList = (folderId, userId) =>
-    // Check if directory has 'read' permission
+
+    /** Check if directory has 'read' permission */
     storage.fileHasReadPermission(folderId, userId);
 
+/**
+ * Filters users who can upload files.
+ *
+ * @function filterUploadNew
+ * @async
+ * @param {INTEGER} folderId - The id of the selected folder.
+ * @param {INTEGER} userId - The id of the user.
+ * @returns {Promise} Uploads a file if directory has 'write' Permission.
+ */
 exports.filterUploadNew = async (folderId, userId) => {
-    // Check if directory has 'write' permission
+
+    /** Check if directory has 'write' permission */
     const canWriteP = storage.fileHasWritePermission(folderId, userId);
     const folder = await db.File.findById(folderId);
     const canWrite = await canWriteP;
@@ -26,11 +53,23 @@ exports.filterUploadNew = async (folderId, userId) => {
 
 };
 
+/**
+ * Filters users who can update files.
+ *
+ * @function filterUploadRev
+ * @async
+ *
+ * @param {INTEGER} fileId - The id of the file.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} Update metadata if resolved.
+ */
 exports.filterUploadRev = async (fileId, userId) => {
 
-    /*
+    /**
      * Check if directory has 'write' permission for metadata update
      * Check if file has 'write' permission for file update
+     * @const file
      */
 
     const file = await db.File.findById(fileId);
@@ -50,10 +89,23 @@ exports.filterUploadRev = async (fileId, userId) => {
 
 };
 
+/**
+ * Filters users who can download metadata.
+ *
+ * @function filterDownloadMeta
+ * @async
+ *
+ * @param {INTEGER} fileId - The id of the file.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} Downloads metadata if directory has 'read' permission.
+ */
 exports.filterDownloadMeta = async (fileId, userId) => {
 
-    // Check if directory has 'read' permissions for metadata download
-
+    /**
+     * Checks if directory has 'read' permissions for metadata download
+     * @const file
+     */
     const file = await db.File.findById(fileId);
 
     if (!file) {

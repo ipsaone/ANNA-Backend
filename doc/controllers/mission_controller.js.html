@@ -28,47 +28,64 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+/**
+ * @file Manages missions
+ * @see {@link module:mission}
+ */
+
+/**
+ * @module mission
+ */
+
 const db = require('../models');
+const policy = require('../policies/mission_policy');
 
 /**
  *
- * Get all existing missions
+ * Get all existing missions.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function index
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
-exports.index = function (req, res, handle) {
-    return db.Missions.findAll()
+exports.index = (req, res, handle) =>
+    policy.filterIndex()
+        .then(() => db.Mission.findAll())
         .then((missions) => res.status(200).json(missions))
         .catch((err) => handle(err));
-};
 
 /**
  *
- * Get a single mission
+ * Get a single mission.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function show
  *
- * @returns {obj} promise
+ * @param {Object} req - the user request
+ * @param {Object} res - the response to be sent
+ * @param {Object} handle - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
-    if (typeof req.params.missionId !== 'number') {
-
+    if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
+    const missionId = parseInt(req.params.missionId, 10);
 
-
-    return db.Missions.findOne({
-        where: {id: req.params.missionId},
-        rejectOnEmpty: true
-    })
+    return policy.filterShow()
+        .then(() => db.Mission.findOne({where: {id: missionId}}))
         .then((mission) => {
             if (mission) {
                 return res.status(200).json(mission);
@@ -81,40 +98,57 @@ exports.show = function (req, res, handle) {
 
 /**
  *
- * Create and store a new mission
+ * Create and store a new mission.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function store
  *
- * @returns {obj} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
-    return db.Missions.create(req.body)
+    return policy.filterStore(req.session.auth)
+        .then(() => db.Missions.create(req.body))
         .then((mission) => res.status(201).json(mission))
-        .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
+        .catch((err) => {
+            if (err instanceof db.Sequelize.ValidationError) {
+                res.boom.badRequest(err);
+            }
+            throw err;
+        })
         .catch((err) => handle(err));
 };
 
 /**
  *
- * Updates an existing mission
+ * Updates an existing mission.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function update
  *
- * @returns {obj} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
-    if (typeof req.params.missionId !== 'number') {
-
-        return handle(res.boom.badRequest());
+    if (isNaN(parseInt(req.params.missionId, 10))) {
+        throw res.boom.badRequest();
     }
+    const missionId = parseInt(req.params.missionId, 10);
 
-    return db.Missions.update(req.body, {where: {id: req.params.missionId}})
+    return policy.filterUpdate(req.session.auth)
+        .then(() => db.Missions.update(req.body, {where: {id: missionId}}))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())
         .catch((err) => handle(err));
@@ -122,22 +156,28 @@ exports.update = function (req, res, handle) {
 
 /**
  *
- * Delete an existing mission
+ * Delete an existing mission.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  the error handling function
+ * @function delete
  *
- * @returns {obj} promise
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
+ * @param {obj} handle  - the error handling function
+ *
+ * @returns {Object} promise
+ *
+ * @memberof module:mission
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
-    if (typeof req.params.missionId !== 'number') {
-
+    if (isNaN(parseInt(req.params.missionId, 10))) {
         throw res.boom.badRequest();
     }
+    const missionId = parseInt(req.params.missionId, 10);
 
-    return db.Missions.destroy({where: {id: req.params.missionId}})
+    return policy.filterDelete(req.session.auth)
+        .then(() => db.Missions.destroy({where: {id: missionId}}))
         .then(() => res.status(204).json({}))
         .catch((err) => handle(err));
 };
@@ -151,13 +191,13 @@ exports.delete = function (req, res, handle) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addGroups">addGroups</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteGroups">deleteGroups</a></li><li><a href="global.html#download">download</a></li><li><a href="global.html#getGroups">getGroups</a></li><li><a href="global.html#index">index</a></li><li><a href="global.html#list">list</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#posts">posts</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#store">store</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#uploadNew">uploadNew</a></li><li><a href="global.html#uploadRev">uploadRev</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-auth.html">auth</a></li><li><a href="module-event.html">event</a></li><li><a href="module-group.html">group</a></li><li><a href="module-log.html">log</a></li><li><a href="module-mission.html">mission</a></li><li><a href="module-post.html">post</a></li><li><a href="module-storage.html">storage</a></li><li><a href="module-user.html">user</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 21 2017 13:58:06 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 08 2018 12:09:10 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>

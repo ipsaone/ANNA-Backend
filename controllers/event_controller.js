@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file Manages events
+ * @see {@link module:event}
+ */
+
+/**
+ * @module event
+ */
+
 const db = require('../models');
 const policy = require('../policies/event_policy.js');
 const userPolicy = require('../policies/user_policy.js');
@@ -8,11 +17,16 @@ const userPolicy = require('../policies/user_policy.js');
  *
  * Gets all events.
  *
+ * @function index
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.index = async function (req, res) {
@@ -39,15 +53,20 @@ exports.index = async function (req, res) {
     return res.status(200).json(toReturn);
 };
 
-/*
+/**
  *
- * Gets a single event
+ * Gets a single event.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function show
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.show = async function (req, res) {
@@ -87,15 +106,20 @@ exports.show = async function (req, res) {
     return res.status(200).json(filtered);
 };
 
-/*
+/**
  *
- * Creates a new event and stores it
+ * Creates a new event and stores it.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function store
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.store = async function (req, res) {
@@ -136,11 +160,16 @@ exports.store = async function (req, res) {
  *
  * Updates an existing event.
  *
+ * @function update
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.update = async function (req, res) {
@@ -181,11 +210,16 @@ exports.update = async function (req, res) {
  *
  * Deletes an event.
  *
+ * @function delete
+ *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
+ *
+ * @memberof module:event
+ * @inner
  *
  */
 exports.delete = async function (req, res) {

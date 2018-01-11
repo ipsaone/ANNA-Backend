@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @file Manages logs
+ * @see {@link module:log}
+ */
+
+/**
+ * @module log
+ */
+
 const db = require('../models');
 const policy = require('../policies/log_policy');
 
@@ -7,11 +16,16 @@ const policy = require('../policies/log_policy');
  *
  * Get all existing logs.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function index
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:log
+ * @inner
  *
  */
 exports.index = function (req, res, handle) {
@@ -25,11 +39,16 @@ exports.index = function (req, res, handle) {
  *
  * Get a single log.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function show
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:log
+ * @inner
  *
  */
 exports.show = function (req, res, handle) {
@@ -61,11 +80,16 @@ exports.show = function (req, res, handle) {
  *
  * Create a new log and store it.
  *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @function store
  *
- * @returns {Object} promise
+ * @param {Object} req - The user request.
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:log
+ * @inner
  *
  */
 exports.store = function (req, res, handle) {
@@ -82,14 +106,19 @@ exports.store = function (req, res, handle) {
 };
 
 /**
- *
+ *LOg
  * Updates an existing log.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
+ * @function update
+ *
+ * @param {obj} req     - the user request
+ * @param {obj} res     - the response to be sent
  * @param {obj} handle  - the error handling function
  *
  * @returns {Object} promise
+ *
+ * @memberof module:log
+ * @inner
  *
  */
 exports.update = function (req, res, handle) {
@@ -108,11 +137,16 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing log.
  *
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- * @param {obj} handle  - the error handling function
+ *@Function delete.
  *
- * @returns {Object} promise
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
+ *
+ * @returns {Object} Promise.
+ *
+ * @memberof module:log
+ * @inner
  *
  */
 exports.delete = function (req, res, handle) {
