@@ -48,8 +48,8 @@ exports.index = async (req, res) => {
  * @function show
  *
  * @param {Object} req - The user request.
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
+ * @param {Object} res - The response to be sent.
+ * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -174,8 +174,8 @@ exports.update = async function (req, res) {
  * @function delete
  *
  * @param {obj} req     - The user request.
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *

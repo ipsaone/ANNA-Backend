@@ -92,10 +92,10 @@ exports.logout = (req, res) => {
  * @function  check
  *
  * @param {obj} req - The user request.
- * @param {obj} res - the response to be sent
- * @param {obj} handle - the error handling function
+ * @param {obj} res - The response to be sent.
+ * @param {obj} handle - The error handling function.
  *
- * @returns {obj} promise
+ * @returns {obj} Promise.
  *
  * @memberof module:auth
  * @inner

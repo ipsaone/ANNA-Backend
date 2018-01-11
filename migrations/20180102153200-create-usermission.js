@@ -13,22 +13,24 @@
  */
 
 module.exports = {
-  /**
-   * Sets table 'UserMission'.
-   *
-   * @function up
-   *
-   * @param {Object} queryInterface - A query interface.
-   * @param {Object} Sequelize - The Sequelize object.
-   *
-   * @implements {id}
-   * @implements {userId}
-   * @implements {missionId}
-   *
-   * @returns {Promise} The promise to create a table.
-   *
-   */
-    up: (queryInterface, Sequelize) => queryInterface.createTable('UserMission', {*
+
+    /**
+     * Sets table 'UserMission'.
+     *
+     * @function up
+     *
+     * @param {Object} queryInterface - A query interface.
+     * @param {Object} Sequelize - The Sequelize object.
+     *
+     * @implements {id}
+     * @implements {userId}
+     * @implements {missionId}
+     *
+     * @returns {Promise} The promise to create a table.
+     *
+     */
+    up: (queryInterface, Sequelize) => queryInterface.createTable('UserMission', {
+
         /**
          * @var {INTEGER} id
          */
@@ -38,6 +40,7 @@ module.exports = {
             primaryKey: true,
             type: Sequelize.INTEGER
         },
+
         /**
          * @var {INTEGER} userId
          */
@@ -52,6 +55,7 @@ module.exports = {
             }
 
         },
+
         /**
          * @var {INTEGER} missionId
          */
@@ -66,6 +70,7 @@ module.exports = {
             }
         }
     }),
+
     /**
      * Resets the table 'EventUser'.
      *

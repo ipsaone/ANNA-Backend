@@ -157,7 +157,7 @@ exports.update = async function (req, res) {
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:user
  * @inner
@@ -269,7 +269,7 @@ exports.getGroups = function (req, res, handle) {
  * @param {Object} res - The response to be sent.
  * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:user
  * @inner
@@ -301,9 +301,9 @@ exports.addGroups = async function (req, res) {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - the error handling function
+ * @param {Object} handle - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:user
  * @inner

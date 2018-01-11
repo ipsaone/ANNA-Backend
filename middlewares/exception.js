@@ -9,7 +9,10 @@
  * @module exception
  */
 
-const http = require('http');
+/*
+ * Commented line to fix eslint error 'http is assigned a value but never used.'
+ * const http = require('http');
+ */
 
 /**
  *
