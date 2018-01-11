@@ -106,16 +106,16 @@ exports.store = function (req, res, handle) {
 };
 
 /**
- *LOg
+ *
  * Updates an existing log.
  *
  * @function update
  *
- * @param {obj} req     - the user request
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  * @memberof module:log
  * @inner
@@ -137,7 +137,7 @@ exports.update = function (req, res, handle) {
  *
  * Deletes an existing log.
  *
- *@Function delete.
+ * @function delete.
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
