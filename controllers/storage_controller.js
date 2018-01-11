@@ -45,7 +45,6 @@ const getChildrenData = async (folderId) => {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -115,7 +114,6 @@ exports.download = async (req, res) => {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  * @todo for security, better escape req.body, like validating against a schema ?
  * @todo handle file contents upload !
  *
@@ -162,7 +160,6 @@ exports.uploadRev = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -212,7 +209,6 @@ exports.uploadNew = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -266,7 +262,6 @@ exports.list = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *

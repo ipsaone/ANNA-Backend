@@ -261,7 +261,6 @@ module.exports = (sequelize, DataTypes) => {
      * @param {Object} changes - The file metadata.
      * @param {string} filePath - The file path to create.
      * @param {integer} userId - The user id.
-     * @param {boolean} dir - Whether the file is a directory or not.
      * @todo max-params
      *
      * @returns {Object} Promise to success boolean.

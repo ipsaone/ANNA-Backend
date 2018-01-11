@@ -20,7 +20,6 @@ const bcrypt = require('bcrypt');
  *
  * @param {obj} req      - The user request.
  * @param {obj} res      - The response to be sent.
- * @param {obj} handle   - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -93,7 +92,6 @@ exports.logout = (req, res) => {
  *
  * @param {obj} req - The user request.
  * @param {obj} res - The response to be sent.
- * @param {obj} handle - The error handling function.
  *
  * @returns {obj} Promise.
  *

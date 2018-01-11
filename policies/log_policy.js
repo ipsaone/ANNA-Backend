@@ -92,7 +92,6 @@ exports.filterStore = (builder, userId) => {
  * Filters users who can update logs.
  *
  * @function filterUpdate
- * @async
  *
  * @param {Object} builder - The builder object.
  * @param {INTEGER} logId - The id of the log.
@@ -130,7 +129,6 @@ exports.filterUpdate = async (builder, logId, userId) => {
  * Only root can delete one.
  *
  * @function filterDelete
- * @async
  *
  * @param {INTEGER} userId - The id of the user who want to delete a log.
  *

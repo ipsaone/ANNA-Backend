@@ -13,15 +13,14 @@ const db = require('../models');
 
 
 /**
- * Checks if a user is an author
+ * Checks if a user is an author.
  * To do so, find wheter one of its group has name "author".
  *
  * @function userIsAuthor
- * @async
  *
  * @param {INTEGER} userId - The id of the user.
  *
- * @returns {Promise} the author group if resolved
+ * @returns {Promise} The author group if resolved.
  */
 const userIsAuthor = async (userId) => {
     const user = await db.User.findById(userId, {include: ['groups']});
@@ -43,7 +42,7 @@ const userIsAuthor = async (userId) => {
 };
 
 /**
- * Gets all published posts
+ * Gets all published posts.
  * Only show drafts if user is an author.
  *
  * @function filterIndex
@@ -83,7 +82,7 @@ exports.filterIndex = (posts, userId) =>
  */
 exports.filterShow = (post, userId) =>
 
-    // Only show drafts is user is an author
+    // Only show drafts is user is an author.
     userIsAuthor(userId)
         .then((isAuthor) => {
             if (post.published || isAuthor) {
@@ -106,7 +105,7 @@ exports.filterShow = (post, userId) =>
  */
 exports.filterStore = (userId) =>
 
-    // Only allow creation if user is an author
+    // Only allow creation if user is an author.
     userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {
