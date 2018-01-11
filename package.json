@@ -71,7 +71,7 @@
     "lint-nofix": "./node_modules/.bin/eslint .",
     "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
     "security": "./node_modules/.bin/nsp check .",
-    "doc": "./node_modules/.bin/jsdoc ."
+    "doc": "./node_modules/.bin/jsdoc ./ -r -c node_modules/jsdoc/conf.json"
   },
   "engines": {
     "node": ">=8.9.0"
