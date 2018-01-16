@@ -9,6 +9,7 @@ const expect = chai.expect;
 chai.use(require('chai-http'));
 const agent = chai.request.agent(server);
 
+
 describe('Auth', () => {
     before('Create test user', () =>
         db.User.create({
@@ -16,6 +17,10 @@ describe('Auth', () => {
             password: 'password_test',
             username: 'login_test'
         }));
+
+    /**
+     *
+     */
 
     it('expect to fail to login (good user / bad password)', () =>
         agent.post('/auth/login')

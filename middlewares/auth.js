@@ -1,10 +1,21 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:auth}
+ */
+
+/**
+ * @module auth
+ */
+
 const config = require('../config/config');
 
 /**
  *
  * Checks the request to see if the user is logged in.
+ *
+ * @function exports
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.

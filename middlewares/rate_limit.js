@@ -1,11 +1,23 @@
 'use strict';
 
-const RateLimit = require('express-rate-limit'); // Rate limiter (DDOS security)
+/**
+ * @file
+ * @see {@link module:rateLimit}
+ */
 
 /**
- *
+ * @module rateLimit
+ */
+
+/**
+ * Rate limiter (DDOS security)
+ * @constant RateLimit
+ */
+const RateLimit = require('express-rate-limit');
+
+/**
  * Handles the rate limiting to avoid Denial-of-Service attacks
- *
+ * @function exports
  */
 module.exports = new RateLimit({
     // 100 requests per minute

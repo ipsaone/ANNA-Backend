@@ -18,15 +18,15 @@
     "escape-html": "^1.0.3",
     "express": "^4.15.2",
     "express-async-await": "^1.1.0",
-    "express-async-errors": "^2.1.0",
-    "express-async-handler": "^1.0.0",
+    "express-async-errors": "^2.1.1",
+    "express-async-handler": "^1.0.1",
     "express-boom": "^2.0.0",
     "express-rate-limit": "^2.11.0",
     "express-request-id": "^1.4.0",
     "express-session": "^1.15.4",
     "helmet": "^3.8.0",
+    "marked": "^0.3.12",
     "joi": "^13.1.0",
-    "marked": "^0.3.9",
     "mmmagic": "^0.4.6",
     "morgan": "^1.9.0",
     "multer": "^1.3.0",
@@ -34,15 +34,15 @@
     "mysql2": "^1.5.1",
     "redis": "^2.8.0",
     "request": "^2.82.0",
-    "sequelize": "^4.28.6"
+    "sequelize": "^4.29.3"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
-    "eslint": "^4.14.0",
+    "eslint": "^4.15.0",
     "eslint-plugin-chai-friendly": "^0.4.1",
     "eslint-plugin-deprecate": "^0.4.2",
-    "eslint-plugin-jsdoc": "^3.3.0",
+    "eslint-plugin-jsdoc": "^3.3.1",
     "eslint-plugin-mocha": "^4.11.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
@@ -71,7 +71,8 @@
     "lint": "./node_modules/.bin/eslint --fix .",
     "lint-nofix": "./node_modules/.bin/eslint .",
     "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
-    "security": "./node_modules/.bin/nsp check ."
+    "security": "./node_modules/.bin/nsp check .",
+    "doc": "./node_modules/.bin/jsdoc ./ -r -c node_modules/jsdoc/conf.json"
   },
   "engines": {
     "node": ">=8.9.0"

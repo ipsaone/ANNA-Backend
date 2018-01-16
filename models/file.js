@@ -1,7 +1,26 @@
 'use strict';
 
+/**
+ * @file Defines a model for 'File' table in database and its associations with the other tables
+ * @see {@link module:file}
+ */
 const mv = require('mv');
 const fs = require('fs');
+
+/**
+ * @module file
+ */
+
+/**
+ * Defines a mapping between model and table 'File'
+ * @function exports
+ *
+ * @param {Object} sequelize - The Sequelize object.
+ * @param {Object} DataTypes - DataTypes
+ *
+ * @returns {Object} Returns File
+ *
+ */
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
@@ -19,6 +38,29 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     File.associate = function (models) {
+
+        /**
+         * Creates singular association with table 'User'
+         * @function belongsToUser
+         */
+        File.belongsTo(models.User, {
+            foreignKey: 'ownerId',
+            as: 'owner'
+        });
+
+        /**
+         * Creates singular association with table 'Group'
+         * @function belongsToGroup
+         */
+        File.belongsTo(models.Group, {
+            foreignKey: 'groupId',
+            as: 'group'
+        });
+
+        /**
+         * Creates plural associations with table 'Log'
+         * @function belongsToManyLog
+         */
         File.belongsToMany(models.Log, {
             as: 'fileLogs',
             through: models.FileLog,

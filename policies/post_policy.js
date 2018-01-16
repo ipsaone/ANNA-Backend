@@ -1,15 +1,27 @@
 'use strict';
 
+/**
+ * @file
+ * @see {@link module:post}
+ */
+
+/**
+ * @module post
+ */
+
 const db = require('../models');
 
 
-/*
- *
+/**
  * Checks if a user is an author
- * To do so, find wheter one of its group has name "author"
+ * To do so, find wheter one of its group has name "author".
  *
- * Returns: promise (the author group if resolved, )
+ * @function userIsAuthor
+ * @async
  *
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} the author group if resolved
  */
 const userIsAuthor = async (userId) => {
     const user = await db.User.findById(userId, {include: ['groups']});
@@ -30,9 +42,20 @@ const userIsAuthor = async (userId) => {
 
 };
 
+/**
+ * Gets all published posts
+ * Only show drafts if user is an author.
+ *
+ * @function filterIndex
+ *
+ * @param {Object} posts - The object containing all posts.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} An array containing all published posts if resolved.
+ */
 exports.filterIndex = (posts, userId) =>
 
-    // Only show drafts is user is an author
+    // Only show drafts if user is an author
     userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {
@@ -47,7 +70,17 @@ exports.filterIndex = (posts, userId) =>
 
         });
 
-
+/**
+ * Gets one post.
+ * Only show drafts if user is an author.
+ *
+ * @function filterShow
+ *
+ * @param {Object} post - A post.
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {Promise} A post.
+ */
 exports.filterShow = (post, userId) =>
 
     // Only show drafts is user is an author
@@ -61,7 +94,16 @@ exports.filterShow = (post, userId) =>
 
         });
 
-
+/**
+ * Filters users who can create a post.
+ * Only authors can create a post.
+ *
+ * @function filterStore
+ *
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {boolean} Either user is an author or the function throws an error 'Unauthorized'.
+ */
 exports.filterStore = (userId) =>
 
     // Only allow creation if user is an author
@@ -75,7 +117,16 @@ exports.filterStore = (userId) =>
 
         });
 
-
+/**
+ * Filters users who can update a post.
+ * Only authors can update a post.
+ *
+ * @function filterUpdate
+ *
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {boolean} Either the user is an author or the function throws an error 'Unauthorized'.
+ */
 exports.filterUpdate = (userId) =>
 
     // Only allow update if user is an author
@@ -90,7 +141,16 @@ exports.filterUpdate = (userId) =>
 
         });
 
-
+/**
+ * Filters users who can delete a post.
+ * Only authors can delete a post.
+ *
+ * @function filterDelete
+ *
+ * @param {INTEGER} userId - The id of the user.
+ *
+ * @returns {boolean} Either the user is an author or the function throws an error 'Unauthorized'.
+ */
 exports.filterDelete = (userId) =>
 
     // Only allow delete if user is an author
@@ -102,5 +162,3 @@ exports.filterDelete = (userId) =>
 
             throw new Error('Unauthorized');
         });
-
-
