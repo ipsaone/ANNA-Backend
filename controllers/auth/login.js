@@ -15,7 +15,6 @@ const schema = joi.object().keys({
  *
  * @param {obj} req      - The user request.
  * @param {obj} res      - The response to be sent.
- * @param {obj} handle   - The error handling function.
  *
  * @returns {Object} Promise.
  *

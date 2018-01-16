@@ -16,26 +16,21 @@ const policy = require('../../policies/event_policy');
 
 module.exports = async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
-        res.boom.badRequest();
+        return res.boom.badRequest();
 
-        return;
     }
     const eventId = parseInt(req.params.eventId, 10);
 
     const authorized = await policy.filterDelete(req.session.auth);
 
     if (!authorized) {
-        res.boom.unauthorized();
-
-        return;
+        return res.boom.unauthorized();
     }
 
     const event = await db.Event.findById(eventId);
 
     if (!event) {
-        res.boom.notFound();
-
-        return;
+        return res.boom.notFound();
     }
 
     await event.destroy();

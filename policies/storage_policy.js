@@ -29,7 +29,6 @@ exports.filterList = (folderId, userId) =>
  * Filters users who can upload files.
  *
  * @function filterUploadNew
- * @async
  * @param {INTEGER} folderId - The id of the selected folder.
  * @param {INTEGER} userId - The id of the user.
  * @returns {Promise} Uploads a file if directory has 'write' Permission.
@@ -57,7 +56,6 @@ exports.filterUploadNew = async (folderId, userId) => {
  * Filters users who can update files.
  *
  * @function filterUploadRev
- * @async
  *
  * @param {INTEGER} fileId - The id of the file.
  * @param {INTEGER} userId - The id of the user.
@@ -93,7 +91,6 @@ exports.filterUploadRev = async (fileId, userId) => {
  * Filters users who can download metadata.
  *
  * @function filterDownloadMeta
- * @async
  *
  * @param {INTEGER} fileId - The id of the file.
  * @param {INTEGER} userId - The id of the user.

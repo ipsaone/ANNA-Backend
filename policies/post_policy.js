@@ -17,7 +17,6 @@ const db = require('../models');
  * To do so, find wheter one of its group has name "author".
  *
  * @function userIsAuthor
- * @async
  *
  * @param {INTEGER} userId - The id of the user.
  *
