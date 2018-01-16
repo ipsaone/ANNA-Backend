@@ -169,14 +169,13 @@ module.exports = (sequelize, DataTypes) => {
                     (err) => {
                         if (err) {
                             console.log('Error while moving file : ', err);
-                            throw err;
+                            reject(err);
                         }
 
-                        return data.save().then(() => resolve(data))
-                            .catch((e) => reject(e));
+                        return resolve();
                     }
                 );
-            });
+            }).then(() => data.save());
 
         } else if (!fileChanges.fileExists && fileChanges.isDir) {
             await data.save();
@@ -261,7 +260,6 @@ module.exports = (sequelize, DataTypes) => {
      * @param {Object} changes - The file metadata.
      * @param {string} filePath - The file path to create.
      * @param {integer} userId - The user id.
-     * @param {boolean} dir - Whether the file is a directory or not.
      * @todo max-params
      *
      * @returns {Object} Promise to success boolean.

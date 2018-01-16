@@ -212,7 +212,7 @@ exports.showTask = async function (req, res) {
     }
 
     // Delete the task and answer accordingly
-    await res.status(204).json(task);
+    return res.status(204).json(task);
 };
 
 exports.updateTask = async function (req, res) {
@@ -242,17 +242,9 @@ exports.updateTask = async function (req, res) {
 
     const updateContents = await policy.filterUpdateTask(req.body, req.session.auth);
 
-    try {
-        await task.update(updateContents);
+    await task.update(updateContents);
 
-        return res.status(200).json(task);
-    } catch (err) {
-        if (typeof err === db.Sequelize.ValidationError) {
-            return res.boom.badRequest();
-        }
-
-        throw err;
-    }
+    return res.status(200).json(task);
 
 };
 
@@ -276,19 +268,10 @@ exports.storeTask = async function (req, res) {
     }
 
 
-    try {
-        const task = await db.Task.create(req.body);
+    const task = await db.Task.create(req.body);
 
 
-        return res.status(200).json(task);
-    } catch (err) {
-
-        if (typeof err === db.Sequelize.ValidationError) {
-            return res.boom.badRequest();
-        }
-
-        throw err;
-    }
+    return res.status(200).json(task);
 
 
 };
@@ -323,7 +306,8 @@ exports.deleteTask = async function (req, res) {
 
     // Delete the task and answer accordingly
     await task.destroy();
-    await res.status(204).json({});
+
+    return res.status(204).json({});
 
 
 };

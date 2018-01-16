@@ -95,7 +95,6 @@ exports.filterDelete = (user) => Promise.resolve(user);
  * Filters users who can create groups.
  *
  * @function filterAddGroups
- * @async
  *
  * @param {Array} groupsId - The id of all groups.
  * @param {INTEGER} userId - The id of the user.
@@ -120,7 +119,6 @@ exports.filterAddGroups = async (groupsId, userId) => {
  * Filters users who can delete a user from a group.
  *
  * @function filterDeleteGroups
- * @async
  *
  * @param {Array} groupsId - The id of all groups.
  * @param {INTEGER} targetId - The id of the user that the user wants to delete from a group.
