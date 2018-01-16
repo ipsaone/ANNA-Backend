@@ -40,24 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     File.associate = function (models) {
 
         /**
-         * Creates singular association with table 'User'
-         * @function belongsToUser
-         */
-        File.belongsTo(models.User, {
-            foreignKey: 'ownerId',
-            as: 'owner'
-        });
-
-        /**
-         * Creates singular association with table 'Group'
-         * @function belongsToGroup
-         */
-        File.belongsTo(models.Group, {
-            foreignKey: 'groupId',
-            as: 'group'
-        });
-
-        /**
          * Creates plural associations with table 'Log'
          * @function belongsToManyLog
          */
