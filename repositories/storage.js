@@ -51,9 +51,9 @@ module.exports = Storage;
  *
  * Compute type for a file path.
  *
- * @param {Object} filePath the file to compute size
+ * @param {Object} filePath - The file to compute size.
  *
- * @returns {Object} promise to file type
+ * @returns {Object} Promise to file type.
  *
  */
 Storage.computeType = function (filePath) {
@@ -75,9 +75,9 @@ Storage.computeType = function (filePath) {
  *
  * Compute size for a file path.
  *
- * @param {Object} filePath - the file to compute size
+ * @param {Object} filePath - The file to compute size.
  *
- * @returns {Object} promise to file size
+ * @returns {Object} Promise to file size.
  *
  */
 Storage.computeSize = function (filePath) {

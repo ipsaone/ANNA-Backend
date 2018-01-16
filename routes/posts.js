@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const postController = require('../controllers/post_controller');
+const postController = require('../controllers/post');
 
 router.route('/')
     .get(postController.index)

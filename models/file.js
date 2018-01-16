@@ -32,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
      * Add data for a file object.
      *
      * @param {obj} fileChanges - The changes in this data.
-     * @param {obj} filePath the path to the file to add data to
-     * @param {obj} userId - the user identifier
+     * @param {obj} filePath - The path to the file to add data to.
+     * @param {obj} userId - The user identifier.
      *
      * @todo finish and test
-     * @returns {Object} promise to directory tree
+     * @returns {Object} Promise to directory tree.
      *
      */
     File.prototype.addData = async function (fileChanges, filePath, userId) {

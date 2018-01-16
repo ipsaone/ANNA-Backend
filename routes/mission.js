@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const missionController = require('../controllers/mission_controller');
+const missionController = require('../controllers/mission');
 
 
 router.route('/:missionId([0-9]+)/task/:taskId([0-9]+)')

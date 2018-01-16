@@ -14,10 +14,10 @@ const schema = joi.object().keys({
  * Logs in a user.
  *
  * @param {obj} req      - The user request.
- * @param {obj} res      The response to be sent.
+ * @param {obj} res      - The response to be sent.
  * @param {obj} handle   - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 module.exports = async (req, res) => {
