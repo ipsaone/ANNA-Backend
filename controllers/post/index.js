@@ -6,17 +6,17 @@ const policy = require('../../policies/post_policy');
 
 /**
  *
- * Get all existing posts
+ * Get all existing posts.
  * Can get altered with scopes to filter publishing.
  *
  * @example GET /posts?published=true  -> return all published posts
  * @example GET /posts?published=false -> return all drafter posts
  *
- * @param {obj} req     - the user request
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handling function.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.index = function (req, res, handle) {

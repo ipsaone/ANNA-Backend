@@ -9,7 +9,6 @@ const policy = require('../../policies/mission_policy');
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -33,7 +32,6 @@ exports.index = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -70,7 +68,6 @@ exports.show = async (req, res) => {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -108,7 +105,6 @@ exports.store = async (req, res) => {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -144,7 +140,6 @@ exports.update = async function (req, res) {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *

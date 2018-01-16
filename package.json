@@ -68,8 +68,8 @@
     "seed": "./node_modules/.bin/sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",
     "clear-db": "./node_modules/.bin/sequelize db:migrate:undo:all",
-    "lint": "./node_modules/.bin/eslint --fix .",
-    "lint-nofix": "./node_modules/.bin/eslint .",
+    "lint": "./node_modules/.bin/eslint --fix --max-warnings 100 .",
+    "lint-nofix": "./node_modules/.bin/eslint --max-warnings 100 .",
     "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
     "security": "./node_modules/.bin/nsp check .",
     "doc": "./node_modules/.bin/jsdoc ./ -r -c node_modules/jsdoc/conf.json"

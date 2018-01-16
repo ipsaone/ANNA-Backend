@@ -9,7 +9,6 @@ const policy = require('../../policies/event_policy');
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *

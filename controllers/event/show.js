@@ -10,7 +10,6 @@ const userPolicy = require('../../policies/user_policy');
  *
  * @param {Object} req - the user request
  * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
  *
  * @returns {Object} promise
  *

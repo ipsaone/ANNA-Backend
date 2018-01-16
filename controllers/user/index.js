@@ -9,7 +9,6 @@ const policy = require('../../policies/user_policy');
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -28,7 +27,6 @@ exports.index = async function (req, res) {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -62,7 +60,6 @@ exports.show = async function (req, res) {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -88,7 +85,6 @@ exports.store = async function (req, res) {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -120,7 +116,6 @@ exports.update = async function (req, res) {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -146,17 +141,17 @@ exports.delete = async function (req, res) {
 
 /**
  *
- * Get all user's posts
+ * Get all user's posts.
  * Can get altered with scopes.
  *
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
- * @param {obj} req     - the user request
- * @param {obj} res     - the response to be sent
- * @param {obj} handle  - the error handling function
+ * @param {obj} req     - The user request.
+ * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handler.
  *
- * @returns {Object} promise
+ * @returns {Object} Promise.
  *
  */
 exports.posts = function (req, res, handle) {
@@ -186,7 +181,7 @@ exports.posts = function (req, res, handle) {
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
+ * @param {obj} handle  - The error handler.
  *
  * @returns {Object} Promise.
  *
@@ -217,7 +212,6 @@ exports.getGroups = function (req, res, handle) {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
@@ -247,7 +241,6 @@ exports.addGroups = async function (req, res) {
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
- * @param {Object} handle - The error handling function.
  *
  * @returns {Object} Promise.
  *
