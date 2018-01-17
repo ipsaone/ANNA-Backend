@@ -48,7 +48,7 @@ exports.filterUploadNew = async (folderId, userId) => {
     console.log(`canWrite : ${canWrite}`);
     console.log(`isDir : ${folder.isDir}`);
 
-    return await canWriteP && folder.isDir;
+    return canWrite && folder.isDir;
 
 };
 

@@ -21,20 +21,14 @@ const allowed = [
  *
  * @function filterIndex
  *
- * @param {Array} l - The creation date of each log.
+ * @param {Array} logs - The creation date of each log.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Object} Returns all logs.
  */
-exports.filterIndex = (l, userId) => {
+exports.filterIndex = (logs, userId) => {
 
-    /**
-     * JSON dates
-     * @const logs
-     */
-    const logs = l.map((log) => log.toJSON());
-
-    const p = logs.map((log, index) => userPolicy
+    const promises = logs.map((log) => log.toJSON()).map((log, index) => userPolicy
         .filterShow(log.author, userId)
         .then((user) => {
             logs[index].author = user;
@@ -43,7 +37,7 @@ exports.filterIndex = (l, userId) => {
         }));
 
 
-    return Promise.all(p).then(() => logs);
+    return Promise.all(promises).then(() => logs);
 };
 
 /**
@@ -51,17 +45,17 @@ exports.filterIndex = (l, userId) => {
  *
  * @function filterShow
  *
- * @param {Date} l - The creation date of the log.
+ * @param {Date} log - The creation date of the log.
  * @param {INTEGER} userId - The id of a user.
  *
  * @returns {Object} Returns one log.
  */
-exports.filterShow = async (l, userId) => {
-    const log = l.toJSON();
+exports.filterShow = async (log, userId) => {
+    const filtered = log.toJSON();
 
-    log.author = await userPolicy.filterShow(log.author, userId);
+    filtered.author = await userPolicy.filterShow(log.author, userId);
 
-    return Promise.resolve(log);
+    return filtered;
 };
 
 /**
