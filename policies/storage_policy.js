@@ -9,7 +9,7 @@
  * @module storage
  */
 
-const storage = require('../repositories/Storage');
+const storage = require('../repositories/storage');
 const db = require('../models');
 
 /**
@@ -44,6 +44,8 @@ exports.filterUploadNew = async (folderId, userId) => {
 
     if (!folder) {
         console.log(`no file #${folderId}`);
+
+        return false;
     }
 
     console.log(folder);
