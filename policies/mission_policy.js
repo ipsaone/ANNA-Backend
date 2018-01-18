@@ -32,7 +32,6 @@ exports.filterShow = () => Promise.resolve(true);
  * Only root can create a mission.
  *
  * @function filterStore
- * @async
  *
  * @param {INTEGER} userId - The id of the user.
  *
@@ -53,7 +52,6 @@ exports.filterStore = async (userId) => {
  * Only root can update a mission.
  *
  * @function filterUpdate
- * @async
  *
  * @param {INTEGER} userId - The id of the user.
  *
@@ -74,7 +72,6 @@ exports.filterUpdate = async (userId) => {
  * Only root can delete a mission.
  *
  * @function filterDelete
- * @async
  *
  * @param {INTEGER} userId - The id of the user trying to delete a mission.
  *

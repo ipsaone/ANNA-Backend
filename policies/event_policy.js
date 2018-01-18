@@ -37,7 +37,6 @@ exports.filterShow = () => Promise.resolve(true);
  *
  * @returns {boolean} Root user or error : 'Unauthorized'.
  *
- * @async
  */
 exports.filterStore = async (userId) => {
     const user = await db.User.findById(userId);
@@ -59,7 +58,6 @@ exports.filterStore = async (userId) => {
  *
  * @returns {boolean} Root user or error : 'Unauthorized'.
  *
- * @async
  */
 exports.filterUpdate = async (userId) => {
     const user = await db.User.findById(userId);
@@ -81,7 +79,6 @@ exports.filterUpdate = async (userId) => {
  *
  * @returns {boolean} Root user or error : 'Unauthorized'.
  *
- * @async
  */
 exports.filterDelete = async (userId) => {
     const user = await db.User.findById(userId);
