@@ -92,5 +92,5 @@ module.exports = {
      * @param {Object} queryInterface - A query interface.
      * @returns {Promise} The promise to drop a table.
      */
-    down: (queryInterface) => queryInterface.dropTable('events')
+    down: (queryInterface) => queryInterface.dropTable('Events')
 };
