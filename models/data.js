@@ -345,6 +345,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      * @todo fix
      *
+     *
      * @returns {string} Data path.
      *
      */

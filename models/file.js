@@ -151,14 +151,13 @@ module.exports = (sequelize, DataTypes) => {
                     (err) => {
                         if (err) {
                             console.log('Error while moving file : ', err);
-                            throw err;
+                            reject(err);
                         }
 
-                        return data.save().then(() => resolve(data))
-                            .catch((e) => reject(e));
+                        return resolve();
                     }
                 );
-            });
+            }).then(() => data.save());
 
         } else if (!fileChanges.fileExists && fileChanges.isDir) {
             await data.save();
