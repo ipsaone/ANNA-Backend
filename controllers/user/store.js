@@ -4,7 +4,7 @@ const db = require.main.require('./models');
 
 /**
  *
- * Updates an existing user.
+ * Create a store a new user.
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
@@ -14,22 +14,16 @@ const db = require.main.require('./models');
  */
 
 module.exports = async function (req, res) {
-    if (isNaN(parseInt(req.params.userId, 10))) {
-        throw res.boom.badRequest();
-    }
-    const userId = parseInt(req.params.userId, 10);
-
-    const user = await db.User.findById(userId);
 
     try {
-        await user.update(req.body);
+        const user = await db.User.create(req.body);
 
-        return res.status(204).json(user);
+
+        return res.status(201).json(user);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest();
+            throw res.boom.badRequest(err);
         }
-
         throw err;
     }
 };

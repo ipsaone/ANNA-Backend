@@ -1,10 +1,11 @@
 'use strict';
 
 const db = require.main.require('./models');
+const policy = require.main.require('./policies/user_policy');
 
 /**
  *
- * Deletes an existing user.
+ * Add user to group.
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
@@ -19,15 +20,15 @@ module.exports = async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    try {
-        await db.UserGroup.destroy({where: {userId}});
-        await db.User.destroy({where: {id: userId}});
+    const groups = await policy.filterAddGroups(req.body.groupsId, req.session.auth);
+    const user = await db.User.findById(userId);
 
-        return res.status(204).send();
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest();
-        }
-        throw err;
+    if (!user) {
+        throw res.boom.badRequest();
     }
+
+
+    await user.addGroups(groups);
+
+    return res.status(204).send();
 };

@@ -4,32 +4,32 @@ const db = require.main.require('./models');
 
 /**
  *
- * Updates an existing user.
+ * Get all user's groups.
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
+ * @param {obj} handle  - The error handler.
  *
  * @returns {Object} Promise.
  *
  */
 
-module.exports = async function (req, res) {
+module.exports = function (req, res, handle) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest();
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const user = await db.User.findById(userId);
-
-    try {
-        await user.update(req.body);
-
-        return res.status(204).json(user);
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
+    return db.User.findOne({
+        where: {id: userId},
+        include: ['groups']
+    })
+        .then((user) => {
+            if (user) {
+                return res.status(200).json(user.groups);
+            }
             throw res.boom.badRequest();
-        }
 
-        throw err;
-    }
+        })
+        .catch((err) => handle(err));
 };
