@@ -16,7 +16,6 @@ const policy = require.main.require('./policies/storage_policy');
 
 module.exports = async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
-
         throw res.boom.badRequest();
     }
     const fileId = parseInt(req.params.fileId, 10);
