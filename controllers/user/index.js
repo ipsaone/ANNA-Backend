@@ -1,30 +1,16 @@
 'use strict';
 
-/**
- * @file Manages users
- * @see {@link module:user}
- */
-
-/**
- * @module user
- */
-
-const db = require('../models');
-const policy = require('../policies/user_policy');
+const db = require('../../models');
+const policy = require('../../policies/user_policy');
 
 /**
  *
  * Get all existing users.
  *
- * @function index
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.index = async function (req, res) {
@@ -39,15 +25,10 @@ exports.index = async function (req, res) {
  *
  * Get a single user.
  *
- * @function show
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.show = async function (req, res) {
@@ -77,15 +58,10 @@ exports.show = async function (req, res) {
  *
  * Create a store a new user.
  *
- * @function store
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.store = async function (req, res) {
@@ -107,15 +83,10 @@ exports.store = async function (req, res) {
  *
  * Updates an existing user.
  *
- * @function update
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.update = async function (req, res) {
@@ -126,14 +97,10 @@ exports.update = async function (req, res) {
 
     const user = await db.User.findById(userId);
 
-    if (!user) {
-        return res.boom.notFound();
-    }
-
     try {
         await user.update(req.body);
 
-        return res.status(204).json({});
+        return res.status(204).json(user);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
             throw res.boom.badRequest();
@@ -147,15 +114,10 @@ exports.update = async function (req, res) {
  *
  * Deletes an existing user.
  *
- * @function delete
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.delete = async function (req, res) {
@@ -182,19 +144,14 @@ exports.delete = async function (req, res) {
  * Get all user's posts.
  * Can get altered with scopes.
  *
- * @function posts
- *
  * @example GET /users/:userId/posts?published=true  -> return all published posts
  * @example GET /users/:userId/posts?published=false -> return all drafted posts
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
+ * @param {obj} handle  - The error handler.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.posts = function (req, res, handle) {
@@ -222,16 +179,11 @@ exports.posts = function (req, res, handle) {
  *
  * Get all user's groups.
  *
- * @function getGroups
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
+ * @param {obj} handle  - The error handler.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.getGroups = function (req, res, handle) {
@@ -258,15 +210,10 @@ exports.getGroups = function (req, res, handle) {
  *
  * Add user to group.
  *
- * @function addGroups
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:user
- * @inner
  *
  */
 exports.addGroups = async function (req, res) {
@@ -289,17 +236,14 @@ exports.addGroups = async function (req, res) {
 };
 
 /**
- * Remove user from groups.
  *
- * @function deleteGroups
+ * Remove user from groups.
  *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
  *
- * @memberof module:user
- * @inner
  */
 exports.deleteGroups = async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {

@@ -3,10 +3,10 @@
 'use strict';
 
 const router = require('express').Router();
-const eventController = require('../controllers/event_controller');
+const eventController = require('../controllers/event');
 
 router.route('/')
-    .get(eventController.index)
+    .get(eventController.list)
     .post(eventController.store);
 
 router.route('/:eventId([0-9]+)')
@@ -15,12 +15,12 @@ router.route('/:eventId([0-9]+)')
     .delete(eventController.delete);
 
 router.route('/:eventId([0-9]+)/register/:userId([0-9]+)')
-    .put(eventController.storeRegistered)
-    .delete(eventController.deleteRegistered);
+    .put(eventController.addAttendant)
+    .delete(eventController.removeAttendant);
 
 router.route('/:eventId([0-9]+)/register')
-    .put(eventController.storeRegistered)
-    .delete(eventController.deleteRegistered);
+    .put(eventController.addAttendant)
+    .delete(eventController.removeAttendant);
 
 
 module.exports = router;

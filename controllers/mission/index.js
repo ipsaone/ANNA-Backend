@@ -1,30 +1,16 @@
 'use strict';
 
-/**
- * @file Manages missions
- * @see {@link module:mission}
- */
-
-/**
- * @module mission
- */
-
-const db = require('../models');
-const policy = require('../policies/mission_policy');
+const db = require('../../models');
+const policy = require('../../policies/mission_policy');
 
 /**
  *
  * Get all existing missions.
  *
- * @function index
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:mission
- * @inner
  *
  */
 exports.index = async (req, res) => {
@@ -44,15 +30,10 @@ exports.index = async (req, res) => {
  *
  * Get a single mission.
  *
- * @function show
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:mission
- * @inner
  *
  */
 exports.show = async (req, res) => {
@@ -85,15 +66,10 @@ exports.show = async (req, res) => {
  *
  * Create and store a new mission.
  *
- * @function store
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:mission
- * @inner
  *
  */
 exports.store = async (req, res) => {
@@ -127,15 +103,10 @@ exports.store = async (req, res) => {
  *
  * Updates an existing mission.
  *
- * @function update
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:mission
- * @inner
  *
  */
 exports.update = async function (req, res) {
@@ -167,15 +138,10 @@ exports.update = async function (req, res) {
  *
  * Delete an existing mission.
  *
- * @function delete
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:mission
- * @inner
  *
  */
 exports.delete = async function (req, res) {
@@ -246,7 +212,7 @@ exports.showTask = async function (req, res) {
     }
 
     // Delete the task and answer accordingly
-    await res.status(204).json(task);
+    return res.status(204).json(task);
 };
 
 exports.updateTask = async function (req, res) {
@@ -276,17 +242,9 @@ exports.updateTask = async function (req, res) {
 
     const updateContents = await policy.filterUpdateTask(req.body, req.session.auth);
 
-    try {
-        await task.update(updateContents);
+    await task.update(updateContents);
 
-        return res.status(200).json(task);
-    } catch (err) {
-        if (typeof err === db.Sequelize.ValidationError) {
-            return res.boom.badRequest();
-        }
-
-        throw err;
-    }
+    return res.status(200).json(task);
 
 };
 
@@ -310,19 +268,10 @@ exports.storeTask = async function (req, res) {
     }
 
 
-    try {
-        const task = await db.Task.create(req.body);
+    const task = await db.Task.create(req.body);
 
 
-        return res.status(200).json(task);
-    } catch (err) {
-
-        if (typeof err === db.Sequelize.ValidationError) {
-            return res.boom.badRequest();
-        }
-
-        throw err;
-    }
+    return res.status(200).json(task);
 
 
 };
@@ -357,7 +306,8 @@ exports.deleteTask = async function (req, res) {
 
     // Delete the task and answer accordingly
     await task.destroy();
-    await res.status(204).json({});
+
+    return res.status(204).json({});
 
 
 };

@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const logController = require('../controllers/log_controller');
+const logController = require('../controllers/log');
 
 router.route('/')
     .get(logController.index)

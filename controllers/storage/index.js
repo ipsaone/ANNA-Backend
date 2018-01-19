@@ -1,17 +1,8 @@
 'use strict';
 
-/**
- * @file Manages files in the database
- * @see {@link module:storage}
- */
-
-/**
- * @module storage
- */
-
-const db = require('../models');
+const db = require('../../models');
 const escape = require('escape-html');
-const policy = require('../policies/storage_policy');
+const policy = require('../../policies/storage_policy');
 
 const getChildrenData = async (folderId) => {
     let files = await db.File.findAll();
@@ -41,15 +32,10 @@ const getChildrenData = async (folderId) => {
  *
  * Download a file or its metadata.
  *
- * @function download
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:storage
- * @inner
  *
  */
 exports.download = async (req, res) => {
@@ -110,17 +96,12 @@ exports.download = async (req, res) => {
  *
  * Upload a new revision for an existing file.
  *
- * @function uploadRev
- *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
  * @todo for security, better escape req.body, like validating against a schema ?
  * @todo handle file contents upload !
  *
  * @returns {obj} Promise.
- *
- * @memberof module:storage
- * @inner
  *
  */
 exports.uploadRev = async (req, res) => {
@@ -156,15 +137,10 @@ exports.uploadRev = async (req, res) => {
  *
  * Upload a new file.
  *
- * @function uploadNew
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:storage
- * @inner
  *
  */
 exports.uploadNew = async (req, res) => {
@@ -205,15 +181,10 @@ exports.uploadNew = async (req, res) => {
  *
  * List contents of a folder.
  *
- * @function list
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:storage
- * @inner
  *
  */
 exports.list = async (req, res) => {
@@ -258,15 +229,10 @@ exports.list = async (req, res) => {
  *
  * Deletes a file or folder.
  *
- * @function delete
- *
  * @param {Object} req - The user request.
  * @param {Object} res - The response to be sent.
  *
  * @returns {Object} Promise.
- *
- * @memberof module:storage
- * @inner
  *
  */
 exports.delete = async (req, res) => {

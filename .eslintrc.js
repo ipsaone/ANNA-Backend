@@ -5,7 +5,6 @@ module.exports = {
         "mocha": true
     },
     "plugins": [
-        "security",
         "mocha",
         "chai-friendly",
         "deprecate",
@@ -15,7 +14,6 @@ module.exports = {
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:security/recommended",
         "plugin:mocha/recommended",
         "plugin:node/recommended"
     ],
@@ -125,7 +123,7 @@ module.exports = {
         "max-lines": "warn",
         "max-nested-callbacks": "error",
         "max-params": "error",
-        "max-statements": "warn",
+        "max-statements": ["warn", {"max": 30}],
         "max-statements-per-line": "error",
         "multiline-comment-style": [
             "error",
@@ -247,7 +245,7 @@ module.exports = {
         "padding-line-between-statements": "error",
         "prefer-arrow-callback": "off",
         "prefer-const": "error",
-        "prefer-destructuring": "warn",
+        "prefer-destructuring": "off",
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "error",
         "prefer-reflect": 0,

@@ -123,21 +123,21 @@ Storage.getDataPath = function (full = false) {
  * @returns {Object} Promise to directory tree.
  *
  */
-Storage.getFileDirTree = function () {
+Storage.getFileDirTree = async function () {
     const db = require('../models');
 
-    return this.getData()
-        .then((data) => {
-            // Get parents' directory tree
-            let fileDirTree = Promise.resolve([]);
+    const data = await this.getData();
 
-            if (data.dirId !== 1) {
-                fileDirTree = db.File.findById(data.dirId).then((file) => file.getDirTree());
-            }
+    // Get parents' directory tree
+    let fileDirTree = Promise.resolve([]);
 
-            // Add own directory name
-            return fileDirTree.then((tree) => tree.concat(data.name));
-        });
+    if (data.dirId !== 1) {
+        fileDirTree = db.File.findById(data.dirId).then((file) => file.getDirTree());
+    }
+
+    // Add own directory name
+    return fileDirTree.then((tree) => tree.concat(data.name));
+
 };
 
 /**

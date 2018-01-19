@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const groupController = require('../controllers/group_controller');
+const groupController = require('../controllers/group');
 
 router.route('/')
     .get(groupController.index)

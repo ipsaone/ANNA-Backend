@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const storageController = require('../controllers/storage_controller');
+const storageController = require('../controllers/storage');
 
 const multer = require('multer');
 const config = require('../config/config');
