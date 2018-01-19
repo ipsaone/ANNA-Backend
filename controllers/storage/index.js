@@ -248,7 +248,7 @@ exports.delete = async (req, res) => {
         throw res.boom.unauthorized();
     }
 
-    await db.Data.destroy({where: {fileId}});
+    await db.Data.destroy({where: {}});
     await db.File.destroy({where: {id: fileId}});
 
     return res.status(204).send();

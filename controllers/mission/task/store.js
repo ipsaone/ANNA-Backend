@@ -3,30 +3,30 @@
 const db = require.main.require('./models');
 const policy = require.main.require('./policies/mission_policy');
 
-/**
- *
- * Delete an existing mission.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
-
 module.exports = async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
         return res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
 
-    const allowed = await policy.filterDelete(req.session.auth);
+    req.body.missionId = missionId;
+    const mission = await db.Mission.findById(missionId);
 
-    if (!allowed) {
+    if (!mission) {
+        return res.boom.notFound(`No mission with id ${missionId}`);
+    }
+
+    const authorized = await policy.filterStoreTask(req.session.auth);
+
+    if (!authorized) {
         return res.boom.unauthorized();
     }
 
-    await db.Missions.destroy({where: {id: missionId}});
 
-    return res.status(204).json({});
+    const task = await db.Task.create(req.body);
+
+
+    return res.status(200).json(task);
+
+
 };
