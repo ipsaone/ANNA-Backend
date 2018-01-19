@@ -27,13 +27,23 @@
  *
  */
 
-// No choice, it's Express' default error handler parameters ...
-// eslint-disable-next-line max-params
-module.exports = (err, req, res, next) => {
+const sendError = (res, err, type) => {
 
-    if (res.headersSent) {
-        return next(err);
+    // Check we can send the error to the client
+    const canSend = typeof res.boom !== 'undefined';
+
+    if (!canSend) {
+        console.log('Couldn\'t send error to client');
     }
+
+    // Build the error and send it
+    const builder = res.boom[type];
+
+    builder(err.message);
+
+};
+
+const logError = (err) => {
 
     /**
      * CONSOLE OUTPUT
@@ -47,19 +57,31 @@ module.exports = (err, req, res, next) => {
         console.trace();
     }
     console.log('-------------------------------');
+};
 
-    /**
-     * CLIENT OUTPUT
-     */
-    if (!res.headersSent && typeof res !== 'undefined' && typeof res.boom !== 'undefined') {
-        res.boom.badImplementation(err.message);
-    } else {
-        console.log('Couldn\'t send error to client');
 
-        return next();
+// No choice, it's Express' default error handler parameters ...
+// eslint-disable-next-line max-params
+module.exports = (err, req, res, next) => {
+
+    // Check a response has not been half-sent
+    if (res.headersSent) {
+        return next(err);
     }
 
-    return true;
 
+    if (typeof err.type && err.type === 'entity.parse.failed') {
+        // Bad JSON was sent
+
+        sendError(res, err, 'badRequest');
+
+    } else {
+        // Unknown error
+
+        sendError(res, err, 'badImplementation');
+        logError(err);
+
+    }
 
 };
+
