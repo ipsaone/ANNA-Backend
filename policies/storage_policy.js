@@ -9,7 +9,7 @@
  * @module storage
  */
 
-const storage = require('../repositories/Storage');
+const storage = require('../repositories/storage');
 const db = require('../models');
 
 /**
@@ -29,8 +29,10 @@ exports.filterList = (folderId, userId) =>
  * Filters users who can upload files.
  *
  * @function filterUploadNew
+ *
  * @param {INTEGER} folderId - The id of the selected folder.
  * @param {INTEGER} userId - The id of the user.
+ *
  * @returns {Promise} Uploads a file if directory has 'write' Permission.
  */
 exports.filterUploadNew = async (folderId, userId) => {
@@ -42,6 +44,8 @@ exports.filterUploadNew = async (folderId, userId) => {
 
     if (!folder) {
         console.log(`no file #${folderId}`);
+
+        return false;
     }
 
     console.log(folder);

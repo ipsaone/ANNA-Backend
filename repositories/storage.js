@@ -377,6 +377,7 @@ Storage.computeType = function (filePath) {
  * @returns {Object} Promise to file size.
  *
  */
+
 Storage.computeSize = function (filePath) {
     fs.stat(filePath, (err, res) => {
         if (err) {
@@ -387,4 +388,93 @@ Storage.computeSize = function (filePath) {
             return res.size;
         }
     });
+};
+
+Storage.fileHasWritePermission = async (fileId, userId) => {
+    const db = require('../models');
+
+    const fileP = db.File.findById(fileId);
+    const userP = db.User.findById(userId);
+    const file = await fileP;
+    const user = await userP;
+
+    if (!file || !user) {
+        return false;
+    }
+
+    const fileDataP = file.getData();
+    const userGroupsP = user.getGroups();
+    const userGroups = await userGroupsP;
+    const fileData = await fileDataP;
+
+    const fileRightsP = fileData.getRights();
+
+    const userGroupsIds = userGroups.map((group) => group.id);
+    const userIsInGroup = userGroupsIds.includes(fileData.groupId);
+    const userIsOwner = fileData.ownerId === userId;
+
+    const fileRights = await fileRightsP;
+
+
+    if (fileRights.allWrite === true) {
+        return true;
+    } else if (userIsInGroup === true && fileRights.groupWrite === true) {
+        return true;
+    } else if (userIsOwner === true && fileRights.ownerWrite === true) {
+        return true;
+    }
+
+    return false;
+};
+
+Storage.fileHasReadPermission = async (fileId, userId) => {
+    const db = require('../models');
+
+    const fileP = db.File.findById(fileId);
+    const userP = db.User.findById(userId);
+    const file = await fileP;
+    const user = await userP;
+
+    if (!file || !user) {
+        console.log(`Couldn't find file or user for file id ${fileId} and user id ${userId}`);
+
+        return false;
+    }
+
+    const fileDataP = file.getData();
+    const userGroupsP = user.getGroups();
+    const userGroups = await userGroupsP;
+    const fileData = await fileDataP;
+
+    if (!fileData || !userGroups) {
+        console.log(`No fileData or userGroups for id ${fileId}`);
+
+        return false;
+    }
+
+    const fileRightsP = fileData.getRights();
+
+    const userGroupsIds = userGroups.map((group) => group.id);
+    const userIsInGroup = userGroupsIds.includes(fileData.groupId);
+    const userIsOwner = fileData.ownerId === userId;
+
+    const fileRights = await fileRightsP;
+
+    if (!fileRights) {
+        console.log('Couldn\'t find associated rights !');
+
+        return false;
+    }
+
+    if (fileRights.allRead === true) {
+        return true;
+    } else if (userIsInGroup === true && fileRights.groupRead === true) {
+        return true;
+    } else if (userIsOwner === true && fileRights.ownerRead === true) {
+        return true;
+    }
+
+    Number(console.log('unauthorized !'));
+
+    return false;
 };

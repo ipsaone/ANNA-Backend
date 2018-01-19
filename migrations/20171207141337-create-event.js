@@ -47,7 +47,22 @@ module.exports = {
          * The name of the event
          * @var {STRING} name
          */
-        name: {type: Sequelize.STRING},
+        name: {
+            allowNull: false,
+            type: Sequelize.STRING,
+            defaultValue: Sequelize.NULL,
+            unique: true
+        },
+        markdown: {
+            allowNull: false,
+            type: Sequelize.TEXT,
+            defaultValue: Sequelize.NULL
+        },
+        content: {
+            allowNull: false,
+            type: Sequelize.TEXT,
+            defaultValue: Sequelize.NULL
+        },
 
         /**
          * The creation date of the event entry in the database
@@ -77,5 +92,5 @@ module.exports = {
      * @param {Object} queryInterface - A query interface.
      * @returns {Promise} The promise to drop a table.
      */
-    down: (queryInterface) => queryInterface.dropTable('events')
+    down: (queryInterface) => queryInterface.dropTable('Events')
 };

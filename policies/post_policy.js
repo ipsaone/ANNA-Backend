@@ -82,7 +82,7 @@ exports.filterIndex = (posts, userId) =>
  */
 exports.filterShow = (post, userId) =>
 
-    // Only show drafts is user is an author
+    // Only show drafts is user is an author.
     userIsAuthor(userId)
         .then((isAuthor) => {
             if (post.published || isAuthor) {
@@ -105,7 +105,7 @@ exports.filterShow = (post, userId) =>
  */
 exports.filterStore = (userId) =>
 
-    // Only allow creation if user is an author
+    // Only allow creation if user is an author.
     userIsAuthor(userId)
         .then((isAuthor) => {
             if (isAuthor) {

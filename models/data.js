@@ -341,6 +341,9 @@ module.exports = (sequelize, DataTypes) => {
      * Get file system path for a data object.
      * Is designed to be bound to the data object.
      *
+     * @function getPath
+     *
+     * @todo fix
      *
      *
      * @returns {string} Data path.
