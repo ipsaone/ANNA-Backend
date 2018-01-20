@@ -221,6 +221,15 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         /**
+         * @var {BOOLEAN} hidden
+         */
+        hidden: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+
+        /**
          * @var {VIRTUAL} isDir
          */
         isDir: DataTypes.VIRTUAL,
