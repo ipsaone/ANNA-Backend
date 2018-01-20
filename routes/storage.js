@@ -16,6 +16,9 @@ router.put('/upload/:fileId', upload.single('contents'), storageController.uploa
 // List files in a folder
 router.get('/files/list/:folderId', storageController.list);
 
+// Search for files
+router.get('/files/search', storageController.search);
+
 // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
 router.get('/files/:fileId', storageController.download);
 
