@@ -1,8 +1,7 @@
 'use strict';
 
-const db = require('../../models');
-const bcrypt = require('bcrypt');
 const joi = require('joi');
+const repo = require.main.require('./repositories/auth');
 
 const schema = joi.object().keys({
     username: joi.string().required(),
@@ -28,27 +27,13 @@ module.exports = async (req, res) => {
         return res.boom.badRequest(validation.error);
     }
 
-    // Find user in database
-    const user = await db.User.findOne({
-        where: {'username': req.body.username},
-        include: [
-            'groups',
-            'events',
-            'participatingMissions'
-        ]
-    });
+    // Login user
+    const user = await repo.login(req.body.username, req.body.password);
 
-    // Check user was found
     if (!user) {
-        return res.boom.notFound('Bad username');
+        return res.boom.unauthorized();
     }
 
-    // Compare password to hash
-    const passwordAccepted = await bcrypt.compare(req.body.password, user.password);
-
-    if (!passwordAccepted) {
-        return res.boom.unauthorized('Bad password');
-    }
 
     // Save session data
     req.session.auth = user.id;

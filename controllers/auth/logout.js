@@ -1,5 +1,7 @@
 'use strict';
 
+const repo = require.main.require('./repositories/auth');
+
 /**
  *
  * Logs out a user.
@@ -12,6 +14,8 @@
  */
 
 module.exports = (req, res) => {
+
+    repo.logout();
 
     // Reset session data
     req.session.auth = null;
