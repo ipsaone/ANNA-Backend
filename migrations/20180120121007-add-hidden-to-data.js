@@ -2,11 +2,11 @@
 
 /**
  * @file
- * @see {@link module:addDeletedAtToLogs}
+ * @see {@link module:addHiddenToData}
  */
 
 /**
- * @module addDeletedAt
+ * @module addHidden
  * @implements {up}
  * @implements {down}
  */
@@ -14,7 +14,7 @@
 module.exports = {
 
     /**
-     * Adds columns to 'Logs'.
+     * Adds columns to 'Data'.
      *
      * @function up
      *
@@ -25,20 +25,21 @@ module.exports = {
      *
      */
     up: (queryInterface, Sequelize) => {
-        queryInterface.addColumn('Logs', 'deletedAt', {
-            allowNull: true,
-            type: Sequelize.DATE
+        queryInterface.addColumn('Data', 'hidden', {
+            allowNull: false,
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
         });
     },
 
     /**
-     * Removes columns from 'Logs'.
+     * Removes columns from 'Data'.
      *
      * @function down
      * @param {Object} queryInterface - A query interface.
      * @returns {Promise} The promise to remove a column.
      */
     down: (queryInterface) => {
-        queryInterface.removeColumn('Logs', 'deletedAt');
+        queryInterface.removeColumn('Data', 'hidden');
     }
 };
