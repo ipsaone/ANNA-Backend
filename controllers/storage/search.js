@@ -1,7 +1,9 @@
 'use strict';
 
-// Const db = require.main.require('./models');
+const db = require.main.require('./models');
 const joi = require('joi');
+const async = require('async');
+const util = require('util');
 
 const includeOptions = ['previous_data'];
 const sortOptions = [
@@ -22,7 +24,7 @@ const schema = joi.object().keys({
  */
 
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
 
     // Validate user input
     const validation = joi.validate(req.body, schema);
@@ -32,12 +34,37 @@ module.exports = (req, res) => {
     }
 
     // Find keyword in data
-    /*
-     * If : not include previous data
-     * Get corresponding files
-     */
-    // Filter where ID is not the most recent
+    const options = {where: {name: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}}};
+    const matchingData = await db.Data.findAll(options);
 
-    return true;
+    // If all data are requested, send everything we find
+    if (req.body.include && 'previous_data' in req.body.include) {
+        return matchingData;
+    }
+
+    // Otherwise, filter data
+    const filterPromise = util.promisify(async.filter);
+    const filteredData = await filterPromise(matchingData, async.asyncify(async (el) => {
+
+        // Find the file corresponding to data
+        const file = await db.File.findById(el.fileId);
+
+        if (!file) {
+            return false;
+        }
+
+        // Find the most recent data from the file
+        const lastData = await file.getData();
+
+        if (lastData.id !== el.id) {
+            return false;
+        }
+
+        return true;
+
+    }));
+
+    return res.status(200).json(filteredData);
+
 };
 
