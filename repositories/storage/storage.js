@@ -15,7 +15,7 @@ require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../config/config');
+const config = require.main.require('./config/config');
 const mv = require('mv');
 const mmm = require('mmmagic');
 const Magic = mmm.Magic;
@@ -124,7 +124,7 @@ Storage.getDataPath = function (full = false) {
  *
  */
 Storage.getFileDirTree = async function () {
-    const db = require('../models');
+    const db = require.main.require('./models');
 
     const data = await this.getData();
 
@@ -152,7 +152,7 @@ Storage.getFileDirTree = async function () {
  *
  */
 Storage.getFileData = function (offset = 0) {
-    const db = require('../models');
+    const db = require.main.require('./models');
 
     return db.Data
 
@@ -188,7 +188,7 @@ Storage.getFileData = function (offset = 0) {
  *
  */
 Storage.getDataRights = function () {
-    const db = require('../models');
+    const db = require.main.require('./models');
 
     // Only one right should exist for each data, no check needed
     return db.Right.findOne({where: {id: this.rightsId}});
@@ -208,7 +208,7 @@ Storage.getDataRights = function () {
  *
  */
 Storage.addFileData = function (fileChanges, filePath) {
-    const db = require('../models');
+    const db = require.maini.require('./models');
 
     fileChanges.fileId = this.id;
 
@@ -336,7 +336,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  */
 Storage.createNewFile = function (changes, filePath, dir = false) {
-    const db = require('../models');
+    const db = require.main.requiire('./models');
 
     return db.File.create({isDir: dir})
         .then((file) => file.addData(changes, filePath));
@@ -391,7 +391,7 @@ Storage.computeSize = function (filePath) {
 };
 
 Storage.fileHasWritePermission = async (fileId, userId) => {
-    const db = require('../models');
+    const db = require.main.require('./models');
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
@@ -428,7 +428,7 @@ Storage.fileHasWritePermission = async (fileId, userId) => {
 };
 
 Storage.fileHasReadPermission = async (fileId, userId) => {
-    const db = require('../models');
+    const db = require.main.require('./models');
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);

@@ -9,7 +9,7 @@
  * @module storage
  */
 
-const storage = require('../repositories/storage');
+const storage = require.main.require('./repositories/storage');
 const db = require('../models');
 
 /**
