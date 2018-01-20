@@ -191,6 +191,7 @@ module.exports = (sequelize, DataTypes) => {
                 limit: 1,
                 offset,
                 where: {fileId: this.id},
+                include: ['rights'],
                 order: [
                     [
                         'createdAt',
