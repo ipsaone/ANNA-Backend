@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
     // Escape req.body strings
     Object.keys(req.body).map((key) => {
         if (typeof req.body[key] === 'string') {
-            req.body[key] = escape(req.body[key]);
+            req.body[key] = encodeURI(req.body[key]);
         }
 
         return true;
