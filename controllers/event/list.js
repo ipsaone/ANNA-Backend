@@ -1,7 +1,7 @@
 'use strict';
 
-const db = require('../../models');
-const policy = require('../../policies/event_policy');
+const policy = require.main.require('./policies/event_policy');
+const repo = require.main.require('./repositories/event');
 
 /**
  *
@@ -22,21 +22,8 @@ module.exports = async function (req, res) {
         return false;
     }
 
-    // Fetch all events
-    const events = await db.Event.findAll();
-
-    // Add attendants count to every event
-    const toReturn = await Promise.all(events.map(async (ev) => {
-
-        const registeredP = ev.getRegistered();
-        const newEvent = await ev.toJSON();
-        const registered = await registeredP;
-
-        newEvent.registeredCount = registered.length;
-
-        return newEvent;
-    }));
+    const list = await repo.list();
 
     // Send response
-    return res.status(200).json(toReturn);
+    return res.status(200).json(list);
 };
