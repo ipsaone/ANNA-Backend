@@ -61,5 +61,5 @@ app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'a
 /*
  * Routing and error catching
  */
-app.use(require('./routes'));
+app.use(require('./modules').router);
 app.use(require('./middlewares/exception')); // Error handling

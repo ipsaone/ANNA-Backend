@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('../models');
+const db = require('../modules').db;
 
 
 module.exports = {
