@@ -19,7 +19,7 @@ module.exports = (db) => async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const groups = await policy.filterDeleteGroups(req.body.groupsId, userId, req.session.auth);
+    const groups = await policy.filterDeleteGroups(db, req.body.groupsId, userId, req.session.auth);
     const user = await db.User.findById(userId);
 
     await user.removeGroups(groups);

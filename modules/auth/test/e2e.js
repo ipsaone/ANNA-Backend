@@ -53,6 +53,8 @@ test.serial('expect to logout a user', async t => {
         
     t.true(res.status == 200);
 
+    
+
 });
 
 

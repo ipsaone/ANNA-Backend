@@ -23,7 +23,7 @@ module.exports = (db) =>
  *
  */
     function (req, res, handle) {
-        return policy.filterStore(req.body, req.session.auth)
+        return policy.filterStore(db, req.body, req.session.auth)
             .then((builder) => db.Log.create(builder))
             .then((log) => res.status(201).json(log))
             .catch((err) => {

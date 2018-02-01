@@ -24,9 +24,11 @@ const loadApp = (options = {}) => {
     const app = express();
     const {host, port} = config.app.getConnection();
 
-    http.createServer(app).listen(port, host, function () {
-        console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
-    });
+    if (options && !options.noLog) {
+        http.createServer(app).listen(port, host, function () {
+            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+        });
+    }
 
 
     /*

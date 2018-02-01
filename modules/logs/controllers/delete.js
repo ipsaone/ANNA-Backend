@@ -28,7 +28,7 @@ module.exports = (db) =>
         }
         const logId = parseInt(req.params.logId, 10);
 
-        return policy.filterDelete(req.session.auth)
+        return policy.filterDelete(db, req.session.auth)
             .then(() => db.Log.destroy({where: {id: logId}}))
             .then((data) => {
                 if (data === 1) {

@@ -22,14 +22,21 @@ module.exports = (db) =>
  * @returns {Object} Promise.
  *
  */
-    function (req, res, handle) {
+    async function (req, res) {
         if (isNaN(parseInt(req.params.logId, 10))) {
             throw res.boom.badRequest();
         }
         const logId = parseInt(req.params.logId, 10);
 
-        return policy.filterUpdate(req.body, logId, req.session.auth)
-            .then((builder) => db.Log.update(builder, {where: {id: logId}}))
-            .then(() => res.status(204).json({}))
-            .catch((err) => handle(err));
+        const builder = await policy.filterUpdate(db, req.body, logId, req.session.auth);
+
+        if (!builder) {
+            return res.boom.unauthorized();
+        }
+
+        const log = await db.Log.findById(logId);
+
+        await log.update(builder);
+
+        return res.status(202).json(log);
     };

@@ -9,24 +9,18 @@
  * @module user
  */
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-
-const db = require(path.join(root, './modules'));
-
 /**
  * Gets all users.
  *
  * @function filterIndex
  *
+ * @param {obj} db - The database.
  * @param {Object} users - The users.
- * Ça fonctionera pas si c'est moi qui code mais NP gogogo mdr #cestAmberequifaitANNA.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} Users.
  */
-exports.filterIndex = (users, userId) => Promise.resolve(users)
+exports.filterIndex = (db, users, userId) => Promise.resolve(users)
     .then((us) => us.map((u) => {
         let user = {};
 
@@ -50,12 +44,13 @@ exports.filterIndex = (users, userId) => Promise.resolve(users)
  *
  * @function filterShow
  *
+ * @param {obj} db - The database.
  * @param {Object} us - The us object from filterIndex function.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} Returns a user.
  */
-exports.filterShow = (us, userId) => Promise.resolve(us)
+exports.filterShow = (db, us, userId) => Promise.resolve(us)
     .then((u) => {
         let user = {};
 
@@ -79,34 +74,37 @@ exports.filterShow = (us, userId) => Promise.resolve(us)
  *
  * @function filterStore
  *
+ * @param {obj} db - The database.
  * @param {Object} user - A user.
  *
  * @returns {Object} Returns all users.
  */
-exports.filterStore = (user) => Promise.resolve(user);
+exports.filterStore = (db, user) => Promise.resolve(user);
 
 /**
  * Filters users who can delete users.
  *
  * @function filterDelete
  *
+ * @param {obj} db - The database.
  * @param {Object} user - A user.
  *
  * @returns {Object} Returns all users.
  */
-exports.filterDelete = (user) => Promise.resolve(user);
+exports.filterDelete = (db, user) => Promise.resolve(user);
 
 /**
  * Filters users who can create groups.
  *
  * @function filterAddGroups
  *
+ * @param {obj} db - The database.
  * @param {Array} groupsId - The id of all groups.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} An array containing groups to which the user belongs.
  */
-exports.filterAddGroups = async (groupsId, userId) => {
+exports.filterAddGroups = async (db, groupsId, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
@@ -125,13 +123,14 @@ exports.filterAddGroups = async (groupsId, userId) => {
  *
  * @function filterDeleteGroups
  *
+ * @param {obj} db - The database.
  * @param {Array} groupsId - The id of all groups.
  * @param {INTEGER} targetId - The id of the user that the user wants to delete from a group.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} A user can delete himself from a group but only root can delete other users from groups.
  */
-exports.filterDeleteGroups = async (groupsId, targetId, userId) => {
+exports.filterDeleteGroups = async (db, groupsId, targetId, userId) => {
     if (targetId === userId) {
         return groupsId;
     }

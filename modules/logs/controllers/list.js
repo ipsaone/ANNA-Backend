@@ -24,7 +24,7 @@ module.exports = (db) =>
  */
     function (req, res, handle) {
         return db.Log.findAll({include: ['author']})
-            .then((logs) => policy.filterIndex(logs, req.session.auth))
+            .then((logs) => policy.filterIndex(db, logs, req.session.auth))
             .then((logs) => res.status(200).json(logs))
             .catch((err) => handle(err));
     };
