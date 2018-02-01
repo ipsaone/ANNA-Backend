@@ -13,23 +13,15 @@ const ModulesFactory = require(path.join(root, './modules'));
 let modules = new ModulesFactory({test: true})
 
 
-test('password should match', async (t) => {
+test('Login', async (t) => {
     const db = await modules.unitTest();
 
     const accepted = await repo.login(db, 'foo', 'fooPassword');
     t.truthy(accepted);
-});
 
-test('password shouldn\'t match', async (t) => {
-    const db = await modules.unitTest();
-    const accepted = await repo.login(db, 'foo', 'someOtherPassword');
+    const badPassword = await repo.login(db, 'foo', 'someOtherPassword');
+    t.falsy(badPassword);
 
-    t.falsy(accepted);
-});
-
-test('username shouldn\'t match', async (t) => {
-    const db = await modules.unitTest();
-    const accepted = await repo.login(db, 'foobar', 'fooPassword');
-
-    t.falsy(accepted);
+    const badUser = await repo.login(db, 'foobar', 'fooPassword');
+    t.falsy(badUser);
 });

@@ -30,7 +30,7 @@ module.exports = (db) =>
 
         const builder = await policy.filterUpdate(db, req.body, logId, req.session.auth);
 
-        if (!builder) {
+        if (!builder || Object.keys(builder).length === 0) {
             return res.boom.unauthorized();
         }
 

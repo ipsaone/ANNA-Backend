@@ -15,7 +15,7 @@
  * @function filterIndex
  *
  * @param {obj} db - The database.
- * @param {Object} users - The users.
+ * @param {Object} users - The users..
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} Users.

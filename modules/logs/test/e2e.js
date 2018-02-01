@@ -43,7 +43,7 @@ test.before(async t => {
 });
 
 
-test.serial('expect to add a log', async t => {
+test.serial('Log addition', async t => {
     let res = await request.post('/logs')
         .send({
             title: "test",
@@ -54,7 +54,7 @@ test.serial('expect to add a log', async t => {
     t.true(res.body.title == 'test')
 });
 
-test.serial('expect to get a single log', async t => {
+test.serial('List logs', async t => {
     // Insert log
     let insert = await request.post('/logs')
         .send({
@@ -70,7 +70,7 @@ test.serial('expect to get a single log', async t => {
 });
 
 
-test.serial('expect to get all logs', async t => {
+test.serial('Show log', async t => {
     let res = await request.get('/logs')
 
     t.true(res.status == 200);
@@ -79,7 +79,7 @@ test.serial('expect to get all logs', async t => {
 
 
 
-test.serial('expect to edit a log', async t => {
+test.serial('Log edition', async t => {
     // Insert log
     let insert = await request.post('/logs')
         .send({
@@ -89,19 +89,27 @@ test.serial('expect to edit a log', async t => {
     let insertId = insert.body.id;
     t.true(insert.status == 201);
 
-    // Edit log
-    let res = await request.put('/logs/'+insertId)
+    // Edit log (success)
+    let successRes = await request.put('/logs/'+insertId)
         .send({
             markdown: '#EDITED_TEST'
         })
 
-    t.true(res.status == 202);
-    t.true(res.body.markdown == '#EDITED_TEST')
+    t.true(successRes.status == 202);
+    t.true(successRes.body.markdown == '#EDITED_TEST')
+
+    // Edit log (failure)
+    let failureRes = await request.put('/logs/'+insertId)
+        .send({
+            content: 'I HAVE BEEN EDITED'
+        })
+
+    t.true(failureRes.status == 401)
 });
 
 
 
-test.serial('expect to delete a log', async t => {
+test.serial('Log deletion', async t => {
     // Insert log
     let insert = await request.post('/logs')
         .send({

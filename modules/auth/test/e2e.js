@@ -36,34 +36,36 @@ test.before(async t => {
 
 
 
-test.serial('expect to login a user', async t => {
-    let res = await request.post('/auth/login')
+test.serial('User login', async t => {
+    let SuccessRes = await request.post('/auth/login')
         .send({
             username: 'login_test',
             password: 'password_test'
         })
 
-    t.true(res.status == 200);
-});
+    t.true(SuccessRes.status == 200);
 
-
-
-test.serial('expect to logout a user', async t => {
-    let res = await request.get('/auth/logout')
-        
-    t.true(res.status == 200);
-
-    
-
-});
-
-
-test.serial('expect to fail to login (good user / bad password)', async t => {
-    let res = await request.post('/auth/login')
+    let badPasswordRes = await request.post('/auth/login')
         .send({
             username: 'login_test',
             password: 'qlmdkgsfk'
         })
         
-    t.true(res.status == 401)
+    t.true(badPasswordRes.status == 401)
+
+    let badUserRes = await request.post('/auth/login')
+        .send({
+            username: 'login_test8',
+            password: 'password_test'
+        })
+        
+    t.true(badUserRes.status == 401)
+});
+
+
+
+test.serial('User logout', async t => {
+    let res = await request.get('/auth/logout')
+        
+    t.true(res.status == 200);
 });
