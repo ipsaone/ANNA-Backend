@@ -1,9 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 const policy = require('../mission_policy');
 
 /**
@@ -17,7 +13,7 @@ const policy = require('../mission_policy');
  *
  */
 
-module.exports = async (req, res) => {
+module.exports = (db) => async (req, res) => {
     const authorized = await policy.filterIndex();
 
     if (!authorized) {

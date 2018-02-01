@@ -1,9 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 const policy = require('../post_policy');
 
 /**
@@ -18,7 +14,7 @@ const policy = require('../post_policy');
  *
  */
 
-module.exports = function (req, res, handle) {
+module.exports = (db) => function (req, res, handle) {
     if (isNaN(parseInt(req.params.postId, 10))) {
         throw res.boom.badRequest();
     }

@@ -3,6 +3,9 @@
 const policy = require('../event_policy');
 const repo = require('../repositories/list');
 
+
+module.exports = () =>
+
 /**
  *
  * Gets all events.
@@ -13,17 +16,17 @@ const repo = require('../repositories/list');
  * @returns {Object} Promise.
  *
  */
-module.exports = async function (req, res) {
+    async function (req, res) {
 
     // Check user is authorized
-    const authorized = policy.filterIndex();
+        const authorized = policy.filterIndex();
 
-    if (!authorized) {
-        return false;
-    }
+        if (!authorized) {
+            return false;
+        }
 
-    const list = await repo.list();
+        const list = await repo.list();
 
-    // Send response
-    return res.status(200).json(list);
-};
+        // Send response
+        return res.status(200).json(list);
+    };

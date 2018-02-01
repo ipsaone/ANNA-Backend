@@ -1,9 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 const policy = require('../post_policy');
 
 /**
@@ -22,7 +18,7 @@ const policy = require('../post_policy');
  *
  */
 
-module.exports = function (req, res, handle) {
+module.exports = (db) => function (req, res, handle) {
     let posts = db.Post;
 
     if (req.query.published) {

@@ -92,10 +92,10 @@ module.exports = class ModuleFactory {
         };
 
         const sequelizeTest = new Sequelize(`test${this.testDatabases}`, null, null, options);
-        const db = this.buildDB(sequelizeTest);
+        const db = buildDB(sequelizeTest);
 
         await db.sequelize.sync({force: true});
-        await require('sequelize-fixtures').loadFile('modules/**/fixtures/*.js', db, {log: false});
+        await require('sequelize-fixtures').loadFile('modules/**/fixtures/*.js', db, {log: () => null});
 
         return db;
     }

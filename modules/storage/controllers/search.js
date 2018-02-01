@@ -1,9 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 const joi = require('joi');
 const async = require('async');
 const util = require('util');
@@ -27,7 +23,7 @@ const schema = joi.object().keys({
  */
 
 
-module.exports = async (req, res) => {
+module.exports = (db) => async (req, res) => {
 
     // Validate user input
     const validation = joi.validate(req.body, schema);

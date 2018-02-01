@@ -1,9 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 const policy = require('../event_policy');
 
 /**
@@ -17,7 +13,7 @@ const policy = require('../event_policy');
  *
  */
 
-module.exports = async function (req, res) {
+module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
         return res.boom.badRequest();
 

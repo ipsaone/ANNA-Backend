@@ -1,10 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
-
 /**
  *
  * Creates a new group and stores it.
@@ -16,7 +11,7 @@ const db = require(path.join(root, './modules'));
  *
  */
 
-module.exports = async function (req, res) {
+module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
 
         throw res.boom.badRequest();

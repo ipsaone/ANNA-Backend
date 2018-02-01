@@ -1,10 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-
-const db = require(path.join(root, './modules'));
 const policy = require('../storage_policy');
 
 /**
@@ -18,7 +13,7 @@ const policy = require('../storage_policy');
  *
  */
 
-module.exports = async (req, res) => {
+module.exports = (db) => async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
         return res.boom.badRequest();
     }

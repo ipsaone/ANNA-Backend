@@ -1,11 +1,7 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
-const policy = require('../event_policy');
 const joi = require('joi');
+const policy = require('../event_policy');
 
 const schema = joi.object().keys({
     name: joi.string(),
@@ -26,7 +22,7 @@ const schema = joi.object().keys({
  * @returns {Object} promise
  *
  */
-module.exports = async function (req, res) {
+module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
         return res.boom.badRequest();
     }

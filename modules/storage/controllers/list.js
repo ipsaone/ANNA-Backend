@@ -1,12 +1,8 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 const policy = require('../storage_policy');
 
-const getChildrenData = async (folderId) => {
+const getChildrenData = async (db, folderId) => {
     let files = await db.File.findAll();
 
     if (!files.map((item) => item.id).includes(folderId)) {
@@ -40,7 +36,7 @@ const getChildrenData = async (folderId) => {
  *
  */
 
-module.exports = async (req, res) => {
+module.exports = (db) => async (req, res) => {
     // Fail if the folder isn't defined
     if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
         throw res.boom.badRequest();
@@ -54,7 +50,7 @@ module.exports = async (req, res) => {
         file.scope('folders');
     }
 
-    const childrenDataP = getChildrenData(folderId); // Start getting children data
+    const childrenDataP = getChildrenData(db, folderId); // Start getting children data
     const folderFile = await db.File.findOne({ // Do things in the middle
         where: {id: folderId},
         rejectOnEmpty: true

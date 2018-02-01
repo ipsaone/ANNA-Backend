@@ -1,8 +1,11 @@
 'use strict';
 
-exports.download = require('./download');
-exports.uploadRev = require('./uploadRev');
-exports.uploadNew = require('./uploadNew');
-exports.search = require('./search');
-exports.list = require('./list');
-exports.delete = require('./delete');
+module.exports = (db) => ({
+    download: require('./download')(db),
+    uploadRev: require('./uploadRev')(db),
+    uploadNew: require('./uploadNew')(db),
+    search: require('./search')(db),
+    list: require('./list')(db),
+    delete: require('./delete')(db)
+});
+
