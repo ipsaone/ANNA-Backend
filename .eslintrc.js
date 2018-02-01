@@ -20,7 +20,15 @@ module.exports = {
         /* Plugins */
         "no-unused-expressions": 0,
         "chai-friendly/no-unused-expressions": 2,
-        "node/no-unpublished-require": "warn",
+
+        
+        /* those are disabled because they are REALLY SLOW : */
+        "node/no-unpublished-require": 0,
+        "node/no-extraneous-require": 0,
+        "node/no-unpublished-require": 0,
+        "node/no-missing-require": 0,
+
+
         "promise/always-return": "error",
         "promise/no-return-wrap": "error",
         "promise/param-names": "error",

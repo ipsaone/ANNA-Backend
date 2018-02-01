@@ -18,3 +18,5 @@ access.log
 out/
 .doc/
 doc/*
+
+.eslintcache
