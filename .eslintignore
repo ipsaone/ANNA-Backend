@@ -4,3 +4,4 @@ test_old/
 **/test/*
 test/
 **/test.js
+**/fixtures/*

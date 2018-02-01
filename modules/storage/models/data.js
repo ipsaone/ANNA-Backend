@@ -1,5 +1,6 @@
 'use strict';
 
+
 /**
  * @file Defines a model for 'Data' table in database and its associations with the other tables
  * @see {@link module:data}
@@ -16,9 +17,12 @@ const fs = require('fs');
  * @module data
  */
 
-require('dotenv').config();
-const config = require.main.require('./config/config');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
 const path = require('path');
+
+require('dotenv').config();
+const config = require(path.join(root, './config/config'));
 const mmm = require('mmmagic');
 const Magic = mmm.Magic;
 const magic = new Magic(mmm.MAGIC_MIME_TYPE);
@@ -396,7 +400,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      */
     Data.prototype.getRights = function () {
-        const db = require.main.require('./modules');
+        const db = require(path.join(root, './modules'));
         // Only one right should exist for each data, no check needed
 
         return db.Right.findById(this.rightsId);

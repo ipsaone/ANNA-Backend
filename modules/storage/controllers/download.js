@@ -1,6 +1,10 @@
 'use strict';
 
-const db = require.main.require('./modules');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
+const db = require(path.join(root, './modules'));
 const policy = require('../storage_policy');
 
 /**
@@ -53,10 +57,10 @@ module.exports = async (req, res) => {
             return res.boom.unauthorized();
         }
 
-        const path = await data.getPath(true);
+        const dataPath = await data.getPath(true);
 
 
-        return res.download(path, data.name);
+        return res.download(dataPath, data.name);
     }
 
     const allowed = await policy.filterDownloadMeta(fileId, req.session.auth);

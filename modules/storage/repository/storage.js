@@ -14,8 +14,10 @@
 require('dotenv').config();
 
 const fs = require('fs');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
 const path = require('path');
-const config = require.main.require('./config/config');
+const config = require(path.join(root, './config/config'));
 const mv = require('mv');
 const mmm = require('mmmagic');
 const Magic = mmm.Magic;
@@ -124,7 +126,7 @@ Storage.getDataPath = function (full = false) {
  *
  */
 Storage.getFileDirTree = async function () {
-    const db = require.main.require('./models');
+    const db = require(path.join(root, './modules'));
 
     const data = await this.getData();
 
@@ -152,7 +154,7 @@ Storage.getFileDirTree = async function () {
  *
  */
 Storage.getFileData = function (offset = 0) {
-    const db = require.main.require('./models');
+    const db = require(path.join(root, './modules'));
 
     return db.Data
 
@@ -188,7 +190,7 @@ Storage.getFileData = function (offset = 0) {
  *
  */
 Storage.getDataRights = function () {
-    const db = require.main.require('./models');
+    const db = require(path.join(root, './modules'));
 
     // Only one right should exist for each data, no check needed
     return db.Right.findOne({where: {id: this.rightsId}});
@@ -208,7 +210,7 @@ Storage.getDataRights = function () {
  *
  */
 Storage.addFileData = function (fileChanges, filePath) {
-    const db = require.maini.require('./models');
+    const db = require(path.join(root, './modules'));
 
     fileChanges.fileId = this.id;
 
@@ -336,7 +338,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  */
 Storage.createNewFile = function (changes, filePath, dir = false) {
-    const db = require.main.requiire('./models');
+    const db = require(path.join(root, './modules'));
 
     return db.File.create({isDir: dir})
         .then((file) => file.addData(changes, filePath));
@@ -391,7 +393,7 @@ Storage.computeSize = function (filePath) {
 };
 
 Storage.fileHasWritePermission = async (fileId, userId) => {
-    const db = require.main.require('./models');
+    const db = require(path.join(root, './modules'));
 
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);

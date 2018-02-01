@@ -1,8 +1,12 @@
 'use strict';
 
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
 /* eslint new-cap: 0 */
 const router = require('express').Router();
-const config = require.main.require('./config/config');
+const config = require(path.join(root, './config/config'));
 
 // Homepage
 router.get('/', (req, res) => {

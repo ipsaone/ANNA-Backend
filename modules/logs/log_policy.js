@@ -8,9 +8,11 @@
 /**
  * @module log
  */
-
-const db = require.main.require('./modules');
-const userPolicy = require.main.require('./modules/users/user_policy');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+const db = require(path.join(root, './modules'));
+const userPolicy = require(path.join(root, './modules/users/user_policy'));
 const allowed = [
     'title',
     'markdown'

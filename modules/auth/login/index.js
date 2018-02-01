@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./controller');
+module.exports = (db) => require('./controller')(db);

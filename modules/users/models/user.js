@@ -9,7 +9,11 @@
  * @module user
  */
 
-const config = require.main.require('./config/config');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
+const config = require(path.join(root, './config/config'));
 
 /**
  * Requires the bcrypt package from nodeJS

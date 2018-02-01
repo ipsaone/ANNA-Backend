@@ -12,7 +12,7 @@
  */
 
 
-module.exports = (req, res) => {
+module.exports = () => (req, res) => {
 
     // Reset session data
     req.session.auth = null;

@@ -1,6 +1,10 @@
 'use strict';
 
-const db = require.main.require('./modules').db;
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
+const db = require(path.join(root, './modules')).db;
 
 module.exports = async () => {
     // Fetch all events

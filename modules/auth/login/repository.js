@@ -3,6 +3,10 @@
 const bcrypt = require('bcrypt');
 
 module.exports.login = async (db, username, password) => {
+    if (!db) {
+        throw new Error('No database given');
+    }
+
     // Find user in database
     const user = await db.User.findOne({
         where: {username},

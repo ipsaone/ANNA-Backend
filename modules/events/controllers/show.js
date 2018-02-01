@@ -1,8 +1,12 @@
 'use strict';
 
-const db = require.main.require('./modules');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
+const db = require(path.join(root, './modules'));
 const policy = require('../event_policy');
-const userPolicy = require.main.require('./modules/users/user_policy');
+const userPolicy = require(path.join(root, './modules/users/user_policy'));
 
 /*
  *

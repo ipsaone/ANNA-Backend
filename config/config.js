@@ -34,6 +34,8 @@ const config = {
         check: process.env.CHECK_AUTH
     },
 
+    log,
+
     logging: {level: 'debug'},
 
     get sequelize () {
@@ -43,8 +45,7 @@ const config = {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            // Logging: false, // Prevent Sequelize from outputting the query on the console
-            logging: log,
+            logging: false,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
@@ -65,7 +66,6 @@ const config = {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME_TEST,
             logging: false, // Prevent Sequelize from outputting the query on the console
-            // Logging: console.log,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,

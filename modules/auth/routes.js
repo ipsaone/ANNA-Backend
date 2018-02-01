@@ -1,9 +1,12 @@
 'use strict';
 
-/* eslint new-cap: 0 */
-const router = require('express').Router();
+module.exports = function (db) {
 
-router.post('/login', require('./login'));
-router.get('/logout', require('./logout'));
+    /* eslint new-cap: 0 */
+    const router = require('express').Router();
 
-module.exports = router;
+    router.post('/login', require('./login')(db));
+    router.get('/logout', require('./logout')(db));
+
+    return router;
+};

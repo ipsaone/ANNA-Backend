@@ -2,16 +2,19 @@
 
 'use strict';
 
-const router = require('express').Router();
-const groupController = require('./controllers');
 
-router.route('/')
-    .get(groupController.index)
-    .post(groupController.store);
+module.exports = (db) => {
+    const router = require('express').Router();
+    const groupController = require('./controllers')(db);
 
-router.route('/:groupId([0-9]+)')
-    .get(groupController.show)
-    .put(groupController.update)
-    .delete(groupController.delete);
+    router.route('/')
+        .get(groupController.index)
+        .post(groupController.store);
 
-module.exports = router;
+    router.route('/:groupId([0-9]+)')
+        .get(groupController.show)
+        .put(groupController.update)
+        .delete(groupController.delete);
+
+    return router;
+};

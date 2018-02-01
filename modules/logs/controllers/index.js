@@ -1,6 +1,11 @@
 'use strict';
 
-const db = require.main.require('./modules');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
+
+const db = require(path.join(root, './modules'));
 const policy = require('../log_policy');
 
 /**

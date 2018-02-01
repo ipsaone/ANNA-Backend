@@ -1,5 +1,9 @@
 'use strict';
 
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
+
 /**
  * @file Defines a model for 'File' table in database and its associations with the other tables
  * @see {@link module:file}
@@ -64,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      */
     File.prototype.addData = async function (fileChanges, filePath, userId) {
-        const db = require.main.require('./modules');
+        const db = require(path.join(root, './modules'));
 
         /*
          * Check group ID input
@@ -180,7 +184,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      */
     File.prototype.getData = function (offset = 0) {
-        const db = require.main.require('./modules');
+        const db = require(path.join(root, './modules'));
 
         console.log(`Finding data of file #${this.id} with offset ${offset}`);
 
@@ -218,7 +222,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      */
     File.prototype.getDirTree = async function () {
-        const db = require.main.require('./modules');
+        const db = require(path.join(root, './modules'));
 
         const data = await this.getData();
 
@@ -249,7 +253,7 @@ module.exports = (sequelize, DataTypes) => {
      *
      */
     File.createNew = function (changes, filePath, userId) {
-        const db = require.main.require('./modules');
+        const db = require(path.join(root, './modules'));
 
         let isDir = false;
 

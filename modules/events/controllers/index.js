@@ -1,9 +1,12 @@
 'use strict';
 
-module.exports.list = require('./list');
-module.exports.show = require('./show');
-module.exports.update = require('./update');
-module.exports.store = require('./store');
-module.exports.delete = require('./delete');
-module.exports.addAttendant = require('./addAttendant');
-module.exports.removeAttendant = require('./removeAttendant');
+module.exports = (db) => ({
+    list: require('./list')(db),
+    show: require('./show')(db),
+    update: require('./update')(db),
+    store: require('./store')(db),
+    delete: require('./delete')(db),
+    addAttendant: require('./addAttendant')(db),
+    removeAttendant: require('./removeAttendant')(db)
+});
+

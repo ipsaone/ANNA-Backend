@@ -8,9 +8,11 @@
 /**
  * @module storage
  */
-
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const path = require('path');
 const storage = require('./repository/storage');
-const db = require.main.require('./modules');
+const db = require(path.join(root, './modules'));
 
 /**
  * List files in directory.

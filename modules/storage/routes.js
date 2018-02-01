@@ -2,26 +2,32 @@
 
 'use strict';
 
-const router = require('express').Router();
-const storageController = require('./controllers');
+module.exports = (db) => {
 
-const multer = require('multer');
-const config = require.main.require('./config/config');
-const upload = multer({dest: config.storage.temp});
+    const router = require('express').Router();
+    const storageController = require('./controllers')(db);
 
-// Upload a file or edit it (use ?revision=:id)
-router.post('/upload', upload.single('contents'), storageController.uploadNew);
-router.put('/upload/:fileId', upload.single('contents'), storageController.uploadRev);
+    const multer = require('multer');
+    const findRoot = require('find-root');
+    const root = findRoot(__dirname);
+    const path = require('path');
+    const config = require(path.join(root, './config/config'));
+    const upload = multer({dest: config.storage.temp});
 
-// List files in a folder
-router.get('/files/list/:folderId', storageController.list);
+    // Upload a file or edit it (use ?revision=:id)
+    router.post('/upload', upload.single('contents'), storageController.uploadNew);
+    router.put('/upload/:fileId', upload.single('contents'), storageController.uploadRev);
 
-// Search for files
-router.get('/files/search', storageController.search);
+    // List files in a folder
+    router.get('/files/list/:folderId', storageController.list);
 
-// Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
-router.get('/files/:fileId', storageController.download);
+    // Search for files
+    router.get('/files/search', storageController.search);
 
-router.delete('/files/:fileId', storageController.delete);
+    // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
+    router.get('/files/:fileId', storageController.download);
 
-module.exports = router;
+    router.delete('/files/:fileId', storageController.delete);
+
+    return router;
+};

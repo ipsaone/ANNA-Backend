@@ -2,7 +2,6 @@
 
 const joi = require('joi');
 const repo = require('./repository');
-const db = require.main.require('./modules').db;
 
 const schema = joi.object().keys({
     username: joi.string().required(),
@@ -10,36 +9,43 @@ const schema = joi.object().keys({
 });
 
 /**
- *
- * Logs in a user.
- *
- * @param {obj} req      - The user request.
- * @param {obj} res      - The response to be sent.
- *
- * @returns {Object} Promise.
- *
+ * @param {db} obj
  */
-module.exports = async (req, res) => {
 
-    // Validate user input
-    const validation = joi.validate(req.body, schema);
+module.exports = function (db) {
 
-    if (validation.error) {
-        return res.boom.badRequest(validation.error);
-    }
+    /**
+     *
+     * Logs in a user.
+     *
+     * @param {obj} req      - The user request.
+     * @param {obj} res      - The response to be sent.
+     *
+     * @returns {Object} Promise.
+     *
+     */
+    return async (req, res) => {
 
-    // Login user
-    const user = await repo.login(db, req.body.username, req.body.password);
+        // Validate user input
+        const validation = joi.validate(req.body, schema);
 
-    if (!user) {
-        return res.boom.unauthorized();
-    }
+        if (validation.error) {
+            return res.boom.badRequest(validation.error);
+        }
+
+        // Login user
+        const user = await repo.login(db, req.body.username, req.body.password);
+
+        if (!user) {
+            return res.boom.unauthorized();
+        }
 
 
-    // Save session data
-    req.session.auth = user.id;
-    req.session.save();
+        // Save session data
+        req.session.auth = user.id;
+        req.session.save();
 
-    // Send response
-    return res.status(200).json(user);
+        // Send response
+        return res.status(200).json(user);
+    };
 };

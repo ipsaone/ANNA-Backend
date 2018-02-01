@@ -2,16 +2,19 @@
 
 'use strict';
 
-const router = require('express').Router();
-const logController = require('./controllers');
 
-router.route('/')
-    .get(logController.index)
-    .post(logController.store);
+module.exports = (db) => {
+    const router = require('express').Router();
+    const logController = require('./controllers')(db);
 
-router.route('/:logId([0-9]+)')
-    .get(logController.show)
-    .put(logController.update)
-    .delete(logController.delete);
+    router.route('/')
+        .get(logController.index)
+        .post(logController.store);
 
-module.exports = router;
+    router.route('/:logId([0-9]+)')
+        .get(logController.show)
+        .put(logController.update)
+        .delete(logController.delete);
+
+    return router;
+};

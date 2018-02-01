@@ -1,8 +1,10 @@
 'use strict';
 
+module.exports = (db) => ({
+    index: require('./list')(db),
+    show: require('./show')(db),
+    store: require('./store')(db),
+    update: require('./update')(db),
+    delete: require('./delete')(db)
+});
 
-module.exports.index = require('./list');
-module.exports.show = require('./show');
-module.exports.store = require('./store');
-module.exports.update = require('./update');
-module.exports.delete = require('./delete');

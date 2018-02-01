@@ -7,7 +7,6 @@ module.exports = {
     "plugins": [
         "mocha",
         "chai-friendly",
-        "deprecate",
         "node",
         "promise",
         "jsdoc"
@@ -32,9 +31,6 @@ module.exports = {
         "promise/no-callback-in-promise": "warn",
         "promise/avoid-new": "warn",
         "promise/no-return-in-finally": "warn",
-        "deprecate/function": "warn",
-        "deprecate/member-expression": "warn",
-        "deprecate/import": "warn",
         "jsdoc/check-param-names": 1,
         "jsdoc/check-tag-names": 1,
         "jsdoc/check-types": 1,
@@ -98,7 +94,7 @@ module.exports = {
         "function-paren-newline": "error",
         "generator-star-spacing": "error",
         "getter-return": "error",
-        "global-require": "warn",
+        "global-require": 0,
         "guard-for-in": "error",
         "handle-callback-err": "warn",
         "id-blacklist": "error",
