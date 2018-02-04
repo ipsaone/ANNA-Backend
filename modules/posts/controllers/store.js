@@ -15,7 +15,7 @@ const policy = require('../post_policy');
  */
 
 module.exports = (db) => function (req, res, handle) {
-    return policy.filterStore(req.session.auth)
+    return policy.filterStore(db, req.session.auth)
         .then(() => db.Post.create(req.body))
         .then((post) => res.status(201).json(post))
         .catch((err) => {

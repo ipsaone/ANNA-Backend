@@ -2,7 +2,7 @@
   "name": "anna-backend",
   "version": "1.0.3",
   "description": "Backend for ANNA intranet",
-  "main": "server.js",
+  "main": "app.js",
   "author": "IpsaOne DevTeam",
   "private": true,
   "license": "ISC",
@@ -49,6 +49,7 @@
     "husky": "^0.14.3",
     "jsdoc": "^3.5.5",
     "mocha": "^4.1.0",
+    "nodemon": "^1.14.12",
     "nsp": "^3.1.0",
     "sequelize-cli": "^3.2.0",
     "sequelize-mock": "^0.10.2",
@@ -76,7 +77,7 @@
     "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
     "security": "nsp check .",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
-    "debug": "node --inspect=0.0.0.0:9229 ./app.js"
+    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js"
   },
   "engines": {
     "node": ">=8.9.0"

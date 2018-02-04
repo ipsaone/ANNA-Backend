@@ -46,7 +46,7 @@ module.exports = (db) => async (req, res) => {
     }
 
     if (dl) {
-        const allowed = await policy.filterDownloadContents(fileId, req.session.auth);
+        const allowed = await policy.filterDownloadContents(db, fileId, req.session.auth);
 
         if (!allowed) {
             return res.boom.unauthorized();
@@ -58,7 +58,7 @@ module.exports = (db) => async (req, res) => {
         return res.download(dataPath, data.name);
     }
 
-    const allowed = await policy.filterDownloadMeta(fileId, req.session.auth);
+    const allowed = await policy.filterDownloadMeta(db, fileId, req.session.auth);
 
     if (!allowed) {
         throw res.boom.unauthorized();

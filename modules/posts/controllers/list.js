@@ -38,7 +38,7 @@ module.exports = (db) => function (req, res, handle) {
             ]
         ]
     })
-        .then((postsResponse) => policy.filterIndex(postsResponse, req.session.auth))
+        .then((postsResponse) => policy.filterIndex(db, postsResponse, req.session.auth))
         .then((postsFiltered) => res.status(200).json(postsFiltered))
         .catch((err) => handle(err));
 };

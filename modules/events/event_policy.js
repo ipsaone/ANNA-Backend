@@ -9,12 +9,6 @@
  * @module event
  */
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-
-const db = require(path.join(root, './modules')).db;
-
 /**
  * Get all events.
  *
@@ -37,12 +31,13 @@ exports.filterShow = () => Promise.resolve(true);
  *
  * @function filterStore
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of ther user verified by the function.
  *
  * @returns {boolean} Root user or error : 'Unauthorized'.
  *
  */
-exports.filterStore = async (userId) => {
+exports.filterStore = async (db, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
@@ -58,12 +53,13 @@ exports.filterStore = async (userId) => {
  *
  * @function filterUpdate
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of ther user verified by the function.
  *
  * @returns {boolean} Root user or error : 'Unauthorized'.
  *
  */
-exports.filterUpdate = async (userId) => {
+exports.filterUpdate = async (db, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
@@ -79,12 +75,13 @@ exports.filterUpdate = async (userId) => {
  *
  * @function filterDelete
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of ther user verified by the function.
  *
  * @returns {boolean} Root user or error : 'Unauthorized'.
  *
  */
-exports.filterDelete = async (userId) => {
+exports.filterDelete = async (db, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
@@ -94,7 +91,7 @@ exports.filterDelete = async (userId) => {
     return false;
 };
 
-exports.filterStoreRegistered = async (eventId, targetId, userId) => {
+exports.filterStoreRegistered = async (db, eventId, targetId, userId) => {
 
     if (userId === targetId) {
         return true;
@@ -112,7 +109,7 @@ exports.filterStoreRegistered = async (eventId, targetId, userId) => {
     return false;
 };
 
-exports.filterDeleteRegistered = async (eventId, targetId, userId) => {
+exports.filterDeleteRegistered = async (db, eventId, targetId, userId) => {
 
     if (userId === targetId) {
         return true;

@@ -57,7 +57,7 @@ module.exports = (db) => async (req, res) => {
     });
     const childrenData = await childrenDataP; // Wait to actually have them
 
-    const authorized = policy.filterList(folderId, req.session.auth);
+    const authorized = policy.filterList(db, folderId, req.session.auth);
 
     if (!authorized) {
         throw res.boom.unauthorized();

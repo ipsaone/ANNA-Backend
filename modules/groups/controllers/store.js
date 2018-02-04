@@ -29,7 +29,7 @@ module.exports = (db) => async function (req, res) {
         res.status(201).json(group);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest(err);
+            return res.boom.badRequest(err);
         }
 
         throw err;

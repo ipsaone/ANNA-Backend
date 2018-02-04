@@ -20,7 +20,7 @@ module.exports = (db) => function (req, res, handle) {
     }
     const postId = parseInt(req.params.postId, 10);
 
-    return policy.filterUpdate(req.session.auth)
+    return policy.filterUpdate(db, req.session.auth)
         .then(() => db.Post.update(req.body, {where: {id: postId}}))
         .then((post) => {
             if (post.length === 1) {

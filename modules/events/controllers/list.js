@@ -1,10 +1,10 @@
 'use strict';
 
 const policy = require('../event_policy');
-const repo = require('../repositories/list');
+const repo = require('../repositories');
 
 
-module.exports = () =>
+module.exports = (db) =>
 
 /**
  *
@@ -19,13 +19,13 @@ module.exports = () =>
     async function (req, res) {
 
     // Check user is authorized
-        const authorized = policy.filterIndex();
+        const authorized = policy.filterIndex(db);
 
         if (!authorized) {
             return false;
         }
 
-        const list = await repo.list();
+        const list = await repo.list(db);
 
         // Send response
         return res.status(200).json(list);

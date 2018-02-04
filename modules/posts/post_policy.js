@@ -8,10 +8,6 @@
 /**
  * @module post
  */
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-const db = require(path.join(root, './modules'));
 
 
 /**
@@ -20,11 +16,12 @@ const db = require(path.join(root, './modules'));
  *
  * @function userIsAuthor
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} The author group if resolved.
  */
-const userIsAuthor = async (userId) => {
+const userIsAuthor = async (db, userId) => {
     const user = await db.User.findById(userId, {include: ['groups']});
 
     if (user && user.groups) {
@@ -49,15 +46,16 @@ const userIsAuthor = async (userId) => {
  *
  * @function filterIndex
  *
+ * @param {obj} db - The database.
  * @param {Object} posts - The object containing all posts.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} An array containing all published posts if resolved.
  */
-exports.filterIndex = (posts, userId) =>
+exports.filterIndex = (db, posts, userId) =>
 
     // Only show drafts if user is an author
-    userIsAuthor(userId)
+    userIsAuthor(db, userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return posts;
@@ -77,15 +75,16 @@ exports.filterIndex = (posts, userId) =>
  *
  * @function filterShow
  *
+ * @param {obj} db - The database.
  * @param {Object} post - A post.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} A post.
  */
-exports.filterShow = (post, userId) =>
+exports.filterShow = (db, post, userId) =>
 
     // Only show drafts is user is an author.
-    userIsAuthor(userId)
+    userIsAuthor(db, userId)
         .then((isAuthor) => {
             if (post.published || isAuthor) {
                 return post;
@@ -101,14 +100,15 @@ exports.filterShow = (post, userId) =>
  *
  * @function filterStore
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {boolean} Either user is an author or the function throws an error 'Unauthorized'.
  */
-exports.filterStore = (userId) =>
+exports.filterStore = (db, userId) =>
 
     // Only allow creation if user is an author.
-    userIsAuthor(userId)
+    userIsAuthor(db, userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return true;
@@ -124,14 +124,15 @@ exports.filterStore = (userId) =>
  *
  * @function filterUpdate
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {boolean} Either the user is an author or the function throws an error 'Unauthorized'.
  */
-exports.filterUpdate = (userId) =>
+exports.filterUpdate = (db, userId) =>
 
     // Only allow update if user is an author
-    userIsAuthor(userId)
+    userIsAuthor(db, userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return true;
@@ -148,14 +149,15 @@ exports.filterUpdate = (userId) =>
  *
  * @function filterDelete
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {boolean} Either the user is an author or the function throws an error 'Unauthorized'.
  */
-exports.filterDelete = (userId) =>
+exports.filterDelete = (db, userId) =>
 
     // Only allow delete if user is an author
-    userIsAuthor(userId)
+    userIsAuthor(db, userId)
         .then((isAuthor) => {
             if (isAuthor) {
                 return true;

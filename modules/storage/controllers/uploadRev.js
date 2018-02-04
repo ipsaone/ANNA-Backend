@@ -31,7 +31,7 @@ module.exports = (db) => async (req, res) => {
     });
 
     // Find the file in database and add new data
-    const allowed = await policy.filterUploadRev();
+    const allowed = await policy.filterUploadRev(db);
 
     if (!allowed) {
         throw res.boom.unauthorized();

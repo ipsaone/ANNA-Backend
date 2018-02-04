@@ -31,7 +31,7 @@ module.exports = (db) => function (req, res, handle) {
 
             return post;
         })
-        .then((post) => policy.filterShow(post, req.session.auth))
+        .then((post) => policy.filterShow(db, post, req.session.auth))
         .then((post) => res.status(200).json(post))
         .catch((err) => handle(err));
 };

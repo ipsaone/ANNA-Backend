@@ -20,7 +20,7 @@ module.exports = (db) => function (req, res, handle) {
     }
     const postId = parseInt(req.params.postId, 10);
 
-    return policy.filterDelete(req.session.auth)
+    return policy.filterDelete(db, req.session.auth)
         .then(() => db.Post.destroy({where: {id: postId}}))
         .then(() => res.status(204).json({}))
         .catch(db.Sequelize.ValidationError, () => res.boom.badRequest())

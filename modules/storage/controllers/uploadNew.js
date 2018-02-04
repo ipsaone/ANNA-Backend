@@ -30,7 +30,7 @@ module.exports = (db) => async (req, res) => {
     });
 
     // Create the file and its data
-    const allowed = await policy.filterUploadNew(req.body.dirId, req.session.auth);
+    const allowed = await policy.filterUploadNew(db, req.body.dirId, req.session.auth);
 
     if (!allowed) {
         throw res.boom.unauthorized();

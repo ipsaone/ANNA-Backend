@@ -257,16 +257,16 @@ module.exports = (sequelize, DataTypes) => {
      * Associates Data to other tables.
      *
      * @function associate
-     * @param {Object} models - This var regroups models of all tables.
+     * @param {obj} db - The database.
      * @returns {Promise} The promise to create associations.
      */
-    Data.associate = function (models) {
+    Data.associate = function (db) {
 
         /**
          * Creates singular association with table 'File'
          * @function belongsToFile
          */
-        Data.belongsTo(models.File, {
+        Data.belongsTo(db.File, {
             foreignKey: 'fileId',
             as: 'file',
             onDelete: 'RESTRICT',
@@ -277,7 +277,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates singular association with table 'User'
          * @function belongsToUser
          */
-        Data.belongsTo(models.User, {
+        Data.belongsTo(db.User, {
             foreignKey: 'ownerId',
             as: 'author',
             onDelete: 'RESTRICT',
@@ -288,7 +288,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates singular association with table 'Right'
          * @function belongsToRight
          */
-        Data.belongsTo(models.Right, {
+        Data.belongsTo(db.Right, {
             foreignKey: 'rightsId',
             as: 'rights',
             onDelete: 'RESTRICT',
@@ -299,7 +299,7 @@ module.exports = (sequelize, DataTypes) => {
          * Createssingular  association with table 'Group'
          * @function belongsToGroup
          */
-        Data.belongsTo(models.Group, {
+        Data.belongsTo(db.Group, {
             foreignKey: 'groupId',
             as: 'group',
             onDelete: 'RESTRICT',
@@ -310,7 +310,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates singular association with table 'Data'
          * @function belongsToData
          */
-        Data.belongsTo(models.Data, {
+        Data.belongsTo(db.Data, {
             foreignKey: 'dirId',
             as: 'directory',
             onDelete: 'RESTRICT',
@@ -321,90 +321,89 @@ module.exports = (sequelize, DataTypes) => {
          * Creates plural associations with table 'Data'
          * @function hasManyData
          */
-        Data.hasMany(models.Data, {
+        Data.hasMany(db.Data, {
             foreignKey: 'dirId',
             as: 'files',
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });
-    };
 
+        /**
+         *
+         * Get URL for a data object.
+         * Is designed to be bound to the data object.
+         *
+         * @returns {string} Data URL.
+         *
+         */
+        Data.prototype.getUrl = function () {
+            let url = '/storage/files/';
 
-    /**
-     *
-     * Get URL for a data object.
-     * Is designed to be bound to the data object.
-     *
-     * @returns {string} Data URL.
-     *
-     */
-    Data.prototype.getUrl = function () {
-        let url = '/storage/files/';
+            url += this.fileId;
+            url += '?revision=';
+            url += this.id;
 
-        url += this.fileId;
-        url += '?revision=';
-        url += this.id;
+            // Force return of a promise
+            return Promise.resolve(url);
+        };
 
-        // Force return of a promise
-        return Promise.resolve(url);
-    };
+        /**
+         *
+         * Get file system path for a data object.
+         * Is designed to be bound to the data object.
+         *
+         * @function getPath
+         *
+         * @todo fix
+         *
+         *
+         * @returns {string} Data path.
+         *
+         */
+        Data.prototype.getPath = async function () {
+            let dataPath = '';
 
-    /**
-     *
-     * Get file system path for a data object.
-     * Is designed to be bound to the data object.
-     *
-     * @function getPath
-     *
-     * @todo fix
-     *
-     *
-     * @returns {string} Data path.
-     *
-     */
-    Data.prototype.getPath = async function () {
-        let dataPath = '';
+            let id = 0;
 
-        let id = 0;
+            if (this.id) {
+                id = this.id;
+            } else {
 
-        if (this.id) {
-            id = this.id;
-        } else {
+                /*
+                 * Get next ID by getting Auto_increment value of the table
+                 * ATTENTION : race condition here ?
+                 */
+                const data = await sequelize.query('SHOW TABLE STATUS LIKE \'Data\'', {type: sequelize.QueryTypes.SELECT});
 
-            /*
-             * Get next ID by getting Auto_increment value of the table
-             * ATTENTION : race condition here ?
-             */
-            const data = await sequelize.query('SHOW TABLE STATUS LIKE \'Data\'', {type: sequelize.QueryTypes.SELECT});
-
-            if (!data || data.length !== 1) {
-                throw new Error('Failed to find path');
+                if (!data || data.length !== 1) {
+                    throw new Error('Failed to find path');
+                }
+                id = data[0].Auto_increment;
             }
-            id = data[0].Auto_increment;
-        }
 
-        console.log(`ID : ${id}`);
+            console.log(`ID : ${id}`);
 
-        dataPath += `/${this.fileId}`;
-        dataPath += `/${this.name}-#${id}`;
+            dataPath += `/${this.fileId}`;
+            dataPath += `/${this.name}-#${id}`;
 
-        return Promise.resolve(path.join(config.storage.folder, dataPath));
+            return Promise.resolve(path.join(config.storage.folder, dataPath));
 
+        };
+
+        /**
+         *
+         * Get rights for a data object.
+         *
+         * @returns {Object} Promise to rights.
+         *
+         */
+        Data.prototype.getRights = function () {
+            // Only one right should exist for each data, no check needed
+
+            return db.Right.findById(this.rightsId);
+        };
     };
 
-    /**
-     *
-     * Get rights for a data object.
-     *
-     * @returns {Object} Promise to rights.
-     *
-     */
-    Data.prototype.getRights = function () {
-        const db = require(path.join(root, './modules'));
-        // Only one right should exist for each data, no check needed
-
-        return db.Right.findById(this.rightsId);
-    };
 
     return Data;
 };

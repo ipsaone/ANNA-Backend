@@ -62,7 +62,7 @@ const buildDB = (sequelize) => {
 
 module.exports = class ModuleFactory {
     constructor (options) {
-        if (options.test) {
+        if (options && options.test) {
             this.configPath = './config/sequelize_test';
         } else {
             this.configPath = './config/sequelize';

@@ -8,39 +8,37 @@
 /**
  * @module storage
  */
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
 const storage = require('./repository/storage');
-const db = require(path.join(root, './modules'));
 
 /**
  * List files in directory.
  *
  * @function filterList
+ * @param {obj} db - The database.
  * @param {INTEGER} folderId - The id of the selected folder.
  * @param {INTEGER} userId - The id of the user.
  * @returns {Promise} List all files.
  */
-exports.filterList = (folderId, userId) =>
+exports.filterList = (db, folderId, userId) =>
 
     /** Check if directory has 'read' permission */
-    storage.fileHasReadPermission(folderId, userId);
+    storage.fileHasReadPermission(db, folderId, userId);
 
 /**
  * Filters users who can upload files.
  *
  * @function filterUploadNew
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} folderId - The id of the selected folder.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} Uploads a file if directory has 'write' Permission.
  */
-exports.filterUploadNew = async (folderId, userId) => {
+exports.filterUploadNew = async (db, folderId, userId) => {
 
     /** Check if directory has 'write' permission */
-    const canWriteP = storage.fileHasWritePermission(folderId, userId);
+    const canWriteP = storage.fileHasWritePermission(db, folderId, userId);
     const folder = await db.File.findById(folderId);
     const canWrite = await canWriteP;
 
@@ -63,12 +61,13 @@ exports.filterUploadNew = async (folderId, userId) => {
  *
  * @function filterUploadRev
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} fileId - The id of the file.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} Update metadata if resolved.
  */
-exports.filterUploadRev = async (fileId, userId) => {
+exports.filterUploadRev = async (db, fileId, userId) => {
 
     /**
      * Check if directory has 'write' permission for metadata update
@@ -82,14 +81,14 @@ exports.filterUploadRev = async (fileId, userId) => {
         return false;
     }
 
-    const lastData = await file.getData();
+    const lastData = await file.getData(db);
 
     if (!lastData) {
         console.log(`No data for file #${fileId}`);
     }
 
 
-    return storage.fileHasWritePermission(lastData.dirId, userId);
+    return storage.fileHasWritePermission(db, lastData.dirId, userId);
 
 };
 
@@ -98,12 +97,13 @@ exports.filterUploadRev = async (fileId, userId) => {
  *
  * @function filterDownloadMeta
  *
+ * @param {obj} db - The database.
  * @param {INTEGER} fileId - The id of the file.
  * @param {INTEGER} userId - The id of the user.
  *
  * @returns {Promise} Downloads metadata if directory has 'read' permission.
  */
-exports.filterDownloadMeta = async (fileId, userId) => {
+exports.filterDownloadMeta = async (db, fileId, userId) => {
 
     /**
      * Checks if directory has 'read' permissions for metadata download
@@ -123,13 +123,22 @@ exports.filterDownloadMeta = async (fileId, userId) => {
         console.log(`No data for file #${fileId}`);
     }
 
-    return storage.fileHasReadPermission(lastData.dirId, userId);
+    return storage.fileHasReadPermission(db, lastData.dirId, userId);
 
 };
 
-exports.filterDownloadContents = (fileId, userId) => storage.fileHasReadPermission(fileId, userId);
+exports.filterDownloadContents = async (db, fileId, userId) => {
 
-exports.filterDelete = async (fileId, userId) => {
+    const file = await db.File.findById(fileId);
+
+    if (file.isDir) {
+        return false;
+    }
+
+    return storage.fileHasReadPermission(db, fileId, userId);
+};
+
+exports.filterDelete = async (db, fileId, userId) => {
 
     // Check if directory has 'write' permission
 
@@ -139,11 +148,11 @@ exports.filterDelete = async (fileId, userId) => {
         return false;
     }
 
-    const lastData = await file.getData();
+    const lastData = await file.getData(db);
 
     if (!lastData) {
         console.log(`No data for file #${fileId}`);
     }
 
-    return storage.fileHasWritePermission(lastData.dirId, userId);
+    return storage.fileHasWritePermission(db, lastData.dirId, userId);
 };

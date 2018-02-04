@@ -88,7 +88,6 @@ Storage.getDataUrl = () => {
  * @param {bool} full - Get full path or relative path.
  *
  * @returns {string} Data path.
- * @todo fix
  *
  */
 Storage.getDataPath = function (full = false) {
@@ -122,13 +121,12 @@ Storage.getDataPath = function (full = false) {
  * Get diretory tree for a file object.
  *
  * @function getFileDirTree
+ * @param {obj} db - The database.
  * @returns {Object} Promise to directory tree.
  *
  */
-Storage.getFileDirTree = async function () {
-    const db = require(path.join(root, './modules'));
-
-    const data = await this.getData();
+Storage.getFileDirTree = async function (db) {
+    const data = await this.getData(db);
 
     // Get parents' directory tree
     let fileDirTree = Promise.resolve([]);
@@ -148,14 +146,13 @@ Storage.getFileDirTree = async function () {
  *
  * @function getFileData
  *
+ * @param {obj} db - The database.
  * @param {integer} offset - How old the data is.
  *
  * @returns {Object} Promise to file data.
  *
  */
-Storage.getFileData = function (offset = 0) {
-    const db = require(path.join(root, './modules'));
-
+Storage.getFileData = function (db, offset = 0) {
     return db.Data
 
     // Like findOne, but with order + offset
@@ -186,12 +183,11 @@ Storage.getFileData = function (offset = 0) {
  * Get rights for a data object.
  *
  * @function getDataRights
+ * @param {obj} db - The database.
  * @returns {Object} Promise to rights.
  *
  */
-Storage.getDataRights = function () {
-    const db = require(path.join(root, './modules'));
-
+Storage.getDataRights = function (db) {
     // Only one right should exist for each data, no check needed
     return db.Right.findOne({where: {id: this.rightsId}});
 };
@@ -202,16 +198,14 @@ Storage.getDataRights = function () {
  *
  * @function addFileData
  *
+ * @param {obj} db - The database.
  * @param {obj} fileChanges - The changes in this data.
  * @param {obj} filePath - The path to the file to add data to.
  *
- * @todo finish and test
  * @returns {Object} Promise to directory tree.
  *
  */
-Storage.addFileData = function (fileChanges, filePath) {
-    const db = require(path.join(root, './modules'));
-
+Storage.addFileData = function (db, fileChanges, filePath) {
     fileChanges.fileId = this.id;
 
     const fileBuilder = (changes, builderPath) =>
@@ -330,6 +324,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  *
  * Create a new file object.
  *
+ * @param {obj} db - The database.
  * @param {Object} changes - The file metadata.
  * @param {string} filePath - The file path to create.
  * @param {boolean} dir - Whether the file is a directory or not.
@@ -337,9 +332,7 @@ Storage.addFileData = function (fileChanges, filePath) {
  * @returns {Object} Promise to success boolean.
  *
  */
-Storage.createNewFile = function (changes, filePath, dir = false) {
-    const db = require(path.join(root, './modules'));
-
+Storage.createNewFile = function (db, changes, filePath, dir = false) {
     return db.File.create({isDir: dir})
         .then((file) => file.addData(changes, filePath));
 };
@@ -392,9 +385,7 @@ Storage.computeSize = function (filePath) {
     });
 };
 
-Storage.fileHasWritePermission = async (fileId, userId) => {
-    const db = require(path.join(root, './modules'));
-
+Storage.fileHasWritePermission = async (db, fileId, userId) => {
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
     const file = await fileP;
@@ -429,9 +420,7 @@ Storage.fileHasWritePermission = async (fileId, userId) => {
     return false;
 };
 
-Storage.fileHasReadPermission = async (fileId, userId) => {
-    const db = require.main.require('./models');
-
+Storage.fileHasReadPermission = async (db, fileId, userId) => {
     const fileP = db.File.findById(fileId);
     const userP = db.User.findById(userId);
     const file = await fileP;

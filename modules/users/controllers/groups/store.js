@@ -19,15 +19,22 @@ module.exports = (db) => async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const groups = await policy.filterAddGroups(req.body.groupsId, req.session.auth);
+    const groupsP = policy.filterAddGroups(db, req.body.groupsId, req.session.auth);
+
     const user = await db.User.findById(userId);
 
     if (!user) {
-        throw res.boom.badRequest();
+        return res.boom.badRequest();
     }
 
+    const groups = await groupsP;
+
+    if (!groups || groups.length === 0) {
+        return res.boom.unauthorized();
+    }
 
     await user.addGroups(groups);
+    await user.save();
 
     return res.status(204).send();
 };
