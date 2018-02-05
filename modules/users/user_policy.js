@@ -56,9 +56,11 @@ exports.filterShow = (db, us, userId) => Promise.resolve(us)
 
         if (u instanceof db.User) {
             user = u.toJSON();
-        } else {
+        } else if (u) {
             // Else, assume it's already JSON !
             user = u;
+        } else {
+            return {};
         }
 
         delete user.password;

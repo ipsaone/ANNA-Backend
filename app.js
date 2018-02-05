@@ -71,7 +71,10 @@ const loadApp = (options = {}) => {
 
     app.use(require('./middlewares/exception')); // Error handling
 
-    return app;
+    return {
+        app,
+        modules: factory
+    };
 };
 
 if (require.main === module) {

@@ -62,41 +62,35 @@ const buildDB = (sequelize) => {
 
 module.exports = class ModuleFactory {
     constructor (options) {
+        let test = false;
+
         if (options && options.test) {
+            test = true;
+        }
+
+        this.configPath = './config/sequelize';
+        if (test) {
             this.configPath = './config/sequelize_test';
-        } else {
-            this.configPath = './config/sequelize';
         }
 
         const config = require(path.join(root, this.configPath));
 
-        this.testDatabases = 0;
-        this.db = buildDB(new Sequelize(config.database, config.username, config.password, config));
+
+        if (test) {
+            // For tests, load in-memory SQLite database !
+            this.testDatabases = 0;
+            this.db = buildDB(new Sequelize(`test${this.testDatabases}`, null, null, config));
+        } else {
+            this.db = buildDB(new Sequelize(config.database, config.username, config.password, config));
+        }
+
         this.router = buildRouter(this.db);
     }
 
-    async unitTest () {
-        this.testDatabases += 1;
+    async syncDB () {
+        await this.db.sequelize.sync({force: true});
 
-        const options = {
-            dialect: 'sqlite',
-            logging: false, // Prevent Sequelize from outputting the query on the console
-            // Logging: console.log,
-            redis: this.session,
-            force: true,
-            operatorsAliases: false,
-            pool: {
-                maxConnections: 50,
-                maxIdleTime: 10
-            }
-        };
-
-        const sequelizeTest = new Sequelize(`test${this.testDatabases}`, null, null, options);
-        const db = buildDB(sequelizeTest);
-
-        await db.sequelize.sync({force: true});
-        await require('sequelize-fixtures').loadFile('modules/**/fixtures/*.js', db, {log: () => null});
-
-        return db;
+        return this.db;
     }
+
 };

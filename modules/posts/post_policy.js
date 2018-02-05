@@ -114,8 +114,7 @@ exports.filterStore = (db, userId) =>
                 return true;
             }
 
-            throw new Error('Unauthorized');
-
+            return false;
         });
 
 /**

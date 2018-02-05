@@ -1,27 +1,43 @@
 'use strict';
 
+process.env.TEST = true;
+
+const test = require('ava');
 
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
 
-const test = require('ava');
-const bcrypt = require('bcrypt');
-const repo = require('../login/repository');
-const ModulesFactory = require(path.join(root, './modules'));
 
-let modules = new ModulesFactory({test: true})
+test.beforeEach(async t => {
+    const loadApp = require(path.join(root, './app'));
+    let {app, modules} = loadApp({test: true, noLog: true});
+    const request = require('supertest').agent(app);
 
+    const db = await modules.syncDB();
+
+    t.context.app = app;
+    t.context.db = db;
+    t.context.request = request;
+
+
+    t.context.user = await db.User.create({
+        username: 'login_test',
+        password: 'password_test',
+        email: 'test@test.com'
+    })
+})
 
 test('Login', async (t) => {
-    const db = await modules.unitTest();
 
-    const accepted = await repo.login(db, 'foo', 'fooPassword');
+    const repo = require('../login/repository');
+
+    const accepted = await repo.login(t.context.db, 'login_test', 'password_test');
     t.truthy(accepted);
 
-    const badPassword = await repo.login(db, 'foo', 'someOtherPassword');
+    const badPassword = await repo.login(t.context.db, 'login_test', 'some_password');
     t.falsy(badPassword);
 
-    const badUser = await repo.login(db, 'foobar', 'fooPassword');
+    const badUser = await repo.login(t.context.db, 'loginTestUser', 'password_test');
     t.falsy(badUser);
 });

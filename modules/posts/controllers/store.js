@@ -14,15 +14,15 @@ const policy = require('../post_policy');
  *
  */
 
-module.exports = (db) => function (req, res, handle) {
-    return policy.filterStore(db, req.session.auth)
-        .then(() => db.Post.create(req.body))
-        .then((post) => res.status(201).json(post))
-        .catch((err) => {
-            if (err instanceof db.Sequelize.ValidationError) {
-                res.boom.badRequest(err);
-            }
-            throw err;
-        })
-        .catch((err) => handle(err));
+module.exports = (db) => async function (req, res) {
+    const allowed = await policy.filterStore(db, req.session.auth);
+
+    if (!allowed) {
+        return res.boom.unauthorized();
+    }
+
+    const post = await db.Post.create(req.body);
+
+
+    return res.status(201).json(post);
 };

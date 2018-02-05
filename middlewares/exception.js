@@ -69,12 +69,14 @@ module.exports = (err, req, res, next) => {
         return next(err);
     }
 
-
     if (typeof err.type && err.type === 'entity.parse.failed') {
         // Bad JSON was sent
 
         sendError(res, err, 'badRequest');
+    } else if (err.constructor.name === 'ValidationError') {
+        // Validation error
 
+        sendError(res, err, 'badRequest');
     } else {
         // Unknown error
 
