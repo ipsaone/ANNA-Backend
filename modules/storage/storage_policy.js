@@ -48,7 +48,7 @@ exports.filterUploadNew = async (db, folderId, userId) => {
         return false;
     }
 
-    console.log(folder);
+    // Console.log(folder);
     console.log(`canWrite : ${canWrite}`);
     console.log(`isDir : ${folder.isDir}`);
 

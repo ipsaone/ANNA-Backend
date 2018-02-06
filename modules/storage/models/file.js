@@ -199,7 +199,7 @@ module.exports = (sequelize, DataTypes) => {
                 // FindAll is limited, so there will always be one result (or none -> undefined)
                 .then((data) => {
                     if (data.length === 0) {
-                        return {};
+                        throw new Error(`No data for file ID ${this.id}`);
                     }
 
                     return data[0];

@@ -44,7 +44,7 @@ test('Log addition', async t => {
         })
 
     t.is(res.status, 201);
-    t.is(res.body.title, 'test')
+    t.is(res.body.title, 'test');
 });
 
 test('List logs', async t => {

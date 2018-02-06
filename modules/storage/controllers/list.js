@@ -50,12 +50,11 @@ module.exports = (db) => async (req, res) => {
         file.scope('folders');
     }
 
-    const childrenDataP = getChildrenData(db, folderId); // Start getting children data
-    const folderFile = await db.File.findOne({ // Do things in the middle
+    const childrenDataP = getChildrenData(db, folderId);
+    const folderFileP = db.File.findOne({
         where: {id: folderId},
         rejectOnEmpty: true
     });
-    const childrenData = await childrenDataP; // Wait to actually have them
 
     const authorized = policy.filterList(db, folderId, req.session.auth);
 
@@ -63,13 +62,18 @@ module.exports = (db) => async (req, res) => {
         throw res.boom.unauthorized();
     }
 
+    const folderFile = await folderFileP;
 
+
+    const dirTreeP = folderFile.getDirTree();
     const folderData = await folderFile.getData();
 
-    const response = folderData;
+    const response = folderData.toJSON();
 
     response.isDir = folderFile.isDir;
-    response.children = childrenData;
+    response.dirTree = await dirTreeP;
+    response.children = await childrenDataP;
+
 
     return res.status(200).json(response);
 };

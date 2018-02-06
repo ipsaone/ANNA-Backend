@@ -100,8 +100,6 @@ Storage.getDataPath = function (full = false) {
     dataPath += `/${this.id}`;
     dataPath += `-${this.name}`;
 
-    console.log(dataPath);
-
     // Check file exists
     fs.access(dataPath, fs.constants.F_OK, (err) => {
         if (err) {

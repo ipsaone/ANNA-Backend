@@ -23,45 +23,7 @@ describe('Users', () => {
 
     describe('[GET]', () => {
 
-        it('expect to GET all users', () =>
-            agent.get('/users')
-                .then((res) => {
-                    expect(res).to.have.status(200);
-                    expect(res).to.be.json;
-                    expect(res.body.length).to.be.within(10, 40); // See seed_and_login
-
-                    return true;
-                }));
-
-        it('expect to GET user with id = 1', () =>
-            agent.get('/users/1')
-                .then((res) => {
-                    expect(res).to.have.status(200);
-                    expect(res).to.be.json;
-
-                    return true;
-                }));
-
-        it('expect an error when GET user with id = -3', () =>
-            agent.get('/users/-3')
-                .catch((err) => {
-                    expect(err).to.have.status(404);
-
-                    return true;
-                }));
-
-        it('expect an error when GET user with id = abc', () =>
-            agent.get('/users/abc')
-                .then((res) => {
-                    expect(res).not.to.exist;
-
-                    return false;
-                })
-                .catch((err) => {
-                    expect(err).to.have.status(404);
-
-                    return true;
-                }));
+        
     });
 
     describe('[POST]', () => {
