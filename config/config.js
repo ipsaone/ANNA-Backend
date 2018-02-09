@@ -18,6 +18,16 @@ const config = {
 
     password: {salt: 10},
 
+    email: {
+        sender: 'oneBugReporter',
+        password: 'oneBug_2018',
+        errorManagers: [
+            'declaverie@gmail.com',
+            'clement.chandon@gmail.com'
+        ]
+    },
+
+
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',

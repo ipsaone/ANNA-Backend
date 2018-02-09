@@ -10,6 +10,7 @@ const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
 const winston = require('winston');
+
 require('winston-email');
 
 require('winston/package.json');
@@ -23,25 +24,34 @@ const loadApp = (options = {}) => {
 
     winston.configure({
         transports: [
-            new winston.transports.Console({level: 'debug'}),
+            new winston.transports.Console({
+                level: 'warn',
+                colorize: true
+            }),
             new winston.transports.File({
+                level: 'debug',
+                name: 'file#debug',
                 filename: 'logs/error.log',
-                level: 'error',
+                colorize: true
+            }),
+            new winston.transports.File({
+                level: 'info',
+                name: 'file#info',
+                filename: 'logs/info.log',
                 colorize: true
             }),
             new winston.transports.Email({
                 level: 'error',
-                from: 'clement.chandon@gmail.com',
-                to: 'clement.chandon@ipsa.fr',
+                from: config.email.sender,
+                to: config.email.errorManagers,
                 service: 'Gmail',
                 auth: {
-                    user: 'oneBugReporter',
-                    pass: 'oneBug_2018'
+                    user: config.email.sender,
+                    pass: config.email.password
                 }
             })
         ]
     });
-
 
     /*
      * Server config
