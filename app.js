@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
+const winston = require('winston');
 
 require('express-async-errors');
 
@@ -16,6 +17,19 @@ require('dotenv').config();
 
 
 const loadApp = (options = {}) => {
+
+    winston.configure({
+        transports: [
+            new winston.transports.Console({level: 'debug'}),
+            new winston.transports.File({
+                filename: 'logs/error.log',
+                level: 'error',
+                colorize: true
+            })
+        ]
+    });
+
+    winston.error('Test fichier');
 
     /*
      * Server config
@@ -40,10 +54,10 @@ const loadApp = (options = {}) => {
     app.use(require('./middlewares/rate_limit')); // Rate limit
     app.use(bodyParser.urlencoded({extended: true})); // POST parser
     app.use(bodyParser.json());
+    app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
     app.use(require('./middlewares/cors')); // CORS headers
     app.use(require('./middlewares/session')); // Session management
     app.use(require('./middlewares/auth')); // Auth check
-    app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
 
     /*
      * Options

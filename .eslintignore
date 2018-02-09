@@ -5,3 +5,4 @@ test_old/
 test/
 **/test.js
 **/fixtures/*
+logs/

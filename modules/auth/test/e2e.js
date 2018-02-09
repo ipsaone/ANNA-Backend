@@ -3,7 +3,7 @@
 process.env.TEST = true;
 
 const test = require('ava');
-
+const winston = require('winston');
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
@@ -41,7 +41,7 @@ test('Login', async t => {
             username: 'login_test',
             password: 'qlmdkgsfk'
         })
-        
+
     t.is(badPasswordRes.status, 401)
 
     let badUserRes = await t.context.request.post('/auth/login')
@@ -49,7 +49,7 @@ test('Login', async t => {
             username: 'login_test8',
             password: 'password_test'
         })
-        
+
     t.true(badUserRes.status == 401)
 });
 

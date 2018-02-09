@@ -20,3 +20,4 @@ out/
 doc/*
 
 .eslintcache
+logs/

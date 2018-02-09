@@ -2,6 +2,7 @@
 
 const joi = require('joi');
 const repo = require('./repository');
+const winston = require('winston');
 
 const schema = joi.object().keys({
     username: joi.string().required(),
@@ -30,6 +31,8 @@ module.exports = function (db) {
         const validation = joi.validate(req.body, schema);
 
         if (validation.error) {
+            winston.debug('Bad input', {reqid: req.id});
+
             return res.boom.badRequest(validation.error);
         }
 

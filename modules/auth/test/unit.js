@@ -3,7 +3,7 @@
 process.env.TEST = true;
 
 const test = require('ava');
-
+const winston = require('winston');
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
