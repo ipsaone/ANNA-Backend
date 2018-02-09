@@ -10,7 +10,7 @@ const getChildrenData = async (db, folderId) => {
     }
 
     let data = await Promise.all(files.map(async (thisFile) => {
-        const thisData = await thisFile.getData();
+        const thisData = await thisFile.getData(db);
 
         thisData.isDir = thisFile.isDir;
 
@@ -65,8 +65,8 @@ module.exports = (db) => async (req, res) => {
     const folderFile = await folderFileP;
 
 
-    const dirTreeP = folderFile.getDirTree();
-    const folderData = await folderFile.getData();
+    const dirTreeP = folderFile.getDirTree(db);
+    const folderData = await folderFile.getData(db);
 
     const response = folderData.toJSON();
 

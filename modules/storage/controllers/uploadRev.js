@@ -31,7 +31,7 @@ module.exports = (db) => async (req, res) => {
     });
 
     // Find the file in database and add new data
-    const allowed = await policy.filterUploadRev(db);
+    const allowed = await policy.filterUploadRev(db, fileId, req.session.auth);
 
     if (!allowed) {
         throw res.boom.unauthorized();
@@ -39,7 +39,7 @@ module.exports = (db) => async (req, res) => {
 
     const file = await db.File.findById(fileId);
 
-    await file.addData(req.body, req.file.path);
+    await file.addData(db, req.body, req.file.path, req.session.auth);
 
     return res.status(200).json({});
 };

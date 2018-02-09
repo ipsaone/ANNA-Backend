@@ -78,6 +78,8 @@ exports.filterUploadRev = async (db, fileId, userId) => {
     const file = await db.File.findById(fileId);
 
     if (!file) {
+        console.log(`File not found : #${fileId}`);
+
         return false;
     }
 
@@ -117,7 +119,7 @@ exports.filterDownloadMeta = async (db, fileId, userId) => {
         return false;
     }
 
-    const lastData = await file.getData();
+    const lastData = await file.getData(db);
 
     if (!lastData) {
         console.log(`No data for file #${fileId}`);

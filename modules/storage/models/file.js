@@ -37,15 +37,15 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    File.associate = function (db) {
+    File.associate = function (db2) {
 
         /**
          * Creates plural associations with table 'Log'
          * @function belongsToManyLog
          */
-        File.belongsToMany(db.Log, {
+        File.belongsToMany(db2.Log, {
             as: 'fileLogs',
-            through: db.FileLog,
+            through: db2.FileLog,
             foreignKey: 'logId'
         });
 
@@ -53,6 +53,7 @@ module.exports = (sequelize, DataTypes) => {
          *
          * Add data for a file object.
          *
+         * @param {obj} db - The database.
          * @param {obj} fileChanges - The changes in this data.
          * @param {obj} filePath - The path to the file to add data to.
          * @param {obj} userId - The user identifier.
@@ -61,16 +62,24 @@ module.exports = (sequelize, DataTypes) => {
          * @returns {Object} Promise to directory tree.
          *
          */
-        File.prototype.addData = async function (fileChanges, filePath, userId) {
+        File.prototype.addData = async function (db, fileChanges, filePath, userId) {
 
             /*
              * Check group ID input
              * Other integer inputs are replaced anyway
              */
-            if (isNaN(parseInt(fileChanges.groupId, 10))) {
-                throw new Error('Group is not an integer');
+            const previousData = await this.getData(db);
+            const groupId = parseInt(fileChanges.groupId, 10);
+
+            if (isNaN(groupId)) {
+                if (previousData) {
+                    fileChanges.groupId = previousData.groupId;
+                } else {
+                    throw new Error('Group is not an integer');
+                }
+            } else {
+                fileChanges.groupId = parseInt(fileChanges.groupId, 10);
             }
-            fileChanges.groupId = parseInt(fileChanges.groupId, 10);
 
             // Check isDir
             if (fileChanges.isDir === 'true') {
@@ -81,7 +90,13 @@ module.exports = (sequelize, DataTypes) => {
 
             // Replace fileId and otherId, they are not needed
             fileChanges.fileId = this.id;
-            fileChanges.ownerId = userId;
+            if (userId) {
+                fileChanges.ownerId = userId;
+            }
+
+            if (previousData && !fileChanges.name) {
+                fileChanges.name = previousData.name;
+            }
 
             // Find if creating a right is needed
             let newRight = false;
@@ -103,11 +118,17 @@ module.exports = (sequelize, DataTypes) => {
 
             // Get groups for user and check groupId is legitimate
             const user = await db.User.findById(fileChanges.ownerId);
-            const groups = await user.getGroups();
+
+            if (!user) {
+                throw new Error('Invalid user');
+            }
+            const groups = await user.getGroups(db);
 
             if (!groups.map((grp) => grp.id).includes(fileChanges.groupId)) {
                 throw new Error('Invalid group');
             }
+
+            console.log('One');
 
             // Create new right, or find the previous right and keep it
             let right = {};
@@ -116,9 +137,9 @@ module.exports = (sequelize, DataTypes) => {
                 right = await db.Right.create(fileChanges);
             } else {
                 const file = await db.File.findById(fileChanges.fileId);
-                const fileData = await file.getData();
+                const fileData = await file.getData(db);
 
-                right = await fileData.getRights();
+                right = await fileData.getRights(db);
             }
             fileChanges.rightsId = right.id;
 
@@ -131,8 +152,14 @@ module.exports = (sequelize, DataTypes) => {
                 });
             });
 
+            console.log('Two');
+
             const data = await db.Data.build(fileChanges);
-            const dest = await data.getPath();
+
+            console.log('Four');
+            const dest = await data.getPath(db);
+
+            console.log('Five');
 
             if (fileChanges.fileExists && !fileChanges.isDir) {
                 return new Promise((resolve, reject) => {
@@ -150,11 +177,13 @@ module.exports = (sequelize, DataTypes) => {
                                 console.log('Error while moving file : ', err);
                                 reject(err);
                             }
+                            console.log('Moving done');
 
                             return resolve();
                         }
                     );
-                }).then(() => data.save());
+                }).then(() => console.log('Three'))
+                    .then(() => data.save());
 
             } else if (!fileChanges.fileExists && fileChanges.isDir) {
                 await data.save();
@@ -171,12 +200,13 @@ module.exports = (sequelize, DataTypes) => {
          *
          * Get all data for a file object.
          *
+         * @param {obj} db - The database.
          * @param {integer} offset - How old the data is.
          *
          * @returns {Object} Promise to file data.
          *
          */
-        File.prototype.getData = function (offset = 0) {
+        File.prototype.getData = function (db, offset = 0) {
 
             // Console.log(`Finding data of file #${this.id} with offset ${offset}`);
 
@@ -210,11 +240,12 @@ module.exports = (sequelize, DataTypes) => {
          *
          * Get diretory tree for a file object.
          *
+         * @param {obj} db - The database.
          * @returns {Object} Promise to directory tree.
          *
          */
-        File.prototype.getDirTree = async function () {
-            const data = await this.getData();
+        File.prototype.getDirTree = async function (db) {
+            const data = await this.getData(db);
 
             // Get parents' directory tree
             let fileDirTree = [];
@@ -222,7 +253,7 @@ module.exports = (sequelize, DataTypes) => {
             if (data.dirId !== 1) {
                 const file = await db.File.findById(data.dirId);
 
-                fileDirTree = await file.getDirTree();
+                fileDirTree = await file.getDirTree(db);
             }
 
             // Add own directory name
@@ -234,6 +265,7 @@ module.exports = (sequelize, DataTypes) => {
          *
          * Create a new file object.
          *
+         * @param {obj} db - The database.
          * @param {Object} changes - The file metadata.
          * @param {string} filePath - The file path to create.
          * @param {integer} userId - The user id.
@@ -242,7 +274,7 @@ module.exports = (sequelize, DataTypes) => {
          * @returns {Object} Promise to success boolean.
          *
          */
-        File.createNew = function (changes, filePath, userId) {
+        File.createNew = function (db, changes, filePath, userId) {
             let isDir = false;
 
             if (typeof changes.isDir !== 'undefined' && (changes.isDir === true || changes.isDir === 'true')) {
@@ -250,7 +282,7 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             return db.File.create({isDir})
-                .then((file) => file.addData(changes, filePath, userId));
+                .then((file) => file.addData(db, changes, filePath, userId));
         };
 
     };

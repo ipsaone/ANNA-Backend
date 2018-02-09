@@ -6,13 +6,6 @@
  * @see {@link module:data}
  */
 
-/*
- * Storage is assigned a value but never used
- * const Storage = require('../repositories/Storage');
- */
-
-const fs = require('fs');
-
 /**
  * @module data
  */
@@ -23,57 +16,8 @@ const path = require('path');
 
 require('dotenv').config();
 const config = require(path.join(root, './config/config'));
-const mmm = require('mmmagic');
-const Magic = mmm.Magic;
-const magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
-
-/**
- *
- * Compute type for a file path.
- *
- * @param {Object} filePath - The file to compute size.
- *
- * @returns {Object} Promise to file type.
- *
- */
-const computeType = function (filePath) {
-    return new Promise((resolve) => {
-        magic.detectFile(filePath, (err, res) => {
-            if (err) {
-                resolve();
-            }
-
-            resolve(res);
-
-        });
-    });
-
-
-};
-
-/**
- *
- * Compute size for a file path.
- *
- * @param {Object} filePath - The file to compute size.
- *
- * @returns {Object} Promise to file size.
- *
- */
-const computeSize = function (filePath) {
-    return new Promise((resolve) => {
-        fs.stat(filePath, (err, res) => {
-            if (err) {
-                resolve();
-            } else {
-
-                // Return file size
-                resolve(res.size);
-            }
-        });
-    });
-};
+const repo = require('../repository');
 
 
 /**
@@ -84,7 +28,7 @@ const computeSize = function (filePath) {
  */
 const computeValues = (data) => {
     const typeP = data.getPath()
-        .then((dataPath) => computeType(dataPath))
+        .then((dataPath) => repo.computeType(dataPath))
         .then((type) => {
             data.type = type;
 
@@ -97,7 +41,7 @@ const computeValues = (data) => {
         });
 
     const sizeP = data.getPath()
-        .then((dataPath) => computeSize(dataPath))
+        .then((dataPath) => repo.computeSize(dataPath))
         .then((size) => {
             data.size = size;
 
@@ -231,17 +175,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        },
-
-        /**
-         * @var {VIRTUAL} isDir
-         */
-        isDir: DataTypes.VIRTUAL,
-
-        /**
-         * @var {VIRTUAL} children
-         */
-        children: DataTypes.VIRTUAL
+        }
     }, {
         timestamps: true,
         paranoid: true,
@@ -257,16 +191,16 @@ module.exports = (sequelize, DataTypes) => {
      * Associates Data to other tables.
      *
      * @function associate
-     * @param {obj} db - The database.
+     * @param {obj} db2 - The database.
      * @returns {Promise} The promise to create associations.
      */
-    Data.associate = function (db) {
+    Data.associate = function (db2) {
 
         /**
          * Creates singular association with table 'File'
          * @function belongsToFile
          */
-        Data.belongsTo(db.File, {
+        Data.belongsTo(db2.File, {
             foreignKey: 'fileId',
             as: 'file',
             onDelete: 'RESTRICT',
@@ -277,7 +211,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates singular association with table 'User'
          * @function belongsToUser
          */
-        Data.belongsTo(db.User, {
+        Data.belongsTo(db2.User, {
             foreignKey: 'ownerId',
             as: 'author',
             onDelete: 'RESTRICT',
@@ -288,7 +222,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates singular association with table 'Right'
          * @function belongsToRight
          */
-        Data.belongsTo(db.Right, {
+        Data.belongsTo(db2.Right, {
             foreignKey: 'rightsId',
             as: 'rights',
             onDelete: 'RESTRICT',
@@ -299,7 +233,7 @@ module.exports = (sequelize, DataTypes) => {
          * Createssingular  association with table 'Group'
          * @function belongsToGroup
          */
-        Data.belongsTo(db.Group, {
+        Data.belongsTo(db2.Group, {
             foreignKey: 'groupId',
             as: 'group',
             onDelete: 'RESTRICT',
@@ -310,7 +244,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates singular association with table 'Data'
          * @function belongsToData
          */
-        Data.belongsTo(db.Data, {
+        Data.belongsTo(db2.Data, {
             foreignKey: 'dirId',
             as: 'directory',
             onDelete: 'RESTRICT',
@@ -321,7 +255,7 @@ module.exports = (sequelize, DataTypes) => {
          * Creates plural associations with table 'Data'
          * @function hasManyData
          */
-        Data.hasMany(db.Data, {
+        Data.hasMany(db2.Data, {
             foreignKey: 'dirId',
             as: 'files',
             onDelete: 'RESTRICT',
@@ -362,12 +296,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         Data.prototype.getPath = async function () {
             let dataPath = '';
-
             let id = 0;
+
 
             if (this.id) {
                 id = this.id;
-            } else {
+            } else if (sequelize.getDialect() === 'mysql') {
 
                 /*
                  * Get next ID by getting Auto_increment value of the table
@@ -379,9 +313,16 @@ module.exports = (sequelize, DataTypes) => {
                     throw new Error('Failed to find path');
                 }
                 id = data[0].Auto_increment;
-            }
+            } else if (sequelize.getDialect() === 'sqlite') {
 
-            console.log(`ID : ${id}`);
+                // Simpler query for tests
+                const data = await sequelize.query('SELECT * FROM \'Data\' ORDER BY id DESC LIMIT 1');
+
+                if (!data || data.length !== 1) {
+                    throw new Error('Failed to find path');
+                }
+                id = data[0].id + 1;
+            }
 
             dataPath += `/${this.fileId}`;
             dataPath += `/${this.name}-#${id}`;
@@ -394,10 +335,11 @@ module.exports = (sequelize, DataTypes) => {
          *
          * Get rights for a data object.
          *
+         * @param {obj} db - The database.
          * @returns {Object} Promise to rights.
          *
          */
-        Data.prototype.getRights = function () {
+        Data.prototype.getRights = function (db) {
             // Only one right should exist for each data, no check needed
 
             return db.Right.findById(this.rightsId);

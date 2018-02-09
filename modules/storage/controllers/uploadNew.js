@@ -42,7 +42,7 @@ module.exports = (db) => async (req, res) => {
         filePath = req.file.path;
     }
 
-    const data = await db.File.createNew(req.body, filePath, req.session.auth);
+    const data = await db.File.createNew(db, req.body, filePath, req.session.auth);
 
     return res.status(204).json(data);
 };

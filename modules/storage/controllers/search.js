@@ -53,7 +53,7 @@ module.exports = (db) => async (req, res) => {
         }
 
         // Find the most recent data from the file
-        const lastData = await file.getData();
+        const lastData = await file.getData(db);
 
         if (lastData.id !== el.id) {
             return false;

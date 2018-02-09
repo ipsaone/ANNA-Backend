@@ -34,14 +34,6 @@ const config = {
         check: process.env.CHECK_AUTH
     },
 
-    log: (data) => {
-        const now = new Date();
-
-        console.log(`[${now.toISOString()}] ${data}\n`);
-
-        return true;
-    },
-
     logging: {level: 'debug'},
 
     get sequelize () {
