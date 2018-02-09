@@ -10,6 +10,9 @@ const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
 const winston = require('winston');
+require('winston-email');
+
+require('winston/package.json');
 
 require('express-async-errors');
 
@@ -25,11 +28,20 @@ const loadApp = (options = {}) => {
                 filename: 'logs/error.log',
                 level: 'error',
                 colorize: true
+            }),
+            new winston.transports.Email({
+                level: 'error',
+                from: 'clement.chandon@gmail.com',
+                to: 'clement.chandon@ipsa.fr',
+                service: 'Gmail',
+                auth: {
+                    user: 'oneBugReporter',
+                    pass: 'oneBug_2018'
+                }
             })
         ]
     });
 
-    winston.error('Test fichier');
 
     /*
      * Server config
