@@ -81,7 +81,7 @@ module.exports = (err, req, res, next) => {
         // Validation error
 
         sendError(res, err, 'badRequest');
-        winston.error('Unapropriate request');
+        winston.error('Unapropriate request', {reqid: req.id});
     } else {
         // Unknown error
 

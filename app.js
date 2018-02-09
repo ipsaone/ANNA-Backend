@@ -10,6 +10,8 @@ const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
 const winston = require('winston');
+const dir = './logs';
+
 
 require('winston-email');
 
@@ -22,6 +24,10 @@ require('dotenv').config();
 
 const loadApp = (options = {}) => {
 
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+
     winston.configure({
         transports: [
             new winston.transports.Console({
@@ -31,13 +37,13 @@ const loadApp = (options = {}) => {
             new winston.transports.File({
                 level: 'debug',
                 name: 'file#debug',
-                filename: 'logs/error.log',
+                filename: './logs/debug.log',
                 colorize: true
             }),
             new winston.transports.File({
                 level: 'info',
                 name: 'file#info',
-                filename: 'logs/info.log',
+                filename: './logs/info.log',
                 colorize: true
             }),
             new winston.transports.Email({
