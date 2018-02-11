@@ -26,7 +26,7 @@ module.exports = (db) => async function (req, res) {
     const group = await db.Group.create(req.body);
 
     try {
-        res.status(201).json(group);
+        return res.status(201).json(group);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
             return res.boom.badRequest(err);

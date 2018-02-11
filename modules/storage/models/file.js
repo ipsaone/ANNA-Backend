@@ -6,6 +6,7 @@
  */
 const mv = require('mv');
 const fs = require('fs');
+const util = require('util');
 
 /**
  * @module file
@@ -69,9 +70,8 @@ module.exports = (sequelize, DataTypes) => {
              * Other integer inputs are replaced anyway
              */
             const previousData = await this.getData(db);
-            const groupId = parseInt(fileChanges.groupId, 10);
 
-            if (isNaN(groupId)) {
+            if (isNaN(parseInt(fileChanges.groupId, 10))) {
                 if (previousData) {
                     fileChanges.groupId = previousData.groupId;
                 } else {
@@ -82,13 +82,13 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             // Check isDir
-            if (fileChanges.isDir === 'true') {
+            if (fileChanges.isDir === 'true' || fileChanges.isDir === true) {
                 fileChanges.isDir = true;
             } else {
                 fileChanges.isDir = false;
             }
 
-            // Replace fileId and otherId, they are not needed
+            // Replace fileId and ownerId, they are not needed
             fileChanges.fileId = this.id;
             if (userId) {
                 fileChanges.ownerId = userId;
@@ -128,8 +128,6 @@ module.exports = (sequelize, DataTypes) => {
                 throw new Error('Invalid group');
             }
 
-            console.log('One');
-
             // Create new right, or find the previous right and keep it
             let right = {};
 
@@ -144,53 +142,41 @@ module.exports = (sequelize, DataTypes) => {
             fileChanges.rightsId = right.id;
 
             // Check file upload
-            await new Promise((resolve) => {
-                fs.access(filePath, (err) => {
-                    fileChanges.fileExists = !err;
-                    console.log(`File exists : ${!err}`);
-                    resolve();
-                });
-            });
+            const access = util.promisify(fs.access);
 
-            console.log('Two');
+            try {
+                await access(filePath);
+                fileChanges.fileExists = false;
+            } catch (err) {
+                console.log(`File exists : ${!err}`);
+                fileChanges.fileExists = true;
+            }
 
             const data = await db.Data.build(fileChanges);
-
-            console.log('Four');
             const dest = await data.getPath(db);
 
-            console.log('Five');
-
             if (fileChanges.fileExists && !fileChanges.isDir) {
-                return new Promise((resolve, reject) => {
-                    console.log(`Moving from ${filePath} to ${dest}`);
 
-                    mv(
-                        // Make directory if needed, error if exists
-                        filePath, dest,
-                        {
-                            mkdirp: true,
-                            clobber: false
-                        },
-                        (err) => {
-                            if (err) {
-                                console.log('Error while moving file : ', err);
-                                reject(err);
-                            }
-                            console.log('Moving done');
+                console.log(`Moving from ${filePath} to ${dest}`);
+                const move = util.promisify(mv);
 
-                            return resolve();
-                        }
-                    );
-                }).then(() => console.log('Three'))
-                    .then(() => data.save());
+                await move(filePath, dest, {
+                    mkdirp: true,
+                    clobber: true
+                });
+                console.log('Moving done');
+
+                await data.save();
+
+                return data;
 
             } else if (!fileChanges.fileExists && fileChanges.isDir) {
                 await data.save();
 
                 return data;
             }
-            throw new Error('Upload failed !');
+
+            throw new Error('Bad request');
 
 
         };
@@ -229,7 +215,7 @@ module.exports = (sequelize, DataTypes) => {
                 // FindAll is limited, so there will always be one result (or none -> undefined)
                 .then((data) => {
                     if (data.length === 0) {
-                        throw new Error(`No data for file ID ${this.id}`);
+                        return;
                     }
 
                     return data[0];

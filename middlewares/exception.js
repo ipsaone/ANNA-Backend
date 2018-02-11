@@ -54,9 +54,9 @@ const logError = (err) => {
         winston.error(err.stack);
     } else {
         winston.error(`Error type : ${err.constructor.name}`);
-        const e = new Error();
+        const except = new Error();
 
-        winston.error(e.stack);
+        winston.error(except.stack);
     }
 };
 

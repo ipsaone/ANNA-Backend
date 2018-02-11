@@ -21,14 +21,14 @@
  * @returns {Promise} Users.
  */
 exports.filterIndex = (db, users, userId) => Promise.resolve(users)
-    .then((us) => us.map((u) => {
+    .then((us) => us.map((thisUser) => {
         let user = {};
 
-        if (u instanceof db.User) {
-            user = u.toJSON();
+        if (thisUser instanceof db.User) {
+            user = thisUser.toJSON();
         } else {
             // Else, assume it's already JSON !
-            user = u;
+            user = thisUser;
         }
 
         delete user.password;
@@ -51,14 +51,14 @@ exports.filterIndex = (db, users, userId) => Promise.resolve(users)
  * @returns {Promise} Returns a user.
  */
 exports.filterShow = (db, us, userId) => Promise.resolve(us)
-    .then((u) => {
+    .then((thisUser) => {
         let user = {};
 
-        if (u instanceof db.User) {
-            user = u.toJSON();
-        } else if (u) {
+        if (thisUser instanceof db.User) {
+            user = thisUser.toJSON();
+        } else if (thisUser) {
             // Else, assume it's already JSON !
-            user = u;
+            user = thisUser;
         } else {
             return {};
         }

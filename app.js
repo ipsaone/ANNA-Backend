@@ -28,36 +28,39 @@ const loadApp = (options = {}) => {
         fs.mkdirSync(dir);
     }
 
-    winston.configure({
-        transports: [
-            new winston.transports.Console({
-                level: 'warn',
-                colorize: true
-            }),
-            new winston.transports.File({
-                level: 'debug',
-                name: 'file#debug',
-                filename: './logs/debug.log',
-                colorize: true
-            }),
-            new winston.transports.File({
-                level: 'info',
-                name: 'file#info',
-                filename: './logs/info.log',
-                colorize: true
-            }),
-            new winston.transports.Email({
-                level: 'error',
-                from: config.email.sender,
-                to: config.email.errorManagers,
-                service: 'Gmail',
-                auth: {
-                    user: config.email.sender,
-                    pass: config.email.password
-                }
-            })
-        ]
-    });
+    const transports = [
+        new winston.transports.Console({
+            level: 'warn',
+            colorize: true
+        }),
+        new winston.transports.File({
+            level: 'debug',
+            name: 'file#debug',
+            filename: './logs/debug.log',
+            colorize: true
+        }),
+        new winston.transports.File({
+            level: 'info',
+            name: 'file#info',
+            filename: './logs/info.log',
+            colorize: true
+        })
+    ];
+
+    if (!process.env.TEST || !process.env.NOEMAIL) {
+        transports.push(new winston.transports.Email({
+            level: 'error',
+            from: config.email.sender,
+            to: config.email.errorManagers,
+            service: 'Gmail',
+            auth: {
+                user: config.email.sender,
+                pass: config.email.password
+            }
+        }));
+    }
+
+    winston.configure({transports});
 
     /*
      * Server config
