@@ -12,6 +12,10 @@ const getChildrenData = async (db, folderId) => {
     let data = await Promise.all(files.map(async (thisFile) => {
         const thisData = await thisFile.getData(db);
 
+        if (!thisData) {
+            throw new Error(`No data for file #${thisFile.id}`);
+        }
+
         thisData.isDir = thisFile.isDir;
 
         return thisData;

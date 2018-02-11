@@ -146,10 +146,10 @@ module.exports = (sequelize, DataTypes) => {
 
             try {
                 await access(filePath);
-                fileChanges.fileExists = false;
+                fileChanges.fileExists = true;
             } catch (err) {
                 console.log(`File exists : ${!err}`);
-                fileChanges.fileExists = true;
+                fileChanges.fileExists = false;
             }
 
             const data = await db.Data.build(fileChanges);
