@@ -1,6 +1,8 @@
 'use strict';
 
-const db = require('../models');
+const ModulesFactory = require('../modules');
+const modules = new ModulesFactory();
+const db = modules.db;
 
 
 module.exports = {
@@ -14,7 +16,6 @@ module.exports = {
             /* eslint-disable promise/no-nesting */
             const addRootGroup = db.Group.findOne({where: {name: 'root'}})
                 .then((group) => rootUser.then((root) => root.addGroup(group.id)));
-
 
             const addAuthorsGroup = db.Group.findOne({where: {name: 'authors'}})
                 .then((group) => rootUser.then((root) => root.addGroup(group.id)));

@@ -14,6 +14,8 @@
  * const http = require('http');
  */
 
+const winston = require('winston');
+
 /**
  *
  * Handles a raised exception
@@ -33,14 +35,13 @@ const sendError = (res, err, type) => {
     const canSend = typeof res.boom !== 'undefined';
 
     if (!canSend) {
-        console.log('Couldn\'t send error to client');
+        winston.error('Couldn\'t send error to client');
     }
 
     // Build the error and send it
     const builder = res.boom[type];
 
     builder(err.message);
-
 };
 
 const logError = (err) => {
@@ -48,15 +49,15 @@ const logError = (err) => {
     /**
      * CONSOLE OUTPUT
      */
-    console.log('-------------------------------');
-    console.log('Exception received by handler :');
+    winston.error('Exception received by handler :');
     if (err instanceof Error) {
-        console.log(err.stack);
+        winston.error(err.stack);
     } else {
-        console.log(`Error type : ${err.constructor.name}`);
-        console.trace();
+        winston.error(`Error type : ${err.constructor.name}`);
+        const except = new Error();
+
+        winston.error(except.stack);
     }
-    console.log('-------------------------------');
 };
 
 
@@ -66,15 +67,21 @@ module.exports = (err, req, res, next) => {
 
     // Check a response has not been half-sent
     if (res.headersSent) {
+        winston.debug('Hearders already sent', {reqid: req.id});
+
         return next(err);
     }
-
 
     if (typeof err.type && err.type === 'entity.parse.failed') {
         // Bad JSON was sent
 
         sendError(res, err, 'badRequest');
+        winston.error('Could not parse entity', {reqid: req.id});
+    } else if (err.constructor.name === 'ValidationError') {
+        // Validation error
 
+        sendError(res, err, 'badRequest');
+        winston.error('Unapropriate request', {reqid: req.id});
     } else {
         // Unknown error
 
@@ -86,4 +93,3 @@ module.exports = (err, req, res, next) => {
     return true;
 
 };
-

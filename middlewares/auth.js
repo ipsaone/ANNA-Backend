@@ -10,6 +10,8 @@
  */
 
 const config = require('../config/config');
+const winston = require('winston');
+
 
 /**
  *
@@ -25,6 +27,7 @@ const config = require('../config/config');
  *
  */
 module.exports = (req, res, next) => {
+    winston.debug('Checks if user is logged in.', {reqid: req.id});
     if (req.path !== '/' && req.path !== '/auth/login' && req.path !== '/auth/check') {
         if (req.session.auth || config.session.check === 'false') {
             return next();

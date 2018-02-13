@@ -7,7 +7,6 @@ module.exports = {
     "plugins": [
         "mocha",
         "chai-friendly",
-        "deprecate",
         "node",
         "promise",
         "jsdoc"
@@ -21,7 +20,15 @@ module.exports = {
         /* Plugins */
         "no-unused-expressions": 0,
         "chai-friendly/no-unused-expressions": 2,
-        "node/no-unpublished-require": "warn",
+
+        
+        /* those are disabled because they are REALLY SLOW : */
+        "node/no-unpublished-require": 0,
+        "node/no-extraneous-require": 0,
+        "node/no-unpublished-require": 0,
+        "node/no-missing-require": 0,
+
+
         "promise/always-return": "error",
         "promise/no-return-wrap": "error",
         "promise/param-names": "error",
@@ -32,9 +39,6 @@ module.exports = {
         "promise/no-callback-in-promise": "warn",
         "promise/avoid-new": "warn",
         "promise/no-return-in-finally": "warn",
-        "deprecate/function": "warn",
-        "deprecate/member-expression": "warn",
-        "deprecate/import": "warn",
         "jsdoc/check-param-names": 1,
         "jsdoc/check-tag-names": 1,
         "jsdoc/check-types": 1,
@@ -98,7 +102,7 @@ module.exports = {
         "function-paren-newline": "error",
         "generator-star-spacing": "error",
         "getter-return": "error",
-        "global-require": "warn",
+        "global-require": 0,
         "guard-for-in": "error",
         "handle-callback-err": "warn",
         "id-blacklist": "error",
@@ -122,7 +126,7 @@ module.exports = {
         "max-len": "off",
         "max-lines": "warn",
         "max-nested-callbacks": "error",
-        "max-params": "error",
+        "max-params": "warn",
         "max-statements": ["warn", {"max": 30}],
         "max-statements-per-line": "error",
         "multiline-comment-style": [

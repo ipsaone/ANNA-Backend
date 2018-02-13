@@ -4,22 +4,12 @@
 
 require('dotenv').config();
 
-const fs = require('fs');
-
 /*
  * Logs a SQL request.
  *
  * @param data - The data to log.
  * @returns True.
  */
-const log = (data) => {
-    const now = new Date();
-
-    console.log(`[${now.toISOString()}] ${data}\n`);
-
-    return true;
-};
-
 const config = {
     app: {
         name: 'A.N.N.A',
@@ -27,6 +17,16 @@ const config = {
     },
 
     password: {salt: 10},
+
+    email: {
+        sender: 'oneBugReporter',
+        password: 'oneBug_2018',
+        errorManagers: [
+            'declaverie@gmail.com',
+            'clement.chandon@gmail.com'
+        ]
+    },
+
 
     session: {
         socket: '/var/run/redis/redis.sock',
@@ -43,8 +43,7 @@ const config = {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            // Logging: false, // Prevent Sequelize from outputting the query on the console
-            logging: log,
+            logging: false,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
@@ -59,17 +58,14 @@ const config = {
 
     get sequelizeTest () {
         return {
-            dialect: 'mysql',
-            host: process.env.DB_HOST,
-            username: process.env.DB_USERNAME,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME_TEST,
+            dialect: 'sqlite',
+            host: '',
+            username: '',
+            password: '',
             logging: false, // Prevent Sequelize from outputting the query on the console
-            // Logging: console.log,
             redis: this.session,
-            force: process.env.DB_FORCE_SYNC,
+            force: true,
             operatorsAliases: false,
-            dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
                 maxConnections: 50,
                 maxIdleTime: 10
@@ -81,29 +77,6 @@ const config = {
         folder: '../storage',
         temp: '/tmp'
     }
-};
-
-
-config.app.getCertificates = () => {
-    let certificate = '',
-        privateKey = '';
-
-    if (process.env.DEV === 'true') {
-        privateKey = fs.readFileSync('sslcert/localhost.key', 'utf8');
-        certificate = fs.readFileSync('sslcert/localhost.crt', 'utf8');
-
-        console.log('Using localhost certificate');
-    } else { // Production
-        privateKey = fs.readFileSync('sslcert/private.key', 'utf8');
-        certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
-
-        console.log('Using one.ipsa.fr certificate');
-    }
-
-    return {
-        key: privateKey,
-        cert: certificate
-    };
 };
 
 
