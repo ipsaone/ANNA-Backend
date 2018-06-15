@@ -21,3 +21,5 @@ doc/*
 
 .eslintcache
 logs/
+
+vm_build.log
