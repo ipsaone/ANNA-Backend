@@ -61,7 +61,7 @@ sudo service apache2 reload >> /vagrant/vm_build.log 2>&1
 echo -e "\n--- Installing Redis ---\n"
 sudo apt-get -qy install redis-server >> /vagrant/vm_build.log 2>&1
 sudo cp -f /home/vagrant/ANNA-Backend/redis.conf /etc/redis/redis.conf >> /vagrant/vm_build.log 2>&1
-sudo service redis restart >> /vagrant/vm_build.log 2>&1
+sudo service redis-server restart >> /vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Migrating $DNAME database ---\n"
