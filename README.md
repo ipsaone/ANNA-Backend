@@ -1,6 +1,6 @@
 # ANNA-Backend
 
-One Paragraph of project description goes here
+The backend server for ANNA (Administration Network for Nanosatellite Associations)
 
 ## Getting Started
 
@@ -8,7 +8,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+- Vagrant + Virtualbox
+ 
 
 ```
 Give examples
@@ -18,49 +19,50 @@ Give examples
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+Clone the repository
 
 ```
-Give the example
+git clone https://github.com/ipsaone/ANNA-Backend.git
 ```
 
-And repeat
+Move in and boot the vagrant box
 
 ```
-until finished
+cd ANNA-Backend
+vagrant up
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Wait for it to boot, and finally start the server
+
+```
+vagrant ssh
+cd ANNA-Backend
+npm start
+```
+
+It should output a message containing the IP and port the server is listening to
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
 ```
-Give an example
+npm run test
 ```
 
-### And coding style tests
 
-Explain what these tests test and why
+### Coding style
 
-```
-Give an example
-```
+[TODO]
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Depencencies are :
+- Redis server
+- MySQL (SQLite3 to run the tests)
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Express](https://expressjs.com/) - The web framework used
+* [NodeJS & NPM](https://nodejs.org/en/) - Dependency Management
 
 ## Contributing
 
@@ -72,7 +74,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **MagixInTheAir** - *Initial work* - [MagixInTheAir](https://github.com/MagixInTheAir)
+* **MagixInTheAir** - *Project leader* - [MagixInTheAir](https://github.com/MagixInTheAir)
+* **IPSA ONE** - *Development team* - [ANNA Development team](https://github.com/orgs/ipsaone/teams/anna)
 
 See also the list of [contributors](https://github.com/ipsaone/ANNA-Backend/graphs/contributors) who participated in this project.
 
