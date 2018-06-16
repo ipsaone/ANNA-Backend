@@ -29,11 +29,10 @@ echo -e "\n--- Installing NodeJS ---\n"
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - >> /vagrant/vm_build.log 2>&1
 sudo apt-get -qy install nodejs >> /vagrant/vm_build.log 2>&1
 cd /home/vagrant/ANNA-Backend
-mkdir ~/node_modules
-chmod 777 ~/node_modules
+rm -rf ~/.node_modules
+mkdir ~/.node_modules
 rm -rf /home/vagrant/ANNA-Backend/node_modules
-ln -sf ~/node_modules /home/vagrant/ANNA-Backend
-chmod 777 /home/vagrant/ANNA-Backend/node_modules
+ln -sf ~/.node_modules ./node_modules
 echo 'export ONEOS="true"' >> ~/.bashrc
 export ONEOS="true";
 
@@ -91,7 +90,7 @@ cd /home/vagrant/ANNA-Backend
 echo -e "Global dependencies..."
 sudo npm install -g node-gyp npm@latest node-pre-gyp nyc sequelize-cli >> /vagrant/vm_build.log 2>&1
 echo -e "Local dependencies..."
-sudo npm install >> /vagrant/vm_build.log 2>&1
+npm install >> /vagrant/vm_build.log 2>&1
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config >> /vagrant/vm_build.log 2>&1
 
 
