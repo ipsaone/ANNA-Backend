@@ -28,6 +28,11 @@ sudo apt-get -qy install curl build-essential git g++ >> /vagrant/vm_build.log 2
 echo -e "\n--- Installing NodeJS ---\n"
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - >> /vagrant/vm_build.log 2>&1
 sudo apt-get -qy install nodejs >> /vagrant/vm_build.log 2>&1
+cd /home/vagrant/ANNA-Backend
+rm -rf ~/.node_modules
+mkdir ~/.node_modules
+rm -rf /home/vagrant/ANNA-Backend/node_modules
+ln -sf ~/.node_modules ./node_modules
 echo 'export ONEOS="true"' >> ~/.bashrc
 export ONEOS="true";
 
@@ -60,13 +65,8 @@ sudo service apache2 reload >> /vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Installing Redis ---\n"
 sudo apt-get -qy install redis-server >> /vagrant/vm_build.log 2>&1
-sudo cp -f /home/vagrant/ANNA-Backend/redis.conf /etc/redis/redis.conf >> /vagrant/vm_build.log 2>&1
+sudo cp -f /home/vagrant/ANNA-Backend/vagrant/redis.conf /etc/redis/redis.conf >> /vagrant/vm_build.log 2>&1
 sudo service redis-server restart >> /vagrant/vm_build.log 2>&1
-
-
-echo -e "\n--- Migrating $DNAME database ---\n"
-cd /home/vagrant/ANNA-Backend
-node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Create .env file ---\n"
@@ -86,13 +86,17 @@ then
 fi
 
 echo -e "\n--- Installing backend dependencies via NPM ---\n"
-sudo npm install -g node-gyp npm@latest node-pre-gyp >> /vagrant/vm_build.log 2>&1
-cd /home/vagrant/ANNA-Backend >> /vagrant/vm_build.log 2>&1
-rm -rf ./node_modules/ >> /vagrant/vm_build.log 2>&1
-sudo npm install >> /vagrant/vm_build.log 2>&1
-sudo npm install -g nyc >> /vagrant/vm_build.log 2>&1
-sudo npm install -g sequelize-cli >> /vagrant/vm_build.log 2>&1
+cd /home/vagrant/ANNA-Backend
+echo -e "Global dependencies..."
+sudo npm install -g node-gyp npm@latest node-pre-gyp nyc sequelize-cli >> /vagrant/vm_build.log 2>&1
+echo -e "Local dependencies..."
+npm install >> /vagrant/vm_build.log 2>&1
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config >> /vagrant/vm_build.log 2>&1
+
+
+echo -e "\n--- Migrating $DNAME database ---\n"
+cd /home/vagrant/ANNA-Backend
+node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Testing setup ---\n"

@@ -5,7 +5,8 @@ Vagrant.configure("2") do |config|
   config.vm.box = "debian/jessie64"
 
   config.vm.network "private_network", ip: "192.168.50.5"
-  config.vm.synced_folder ".", "/home/vagrant/ANNA-Backend"
+  config.vm.synced_folder '.', '/vagrant', type: "rsync", rsync__args: ["--verbose", "--archive", "--delete", "-z"]
+  config.vm.synced_folder ".", "/home/vagrant/ANNA-Backend", type: "rsync", rsync__args: ["--verbose", "--archive", "--delete", "-z"]
 
 
   config.vm.provider "virtualbox" do |v|
