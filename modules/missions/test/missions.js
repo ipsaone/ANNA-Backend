@@ -48,7 +48,7 @@ test('Create mission (root)', async (t) => {
     let res = await t.context.request.post('/missions')
         .send({
             name: "test", 
-            markdown: "#TEST",
+            markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
             groupId: t.context.user.id,
@@ -57,13 +57,14 @@ test('Create mission (root)', async (t) => {
 
     t.is(res.status, 200);
     t.is(res.body.name, 'test');
+    t.is(res.body.description.startsWith('<h1 id="test">TEST</h1>'), true);
 });
 
 test('Create mission (not root)', async (t) => {
     let res = await t.context.request.post('/missions')
         .send({
             name: "test", 
-            markdown: "#TEST",
+            markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
             groupId: t.context.user.id,
