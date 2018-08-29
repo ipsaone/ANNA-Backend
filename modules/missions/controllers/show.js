@@ -20,7 +20,7 @@ module.exports = (db) => async (req, res) => {
     }
     const missionId = parseInt(req.params.missionId, 10);
 
-    const authorized = policy.filterShow();
+    const authorized = policy.filterShow(db);
 
     if (!authorized) {
         return req.boom.unauthorized();

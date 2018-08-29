@@ -98,14 +98,8 @@ echo -e "\n--- Migrating $DNAME database ---\n"
 cd /home/vagrant/ANNA-Backend
 node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
 
-
-echo -e "\n--- Testing setup ---\n"
-if hash nodejs 2>/dev/null; then
-    echo -e "NodeJS : OK"
-    cd /home/vagrant/ANNA-Backend
-    node_modules/.bin/mocha config/config_test.js
-else
-    echo -e "NodeJS : failed">&1
-fi
+echo -e "\n--- Seeding $DNAME database ---\n"
+cd /home/vagrant/ANNA-Backend
+node_modules/.bin/sequelize db:seed:all >> /vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Vagrant box is ready ---"

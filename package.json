@@ -34,7 +34,7 @@
     "sequelize": "^4.33.1",
     "sequelize-fixtures": "^0.7.0",
     "smtp-server": "^3.4.1",
-    "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+    "sqlite3": "^4.0.2",
     "tape": "^4.8.0",
     "winston": "^2.4.3",
     "winston-email": "^0.1.0",
@@ -91,7 +91,7 @@
     "clear-db": "sequelize db:migrate:undo:all && rm -r ../storage",
     "lint": "eslint --cache --fix --max-warnings 50 .",
     "lint-nofix": "eslint --cache --max-warnings 50 .",
-    "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
+    "precommit": "exit 0; vagrant ssh -c 'cd ANNA-Backend && bash pre-commit.sh'",
     "security": "nsp check .",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
     "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js"

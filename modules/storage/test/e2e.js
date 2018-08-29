@@ -39,9 +39,8 @@ test.beforeEach(async t => {
     t.is(res.status, 200)
 })
 
-test.skip('Upload file', async (t) => {
-
-    
+test.skip('Upload file', async t => {
+    t.pass();
 });
 
 test.skip('Upload revision', async t => {
@@ -61,5 +60,5 @@ test.skip('Edit file', async t => {
 });
 
 test.skip('Move file', async t => {
-
+    t.pass();
 });

@@ -19,7 +19,7 @@ const db = require(path.join(root, './modules'));
  * @function filterIndex
  * @returns {Object} Returns all missions.
  */
-exports.filterIndex = () => Promise.resolve(true);
+exports.filterIndex = (db) => Promise.resolve(true);
 
 /**
  * Gets one mission.
@@ -27,7 +27,7 @@ exports.filterIndex = () => Promise.resolve(true);
  * @function filterShow
  * @returns {Object} Returns one mission.
  */
-exports.filterShow = () => Promise.resolve(true);
+exports.filterShow = (db) => Promise.resolve(true);
 
 /**
  * Filters users who can create a mission.
@@ -39,7 +39,7 @@ exports.filterShow = () => Promise.resolve(true);
  *
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
-exports.filterStore = async (userId) => {
+exports.filterStore = async (db, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
@@ -59,7 +59,7 @@ exports.filterStore = async (userId) => {
  *
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
-exports.filterUpdate = async (userId) => {
+exports.filterUpdate = async (db, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
@@ -79,7 +79,7 @@ exports.filterUpdate = async (userId) => {
  *
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
-exports.filterDelete = async (userId) => {
+exports.filterDelete = async (db, userId) => {
     const user = await db.User.findById(userId);
 
     if (user && await user.isRoot()) {
