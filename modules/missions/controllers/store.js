@@ -15,7 +15,7 @@ const policy = require('../mission_policy');
 
 module.exports = (db) => async (req, res) => {
 
-    const authorized = await policy.filterStore(req.session.auth);
+    const authorized = await policy.filterStore(db, req.session.auth);
 
     if (!authorized) {
         return res.boom.unauthorized();
