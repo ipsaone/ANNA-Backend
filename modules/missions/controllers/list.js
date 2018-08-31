@@ -20,7 +20,14 @@ module.exports = (db) => async (req, res) => {
         return res.boom.unauthorized();
     }
 
-    const missions = await db.Mission.findAll();
+    const missions = await db.Mission.findAll({
+        attributes: { 
+            include: [[db.Sequelize.fn("COUNT", db.Sequelize.col("members.id")), "memberCount"]] 
+        },
+        include: [
+            {model: db.User, as: 'members', attributes: []}
+        ]
+    });
 
 
     return res.status(200).json(missions);
