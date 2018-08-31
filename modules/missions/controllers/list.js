@@ -25,7 +25,10 @@ module.exports = (db) => async (req, res) => {
             include: [[db.Sequelize.fn("COUNT", db.Sequelize.col("members.id")), "memberCount"]] 
         },
         include: [
-            {model: db.User, as: 'members', attributes: []}
+            {model: db.User, as: 'members'}
+        ],
+        group: [
+            'Mission.id'
         ]
     });
 
