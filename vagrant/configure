@@ -3,10 +3,10 @@
 export DEBIAN_FRONTEND=noninteractive
 
 # Remove old log
-[[ -f /vagrant/vm_build.log ]] && rm /vagrant/vm_build.log
+[[ -f /home/vagrant/vm_build.log ]] && rm /home/vagrant/vm_build.log
 
 # Put date in provision log
-date > /vagrant/vm_build.log
+date > /home/vagrant/vm_build.log
 
 # Variables
 DBHOST=localhost
@@ -18,59 +18,59 @@ echo -e "\n--- Provisioning Vagrant box ---"
 echo -e "Warning: be patient\n"
 
 echo -e "\n--- Updating packages list ---\n"
-sudo apt-get -qy update >> /vagrant/vm_build.log 2>&1
+sudo apt-get -qy update >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Installing base packages ---\n"
-sudo apt-get -qy install curl build-essential git g++ >> /vagrant/vm_build.log 2>&1
+sudo apt-get -qy install curl build-essential git g++ >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Installing NodeJS ---\n"
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - >> /vagrant/vm_build.log 2>&1
-sudo apt-get -qy install nodejs >> /vagrant/vm_build.log 2>&1
-cd /home/vagrant/ANNA-Backend
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - >> /home/vagrant/vm_build.log 2>&1
+sudo apt-get -qy install nodejs >> /home/vagrant/vm_build.log 2>&1
+cd /home/home/vagrant/ANNA-Backend
 rm -rf ~/.node_modules
 mkdir ~/.node_modules
-rm -rf /home/vagrant/ANNA-Backend/node_modules
+rm -rf /home/home/vagrant/ANNA-Backend/node_modules
 ln -sf ~/.node_modules ./node_modules
 echo 'export ONEOS="true"' >> ~/.bashrc
 export ONEOS="true";
 
 
 echo -e "\n--- Installing Apache ---\n"
-sudo apt-get -qy apache2 >> /vagrant/vm_build.log 2>&1
+sudo apt-get -qy apache2 >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Installing MySQL specific packages and settings ---\n"
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
-sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true" >> /vagrant/vm_build.log 2>&1
-sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
-sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
-sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" >> /vagrant/vm_build.log 2>&1
-sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" >> /vagrant/vm_build.log 2>&1
-sudo apt-get -qy install mysql-server phpmyadmin >> /vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD" >> /home/vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD" >> /home/vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true" >> /home/vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" >> /home/vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" >> /home/vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" >> /home/vagrant/vm_build.log 2>&1
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" >> /home/vagrant/vm_build.log 2>&1
+sudo apt-get -qy install mysql-server phpmyadmin >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Setting up our MySQL user and db ---\n"
-sudo mysql -u $DBUSER -p$DBPASSWD -e "CREATE DATABASE $DBNAME DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" >> /vagrant/vm_build.log 2>&1
-sudo mysql -u $DBUSER -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" >> /vagrant/vm_build.log 2>&1
+sudo mysql -u $DBUSER -p$DBPASSWD -e "CREATE DATABASE $DBNAME DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" >> /home/vagrant/vm_build.log 2>&1
+sudo mysql -u $DBUSER -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Setting up PHPmyAdmin ---\n"
 # sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
-sudo a2enconf phpmyadmin.conf >> /vagrant/vm_build.log 2>&1
-sudo service apache2 reload >> /vagrant/vm_build.log 2>&1
+sudo a2enconf phpmyadmin.conf >> /home/vagrant/vm_build.log 2>&1
+sudo service apache2 reload >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Installing Redis ---\n"
-sudo apt-get -qy install redis-server >> /vagrant/vm_build.log 2>&1
-sudo cp -f /home/vagrant/ANNA-Backend/vagrant/redis.conf /etc/redis/redis.conf >> /vagrant/vm_build.log 2>&1
-sudo service redis-server restart >> /vagrant/vm_build.log 2>&1
+sudo apt-get -qy install redis-server >> /home/vagrant/vm_build.log 2>&1
+sudo cp -f /home/home/vagrant/ANNA-Backend/home/vagrant/redis.conf /etc/redis/redis.conf >> /home/vagrant/vm_build.log 2>&1
+sudo service redis-server restart >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Create .env file ---\n"
-cd /home/vagrant/ANNA-Backend
+cd /home/home/vagrant/ANNA-Backend
 if [ ! -f .env ]
 then
     echo "DEV=true" >> .env
@@ -86,20 +86,20 @@ then
 fi
 
 echo -e "\n--- Installing backend dependencies via NPM ---\n"
-cd /home/vagrant/ANNA-Backend
+cd /home/home/vagrant/ANNA-Backend
 echo -e "Global dependencies..."
-sudo npm install -g node-gyp npm@latest node-pre-gyp nyc sequelize-cli >> /vagrant/vm_build.log 2>&1
+sudo npm install -g node-gyp npm@latest node-pre-gyp nyc sequelize-cli >> /home/vagrant/vm_build.log 2>&1
 echo -e "Local dependencies..."
-npm install >> /vagrant/vm_build.log 2>&1
-sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config >> /vagrant/vm_build.log 2>&1
+npm install >> /home/vagrant/vm_build.log 2>&1
+sudo chown -R $USER:$(id -gn $USER) /home/home/vagrant/.config >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "\n--- Migrating $DNAME database ---\n"
-cd /home/vagrant/ANNA-Backend
-node_modules/.bin/sequelize db:migrate >> /vagrant/vm_build.log 2>&1
+cd /home/home/vagrant/ANNA-Backend
+node_modules/.bin/sequelize db:migrate >> /home/vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Seeding $DNAME database ---\n"
-cd /home/vagrant/ANNA-Backend
-node_modules/.bin/sequelize db:seed:all >> /vagrant/vm_build.log 2>&1
+cd /home/home/vagrant/ANNA-Backend
+node_modules/.bin/sequelize db:seed:all >> /home/vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Vagrant box is ready ---"
