@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/jessie64"
+  config.vm.box = "ubuntu/trusty32"
 
   config.vm.hostname = "ANNA-BACKEND"
     config.vm.define "ANNA-BACKEND"
@@ -21,6 +21,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |v|
     v.name = "OneOS"
     v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+    v.customize ["modifyvm", :id, "--hwvirtex", "off"]
   end
 
   config.vm.provision "shell", path: "./vagrant/configure", privileged: false
