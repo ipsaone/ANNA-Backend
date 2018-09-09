@@ -65,7 +65,7 @@ sudo service apache2 reload >> /home/vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Installing Redis ---\n"
 sudo apt-get -qy install redis-server >> /home/vagrant/vm_build.log 2>&1
-sudo cp -f /home/vagrant/ANNA-Backend/home/vagrant/redis.conf /etc/redis/redis.conf >> /home/vagrant/vm_build.log 2>&1
+sudo cp -f /home/vagrant/ANNA-Backend/vagrant/redis.conf /etc/redis/redis.conf >> /home/vagrant/vm_build.log 2>&1
 sudo service redis-server restart >> /home/vagrant/vm_build.log 2>&1
 
 
