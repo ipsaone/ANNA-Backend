@@ -70,3 +70,8 @@ test('Logout', async t => {
     let res2 = await t.context.request.get('/auth/logout')
     t.is(res2.status, 200);
 });
+
+test('Check', async t => {
+    let res = await t.context.request.get('/auth/check')
+    t.is(res.status, 200);
+});

@@ -7,6 +7,7 @@ module.exports = function (db) {
 
     router.post('/login', require('./login')(db));
     router.get('/logout', require('./logout')(db));
+    router.get('/check', require('./check')(db));
 
     return router;
 };
