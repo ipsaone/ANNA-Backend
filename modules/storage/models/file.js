@@ -156,7 +156,6 @@ module.exports = (sequelize, DataTypes) => {
             const dest = await data.getPath(db);
 
             if (fileChanges.fileExists && !fileChanges.isDir) {
-
                 console.log(`Moving from ${filePath} to ${dest}`);
                 const move = util.promisify(mv);
 
@@ -171,6 +170,7 @@ module.exports = (sequelize, DataTypes) => {
                 return data;
 
             } else if (!fileChanges.fileExists && fileChanges.isDir) {
+                console.log("Not moving")
                 await data.save();
 
                 return data;

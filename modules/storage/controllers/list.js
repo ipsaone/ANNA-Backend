@@ -11,14 +11,17 @@ const getChildrenData = async (db, folderId) => {
 
     let data = await Promise.all(files.map(async (thisFile) => {
         const thisData = await thisFile.getData(db);
+        console.log("Finding data for file "+thisFile.id);
 
         if (!thisData) {
-            throw new Error(`No data for file #${thisFile.id}`);
+            console.log(`No data for file #${thisFile.id}`);
+            return {};
+        } else {
+            console.log("found !")
+            thisData.isDir = thisFile.isDir;
+            return thisData;
         }
-
-        thisData.isDir = thisFile.isDir;
-
-        return thisData;
+        
     }));
 
 

@@ -72,16 +72,9 @@ module.exports = Storage;
  * @returns {Object} Promise to file type.
  *
  */
-Storage.computeType = function (filePath) {
-    return new Promise((resolve) => {
-        magic.detectFile(filePath, (err, res) => {
-            if (err) {
-                throw err;
-            }
-
-            resolve(res);
-        });
-    });
+Storage.computeType = function async (filePath) {
+    let detectAsync =  util.promisify(magic.detectFile);
+    return detectAsync(filePath);
 };
 
 /**
@@ -98,8 +91,6 @@ Storage.computeType = function (filePath) {
 
 Storage.computeSize = function (filePath) {
     const funct = util.promisify(fs.stat);
-
-
     return funct(filePath).then((stat) => stat.size);
 };
 
