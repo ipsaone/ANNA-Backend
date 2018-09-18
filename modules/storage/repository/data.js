@@ -42,13 +42,16 @@ module.exports.setupPrototype = function (Data, sequelize) {
      * @returns {string} Data path.
      *
      */
-    Data.prototype.getPath = async function () {
+    Data.prototype.getPath = async function (db) {
         let dataPath = '';
         let id = 0;
 
-
         if (this.id) {
             id = this.id;
+
+            if(this.isDir) {
+                throw err;
+            }
         } else if (sequelize.getDialect() === 'mysql') {
 
             /*
