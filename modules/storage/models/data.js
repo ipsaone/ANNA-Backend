@@ -171,10 +171,6 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         timestamps: true,
         paranoid: true,
-        hooks: {
-            beforeCreate: computeValues,
-            beforeUpdate: computeValues
-        },
         freezeTableName: true
     });
 

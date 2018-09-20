@@ -40,17 +40,18 @@ test.beforeEach(async t => {
 })
 
 test('File type/size', async (t) => {
-
+    
     const repo = require('../repository');
-
-    let sizeP = repo.computeSize(__filename);
+    
+    //let sizeP = repo.computeSize(__filename);
     let typeP = repo.computeType(__filename);
     
-    let size = await sizeP;
-    t.is(size, fs.statSync(__filename).size);
+    //let size = await sizeP;
+    //t.is(size, fs.statSync(__filename).size);
 
     let type = await typeP;
     t.is(type, 'text/plain');
+    
 });
 
 

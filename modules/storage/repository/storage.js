@@ -73,8 +73,17 @@ module.exports = Storage;
  *
  */
 Storage.computeType = function async (filePath) {
-    let detectAsync =  util.promisify(magic.detectFile);
-    return detectAsync(filePath);
+
+    return new Promise((resolve) => {
+        magic.detectFile(filePath, (err, res) => {
+            if (err) {
+                throw err;
+            }
+
+            resolve(res);
+        });
+    });
+
 };
 
 /**

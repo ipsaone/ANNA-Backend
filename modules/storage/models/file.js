@@ -166,12 +166,14 @@ module.exports = (sequelize, DataTypes) => {
                 console.log('Moving done');
 
                 await data.save();
+                await data.computeValues();
 
                 return data;
 
             } else if (!fileChanges.fileExists && fileChanges.isDir) {
                 console.log("Not moving")
                 await data.save();
+                await data.computeValues();
 
                 return data;
             }
