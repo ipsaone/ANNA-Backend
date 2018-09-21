@@ -43,7 +43,7 @@ module.exports = (db) => async function (req, res) {
     }
 
 
-    const authorized = policy.filterStore(req.session.auth);
+    const authorized = await policy.filterStore(db, req.session.auth);
 
     if (!authorized) {
         return res.boom.unauthorized();

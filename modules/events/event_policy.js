@@ -43,7 +43,6 @@ exports.filterStore = async (db, userId) => {
     if (user && await user.isRoot()) {
         return true;
     }
-
     return false;
 };
 
