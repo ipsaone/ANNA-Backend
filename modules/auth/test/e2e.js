@@ -71,7 +71,22 @@ test('Logout', async t => {
     t.is(res2.status, 200);
 });
 
-test('Check', async t => {
+test('Check (connected)', async t => {
+    let SuccessRes = await t.context.request.post('/auth/login')
+        .send({
+            username: 'login_test',
+            password: 'password_test'
+        })
+
+    t.is(SuccessRes.status, 200);
+
     let res = await t.context.request.get('/auth/check')
     t.is(res.status, 200);
+    t.is(res.body.logged, true);
+});
+
+test('Check (not connected)', async t => {
+    let res = await t.context.request.get('/auth/check')
+    t.is(res.status, 200);
+    t.is(res.body.logged, false);
 });
