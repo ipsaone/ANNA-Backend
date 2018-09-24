@@ -79,7 +79,7 @@
     "statements": 50,
     "functions": 50,
     "branches": 25,
-    "reporter": []
+    "reporter": ["html", "text-summary"]
   },
   "scripts": {
     "start": "node ./app.js",
