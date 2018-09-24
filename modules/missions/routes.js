@@ -18,6 +18,10 @@ module.exports = (db) => {
         .get(missionController.indexTasks)
         .post(missionController.storeTask);
 
+    router.route('/:missionId([0-9]+)/members/:memberId([0-9]+)')
+        .put(missionController.storeMember)
+        .delete(missionController.deleteMember);
+
 
     router.route('/:missionId([0-9]+)')
         .get(missionController.show)

@@ -133,3 +133,6 @@ exports.filterDeleteTask = async (contents, mission, userId) => {
 
     return [];
 };
+
+exports.filterStoreMember = () => true;
+exports.filterDeleteMember = () => true;

@@ -28,8 +28,6 @@ module.exports = (db) => async (req, res) => {
 
     try {
         const mission = await db.Mission.create(req.body);
-
-
         return res.status(200).json(mission);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
