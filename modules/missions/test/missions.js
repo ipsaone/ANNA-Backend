@@ -79,6 +79,27 @@ test.skip('Edit mission', async t => {
     t.pass();
 });
 
+test('List missions', async t => {
+    await t.context.user.addGroup(t.context.group.id);
+    let res = await t.context.request.post('/missions')
+        .send({
+            name: "test", 
+            markdown: "# TEST",
+            budgetAssigned: 100,
+            budgetUsed: 40,
+            groupId: t.context.user.id,
+            leaderId: t.context.group.id
+        });
+
+    t.is(res.status, 200);
+
+    let res2 = await t.context.request.get('/missions');
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 1);
+    t.is(res2.body[0].name, 'test');
+});
+test.todo('Mission details');
+
 test('Delete mission', async t => {
     await t.context.user.addGroup(t.context.group.id);
     let res = await t.context.request.post('/missions')
