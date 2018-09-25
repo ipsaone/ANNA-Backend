@@ -25,7 +25,8 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
-    await db.Missions.destroy({where: {id: missionId}});
+    let mission = await db.Mission.findById(missionId);
+    await mission.destroy();
 
     return res.status(204).json({});
 };
