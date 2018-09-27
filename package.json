@@ -83,14 +83,12 @@
   },
   "ava": {
     "files" : "modules/**/test/*.js",
-    "failFast": true,
     "powerAssert": true
-
   },
   "scripts": {
     "start": "node --experimental-modules ./app.js",
     "test": "nyc ava --verbose --experimental-modules",
-    "watch-test": "ava modules/**/test/*.js --watch --verbose",
+    "watch-test": "ava modules/**/test/*.js --watch --verbose --experimental-modules",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",
@@ -100,7 +98,7 @@
     "precommit": "exit 0; vagrant ssh -c 'cd ANNA-Backend && bash pre-commit.sh'",
     "security": "nsp check .",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
-    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js"
+    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js --experimental-modules"
   },
   "engines": {
     "node": ">=8.9.0"
