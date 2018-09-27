@@ -6,7 +6,7 @@ import test, { beforeEach, skip } from 'ava';
 
 import findRoot from 'find-root';
 const root = findRoot(__dirname);
-import { join } from 'path';
+const {join} = require('path');
 const chance = require('chance').Chance();
 
 

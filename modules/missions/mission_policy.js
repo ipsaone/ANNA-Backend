@@ -134,5 +134,29 @@ exports.filterDeleteTask = async (mission, userId) => {
     return false;
 };
 
-exports.filterStoreMember = () => true;
-exports.filterDeleteMember = () => true;
+exports.filterStoreMember = async (mission, userId) => {
+    if (userId === mission.leaderId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return true;
+    }
+
+    return false;
+};
+exports.filterDeleteMember = async (mission, userId) => {
+    if (userId === mission.leaderId) {
+        return true;
+    }
+
+    const user = await db.User.findById(userId);
+
+    if (await user.isRoot()) {
+        return true;
+    }
+
+    return false;
+};

@@ -88,8 +88,8 @@
 
   },
   "scripts": {
-    "start": "node ./app.js",
-    "test": "nyc ava --verbose",
+    "start": "node --experimental-modules ./app.js",
+    "test": "nyc ava --verbose --experimental-modules",
     "watch-test": "ava modules/**/test/*.js --watch --verbose",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
