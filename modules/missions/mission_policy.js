@@ -91,19 +91,19 @@ exports.filterDelete = async (db, userId) => {
 
 exports.filterIndexTasks = () => true;
 exports.filterShowTask = () => true;
-exports.filterStoreTask = async (contents, mission, userId) => {
+exports.filterStoreTask = async (mission, userId) => {
 
     if (userId === mission.leaderId) {
-        return contents;
+        return true;
     }
 
     const user = await db.User.findById(userId);
 
     if (await user.isRoot()) {
-        return contents;
+        return true;
     }
 
-    return [];
+    return false;
 };
 exports.filterUpdateTask = async (contents, mission, userId) => {
 
@@ -119,19 +119,19 @@ exports.filterUpdateTask = async (contents, mission, userId) => {
 
     return [];
 };
-exports.filterDeleteTask = async (contents, mission, userId) => {
+exports.filterDeleteTask = async (mission, userId) => {
 
     if (userId === mission.leaderId) {
-        return contents;
+        return true;
     }
 
     const user = await db.User.findById(userId);
 
     if (await user.isRoot()) {
-        return contents;
+        return true;
     }
 
-    return [];
+    return false;
 };
 
 exports.filterStoreMember = () => true;

@@ -17,6 +17,7 @@ module.exports = (db) => async function (req, res) {
     const taskId = parseInt(req.params.taskId, 10);
 
     // Check mission and task are associated
+    const mission = await db.Mission.findById(missionId);
     const task = await db.Task.findById(taskId);
 
     if (!task.missionId === missionId) {
@@ -24,7 +25,7 @@ module.exports = (db) => async function (req, res) {
     }
 
     // Check user has permissions to delete the task
-    const allowed = policy.filterDeleteTask(req.session.auth);
+    const allowed = policy.filterDeleteTask(mission, req.session.auth);
 
     if (!allowed) {
         return res.boom.unauthorized();

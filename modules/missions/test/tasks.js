@@ -52,13 +52,38 @@ beforeEach(async t => {
         });
 
     t.is(res2.status, 200);  
+    t.context.mission = res2.body;
     
 });
 
-test.skip('Add task to mission', async t => {
-    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/1');
-    t.is(res.status, 200);
-});
 
-test.todo('Remove task from mission')
-test.todo('Edit mission task')
+test('Add, edit and remove task from mission', async t => {
+    let res = await t.context.request.post('/missions/'+t.context.mission.id+'/tasks')
+        .send({
+            done: false,
+            name: 'test'
+        });
+    t.is(res.status, 200);
+
+    let res2 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks');
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 1);
+
+    let res6 = await t.context.request.put('/missions/'+t.context.mission.id+'/task/'+res.body.id)
+        .send({
+            name: 'testEdit'
+        });
+    t.is(res6.status, 200);
+   
+    let res5 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks');
+    t.is(res5.status, 200);
+    t.is(res5.body.length, 1);
+    t.is(res5.body[0].name, 'testEdit');
+
+    let res3 = await t.context.request.delete('/missions/'+t.context.mission.id+'/task/'+res.body.id);
+    t.is(res3.status, 204);
+
+    let res4 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks');
+    t.is(res4.status, 200);
+    t.is(res4.body.length, 0);
+});
