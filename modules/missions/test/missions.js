@@ -126,7 +126,24 @@ test('List missions', async t => {
     t.is(res.body[0].name, 'test');
     t.is(res.body[1].name, 'test2');
 });
-test.todo('Mission details');
+
+test('Mission details', async t => {
+    await t.context.user.addGroup(t.context.group.id);
+    let res = await t.context.request.post('/missions')
+        .send({
+            name: "test", 
+            markdown: "# TEST",
+            budgetAssigned: 100,
+            budgetUsed: 40,
+            groupId: t.context.user.id,
+            leaderId: t.context.group.id
+        });
+    t.is(res.status, 200);
+    
+    let res2 = await t.context.request.get('/missions/'+res.body.id);
+    t.is(res2.status, 200);
+    t.is(res2.body.name, 'test');
+});
 
 test('Delete mission', async t => {
     await t.context.user.addGroup(t.context.group.id);
