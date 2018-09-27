@@ -81,9 +81,15 @@
     "branches": 25,
     "reporter": ["html", "text-summary"]
   },
+  "ava": {
+    "files" : "modules/**/test/*.js",
+    "failFast": true,
+    "powerAssert": true
+
+  },
   "scripts": {
     "start": "node ./app.js",
-    "test": "nyc ava modules/**/test/*.js --verbose",
+    "test": "nyc ava --verbose",
     "watch-test": "ava modules/**/test/*.js --watch --verbose",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",

@@ -75,11 +75,7 @@ test('Create mission (not root)', async (t) => {
 })
 
 
-test.skip('Edit mission', async t => {
-    t.pass();
-});
-
-test('List missions', async t => {
+test('Edit mission', async t => {
     await t.context.user.addGroup(t.context.group.id);
     let res = await t.context.request.post('/missions')
         .send({
@@ -93,10 +89,42 @@ test('List missions', async t => {
 
     t.is(res.status, 200);
 
-    let res2 = await t.context.request.get('/missions');
+    let res2 = await t.context.request.put('/missions/'+res.body.id)
+        .send({
+            name: "testEdited"
+        });
+    
     t.is(res2.status, 200);
-    t.is(res2.body.length, 1);
-    t.is(res2.body[0].name, 'test');
+    t.is(res2.body.name, 'testEdited');
+});
+
+test('List missions', async t => {
+    await t.context.user.addGroup(t.context.group.id);
+    await t.context.request.post('/missions')
+        .send({
+            name: "test", 
+            markdown: "# TEST",
+            budgetAssigned: 100,
+            budgetUsed: 40,
+            groupId: t.context.user.id,
+            leaderId: t.context.group.id
+        });
+
+    await t.context.request.post('/missions')
+        .send({
+            name: "test2", 
+            markdown: "# TEST2",
+            budgetAssigned: 100,
+            budgetUsed: 40,
+            groupId: t.context.user.id,
+            leaderId: t.context.group.id
+        });
+
+    let res = await t.context.request.get('/missions');
+    t.is(res.status, 200);
+    t.is(res.body.length, 2);
+    t.is(res.body[0].name, 'test');
+    t.is(res.body[1].name, 'test2');
 });
 test.todo('Mission details');
 

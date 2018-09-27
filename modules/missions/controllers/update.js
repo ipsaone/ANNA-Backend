@@ -25,8 +25,9 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
+    let mission = await db.Mission.findById(missionId);
     try {
-        await db.Missions.update(req.body, {where: {id: missionId}});
+        await mission.update(req.body);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
             return res.boom.badRequest();
@@ -34,6 +35,6 @@ module.exports = (db) => async function (req, res) {
 
         throw err;
     }
-
-    return res.status(204).json({});
+    
+    return res.status(200).json(mission);
 };
