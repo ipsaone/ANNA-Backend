@@ -83,12 +83,13 @@
   },
   "ava": {
     "files" : "modules/**/test/*.js",
-    "powerAssert": true
+    "powerAssert": true,
+    "babel": {}
   },
   "scripts": {
     "start": "node ./app.js",
-    "test": "nyc ava --verboses",
-    "watch-test": "ava modules/**/test/*.js --watch --verbose",
+    "test": "nyc ava --verbose",
+    "watch-test": "ava --watch",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",

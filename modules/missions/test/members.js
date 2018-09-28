@@ -2,18 +2,18 @@
 
 process.env.TEST = true;
 
-import test, { beforeEach, skip } from 'ava';
+const {test} = require('ava');
 
-import findRoot from 'find-root';
+const findRoot =  require('find-root');
 const root = findRoot(__dirname);
 const {join} = require('path');
 const chance = require('chance').Chance();
 
 
-import fs from 'fs';
+const fs = require('fs');
 
 
-beforeEach(async t => {
+test.beforeEach(async t => {
     const loadApp = require(join(root, './app'));
     let {app, modules} = loadApp({test: true, noLog: true});
     const request = require('supertest').agent(app);
