@@ -38,4 +38,4 @@ test.beforeEach(async t => {
 
 test.todo('Add attendant to event');
 test.todo('Remove attendant from event');
-test.todo('Attendant policy')
+test.todo('Attendant policy');

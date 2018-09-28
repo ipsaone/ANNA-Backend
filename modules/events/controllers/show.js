@@ -32,9 +32,9 @@ module.exports = (db) => async function (req, res) {
     }
 
 
-    const filtered = await policy.filterShow(event, req.session.id);
+    const allowed = await policy.filterShow(event, req.session.id);
 
-    if (!filtered) {
+    if (!allowed) {
         return res.boom.unauthorized();
     }
 
@@ -51,5 +51,5 @@ module.exports = (db) => async function (req, res) {
     await Promise.all(promises);
 
 
-    return res.status(200).json(filtered);
+    return res.status(200).json(event);
 };

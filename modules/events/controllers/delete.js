@@ -20,7 +20,7 @@ module.exports = (db) => async function (req, res) {
     }
     const eventId = parseInt(req.params.eventId, 10);
 
-    const authorized = await policy.filterDelete(req.session.auth);
+    const authorized = await policy.filterDelete(db, req.session.auth);
 
     if (!authorized) {
         return res.boom.unauthorized();

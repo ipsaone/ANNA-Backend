@@ -36,21 +36,12 @@ module.exports = (db) =>
 
         // Validate user input
         const validation = joi.validate(req.body, schema);
-
         if (validation.error) {
             return res.boom.badRequest(validation.error);
         }
 
-        /*
-         * To lower case to avoid security problems
-         * (users trying to create 'auTHOrs' group to gain rights)
-         */
-        if (req.body.name) {
-            req.body.name = req.body.name.toLowerCase();
-        }
-
         // Check authorization
-        const authorized = await policy.filterUpdate(req.session.auth);
+        const authorized = await policy.filterUpdate(db, req.session.auth);
 
         if (!authorized) {
             return res.boom.unauthorized();
@@ -68,7 +59,7 @@ module.exports = (db) =>
 
 
         // Send response
-        return res.status(204).json(event);
+        return res.status(200).json(event);
 
 
     };
