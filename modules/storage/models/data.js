@@ -26,7 +26,8 @@ const computeValues = async (data) => {
     const path = await data.getPath();
     console.log(path);
 
-    if(data.isDir) {
+    let file = await data.getFile();
+    if(file.isDir) {
         data.size = -1;
         data.type = 'folder';
         return;
@@ -252,6 +253,9 @@ module.exports = (sequelize, DataTypes) => {
 
         dataRep.setupPrototype(Data, sequelize);
     };
+
+    // Must be kept as an old-school function to use 'this'
+    Data.prototype.computeValues = function() {return computeValues(this)};
 
 
     return Data;

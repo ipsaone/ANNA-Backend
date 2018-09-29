@@ -29,6 +29,11 @@ module.exports = (db) => async (req, res) => {
         return true;
     });
 
+    // Check folderId
+    if(isNaN(parseInt(req.body.dirId, 10))) {
+        return res.boom.badRequest('dirId must be an integer');
+    }
+
     // Create the file and its data
     const allowed = await policy.filterUploadNew(db, req.body.dirId, req.session.auth);
 
@@ -44,5 +49,5 @@ module.exports = (db) => async (req, res) => {
 
     const data = await db.File.createNew(db, req.body, filePath, req.session.auth);
 
-    return res.status(204).json(data);
+    return res.status(200).json(data);
 };

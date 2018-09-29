@@ -137,7 +137,15 @@ module.exports = (sequelize, DataTypes) => {
                 const file = await db.File.findById(fileChanges.fileId);
                 const fileData = await file.getData(db);
 
-                right = await fileData.getRights(db);
+                if (!fileData) {
+                    right = await db.Right.create(fileChanges);
+                } else {
+                    right = await fileData.getRights(db);
+                }
+
+                if(!right) {
+                    throw new Error('Internal error : no rights associated with data #'+fileData.id);
+                }
             }
             fileChanges.rightsId = right.id;
 
@@ -146,13 +154,13 @@ module.exports = (sequelize, DataTypes) => {
 
             try {
                 await access(filePath);
-                fileChanges.fileExists = true;
+                fileChanges.exists = true;
             } catch (err) {
                 console.log(`File exists : ${!err}`);
-                fileChanges.fileExists = false;
+                fileChanges.exists = false;
             }
 
-            const data = await db.Data.build(fileChanges);
+            const data = await db.Data.create(fileChanges);
             const dest = await data.getPath(db);
 
             if (fileChanges.fileExists && !fileChanges.isDir) {
@@ -165,22 +173,17 @@ module.exports = (sequelize, DataTypes) => {
                 });
                 console.log('Moving done');
 
-                await data.save();
                 await data.computeValues();
-
                 return data;
 
-            } else if (!fileChanges.fileExists && fileChanges.isDir) {
+            } else if (!fileChanges.exists && fileChanges.isDir) {
                 console.log("Not moving")
-                await data.save();
                 await data.computeValues();
 
                 return data;
             }
 
             throw new Error('Bad request');
-
-
         };
 
 

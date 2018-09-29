@@ -43,7 +43,7 @@ exports.filterUploadNew = async (db, folderId, userId) => {
     const canWrite = await canWriteP;
 
     if (!folder) {
-        console.log(`no file #${folderId}`);
+        console.log(`no folder #${folderId}`);
 
         return false;
     }
