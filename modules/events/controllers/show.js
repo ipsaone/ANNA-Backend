@@ -41,7 +41,7 @@ module.exports = (db) => async function (req, res) {
     const promises = [];
 
     for (let i = 0; i < event.registered.length; i++) {
-        promises.push(userPolicy.filterShow(event.registered[i], req.session.auth).then((reg) => {
+        promises.push(userPolicy.filterShow(db, event.registered[i], req.session.auth).then((reg) => {
             event.registered[i] = reg;
 
             return true;

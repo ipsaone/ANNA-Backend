@@ -149,11 +149,3 @@ test('Download file', async t => {
     t.is(res3.status, 200);
     t.true(res3.body instanceof Buffer);
 });
-
-test.skip('Edit file', async t => {
-    t.pass();
-});
-
-test.skip('Move file', async t => {
-    t.pass();
-});

@@ -90,7 +90,7 @@ exports.filterDelete = async (db, userId) => {
     return false;
 };
 
-exports.filterStoreRegistered = async (db, eventId, targetId, userId) => {
+exports.filterStoreRegistered = async (db, targetId, userId) => {
 
     if (userId === targetId) {
         return true;
@@ -103,12 +103,10 @@ exports.filterStoreRegistered = async (db, eventId, targetId, userId) => {
         return true;
     }
 
-    console.log('False !!!!!');
-
     return false;
 };
 
-exports.filterDeleteRegistered = async (db, eventId, targetId, userId) => {
+exports.filterDeleteRegistered = async (db, targetId, userId) => {
 
     if (userId === targetId) {
         return true;

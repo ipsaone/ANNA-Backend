@@ -17,7 +17,7 @@ module.exports = (db) => async function (req, res) {
     }
 
 
-    const allowed = await policy.filterDeleteRegistered(eventId, userId, req.session.auth);
+    const allowed = await policy.filterDeleteRegistered(db, userId, req.session.auth);
 
     if (!allowed) {
         return res.boom.unauthorized();

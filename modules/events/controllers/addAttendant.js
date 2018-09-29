@@ -15,7 +15,7 @@ module.exports = (db) => async function (req, res) {
     }
 
 
-    const allowed = await policy.filterStoreRegistered(eventId, userId, req.session.auth);
+    const allowed = await policy.filterStoreRegistered(db, userId, req.session.auth);
 
     if (!allowed) {
         return res.boom.unauthorized();
