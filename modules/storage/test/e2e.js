@@ -70,8 +70,18 @@ test.beforeEach(async t => {
     });
 })
 
-test.skip('Upload file', async t => {
-    t.pass();
+test('Upload file', async t => {
+    let res = await t.context.request.post('/storage/upload')
+        .attach('contents', path.join(root, './app.js'))
+        .field('isDir', false)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+
+    t.is(res.status, 200);
+    t.is(res.body.name, 'test');
+    t.is(res.body.hidden, false);
+    t.is(res.body.type, 'text/plain');
 });
 
 test.skip('Upload revision', async t => {
@@ -86,7 +96,7 @@ test('Create folder', async t => {
         .field('groupId', t.context.group.id)
 
     t.is(res.status, 200);
-    t.is(res.body.name, 'test');
+    t.is(res.body.name, 'test')
     t.is(res.body.type, 'folder');
     t.is(res.body.size, -1);
     t.is(res.body.exists, false);

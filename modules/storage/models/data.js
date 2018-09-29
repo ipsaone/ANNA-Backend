@@ -24,7 +24,6 @@ const dataRep = require('../repository/data');
  */
 const computeValues = async (data) => {
     const path = await data.getPath();
-    console.log(path);
 
     let file = await data.getFile();
     if(file.isDir) {

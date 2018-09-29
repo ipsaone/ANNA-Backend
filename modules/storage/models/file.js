@@ -156,28 +156,24 @@ module.exports = (sequelize, DataTypes) => {
                 await access(filePath);
                 fileChanges.exists = true;
             } catch (err) {
-                console.log(`File exists : ${!err}`);
                 fileChanges.exists = false;
             }
 
             const data = await db.Data.create(fileChanges);
             const dest = await data.getPath(db);
 
-            if (fileChanges.fileExists && !fileChanges.isDir) {
-                console.log(`Moving from ${filePath} to ${dest}`);
+            if (fileChanges.exists && !fileChanges.isDir) {
                 const move = util.promisify(mv);
 
                 await move(filePath, dest, {
                     mkdirp: true,
                     clobber: true
                 });
-                console.log('Moving done');
 
                 await data.computeValues();
                 return data;
 
             } else if (!fileChanges.exists && fileChanges.isDir) {
-                console.log("Not moving")
                 await data.computeValues();
 
                 return data;
@@ -198,8 +194,6 @@ module.exports = (sequelize, DataTypes) => {
          *
          */
         File.prototype.getData = function (db, offset = 0) {
-
-            // Console.log(`Finding data of file #${this.id} with offset ${offset}`);
 
             return db.Data
 
