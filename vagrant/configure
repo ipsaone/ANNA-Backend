@@ -88,7 +88,7 @@ fi
 echo -e "Installing backend dependencies via NPM"
 cd /home/vagrant/ANNA-Backend
 echo -e "\tGlobal dependencies..."
-sudo npm install -g node-gyp npm@latest node-pre-gyp nyc sequelize-cli >> /home/vagrant/vm_build.log 2>&1
+sudo npm install -g node-gyp@latest npm@latest node-pre-gyp@latest nyc@latest sequelize-cli@latest >> /home/vagrant/vm_build.log 2>&1
 echo -e "\tLocal dependencies..."
 npm install >> /home/vagrant/vm_build.log 2>&1
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config >> /home/vagrant/vm_build.log 2>&1

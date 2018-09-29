@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/home/vagrant/ANNA-Backend", 
     type: "rsync", 
     rsync__args: ["--verbose", "--archive", "--delete", "-z", "--no-links"],
-    rsync__exclude: ["node_modules", ".git/", ".vagrant/"]
+    rsync__exclude: ["node_modules", ".git/", ".vagrant/", "coverage/", ".nyc_output/"]
 
   config.vm.provision "shell", path: "./vagrant/configure", privileged: false
 end

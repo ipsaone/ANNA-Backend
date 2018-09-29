@@ -75,11 +75,15 @@
   "nyc": {
     "check-coverage": true,
     "cache": true,
-    "lines": 50,
-    "statements": 50,
-    "functions": 50,
-    "branches": 25,
-    "reporter": ["html", "text-summary"]
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 50,
+    "reporter": ["html", "text-summary"],
+    "exclude": [
+      "modules/**/test/*.js"
+    ]
+
   },
   "ava": {
     "files" : "modules/**/test/*.js",
@@ -99,7 +103,8 @@
     "precommit": "exit 0; vagrant ssh -c 'cd ANNA-Backend && bash pre-commit.sh'",
     "security": "nsp check .",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
-    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js"
+    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js",
+    "coverage": "http-server ./coverage -p 8080 -c-1 -o"
   },
   "engines": {
     "node": ">=8.9.0"
