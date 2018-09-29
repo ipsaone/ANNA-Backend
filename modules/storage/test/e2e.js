@@ -127,8 +127,27 @@ test('Create folder', async t => {
 
 })
 
-test.skip('Download file', async t => {
-    t.pass();
+test('Download file', async t => {
+    let res = await t.context.request.post('/storage/upload')
+        .attach('contents', path.join(root, './app.js'))
+        .field('isDir', false)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+        .field('ownerRead', true)
+
+        t.is(res.status, 200);
+
+    let res2 = await t.context.request.get('/storage/files/'+res.body.id);
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 1);
+    t.is(res2.body[0].name, 'test');
+    t.is(res2.body[0].exists, true);
+    t.is(res2.body[0].hidden, false);
+
+    let res3 = await t.context.request.get('/storage/files/'+res.body.id+"?download=true");
+    t.is(res3.status, 200);
+    t.true(res3.body instanceof Buffer);
 });
 
 test.skip('Edit file', async t => {
