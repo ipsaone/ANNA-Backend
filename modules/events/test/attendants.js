@@ -65,5 +65,23 @@ test('Add and remove attendant to event', async t => {
     t.is(res4.body.registered.length, 0);
 });
 
+test('Attendants limit', async t => {
+    let res2 = await t.context.request.post('/events')
+        .send({
+            name: "test",
+            markdown: "# TEST",
+            maxRegistered: 0,
+            startDate : Date.now().toString(),
+            endDate: Date.now().toString()
+        })
+    t.is(res2.status, 201);
+
+    let res = await t.context.request.put('/events/'+res2.body.id+'/register/'+t.context.user.id);
+    t.is(res.status, 401);
+
+    let res3 = await t.context.request.get('/events/'+res2.body.id);
+    t.is(res3.status, 200);
+    t.is(res3.body.registered.length, 0);
+})
 
 test.todo('Attendant policy');

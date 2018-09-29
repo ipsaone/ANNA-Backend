@@ -33,6 +33,11 @@ module.exports = (db) => async function (req, res) {
         return res.boom.notFound('User not found');
     }
 
+    let registered = await event.getRegistered();
+
+    if(registered.length == event.maxRegistered) {
+        return res.boom.unauthorized('Event is full');
+    }
     await event.addRegistered(userId);
 
     return res.status(201).json(event);
