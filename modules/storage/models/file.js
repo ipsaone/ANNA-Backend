@@ -162,24 +162,19 @@ module.exports = (sequelize, DataTypes) => {
             const data = await db.Data.create(fileChanges);
             const dest = await data.getPath(db);
 
-            if (fileChanges.exists && !fileChanges.isDir) {
+            if (fileChanges.exists) {
+
+                if(fileChanges.isDir) {
+                    throw new Error('Cannot handle an upload for a folder !')
+                }
+
                 const move = util.promisify(mv);
+                await move(filePath, dest, {mkdirp: true,  clobber: true});
+            } 
 
-                await move(filePath, dest, {
-                    mkdirp: true,
-                    clobber: true
-                });
+            await data.computeValues();
+            return data;
 
-                await data.computeValues();
-                return data;
-
-            } else if (!fileChanges.exists && fileChanges.isDir) {
-                await data.computeValues();
-
-                return data;
-            }
-
-            throw new Error('Bad request');
         };
 
 

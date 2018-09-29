@@ -17,7 +17,6 @@ const getChildrenData = async (db, folderId) => {
             console.log(`No data for file #${thisFile.id}`);
             return {};
         } else {
-            console.log("found !")
             thisData.isDir = thisFile.isDir;
             return thisData;
         }

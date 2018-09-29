@@ -82,10 +82,33 @@ test('Upload file', async t => {
     t.is(res.body.name, 'test');
     t.is(res.body.hidden, false);
     t.is(res.body.type, 'text/plain');
+    //t.is(res.body.dirId, t.context.folder.id);
 });
 
-test.skip('Upload revision', async t => {
-    t.pass();
+test('Upload revision', async t => {
+    let res1 = await t.context.request.post('/storage/upload')
+        .attach('contents', path.join(root, './app.js'))
+        .field('isDir', false)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+
+    let res2 = await t.context.request.put('/storage/upload/'+res1.body.id)
+        .field('name', 'testEdited')
+
+    t.is(res2.status, 200);
+    t.is(res2.body.name, 'testEdited');
+    t.is(res2.body.hidden, false);
+   // t.is(res2.body.dirId, t.context.folder.id);
+
+    let res3 = await t.context.request.put('/storage/upload/'+res1.body.id)
+        .attach('contents', path.join(root, './package.json'))
+    
+    t.is(res3.status, 200);
+    t.is(res3.body.name, 'testEdited');
+    t.is(res3.body.exists, true);
+    t.is(res3.body.type,'text/plain');
+    t.is(res3.body.hidden, false);
 });
 
 test('Create folder', async t => {

@@ -32,6 +32,12 @@ const computeValues = async (data) => {
         return;
     }
 
+    if(!data.exists) {
+        data.size = -1;
+        data.type = ''
+        return;
+    }
+
     
 
 

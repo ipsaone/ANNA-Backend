@@ -38,8 +38,12 @@ module.exports = (db) => async (req, res) => {
     }
 
     const file = await db.File.findById(fileId);
+    let filePath = '';
+    if (req.file) {
+        filePath = req.file.path;
+    }
 
-    await file.addData(db, req.body, req.file.path, req.session.auth);
+    let data = await file.addData(db, req.body, filePath, req.session.auth);
 
-    return res.status(200).json({});
+    return res.status(200).json(data);
 };
