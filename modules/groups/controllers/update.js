@@ -16,6 +16,7 @@ module.exports = (db) => async function (req, res) {
         throw res.boom.badRequest();
     }
     const groupId = parseInt(req.params.groupId, 10);
+    const group = await db.Group.findById(groupId);
 
     /*
      * To lower case to avoid security problems
@@ -24,9 +25,9 @@ module.exports = (db) => async function (req, res) {
     req.body.name = req.body.name.toLowerCase();
 
     try {
-        await db.Group.update(req.body, {where: {id: groupId}});
+        await group.update(req.body);
 
-        return res.status(204).json({});
+        return res.status(200).json(group);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
             throw res.boom.badRequest();

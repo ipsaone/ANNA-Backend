@@ -13,7 +13,7 @@
  */
 
 module.exports = (db) => async function (req, res) {
-    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
+    if (isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest();
     }
     const groupId = parseInt(req.params.groupId, 10);
