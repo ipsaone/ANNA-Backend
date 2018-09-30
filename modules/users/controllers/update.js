@@ -22,7 +22,7 @@ module.exports = (db) => async function (req, res) {
     try {
         await user.update(req.body);
 
-        return res.status(204).json(user);
+        return res.status(200).json(user);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
             throw res.boom.badRequest();

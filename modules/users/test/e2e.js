@@ -73,3 +73,38 @@ test('Single', async t => {
 
 
 });
+
+test('Add, edit and remove user', async t => {
+    let res = await t.context.request.post('/users/')
+        .send({
+            username: 'someUser',
+            password: 'somePassword',
+            email: 'someEmail@mail.com'
+        });
+
+    t.is(res.status, 201);
+    t.is(res.body.username, 'someUser');
+
+    let res3 = await t.context.request.get('/users');
+    t.is(res3.status, 200);
+    t.is(res3.body.length, 2);
+
+    let res5 = await t.context.request.put('/users/'+res.body.id)
+        .send({
+            username: 'testEdited'
+        });
+    t.is(res5.status, 200);
+    t.is(res5.body.username, "testEdited") 
+    
+    let res6 = await t.context.request.get('/users/'+res.body.id);
+    t.is(res6.status, 200);
+    t.is(res6.body.username, "testEdited");
+
+
+    let res2 = await t.context.request.delete('/users/'+res.body.id);
+    t.is(res2.status, 204);
+
+    let res4 = await t.context.request.get('/users');
+    t.is(res4.status, 200);
+    t.is(res4.body.length, 1);
+});
