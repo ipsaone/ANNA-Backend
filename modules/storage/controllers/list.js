@@ -11,11 +11,11 @@ const getChildrenData = async (db, folderId) => {
 
     let data = await Promise.all(files.map(async (thisFile) => {
         const d = await thisFile.getData(db);
-        let thisData = d.toJSON();
-
-        if (!thisData) {
+    
+        if (!d) {
             return {};
         } else {
+            let thisData = d.toJSON();
             thisData.isDir = thisFile.isDir;
             return thisData;
         }
