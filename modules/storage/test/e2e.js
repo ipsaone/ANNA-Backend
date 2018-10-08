@@ -125,6 +125,8 @@ test('Create folder', async t => {
     t.is(res.body.exists, false);
     t.is(res.body.hidden, false);
 
+    console.log(res.body);
+
 })
 
 test('Download file', async t => {

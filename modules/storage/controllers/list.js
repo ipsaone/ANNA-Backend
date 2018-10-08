@@ -10,11 +10,10 @@ const getChildrenData = async (db, folderId) => {
     }
 
     let data = await Promise.all(files.map(async (thisFile) => {
-        const thisData = await thisFile.getData(db);
-        console.log("Finding data for file "+thisFile.id);
+        const d = await thisFile.getData(db);
+        let thisData = d.toJSON();
 
         if (!thisData) {
-            console.log(`No data for file #${thisFile.id}`);
             return {};
         } else {
             thisData.isDir = thisFile.isDir;
@@ -79,7 +78,6 @@ module.exports = (db) => async (req, res) => {
     response.isDir = folderFile.isDir;
     response.dirTree = await dirTreeP;
     response.children = await childrenDataP;
-
 
     return res.status(200).json(response);
 };

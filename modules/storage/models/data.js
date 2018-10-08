@@ -29,13 +29,12 @@ const computeValues = async (data) => {
     if(file.isDir) {
         data.size = -1;
         data.type = 'folder';
-        return;
+        return data;
     }
-
     if(!data.exists) {
         data.size = -1;
         data.type = ''
-        return;
+        return data;
     }
 
     
@@ -55,6 +54,8 @@ const computeValues = async (data) => {
     } catch (err) {
         data.size = -1;
     }
+
+    return data;
 };
 
 /**
