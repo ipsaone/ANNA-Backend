@@ -19,7 +19,7 @@ module.exports = (db) => async (req, res) => {
     }
     const fileId = parseInt(req.params.fileId, 10);
 
-    const authorized = policy.filterDelete();
+    const authorized = policy.filterDelete(db, fileId, req.session.auth);
 
     if (!authorized) {
         throw res.boom.unauthorized();

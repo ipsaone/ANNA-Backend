@@ -231,6 +231,9 @@ module.exports = (sequelize, DataTypes) => {
 
             // Get parents' directory tree
             let fileDirTree = [];
+            if(!data) {
+                return fileDirTree;
+            }
 
             if (data.dirId !== 1) {
                 const file = await db.File.findById(data.dirId);

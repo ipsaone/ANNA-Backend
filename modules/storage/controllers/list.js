@@ -64,7 +64,7 @@ module.exports = (db) => async (req, res) => {
     const authorized = policy.filterList(db, folderId, req.session.auth);
 
     if (!authorized) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized();
     }
 
     const folderFile = await folderFileP;
@@ -72,6 +72,10 @@ module.exports = (db) => async (req, res) => {
 
     const dirTreeP = folderFile.getDirTree(db);
     const folderData = await folderFile.getData(db);
+
+    if(!folderData) {
+        return res.boom.internal();
+    }
 
     const response = folderData.toJSON();
 
