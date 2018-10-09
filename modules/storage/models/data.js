@@ -37,9 +37,6 @@ const computeValues = async (data) => {
         return data;
     }
 
-    
-
-
     const typeP = repo.computeType(path);
     const sizeP = repo.computeSize(path);
 

@@ -172,7 +172,10 @@ module.exports = (sequelize, DataTypes) => {
                 await move(filePath, dest, {mkdirp: true,  clobber: true});
             } 
 
-            return data.computeValues();;
+            await data.computeValues();
+            await data.save();
+
+            return data;
 
         };
 
