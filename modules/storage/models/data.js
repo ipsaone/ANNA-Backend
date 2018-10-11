@@ -20,7 +20,7 @@ const dataRep = require('../repository/data');
  * @constant computeValues
  * @param {Object} data - Data.
  * @implements {getPath}
- * @returns {Promise} The promise to retur data path or an error.
+ * @returns {Promise} The promise to return data path or an error.
  */
 const computeValues = async (data) => {
     const path = await data.getPath();

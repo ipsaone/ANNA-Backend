@@ -2,23 +2,29 @@
 
 const policy = require('../storage_policy');
 
-const getChildrenData = async (db, folderId) => {
-    let files = await db.File.findAll();
+const getChildrenData = async (db, folderId, options) => {
 
-    if (!files.map((item) => item.id).includes(folderId)) {
-        files = [];
+    let file = db.File;
+    if (options.filesOnly) {
+        file = file.scope('files');
+    } else if (options.foldersOnly) {
+        file = file.scope('folders');
     }
+
+    let files = await file.findAll();
 
     let data = await Promise.all(files.map(async (thisFile) => {
         const d = await thisFile.getData(db);
     
         if (!d) {
             return {};
-        } else {
-            let thisData = d.toJSON();
-            thisData.isDir = thisFile.isDir;
-            return thisData;
         }
+
+        
+        let thisData = d.toJSON();
+        thisData.isDir = thisFile.isDir;
+        return thisData;
+        
         
     }));
 
@@ -47,15 +53,8 @@ module.exports = (db) => async (req, res) => {
         throw res.boom.badRequest();
     }
     const folderId = parseInt(req.params.folderId, 10);
-    const file = db.File;
 
-    if (req.query.filesOnly) {
-        file.scope('files');
-    } else if (req.query.foldersOnly) {
-        file.scope('folders');
-    }
-
-    const childrenDataP = getChildrenData(db, folderId);
+    const childrenDataP = getChildrenData(db, folderId, req.query);
     const folderFileP = db.File.findOne({
         where: {id: folderId},
         rejectOnEmpty: true
