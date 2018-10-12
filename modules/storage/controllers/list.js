@@ -76,6 +76,11 @@ module.exports = (db) => async (req, res) => {
     }
     const folderId = parseInt(req.params.folderId, 10);
 
+    let file = await db.File.findById(folderId);
+    if(!file) {
+        return res.boom.notFound();
+    }
+
     const childrenDataP = getChildrenData(db, folderId, req.query);
     const folderFileP = db.File.findOne({
         where: {id: folderId},
