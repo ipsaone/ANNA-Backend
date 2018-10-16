@@ -5,16 +5,11 @@ const async = require('async');
 const util = require('util');
 
 const includeOptions = ['previous_data'];
-const sortOptions = [
-    'date_new',
-    'date_old'
-];
 
 const schema = joi.object().keys({
     keyword: joi.string().required(),
     upperFolder: joi.number().integer(),
-    include: joi.array().items(joi.string().valid(includeOptions)),
-    sortBy: joi.array().items(joi.string().valid(sortOptions))
+    include: joi.array().items(joi.string().valid(includeOptions))
 
 });
 

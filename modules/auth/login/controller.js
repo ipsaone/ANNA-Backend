@@ -32,7 +32,6 @@ module.exports = function (db) {
 
         if (validation.error) {
             winston.debug('Bad input', {reqid: req.id});
-
             return res.boom.badRequest(validation.error);
         }
 
