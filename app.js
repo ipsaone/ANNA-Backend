@@ -12,11 +12,8 @@ const config = require('./config/config');
 const winston = require('winston');
 const dir = './logs';
 
-
 require('winston-email');
-
 require('winston/package.json');
-
 require('express-async-errors');
 
 require('dotenv').config();
@@ -61,6 +58,7 @@ const loadApp = (options = {}) => {
     }
 
     winston.configure({transports});
+    morgan.token('id', (req) => req.id.split('-')[0]);
 
     /*
      * Server config
@@ -75,36 +73,30 @@ const loadApp = (options = {}) => {
         });
     }
 
-
     /*
-     * Middleware
+     * Middleware and logging
      */
-
     app.use(boom()); // Error responses
     app.use(helmet()); // Helmet offers different protection middleware
     app.use(require('./middlewares/rate_limit')); // Rate limit
     app.use(bodyParser.urlencoded({extended: true})); // POST parser
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
+    if (options && !options.noLog) {
+        app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
+        app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
+    }
+    app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}));
     app.use(require('./middlewares/cors')); // CORS headers
     app.use(require('./middlewares/session')); // Session management
     app.use(require('./middlewares/auth')); // Auth check
 
     /*
-     * Options
+     * Special options
      */
     app.set('trust proxy', 1); // Trust reverse proxy
     app.options('*', require('./middlewares/cors')); // Pre-flight
-    morgan.token('id', (req) => req.id.split('-')[0]);
-    // Logging
-    if (options && !options.noLog) {
-        app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
-        if (process.env.LOG_TO_CONSOLE) {
-            app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
-        }
-    }
-    app.use(morgan('combined', {stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})}));
-
+    
     /*
      * Routing and error catching
      */
