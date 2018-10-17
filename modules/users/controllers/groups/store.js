@@ -19,7 +19,14 @@ module.exports = (db) => async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const groupsP = policy.filterAddGroups(db, req.body.groupsId, req.session.auth);
+    if (isNaN(parseInt(req.params.groupId, 10))) {
+        throw res.boom.badRequest();
+    }
+    const groupId = parseInt(req.params.groupId, 10);
+
+
+
+    const allowedP = policy.filterAddGroup(db, groupId, userId, req.session.auth);
 
     const user = await db.User.findById(userId);
 
@@ -27,13 +34,13 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest();
     }
 
-    const groups = await groupsP;
+    const allowed = await allowedP;
 
-    if (!groups || groups.length === 0) {
+    if (!allowed) {
         return res.boom.unauthorized();
     }
 
-    await user.addGroups(groups);
+    await user.addGroup(groupId);
     await user.save();
 
     return res.status(204).send();
