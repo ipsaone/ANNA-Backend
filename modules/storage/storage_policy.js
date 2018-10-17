@@ -19,7 +19,7 @@ const storage = require('./repository/storage');
  * @param {INTEGER} userId - The id of the user.
  * @returns {Promise} List all files.
  */
-exports.filterList = (db, folderId, userId) =>
+exports.filterList = async (db, folderId, userId) =>
 
     /** Check if directory has 'read' permission */
     storage.fileHasReadPermission(db, folderId, userId);

@@ -40,7 +40,6 @@ const sendError = (res, err, type) => {
 
     // Build the error and send it
     const builder = res.boom[type];
-
     builder(err.message);
 };
 
@@ -49,10 +48,13 @@ const logError = (err) => {
     /**
      * CONSOLE OUTPUT
      */
+    console.error('Exception received by handler :')
     winston.error('Exception received by handler :');
     if (err instanceof Error) {
+        console.error(err.stack);
         winston.error(err.stack);
     } else {
+        console.error(`Error type : ${err.constructor.name}`);
         winston.error(`Error type : ${err.constructor.name}`);
         const except = new Error();
 

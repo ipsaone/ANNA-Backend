@@ -194,9 +194,9 @@ module.exports = (sequelize, DataTypes) => {
          * @returns {Object} Promise to file data.
          *
          */
-        File.prototype.getData = function (db, offset = 0) {
+        File.prototype.getData = async function (db, offset = 0) {
 
-            return db.Data
+            let data = await db.Data
 
             // Like findOne, but with order + offset
                 .findAll({
@@ -210,16 +210,14 @@ module.exports = (sequelize, DataTypes) => {
                             'DESC'
                         ]
                     ]
-                })
-
-                // FindAll is limited, so there will always be one result (or none -> undefined)
-                .then((data) => {
-                    if (data.length === 0) {
-                        return;
-                    }
-
-                    return data[0];
                 });
+
+            // FindAll is limited, so there will always be one result (or none -> undefined)
+            if (data.length === 0) {
+                return;
+            }
+
+            return data[0];
         };
 
         /**

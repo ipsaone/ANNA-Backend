@@ -151,10 +151,10 @@ Storage.fileHasReadPermission = async (db, fileId, userId) => {
     }
 
     const fileDataP = file.getData(db);
-    const userGroupsP = user.getGroups(db);
+    const userGroupsP = user.getGroups();
     const userGroups = await userGroupsP;
     const fileData = await fileDataP;
-
+    
     if (!fileData || !userGroups) {
         console.error(`No fileData or userGroups for id ${fileId}`);
 

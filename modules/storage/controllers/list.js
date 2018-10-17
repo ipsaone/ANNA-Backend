@@ -11,13 +11,25 @@ const getChildrenData = async (db, folderId, options) => {
         file = file.scope('folders');
     }
 
-    let files = await file.findAll();
+    let files = {};
+    try {
+        files = await file.findAll();
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 
     let data = await Promise.all(files.map(async (thisFile) => {
-        const d = await thisFile.getData(db);
-        if (!d) {
+        try {
+            const d = await thisFile.getData(db);
+            if (!d) {
+                return {};
+            }
+        } catch (err) {
+            console.error(err);
             return {};
         }
+        
 
         
         let thisData = d.toJSON();
@@ -26,23 +38,27 @@ const getChildrenData = async (db, folderId, options) => {
 
         // Find previous data where the file exists
         // Extract file size and type from there (for display only !)
-        let i = 0, prevData = {};
-        while(prevData = await thisFile.getData(db, i)) {
-            if(!prevData) {
-                break;
-            }
+        try {
+            let i = 0, prevData = {};
+            while(prevData = await thisFile.getData(db, i)) {
+                if(!prevData) {
+                    break;
+                }
 
-            if(prevData.exists && prevData.size && prevData.type) {
-                thisData.size = prevData.size;
-                thisData.type = prevData.type;
-            }
+                if(prevData.exists && prevData.size && prevData.type) {
+                    thisData.size = prevData.size;
+                    thisData.type = prevData.type;
+                }
 
-            i++;
+                i++;
 
-            if(i>1e6) {
-                throw new error('Infinite loop while extracting previous data size/type');
-            }
-        };
+                if(i>1e6) {
+                    throw new error('Infinite loop while extracting previous data size/type');
+                }
+            };
+        } catch (err) {
+            console.error(err);
+        }
 
 
         return thisData;
@@ -87,18 +103,16 @@ module.exports = (db) => async (req, res) => {
         rejectOnEmpty: true
     });
 
-    const authorized = policy.filterList(db, folderId, req.session.auth);
-
+    const authorized = await policy.filterList(db, folderId, req.session.auth);
     if (!authorized) {
-        return res.boom.unauthorized();
+        return res.boom.unauthorized("folder list denied");
     }
 
     const folderFile = await folderFileP;
-
-
     const dirTreeP = folderFile.getDirTree(db);
     const folderData = await folderFile.getData(db);
 
+    
     if(!folderData) {
         return res.boom.internal();
     }
