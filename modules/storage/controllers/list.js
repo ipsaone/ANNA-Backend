@@ -20,16 +20,10 @@ const getChildrenData = async (db, folderId, options) => {
     }
 
     let data = await Promise.all(files.map(async (thisFile) => {
-        try {
-            const d = await thisFile.getData(db);
-            if (!d) {
-                return {};
-            }
-        } catch (err) {
-            console.error(err);
+        const d = await thisFile.getData(db);
+        if (!d) {
             return {};
         }
-        
 
         
         let thisData = d.toJSON();
@@ -38,27 +32,23 @@ const getChildrenData = async (db, folderId, options) => {
 
         // Find previous data where the file exists
         // Extract file size and type from there (for display only !)
-        try {
-            let i = 0, prevData = {};
-            while(prevData = await thisFile.getData(db, i)) {
-                if(!prevData) {
-                    break;
-                }
+        let i = 0, prevData = {};
+        while(prevData = await thisFile.getData(db, i)) {
+            if(!prevData) {
+                break;
+            }
 
-                if(prevData.exists && prevData.size && prevData.type) {
-                    thisData.size = prevData.size;
-                    thisData.type = prevData.type;
-                }
+            if(prevData.exists && prevData.size && prevData.type) {
+                thisData.size = prevData.size;
+                thisData.type = prevData.type;
+            }
 
-                i++;
+            i++;
 
-                if(i>1e6) {
-                    throw new error('Infinite loop while extracting previous data size/type');
-                }
-            };
-        } catch (err) {
-            console.error(err);
-        }
+            if(i>1e6) {
+                throw new error('Infinite loop while extracting previous data size/type');
+            }
+        };
 
 
         return thisData;
