@@ -7,7 +7,6 @@
 const mv = require('mv');
 const fs = require('fs');
 const util = require('util');
-const urldecode = require('urldecode');
 
 /**
  * @module file
@@ -99,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
                 fileChanges.name = previousData.name;
             } else {
                 // WHY IS IT URLENCODED ? I DON'T KNOW.
-                fileChanges.name = urldecode(fileChanges.name);
+                fileChanges.name = decodeURIComponent(fileChanges.name);
             }
 
             // Find if creating a right is needed
