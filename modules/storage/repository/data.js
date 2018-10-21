@@ -71,6 +71,6 @@ module.exports.setupPrototype = function (Data, sequelize) {
     Data.prototype.getRights = function (db) {
         // Only one right should exist for each data, no check needed
 
-        return db.Right.findById(this.rightsId);
+        return db.Right.findByPk(this.rightsId);
     };
 };

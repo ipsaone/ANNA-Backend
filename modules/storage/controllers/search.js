@@ -41,7 +41,7 @@ module.exports = (db) => async (req, res) => {
     const filteredData = await filterPromise(matchingData, async.asyncify(async (el) => {
 
         // Find the file corresponding to data
-        const file = await db.File.findById(el.fileId);
+        const file = await db.File.findByPk(el.fileId);
 
         if (!file) {
             return false;

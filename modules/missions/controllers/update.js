@@ -25,7 +25,7 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
-    let mission = await db.Mission.findById(missionId);
+    let mission = await db.Mission.findByPk(missionId);
     try {
         await mission.update(req.body);
     } catch (err) {

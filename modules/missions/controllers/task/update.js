@@ -15,13 +15,13 @@ module.exports = (db) => async function (req, res) {
     const taskId = parseInt(req.params.taskId, 10);
 
 
-    const mission = await db.Mission.findById(missionId);
+    const mission = await db.Mission.findByPk(missionId);
 
     if (!mission) {
         return res.boom.notFound(`No mission with id ${missionId}`);
     }
 
-    const task = await db.Task.findById(taskId);
+    const task = await db.Task.findByPk(taskId);
 
     if (!task) {
         return res.boom.notFound(`No task with id ${taskId}`);

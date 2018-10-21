@@ -9,7 +9,7 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
-    const mission = await db.Mission.findById(missionId);
+    const mission = await db.Mission.findByPk(missionId);
 
     if (!mission) {
         return res.boom.notFound(`No mission with id ${missionId}`);
@@ -22,7 +22,7 @@ module.exports = (db) => async function (req, res) {
     const taskId = parseInt(req.params.taskId, 10);
 
     // Check mission and task are associated
-    const task = await db.Task.findById(taskId);
+    const task = await db.Task.findByPk(taskId);
 
     if (!task.missionId === missionId) {
         return res.boom.badRequest();

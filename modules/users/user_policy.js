@@ -108,7 +108,7 @@ exports.filterDelete = (db, user) => Promise.resolve(user);
  */
 exports.filterAddGroup = async (db, groupId, targetId, userId) => {
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     if (user && await user.isRoot()) {
         return true;
     }
@@ -134,7 +134,7 @@ exports.filterDeleteGroup = async (db, groupId, targetId, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     if (user && await user.isRoot()) {
         return true;
     }

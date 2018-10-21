@@ -66,7 +66,7 @@ test('New post', async t => {
     t.is(res.body.content.replace(/\r?\n?/g, ''), '<p>Lorem ipsum</p>')
 
 
-    let post = await t.context.db.Post.findById(res.body.id);
+    let post = await t.context.db.Post.findByPk(res.body.id);
 
     t.is(post.id, res.body.id);
     t.is(post.title, 'Lorem ipsum');

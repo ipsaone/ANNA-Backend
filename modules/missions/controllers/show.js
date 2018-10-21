@@ -26,7 +26,7 @@ module.exports = (db) => async (req, res) => {
         return req.boom.unauthorized();
     }
 
-    const mission = await db.Mission.findById(missionId, {
+    const mission = await db.Mission.findByPk(missionId, {
         include: [
             'tasks',
             'members'

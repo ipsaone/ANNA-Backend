@@ -9,7 +9,7 @@ module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);
 
     req.body.missionId = missionId;
-    const mission = await db.Mission.findById(missionId);
+    const mission = await db.Mission.findByPk(missionId);
 
     if (!mission) {
         return res.boom.notFound(`No mission with id ${missionId}`);

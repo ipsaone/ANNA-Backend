@@ -17,8 +17,8 @@ module.exports = (db) => async function (req, res) {
     const taskId = parseInt(req.params.taskId, 10);
 
     // Check mission and task are associated
-    const mission = await db.Mission.findById(missionId);
-    const task = await db.Task.findById(taskId);
+    const mission = await db.Mission.findByPk(missionId);
+    const task = await db.Task.findByPk(taskId);
 
     if (!task.missionId === missionId) {
         return res.boom.badRequest();

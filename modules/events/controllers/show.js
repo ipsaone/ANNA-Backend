@@ -23,7 +23,7 @@ module.exports = (db) => async function (req, res) {
     }
     const eventId = parseInt(req.params.eventId, 10);
 
-    let event = await db.Event.findById(eventId, {include: ['registered']});
+    let event = await db.Event.findByPk(eventId, {include: ['registered']});
 
     event = event.toJSON();
 

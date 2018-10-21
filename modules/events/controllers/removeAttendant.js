@@ -23,13 +23,13 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
-    const event = await db.Event.findById(eventId, {include: ['registered']});
+    const event = await db.Event.findByPk(eventId, {include: ['registered']});
 
     if (!event) {
         return res.boom.notFound();
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (!user) {
         return res.boom.notFound('User not found');

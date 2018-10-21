@@ -16,7 +16,7 @@ module.exports = (db) => async function (req, res) {
         throw res.boom.badRequest();
     }
     const groupId = parseInt(req.params.groupId, 10);
-    const group = await db.Group.findById(groupId);
+    const group = await db.Group.findByPk(groupId);
 
     /*
      * To lower case to avoid security problems

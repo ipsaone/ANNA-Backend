@@ -120,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             // Get groups for user and check groupId is legitimate
-            const user = await db.User.findById(fileChanges.ownerId);
+            const user = await db.User.findByPk(fileChanges.ownerId);
 
             if (!user) {
                 throw new Error('Invalid user');
@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
             if (newRight) {
                 right = await db.Right.create(fileChanges);
             } else {
-                const file = await db.File.findById(fileChanges.fileId);
+                const file = await db.File.findByPk(fileChanges.fileId);
                 const fileData = await file.getData(db);
 
                 if (!fileData) {
@@ -237,7 +237,7 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             if (data.dirId !== 1) {
-                const file = await db.File.findById(data.dirId);
+                const file = await db.File.findByPk(data.dirId);
 
                 fileDirTree = await file.getDirTree(db);
             }

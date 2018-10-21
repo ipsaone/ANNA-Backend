@@ -38,7 +38,7 @@ exports.filterShow = () => Promise.resolve(true);
  *
  */
 exports.filterStore = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -59,7 +59,7 @@ exports.filterStore = async (db, userId) => {
  *
  */
 exports.filterUpdate = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -81,7 +81,7 @@ exports.filterUpdate = async (db, userId) => {
  *
  */
 exports.filterDelete = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -96,7 +96,7 @@ exports.filterStoreRegistered = async (db, targetId, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     const userIsAdmin = await user.isRoot();
 
     if (userIsAdmin) {
@@ -112,7 +112,7 @@ exports.filterDeleteRegistered = async (db, targetId, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     const userIsAdmin = await user.isRoot();
 
     if (userIsAdmin) {

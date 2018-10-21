@@ -37,7 +37,7 @@ module.exports = (db) => async (req, res) => {
         throw res.boom.unauthorized();
     }
 
-    const file = await db.File.findById(fileId);
+    const file = await db.File.findByPk(fileId);
     let filePath = '';
     if (req.file) {
         filePath = req.file.path;

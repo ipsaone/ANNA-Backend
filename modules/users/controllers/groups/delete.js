@@ -29,7 +29,7 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     await user.removeGroup(groupId);
 
     return res.status(204).send();

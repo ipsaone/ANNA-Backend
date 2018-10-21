@@ -18,7 +18,7 @@ module.exports = (db) => async function (req, res) {
     }
     const groupId = parseInt(req.params.groupId, 10);
 
-    const group = await db.Group.findById(groupId);
+    const group = await db.Group.findByPk(groupId);
 
     if (!group) {
         throw res.boom.notFound();

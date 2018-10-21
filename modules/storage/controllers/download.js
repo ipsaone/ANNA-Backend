@@ -25,7 +25,7 @@ module.exports = (db) => async (req, res) => {
 
     if (dl) {
         // Find the file in database
-        const file = await db.File.findById(fileId);
+        const file = await db.File.findByPk(fileId);
 
         // Send back the correct response, file or json
         if (!file) {
@@ -68,5 +68,5 @@ module.exports = (db) => async (req, res) => {
         include: ['rights']
     });
 
-    return res.json(data);
+    return res.status(200).json(data);
 };

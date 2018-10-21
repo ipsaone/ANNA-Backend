@@ -28,7 +28,7 @@ module.exports = (db) => async function (req, res) {
 
     const allowedP = policy.filterAddGroup(db, groupId, userId, req.session.auth);
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (!user) {
         return res.boom.badRequest();

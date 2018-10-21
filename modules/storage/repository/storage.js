@@ -104,8 +104,8 @@ Storage.computeSize = function (filePath) {
 };
 
 Storage.fileHasWritePermission = async (db, fileId, userId) => {
-    const fileP = db.File.findById(fileId);
-    const userP = db.User.findById(userId);
+    const fileP = db.File.findByPk(fileId);
+    const userP = db.User.findByPk(userId);
     const file = await fileP;
     const user = await userP;
 
@@ -139,8 +139,8 @@ Storage.fileHasWritePermission = async (db, fileId, userId) => {
 };
 
 Storage.fileHasReadPermission = async (db, fileId, userId) => {
-    const fileP = db.File.findById(fileId);
-    const userP = db.User.findById(userId);
+    const fileP = db.File.findByPk(fileId);
+    const userP = db.User.findByPk(userId);
     const file = await fileP;
     const user = await userP;
 

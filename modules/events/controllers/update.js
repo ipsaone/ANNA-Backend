@@ -49,7 +49,7 @@ module.exports = (db) =>
 
 
         // Update event
-        const event = await db.Event.findById(eventId);
+        const event = await db.Event.findByPk(eventId);
 
         if (!event) {
             return res.boom.notFound();

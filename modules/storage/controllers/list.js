@@ -82,7 +82,7 @@ module.exports = (db) => async (req, res) => {
     }
     const folderId = parseInt(req.params.folderId, 10);
 
-    let file = await db.File.findById(folderId);
+    let file = await db.File.findByPk(folderId);
     if(!file) {
         return res.boom.notFound();
     }

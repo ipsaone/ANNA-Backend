@@ -22,7 +22,7 @@
  * @returns {Promise} The author group if resolved.
  */
 const userIsAuthor = async (db, userId) => {
-    const user = await db.User.findById(userId, {include: ['groups']});
+    const user = await db.User.findByPk(userId, {include: ['groups']});
 
     if (user && user.groups) {
 

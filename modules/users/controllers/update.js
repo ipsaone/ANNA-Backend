@@ -17,7 +17,7 @@ module.exports = (db) => async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     try {
         await user.update(req.body);

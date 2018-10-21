@@ -8,7 +8,7 @@ module.exports = (db) => async (req, res) => {
         return res.boom.badRequest();
     }
     const missionId = parseInt(req.params.missionId, 10);
-    let mission = await db.Mission.findById(missionId);
+    let mission = await db.Mission.findByPk(missionId);
 
     if (isNaN(parseInt(req.params.memberId, 10))) {
         return res.boom.badRequest();
@@ -21,7 +21,7 @@ module.exports = (db) => async (req, res) => {
     }
 
     try {
-        let mission = await db.Mission.findById(missionId);
+        let mission = await db.Mission.findByPk(missionId);
         let data = await mission.addMember(memberId);
 
         return res.status(200).json(data);

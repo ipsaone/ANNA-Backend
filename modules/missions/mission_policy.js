@@ -40,7 +40,7 @@ exports.filterShow = (db) => Promise.resolve(true);
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
 exports.filterStore = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -60,7 +60,7 @@ exports.filterStore = async (db, userId) => {
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
 exports.filterUpdate = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -80,7 +80,7 @@ exports.filterUpdate = async (db, userId) => {
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
 exports.filterDelete = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -97,7 +97,7 @@ exports.filterStoreTask = async (mission, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
         return true;
@@ -111,7 +111,7 @@ exports.filterUpdateTask = async (contents, mission, userId) => {
         return contents;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
         return contents;
@@ -125,7 +125,7 @@ exports.filterDeleteTask = async (mission, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
         return true;
@@ -139,7 +139,7 @@ exports.filterStoreMember = async (mission, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
         return true;
@@ -152,7 +152,7 @@ exports.filterDeleteMember = async (mission, userId) => {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
         return true;
