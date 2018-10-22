@@ -20,12 +20,11 @@ module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
 
     const authorized = policy.filterDelete(db, fileId, req.session.auth);
-
     if (!authorized) {
         throw res.boom.unauthorized();
     }
 
-    await db.Data.destroy({where: {}});
+    await db.Data.destroy({where: {fileId: fileId}});
     await db.File.destroy({where: {id: fileId}});
 
     return res.status(204).send();

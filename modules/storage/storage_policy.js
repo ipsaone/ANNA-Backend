@@ -138,16 +138,17 @@ exports.filterDownloadContents = async (db, fileId, userId) => {
 
 exports.filterDelete = async (db, fileId, userId) => {
 
+    if(fileId == 1) {
+        return false;
+    }
+
     // Check if directory has 'write' permission
-
     const file = await db.File.findByPk(fileId);
-
     if (!file) {
         return false;
     }
 
     const lastData = await file.getData(db);
-
     if (!lastData) {
         console.log(`No data for file #${fileId}`);
     }

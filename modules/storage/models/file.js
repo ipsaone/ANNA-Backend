@@ -205,8 +205,7 @@ module.exports = (sequelize, DataTypes) => {
                     include: ['rights'],
                     order: [
                         [
-                            'createdAt',
-                            'DESC'
+                            'createdAt', 'DESC'
                         ]
                     ]
                 });
