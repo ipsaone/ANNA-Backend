@@ -10,8 +10,10 @@
  * @module mission
  */
 
-const compileMd = () => '';
 const marked = require('marked');
+const compileMd = (mission, options) => {
+    mission.description = marked(mission.markdown);
+};
 
 /**
  * @function exports

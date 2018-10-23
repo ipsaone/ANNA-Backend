@@ -16,9 +16,11 @@ const policy = require('../mission_policy');
 module.exports = (db) => async (req, res) => {
 
     const authorized = await policy.filterStore(db, req.session.auth);
-
     if (!authorized) {
         return res.boom.unauthorized();
+    }
+    if(req.body.description) {
+        return res.boom.badRequest('Description should be compiled from markdown !');
     }
 
 

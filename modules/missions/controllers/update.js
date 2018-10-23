@@ -20,9 +20,11 @@ module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);
 
     const allowed = await policy.filterUpdate(db, req.session.auth);
-
     if (!allowed) {
         return res.boom.unauthorized();
+    }
+    if(req.body.description) {
+        return res.boom.badRequest('Description should be computed from markdown');
     }
 
     let mission = await db.Mission.findByPk(missionId);
