@@ -150,14 +150,12 @@ exports.filterDelete = async (db, fileId, userId) => {
         return false;
     }
 
-    console.log('between');
 
     const lastData = await file.getData(db);
     if (!lastData) {
         console.log(`No data for file #${fileId}`);
     }
 
-    console.log('returning');
 
     return storage.fileHasWritePermission(db, lastData.dirId, userId);
 };
