@@ -26,10 +26,9 @@ module.exports = (db) => async (req, res) => {
     if (dl) {
         // Find the file in database
         const file = await db.File.findByPk(fileId);
-
-        // Send back the correct response, file or json
         if (!file) {
-            return res.boom.notFound();
+            console.log("download failed for file :", fileId);
+            return res.boom.notFound("file not found !");
         }
 
         // Revision parameter, to get an older version

@@ -25,7 +25,6 @@ module.exports = (db) => async (req, res) => {
     }
 
     await db.Data.destroy({where: {fileId: fileId}});
-    await db.File.destroy({where: {id: fileId}});
 
     return res.status(204).send();
 };

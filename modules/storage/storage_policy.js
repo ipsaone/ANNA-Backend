@@ -142,16 +142,22 @@ exports.filterDelete = async (db, fileId, userId) => {
         return false;
     }
 
+    console.log('filtering deletion for file ', fileId);
+
     // Check if directory has 'write' permission
     const file = await db.File.findByPk(fileId);
     if (!file) {
         return false;
     }
 
+    console.log('between');
+
     const lastData = await file.getData(db);
     if (!lastData) {
         console.log(`No data for file #${fileId}`);
     }
+
+    console.log('returning');
 
     return storage.fileHasWritePermission(db, lastData.dirId, userId);
 };
