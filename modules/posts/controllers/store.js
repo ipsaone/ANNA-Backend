@@ -16,10 +16,11 @@ const policy = require('../post_policy');
 
 module.exports = (db) => async function (req, res) {
     const allowed = await policy.filterStore(db, req.session.auth);
-
     if (!allowed) {
         return res.boom.unauthorized();
     }
+
+    req.body.title = req.body.title.trim();
 
     const post = await db.Post.create(req.body);
 
