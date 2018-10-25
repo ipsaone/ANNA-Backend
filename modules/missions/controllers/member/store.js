@@ -15,7 +15,7 @@ module.exports = (db) => async (req, res) => {
     }
     const memberId = parseInt(req.params.memberId, 10);
 
-    const authorized = policy.filterStoreMember(mission, req.session.auth);
+    const authorized = policy.filterStoreMember(db, mission, req.session.auth);
     if(!authorized) {
         return res.boom.unauthorized();
     }

@@ -91,7 +91,7 @@ exports.filterDelete = async (db, userId) => {
 
 exports.filterIndexTasks = () => true;
 exports.filterShowTask = () => true;
-exports.filterStoreTask = async (mission, userId) => {
+exports.filterStoreTask = async (db, mission, userId) => {
 
     if (userId === mission.leaderId) {
         return true;
@@ -105,7 +105,7 @@ exports.filterStoreTask = async (mission, userId) => {
 
     return false;
 };
-exports.filterUpdateTask = async (contents, mission, userId) => {
+exports.filterUpdateTask = async (db, contents, mission, userId) => {
 
     if (userId === mission.leaderId) {
         return contents;
@@ -119,7 +119,7 @@ exports.filterUpdateTask = async (contents, mission, userId) => {
 
     return [];
 };
-exports.filterDeleteTask = async (mission, userId) => {
+exports.filterDeleteTask = async (db, mission, userId) => {
 
     if (userId === mission.leaderId) {
         return true;
@@ -134,7 +134,7 @@ exports.filterDeleteTask = async (mission, userId) => {
     return false;
 };
 
-exports.filterStoreMember = async (mission, userId) => {
+exports.filterStoreMember = async (db, mission, userId) => {
     if (userId === mission.leaderId) {
         return true;
     }
@@ -147,7 +147,7 @@ exports.filterStoreMember = async (mission, userId) => {
 
     return false;
 };
-exports.filterDeleteMember = async (mission, userId) => {
+exports.filterDeleteMember = async (db, mission, userId) => {
     if (userId === mission.leaderId) {
         return true;
     }

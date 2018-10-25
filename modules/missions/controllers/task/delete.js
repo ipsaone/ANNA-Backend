@@ -25,7 +25,7 @@ module.exports = (db) => async function (req, res) {
     }
 
     // Check user has permissions to delete the task
-    const allowed = policy.filterDeleteTask(mission, req.session.auth);
+    const allowed = policy.filterDeleteTask(db, mission, req.session.auth);
 
     if (!allowed) {
         return res.boom.unauthorized();

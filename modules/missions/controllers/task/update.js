@@ -27,7 +27,7 @@ module.exports = (db) => async function (req, res) {
         return res.boom.notFound(`No task with id ${taskId}`);
     }
 
-    const updateContents = await policy.filterUpdateTask(req.body, req.session.auth);
+    const updateContents = await policy.filterUpdateTask(db, req.body, req.session.auth);
 
     await task.update(updateContents);
 
