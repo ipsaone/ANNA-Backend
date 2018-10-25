@@ -29,7 +29,6 @@ module.exports = (db) => async function (req, res) {
 
     // Validate user input
     const validation = joi.validate(req.body, schema);
-
     if (validation.error) {
         return res.boom.badRequest(validation.error);
     }

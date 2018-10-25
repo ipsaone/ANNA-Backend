@@ -21,7 +21,10 @@ module.exports = (db) => async function (req, res, handle) {
     const postId = parseInt(req.params.postId, 10);
 
     let authorized = await policy.filterUpdate(db, req.session.auth);
-
+    if (!authorized) {
+        return res.boom.unauthorized('You must be an author to edit a post');
+    }
+    
     try {
         let post = await db.Post.update(req.body, {where: {id: postId}});
         if (post.length === 1) {
