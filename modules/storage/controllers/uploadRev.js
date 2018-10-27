@@ -8,6 +8,7 @@ const policy = require('../storage_policy');
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
+ * 
  * @todo for security, better escape req.body, like validating against a schema ?
  * @todo handle file contents upload !
  *

@@ -36,9 +36,6 @@ module.exports.setupPrototype = function (Data, sequelize) {
      *
      * @function getPath
      *
-     * @todo fix
-     *
-     *
      * @returns {string} Data path.
      *
      */

@@ -59,7 +59,6 @@ module.exports = (sequelize, DataTypes) => {
          * @param {obj} filePath - The path to the file to add data to.
          * @param {obj} userId - The user identifier.
          *
-         * @todo finish and test
          * @returns {Object} Promise to directory tree.
          *
          */
