@@ -22,15 +22,8 @@ module.exports = (db) =>
  * @returns {Object} Promise.
  *
  */
-    function (req, res, handle) {
+    function (req, res) {
         return policy.filterStore(db, req.body, req.session.auth)
             .then((builder) => db.Log.create(builder))
             .then((log) => res.status(201).json(log))
-            .catch((err) => {
-                if (err instanceof db.Sequelize.ValidationError) {
-                    res.boom.badRequest(err);
-                }
-                throw err;
-            })
-            .catch((err) => handle(err));
     };

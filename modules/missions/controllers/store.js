@@ -28,14 +28,6 @@ module.exports = (db) => async (req, res) => {
         req.body.leaderId = req.session.auth;
     }
 
-    try {
-        const mission = await db.Mission.create(req.body);
-        return res.status(200).json(mission);
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            return res.boom.badRequest(err);
-        }
-
-        return err;
-    }
+    const mission = await db.Mission.create(req.body);
+    return res.status(200).json(mission);
 };

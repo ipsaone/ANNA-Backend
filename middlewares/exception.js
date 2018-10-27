@@ -15,6 +15,7 @@
  */
 
 const winston = require('winston');
+const sequelize = require('sequelize');
 
 /**
  *
@@ -40,7 +41,7 @@ const sendError = (res, err, type) => {
 
     // Build the error and send it
     const builder = res.boom[type];
-    builder(err.message);
+    builder(err);
 };
 
 const logError = (err) => {
@@ -79,10 +80,10 @@ module.exports = (err, req, res, next) => {
 
         sendError(res, err, 'badRequest');
         winston.error('Could not parse entity', {reqid: req.id});
-    } else if (err.constructor.name === 'ValidationError') {
+    } else if (err instanceof sequelize.ValidationError) {
         // Validation error
 
-        sendError(res, err, 'badRequest');
+        sendError(res, err.errors.map(item => item.message), 'badRequest');
         winston.error('Unapropriate request', {reqid: req.id});
     } else {
         // Unknown error

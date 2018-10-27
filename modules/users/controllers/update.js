@@ -19,15 +19,7 @@ module.exports = (db) => async function (req, res) {
 
     const user = await db.User.findByPk(userId);
 
-    try {
-        await user.update(req.body);
+    await user.update(req.body);
 
-        return res.status(200).json(user);
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest(err);
-        }
-
-        throw err;
-    }
+    return res.status(200).json(user);
 };

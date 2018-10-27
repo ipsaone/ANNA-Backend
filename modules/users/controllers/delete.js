@@ -18,15 +18,8 @@ module.exports = (db) => async function (req, res) {
     }
     const userId = parseInt(req.params.userId, 10);
 
-    try {
-        await db.UserGroup.destroy({where: {userId}});
-        await db.User.destroy({where: {id: userId}});
+    await db.UserGroup.destroy({where: {userId}});
+    await db.User.destroy({where: {id: userId}});
 
-        return res.status(204).send();
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest(err);
-        }
-        throw err;
-    }
+    return res.status(204).send();
 };

@@ -24,13 +24,6 @@ module.exports = (db) => async function (req, res) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    try {
-        await group.update(req.body);
-        return res.status(200).json(group);
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest(err);
-        }
-        throw err;
-    }
+    await group.update(req.body);
+    return res.status(200).json(group);
 };

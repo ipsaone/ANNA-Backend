@@ -28,15 +28,8 @@ module.exports = (db) => async function (req, res) {
     }
 
     let mission = await db.Mission.findByPk(missionId);
-    try {
-        await mission.update(req.body);
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            return res.boom.badRequest(err);
-        }
-
-        throw err;
-    }
+    await mission.update(req.body);
+   
     
     return res.status(200).json(mission);
 };

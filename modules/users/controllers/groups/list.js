@@ -29,7 +29,7 @@ module.exports = (db) => function (req, res, handle) {
             if (user) {
                 return res.status(200).json(user.groups);
             }
-            throw res.boom.badRequest();
+            throw res.boom.badRequest('User not found');
 
         })
         .catch((err) => handle(err));

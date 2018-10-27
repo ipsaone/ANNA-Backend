@@ -25,21 +25,13 @@ module.exports = (db) => async function (req, res, handle) {
         return res.boom.unauthorized('You must be an author to edit a post');
     }
     
-    try {
-        let post = await db.Post.update(req.body, {where: {id: postId}});
-        if (post.length === 1) {
-            return res.status(200).json(post[0]);
-        } else if (post.length === 0) {
-            throw res.boom.notFound();
-        } else {
-            console.log(`Multiple posts edited ! (${post.length})`);
-            throw res.boom.badImplementation();
-        }
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            return res.boom.badRequest(err);
-        } else {
-            throw err;
-        }
+    let post = await db.Post.update(req.body, {where: {id: postId}});
+    if (post.length === 1) {
+        return res.status(200).json(post[0]);
+    } else if (post.length === 0) {
+        throw res.boom.notFound();
+    } else {
+        console.log(`Multiple posts edited ! (${post.length})`);
+        throw res.boom.badImplementation();
     }
 };
