@@ -80,11 +80,12 @@ module.exports = (err, req, res, next) => {
 
         sendError(res, err, 'badRequest');
         winston.error('Could not parse entity', {reqid: req.id});
-    } else if (err instanceof sequelize.ValidationError) {
-        // Validation error
-
+    } else if (err instanceof sequelize.ValidationError) { // Validation error
         sendError(res, err.errors.map(item => item.message), 'badRequest');
         winston.error('Unapropriate request', {reqid: req.id});
+    } else if (err instanceof sequelize.ForeignKeyConstraintError) {
+        sendError(res, "Database constraint violation", 'badRequest');
+        winston.error('Foreign key constraint error', {reqid: req.id});
     } else {
         // Unknown error
 
