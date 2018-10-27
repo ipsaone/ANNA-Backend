@@ -13,7 +13,7 @@
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('User ID must be an integer');
     }
     const userId = parseInt(req.params.userId, 10);
 
@@ -25,7 +25,7 @@ module.exports = (db) => async function (req, res) {
         return res.status(200).json(user);
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest();
+            throw res.boom.badRequest(err);
         }
 
         throw err;

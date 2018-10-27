@@ -16,7 +16,7 @@ const policy = require('../post_policy');
 
 module.exports = (db) => async function (req, res, handle) {
     if (isNaN(parseInt(req.params.postId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Post ID must be an integer');
     }
     const postId = parseInt(req.params.postId, 10);
 
@@ -37,7 +37,7 @@ module.exports = (db) => async function (req, res, handle) {
         }
     } catch (err) {
         if (err instanceof db.Sequelize.ValidationError) {
-            return res.boom.badRequest();
+            return res.boom.badRequest(err);
         } else {
             throw err;
         }

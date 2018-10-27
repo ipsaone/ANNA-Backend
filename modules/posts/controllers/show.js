@@ -16,7 +16,7 @@ const policy = require('../post_policy');
 
 module.exports = (db) => function (req, res, handle) {
     if (isNaN(parseInt(req.params.postId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Post ID must be an integer');
     }
     const postId = parseInt(req.params.postId, 10);
 

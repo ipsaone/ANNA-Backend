@@ -24,7 +24,7 @@ module.exports = (db) =>
  */
     function (req, res, handle) {
         if (isNaN(parseInt(req.params.logId, 10))) {
-            throw res.boom.badRequest();
+            throw res.boom.badRequest('Log ID must be an integer');
         }
         const logId = parseInt(req.params.logId, 10);
 

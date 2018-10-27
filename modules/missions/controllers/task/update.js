@@ -4,13 +4,13 @@ const policy = require('../../mission_policy');
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('Mission ID must be an integer');
     }
     const missionId = parseInt(req.params.missionId, 10);
 
 
     if (isNaN(parseInt(req.params.taskId, 10))) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('Task ID must be an integer');
     }
     const taskId = parseInt(req.params.taskId, 10);
 

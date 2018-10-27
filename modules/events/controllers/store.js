@@ -24,7 +24,7 @@ const schema = joi.object().keys({
  */
 module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
-        return res.boom.badRequest();
+        return res.boom.badRequest('Event name must be a string');
     }
 
     // Validate user input
@@ -33,10 +33,14 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest(validation.error);
     }
 
-    /*
+    /* Additional checks :
      * To lower case to avoid security problems
      * (users trying to create 'auTHOrs' group to gain rights)
      */
+    let registered = await event.getRegistered();
+    if(req.body.maxRegistered < 0) {
+        return res.boom.badRequest('Event size cannot be negative')
+    }
     if (req.body.name) {
         req.body.name = req.body.name.toLowerCase();
     }

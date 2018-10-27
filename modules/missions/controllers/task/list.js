@@ -4,7 +4,7 @@
 module.exports = (db) => async function (req, res) {
     // Check mission ID
     if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('Mission ID must be an integer');
     }
     const missionId = parseInt(req.params.missionId, 10);
 

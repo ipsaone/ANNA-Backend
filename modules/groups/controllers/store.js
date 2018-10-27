@@ -14,7 +14,7 @@
 module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
 
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Group name must be an integer');
     }
 
     /*

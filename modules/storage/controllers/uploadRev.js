@@ -17,7 +17,7 @@ const policy = require('../storage_policy');
 
 module.exports = (db) => async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('File ID must be an integer');
     }
     const fileId = parseInt(req.params.fileId, 10);
 

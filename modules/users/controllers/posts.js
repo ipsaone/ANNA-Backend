@@ -18,7 +18,7 @@
 
 module.exports = (db) => function (req, res, handle) {
     if (isNaN(parseInt(req.params.userId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('User ID must be an integer');
     }
     const userId = parseInt(req.params.userId, 10);
 

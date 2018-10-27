@@ -19,7 +19,7 @@ const userPolicy = require(path.join(root, './modules/users/user_policy'));
  */
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('Event ID must be an integer');
     }
     const eventId = parseInt(req.params.eventId, 10);
 

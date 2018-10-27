@@ -78,13 +78,13 @@ const getChildrenData = async (db, folderId, options) => {
 module.exports = (db) => async (req, res) => {
     // Fail if the folder isn't defined
     if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Folder ID must be an integer');
     }
     const folderId = parseInt(req.params.folderId, 10);
 
     let file = await db.File.findByPk(folderId);
     if(!file) {
-        return res.boom.notFound();
+        return res.boom.badRequest('File not found');
     }
 
     const childrenDataP = getChildrenData(db, folderId, req.query);
