@@ -14,8 +14,6 @@ const policy = require('../storage_policy');
  */
 
 module.exports = (db) => async (req, res) => {
-    let start = process.hrtime();
-
 
     /*
      * ATTENTION : NO INPUT VALIDATION !
@@ -44,18 +42,11 @@ module.exports = (db) => async (req, res) => {
     }
 
     let filePath = '';
-
     if (req.file) {
         filePath = req.file.path;
     }
 
     const data = await db.File.createNew(db, req.body, filePath, req.session.auth);
-
-    let end = process.hrtime()
-
-    let start_ns = start[0] * 1000000 + start[1] / 1000
-    let end_ns = end[0] * 1000000 + end[1] / 1000;
-    console.log("Upload processing time : ", end_ns-start_ns, " ns = ", (end_ns-start_ns)/1000, " ms");
 
     return res.status(200).json(data);
 };

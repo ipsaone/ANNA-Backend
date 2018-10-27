@@ -9,36 +9,31 @@ module.exports = (db) => async function (req, res) {
     const eventId = parseInt(req.params.eventId, 10);
 
     let userId = req.session.auth;
-
     if (!isNaN(parseInt(req.params.userId, 10))) {
         userId = parseInt(req.params.userId, 10);
     }
 
 
     const allowed = await policy.filterStoreRegistered(db, userId, req.session.auth);
-
     if (!allowed) {
         return res.boom.unauthorized();
     }
 
     const event = await db.Event.findByPk(eventId);
-
     if (!event) {
         return res.boom.notFound('Event not found');
     }
 
     const user = await db.User.findByPk(userId);
-
     if (!user) {
         return res.boom.notFound('User not found');
     }
 
     let registered = await event.getRegistered();
-
     if(registered.length == event.maxRegistered) {
         return res.boom.unauthorized('Event is full');
     }
-    await event.addRegistered(userId);
 
+    await event.addRegistered(userId);
     return res.status(201).json(event);
 };
