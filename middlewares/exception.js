@@ -71,24 +71,23 @@ module.exports = (err, req, res, next) => {
     // Check a response has not been half-sent
     if (res.headersSent) {
         winston.debug('Hearders already sent', {reqid: req.id});
-
         return next(err);
     }
 
-    if (typeof err.type && err.type === 'entity.parse.failed') {
-        // Bad JSON was sent
-
+    // Sending an error is possible
+    if (typeof err.type && err.type === 'entity.parse.failed') { // Bad JSON was sent
         sendError(res, err, 'badRequest');
         winston.error('Could not parse entity', {reqid: req.id});
+
     } else if (err instanceof sequelize.ValidationError) { // Validation error
         sendError(res, err.errors.map(item => item.message), 'badRequest');
         winston.error('Unapropriate request', {reqid: req.id});
+
     } else if (err instanceof sequelize.ForeignKeyConstraintError) {
         sendError(res, "Database constraint violation", 'badRequest');
         winston.error('Foreign key constraint error', {reqid: req.id});
-    } else {
-        // Unknown error
 
+    } else { // Unknown error
         sendError(res, err, 'badImplementation');
         logError(err);
 

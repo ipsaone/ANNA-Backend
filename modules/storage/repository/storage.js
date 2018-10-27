@@ -100,7 +100,7 @@ Storage.computeType = function async (filePath) {
 
 Storage.computeSize = async function (filePath) {
     const funct = util.promisify(fs.stat);
-    let stat = await funct(filePath)=;
+    let stat = await funct(filePath);
     return stat.size;
 };
 
