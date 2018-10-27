@@ -52,22 +52,20 @@ const userIsAuthor = async (db, userId) => {
  *
  * @returns {Promise} An array containing all published posts if resolved.
  */
-exports.filterIndex = (db, posts, userId) =>
+exports.filterIndex = async (db, posts, userId) => {
 
     // Only show drafts if user is an author
-    userIsAuthor(db, userId)
-        .then((isAuthor) => {
-            if (isAuthor) {
-                return posts;
-            }
+    let isAuthor = await userIsAuthor(db, userId);
+    if (isAuthor) {
+        return posts;
+    }
 
-            if (Array.isArray(posts)) {
-                return posts.filter((post) => post.published);
-            }
+    if (Array.isArray(posts)) {
+        return posts.filter((post) => post.published);
+    }
 
-            return [];
-
-        });
+    return [];
+}
 
 /**
  * Gets one post.

@@ -98,9 +98,10 @@ Storage.computeType = function async (filePath) {
  *
  */
 
-Storage.computeSize = function (filePath) {
+Storage.computeSize = async function (filePath) {
     const funct = util.promisify(fs.stat);
-    return funct(filePath).then((stat) => stat.size);
+    let stat = await funct(filePath)=;
+    return stat.size;
 };
 
 Storage.fileHasWritePermission = async (db, fileId, userId) => {

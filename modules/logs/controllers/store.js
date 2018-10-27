@@ -22,8 +22,8 @@ module.exports = (db) =>
  * @returns {Object} Promise.
  *
  */
-    function (req, res) {
-        return policy.filterStore(db, req.body, req.session.auth)
-            .then((builder) => db.Log.create(builder))
-            .then((log) => res.status(201).json(log))
+    async function (req, res) {
+        let builder = policy.filterStore(db, req.body, req.session.auth)
+        await db.Log.create(builder);
+        return res.status(201).json(log);
     };

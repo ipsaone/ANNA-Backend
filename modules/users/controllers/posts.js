@@ -16,7 +16,7 @@
  *
  */
 
-module.exports = (db) => function (req, res, handle) {
+module.exports = (db) => async function (req, res, handle) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         throw res.boom.badRequest('User ID must be an integer');
     }
@@ -32,7 +32,6 @@ module.exports = (db) => function (req, res, handle) {
         }
     }
 
-    return posts.findAll({where: {authorId: userId}})
-        .then((response) => res.status(200).json(response))
-        .catch((err) => handle(err));
+    let response = await posts.findAll({where: {authorId: userId}});
+    return res.status(200).json(response);
 };

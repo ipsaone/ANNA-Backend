@@ -20,7 +20,7 @@ module.exports = (db) => async (req, res) => {
         return res.boom.unauthorized();
     }
     if(req.body.description) {
-        return res.boom.badRequest('Description should be compiled from markdown !');
+        return res.boom.badRequest('Description should be compiled from markdown');
     }
 
 
