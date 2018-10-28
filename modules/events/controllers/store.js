@@ -33,16 +33,9 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest(validation.error);
     }
 
-    /* Additional checks :
-     * To lower case to avoid security problems
-     * (users trying to create 'auTHOrs' group to gain rights)
-     */
-    let registered = await event.getRegistered();
+    // Additional checks
     if(req.body.maxRegistered < 0) {
         return res.boom.badRequest('Event size cannot be negative')
-    }
-    if (req.body.name) {
-        req.body.name = req.body.name.toLowerCase();
     }
 
 

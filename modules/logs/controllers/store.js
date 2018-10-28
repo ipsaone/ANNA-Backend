@@ -23,7 +23,11 @@ module.exports = (db) =>
  *
  */
     async function (req, res) {
-        let builder = policy.filterStore(db, req.body, req.session.auth)
-        await db.Log.create(builder);
+        let authorized = policy.filterStore(req.body, req.session.auth);
+        if(!authorized) {
+            return res.boom.unauthorized();
+        }
+
+        await db.Log.create(req.body);
         return res.status(201).json(log);
     };

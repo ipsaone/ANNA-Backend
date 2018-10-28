@@ -20,7 +20,12 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
-    req.body.title = req.body.title.trim();
+    if(typeof req.body.title == 'string') {
+        req.body.title = req.body.title.trim();
+    } else {
+        return res.boom.badRequest('Title must be a string');
+    }
+    
 
     const post = await db.Post.create(req.body);
 

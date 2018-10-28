@@ -34,7 +34,7 @@ module.exports = (db) =>
             return res.boom.unauthorized();
         }
 
-        const log = await db.Log.findById(logId);
+        const log = await db.Log.findByPk(logId);
 
         await log.update(builder);
 

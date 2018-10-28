@@ -58,9 +58,6 @@ module.exports = (db) =>
         if(req.body.maxRegistered < registered.length) {
             return res.boom.badRequest('Event size cannot be reduced (too many registered users)')
         }
-        if (req.body.name) {
-            req.body.name = req.body.name.toLowerCase();
-        }
 
 
 
