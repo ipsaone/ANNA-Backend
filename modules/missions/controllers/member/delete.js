@@ -19,14 +19,8 @@ module.exports = (db) => async (req, res) => {
         return res.boom.unauthorized();
     }
 
-    try {
-        let data = await mission.removeMember(memberId);
+    let data = await mission.removeMember(memberId);
 
-        return res.status(200).json(data);
-        
-        
-    } catch (err) {
-        return err;
-    }
+    return res.status(200).json(data);
 
 };

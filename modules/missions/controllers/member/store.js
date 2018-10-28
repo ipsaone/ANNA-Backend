@@ -20,15 +20,11 @@ module.exports = (db) => async (req, res) => {
         return res.boom.unauthorized();
     }
 
-    try {
-        let mission = await db.Mission.findByPk(missionId);
-        let data = await mission.addMember(memberId);
+    let mission = await db.Mission.findByPk(missionId);
+    let data = await mission.addMember(memberId);
 
-        return res.status(200).json(data);
+    return res.status(200).json(data);
         
-        
-    } catch (err) {
-        return err;
-    }
+       
 
 };
