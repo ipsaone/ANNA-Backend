@@ -20,9 +20,7 @@ module.exports = (db) => async (req, res) => {
         return res.boom.unauthorized();
     }
 
-    let mission = await db.Mission.findByPk(missionId);
     let data = await mission.addMember(memberId);
-
     return res.status(200).json(data);
         
        
