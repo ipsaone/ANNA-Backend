@@ -84,9 +84,12 @@ module.exports = (err, req, res, next) => {
         winston.error('Unapropriate request', {reqid: req.id});
 
     } else if (err instanceof sequelize.ForeignKeyConstraintError) {
-        sendError(res, "Database constraint violation", 'badRequest');
-        console.warn("DB violation : ", err);
-        winston.error('Foreign key constraint error', {reqid: req.id});
+        let message = 'Foreign key constraint error';
+        if(err.original.errno == 1451) {
+            message += ' (critical objects still exist)';
+        }
+        sendError(res, message, 'badRequest');
+        winston.error(message, {reqid: req.id});
 
 
     } else { // Unknown error
