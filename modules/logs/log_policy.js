@@ -84,7 +84,7 @@ exports.filterStore = async (log, userId) => {
  *
  * @returns {boolean} Only root and the author of the log can update a log.
  */
-exports.filterUpdate = async (db, builder, logId, userId) => {
+exports.filterUpdate = async (db, logId, userId) => {
     const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {

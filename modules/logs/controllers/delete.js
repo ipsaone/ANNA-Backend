@@ -29,6 +29,7 @@ module.exports = (db) =>
         const logId = parseInt(req.params.logId, 10);
 
         let authorized = await policy.filterDelete(db, req.session.auth);
+        
         if(!authorized) {
             return res.boom.unauthorized();
         }
@@ -37,7 +38,7 @@ module.exports = (db) =>
         if (data === 1) {
             return res.status(204).json({});
         } else if (data === 0) {
-            throw res.boom.notFound();
+            throw res.boom.badRequest("Log not found");
         } else {
             throw res.boom.badImplementation('Too many rows deleted !');
         }

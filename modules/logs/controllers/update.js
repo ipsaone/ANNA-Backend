@@ -28,9 +28,8 @@ module.exports = (db) =>
         }
         const logId = parseInt(req.params.logId, 10);
 
-        const builder = await policy.filterUpdate(db, req.body, logId, req.session.auth);
-
-        if (!builder || Object.keys(builder).length === 0) {
+        const allowed = await policy.filterUpdate(db,logId, req.session.auth);
+        if (!allowed) {
             return res.boom.unauthorized();
         }
 

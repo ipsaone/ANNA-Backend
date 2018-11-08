@@ -2,6 +2,8 @@
 
 const policy = require('../../mission_policy');
 
+
+
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.missionId, 10))) {
         return res.boom.badRequest('Mission ID must be an integer');

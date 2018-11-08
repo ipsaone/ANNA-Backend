@@ -1,6 +1,17 @@
 'use strict';
 
+const joi = require('joi');
 const policy = require('../mission_policy');
+
+const schema = joi.object().keys({
+    name: joi.string(),
+    markdown: joi.string(),
+    description: joi.any().forbidden(),
+    budgetAssigned: joi.number(),
+    budgetUsed: joi.number(),
+    groupId: joi.number().integer(),
+    leaderId: joi.number().integer()
+});
 
 /**
  *
@@ -22,9 +33,6 @@ module.exports = (db) => async function (req, res) {
     const allowed = await policy.filterUpdate(db, req.session.auth);
     if (!allowed) {
         return res.boom.unauthorized();
-    }
-    if(req.body.description) {
-        return res.boom.badRequest('Description should be computed from markdown');
     }
 
     let mission = await db.Mission.findByPk(missionId);

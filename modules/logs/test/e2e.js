@@ -21,12 +21,17 @@ test.beforeEach(async t => {
     t.context.db = db;
     t.context.request = request;
 
+    t.context
 
     t.context.user = await db.User.create({
         username: 'login_test',
         password: 'password_test',
         email: 'test@test.com'
     })
+    t.context.group = await db.Group.create({
+        name: "root"
+    });
+    await t.context.user.addGroup(t.context.group.id);
 
     let res = await request.post('/auth/login').send({
         username: 'login_test',
