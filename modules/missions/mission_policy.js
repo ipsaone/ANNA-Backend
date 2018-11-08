@@ -98,7 +98,6 @@ exports.filterStoreTask = async (db, mission, userId) => {
     }
 
     const user = await db.User.findByPk(userId);
-
     if (await user.isRoot()) {
         return true;
     }

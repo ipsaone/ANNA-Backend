@@ -80,6 +80,11 @@ module.exports = (sequelize, DataTypes) => {
                 fileChanges.groupId = parseInt(fileChanges.groupId, 10);
             }
 
+            // self-move check
+            if(this.isDir && fileChanges.dirId && fileChanges.dirId == this.id) {
+                throw new Error('Cannot move folder inside itself');
+            }
+
             // Check isDir
             if (fileChanges.isDir === 'true' || fileChanges.isDir === true) {
                 fileChanges.isDir = true;

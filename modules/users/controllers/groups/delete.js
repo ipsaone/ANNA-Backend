@@ -23,7 +23,7 @@ module.exports = (db) => async function (req, res) {
         throw res.boom.badRequest('Group ID must be an integer');
     }
     const groupId = parseInt(req.params.groupId, 10);
-
+    
     const allowed = await policy.filterDeleteGroup(db, req.body.groupId, userId, req.session.auth);
     if (!allowed) {
         return res.boom.unauthorized();
