@@ -85,7 +85,9 @@ module.exports = (err, req, res, next) => {
 
     } else if (err instanceof sequelize.ForeignKeyConstraintError) {
         sendError(res, "Database constraint violation", 'badRequest');
+        console.warn("DB violation : ", err);
         winston.error('Foreign key constraint error', {reqid: req.id});
+
 
     } else { // Unknown error
         sendError(res, err, 'badImplementation');
