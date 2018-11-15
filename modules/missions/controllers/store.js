@@ -5,8 +5,8 @@ const policy = require('../mission_policy');
 
 
 const schema = joi.object().keys({
-    name: joi.string(),
-    markdown: joi.string(),
+    name: joi.string().min(3),
+    markdown: joi.string().min(5),
     description: joi.any().forbidden(),
     budgetAssigned: joi.number(),
     budgetUsed: joi.number(),
@@ -38,9 +38,13 @@ module.exports = (db) => async (req, res) => {
         return res.boom.badRequest(validation.error);
     }
 
-
     if (typeof req.body.leaderId === 'undefined') {
         req.body.leaderId = req.session.auth;
+    }
+
+    let allowed = policy.filterStore(db, req.session.id);
+    if(!allowed) {
+        return res.boom.unauthorized();
     }
 
     const mission = await db.Mission.create(req.body);

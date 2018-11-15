@@ -57,7 +57,7 @@ test.beforeEach(async t => {
 });
 
 test('Create mission (root)', async (t) => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -88,10 +88,10 @@ test('Create mission (not root)', async (t) => {
 });
 
 test('Create mission (no name)', async (t) => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
-            name: "  ",
+            name: "",
             markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
@@ -99,26 +99,41 @@ test('Create mission (no name)', async (t) => {
             leaderId: t.context.user.id
         });
 
-    t.is(res.status, 401);
+    t.is(res.status, 400);
 });
 
-test('Create mission (no markdown)', async (t) => {
-    await t.context.user.addGroup(t.context.group.id);
+test('Create mission (blank name)', async (t) => {
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
-            name: "name",
-            markdown: "  ",
+            name: "     ",
+            markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
             groupId: t.context.group.id,
             leaderId: t.context.user.id
         });
 
-    t.is(res.status, 401);
+    t.is(res.status, 400);
+});
+
+test('Create mission (no markdown)', async (t) => {
+    await t.context.user.addGroup(t.context.group);
+    let res = await t.context.request.post('/missions')
+        .send({
+            name: "name",
+            markdown: "",
+            budgetAssigned: 100,
+            budgetUsed: 40,
+            groupId: t.context.group.id,
+            leaderId: t.context.user.id
+        });
+
+    t.is(res.status, 400);
 });
 
 test('Create mission (negative budgetAssigned)', async (t) => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "name",
@@ -134,7 +149,7 @@ test('Create mission (negative budgetAssigned)', async (t) => {
 
 
 test('Create mission (negative budgetUsed)', async (t) => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "name",
@@ -150,7 +165,7 @@ test('Create mission (negative budgetUsed)', async (t) => {
 
 
 test('Edit mission', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -173,7 +188,7 @@ test('Edit mission', async t => {
 });
 
 test('Edit mission (no name)', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "name",
@@ -217,7 +232,7 @@ test('Edit mission (not root & not leader)' , async t => {
 });
 
 test('Edit mission (no markdown)', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -245,7 +260,7 @@ test('Edit mission (no markdown)', async t => {
 
 
 test('Edit mission (negative budgetAssigned)', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -272,7 +287,7 @@ test('Edit mission (negative budgetAssigned)', async t => {
 });
 
 test('Edit mission (negative budgetUsed)', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -299,7 +314,7 @@ test('Edit mission (negative budgetUsed)', async t => {
 });
 
 test('List missions', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -328,7 +343,7 @@ test('List missions', async t => {
 });
 
 test('Mission details', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
@@ -346,7 +361,7 @@ test('Mission details', async t => {
 });
 
 test('Delete mission', async t => {
-    await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group);
     let res = await t.context.request.post('/missions')
         .send({
             name: "test",
