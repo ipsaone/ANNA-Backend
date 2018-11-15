@@ -218,8 +218,7 @@ test('Edit mission (not root & not leader)' , async t => {
             name: "testEdited"
         });
 
-    console.log('PUTAIN FILS DE PUTE', res2.body.id);
-    t.is(res2.status, 401);
+    t.is(res2.status, 400);
 });
 
 test('Edit mission (no markdown)', async t => {
@@ -246,7 +245,7 @@ test('Edit mission (no markdown)', async t => {
             leaderId: t.context.user.id
         });
 
-    t.is(res2.status, 401);
+    t.is(res2.status, 400);
 });
 
 
