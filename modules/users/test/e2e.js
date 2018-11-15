@@ -21,6 +21,10 @@ test.beforeEach(async t => {
     t.context.db = db;
     t.context.request = request;
 
+    t.context.group = await db.Group.create({
+        name: "root"
+    });
+
 
     t.context.user = await db.User.create({
         username: 'login_test',
@@ -62,7 +66,7 @@ test('Single', async t => {
         email: 'someEmail@mail.com'
     })
 
-    let res = await t.context.request.get('/users/'+user.id) 
+    let res = await t.context.request.get('/users/'+user.id)
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/-3')
@@ -75,13 +79,15 @@ test('Single', async t => {
 });
 
 test('Add, edit and remove user', async t => {
-    let res = await t.context.request.post('/users/')
+    await t.context.user.addGroup(t.context.group);
+    //console.log('ma bite', t.context.group.id);
+    let res = await t.context.request.post('/users')
         .send({
             username: 'someUser',
             password: 'somePassword',
             email: 'someEmail@mail.com'
         });
-
+    //console.log('respoonse', res);
     t.is(res.status, 201);
     t.is(res.body.username, 'someUser');
 
@@ -94,8 +100,8 @@ test('Add, edit and remove user', async t => {
             username: 'testEdited'
         });
     t.is(res5.status, 200);
-    t.is(res5.body.username, "testEdited") 
-    
+    t.is(res5.body.username, "testEdited")
+
     let res6 = await t.context.request.get('/users/'+res.body.id);
     t.is(res6.status, 200);
     t.is(res6.body.username, "testEdited");

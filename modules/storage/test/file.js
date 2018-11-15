@@ -39,13 +39,13 @@ test.beforeEach(async t => {
     t.is(res.status, 200)
 })
 
-test.skip('Add data', async (t) => {
+test('Add data', async (t) => {
 
     const repo = require('../repository');
 
     let sizeP = repo.computeSize(__filename);
     let typeP = repo.computeType(__filename);
-    
+
     let size = await sizeP;
     t.is(size, fs.statSync(__filename).size);
 
