@@ -126,7 +126,7 @@ exports.filterDelete = async (db, targetId, userId) => {
         return false;
     }
 
-    let user = db.User.findByPk(userId);
+    let user = await db.User.findByPk(userId);
     let isRoot = await user.isRoot();
     if (!isRoot) {
         return false;
