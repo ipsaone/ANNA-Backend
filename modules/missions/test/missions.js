@@ -137,7 +137,7 @@ test('Create mission (negative budgetAssigned)', async (t) => {
             leaderId: t.context.user.id
         });
 
-    t.is(res.status, 401);
+    t.is(res.status, 400);
 });
 
 
@@ -153,7 +153,7 @@ test('Create mission (negative budgetUsed)', async (t) => {
             leaderId: t.context.user.id
         });
 
-    t.is(res.status, 401);
+    t.is(res.status, 400);
 });
 
 
@@ -182,25 +182,21 @@ test('Edit mission', async t => {
 
 test('Edit mission (no name)', async t => {
     await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "name",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
+    let mission = await t.context.db.Mission.create({
+        name: "name",
+        markdown: "# TEST",
+        budgetAssigned: 100,
+        budgetUsed: 40,
+        groupId: t.context.group.id,
+        leaderId: t.context.user.id
+    });
 
-    t.is(res.status, 200);
-
-    let res2 = await t.context.request.put('/missions/'+res.body.id)
+    let res2 = await t.context.request.put('/missions/'+mission.id)
         .send({
             name: "  "
         });
 
     t.is(res2.status, 400);
-    t.is(res2.body.name, 'testEdited');
 });
 
 test('Edit mission (not root & not leader)' , async t => {
@@ -218,7 +214,7 @@ test('Edit mission (not root & not leader)' , async t => {
             name: "testEdited"
         });
 
-    t.is(res2.status, 400);
+    t.is(res2.status, 401);
 });
 
 test('Edit mission (no markdown)', async t => {
@@ -273,7 +269,7 @@ test('Edit mission (negative budgetAssigned)', async t => {
             leaderId: t.context.user.id
         });
 
-    t.is(res2.status, 401);
+    t.is(res2.status, 400);
 });
 
 test('Edit mission (negative budgetUsed)', async t => {
@@ -300,7 +296,7 @@ test('Edit mission (negative budgetUsed)', async t => {
             leaderId: t.context.user.id
         });
 
-    t.is(res2.status, 401);
+    t.is(res2.status, 400);
 });
 
 test('List missions', async t => {
