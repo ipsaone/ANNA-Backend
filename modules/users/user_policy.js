@@ -89,7 +89,7 @@ exports.filterStore = (db, user) => async (db, userId) => {
     }
     
     return true;
-};;
+};
 
 /**
  * Filters users who can edit users.
