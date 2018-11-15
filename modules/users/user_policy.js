@@ -81,7 +81,35 @@ exports.filterShow = (db, us, userId) => Promise.resolve(us)
  *
  * @returns {Object} Returns all users.
  */
-exports.filterStore = (db, user) => Promise.resolve(user);
+exports.filterStore = (db, user) => async (db, userId) => {
+    let user = db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+    if (!isRoot) {
+        return false;
+    }
+    
+    return true;
+};;
+
+/**
+ * Filters users who can edit users.
+ *
+ * @function filterUpdate
+ *
+ * @param {obj} db - The database.
+ * @param {Object} user - A user.
+ *
+ * @returns {Object} Returns all users.
+ */
+exports.filterUpdate = (db, targetId, userId) => async (db, targetId, userId) => {
+    let user = db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+    if (!isRoot) {
+        return false;
+    }
+    
+    return true;
+};;
 
 /**
  * Filters users who can delete users.
@@ -93,7 +121,19 @@ exports.filterStore = (db, user) => Promise.resolve(user);
  *
  * @returns {Object} Returns all users.
  */
-exports.filterDelete = (db, user) => Promise.resolve(user);
+exports.filterDelete = async (db, targetId, userId) => {
+    if (targetId == userId || targetId == 1) {
+        return false;
+    }
+
+    let user = db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+    if (!isRoot) {
+        return false;
+    }
+
+    return true;
+};
 
 /**
  * Filters users who can create groups.

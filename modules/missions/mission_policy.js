@@ -112,6 +112,7 @@ exports.filterUpdateTask = async (db, contents, mission, userId) => {
 
     const user = await db.User.findByPk(userId);
 
+    
     if (await user.isRoot()) {
         return contents;
     }

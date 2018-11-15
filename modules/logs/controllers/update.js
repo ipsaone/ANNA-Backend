@@ -28,14 +28,14 @@ module.exports = (db) =>
         }
         const logId = parseInt(req.params.logId, 10);
 
-        const allowed = await policy.filterUpdate(db,logId, req.session.auth);
+        const allowed = await policy.filterUpdate(db, logId, req.session.auth);
         if (!allowed) {
             return res.boom.unauthorized();
         }
 
         const log = await db.Log.findByPk(logId);
 
-        await log.update(builder);
+        await log.update(req.body);
 
         return res.status(202).json(log);
     };

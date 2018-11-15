@@ -47,6 +47,12 @@ test.beforeEach(async t => {
         name: "root"
     });
 
+    t.context.user2 = await db.User.create({
+        username: 'login_test8',
+        password: 'password_test2',
+        email: 'teqfdgsdfgst2@test.com'
+    })
+
 
 });
 

@@ -46,9 +46,10 @@ module.exports = (db) => async (req, res) => {
 
     try {
         let data = await file.addData(db, req.body, filePath, req.session.auth);
+        return res.status(200).json(data);
     } catch (e) {
         return res.boom.badRequest(e);
     }
 
-    return res.status(200).json(data);
+    
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 const joi = require('joi');
+const policy = require('../user_policy');
 
 const schema = joi.object().keys({
     name: joi.string().min(4),
@@ -25,6 +26,11 @@ module.exports = (db) => async function (req, res) {
     const validation = joi.validate(req.body, schema);
     if (validation.error) {
         return res.boom.badRequest(validation.error);
+    }
+
+    let allowed = policy.filterStore(db, req.session.auth)
+    if (!allowed) {
+        return res.boom.unauthorized();
     }
 
     const user = await db.User.create(req.body);
