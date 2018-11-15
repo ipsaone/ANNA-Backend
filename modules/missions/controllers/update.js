@@ -4,8 +4,8 @@ const joi = require('joi');
 const policy = require('../mission_policy');
 
 const schema = joi.object().keys({
-    name: joi.string(),
-    markdown: joi.string(),
+    name: joi.string().min(3),
+    markdown: joi.string().min(5),
     description: joi.any().forbidden(),
     budgetAssigned: joi.number(),
     budgetUsed: joi.number(),
@@ -29,6 +29,12 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest('Mission ID must be an integer');
     }
     const missionId = parseInt(req.params.missionId, 10);
+
+    // Validate user input
+    const validation = joi.validate(req.body, schema);
+    if (validation.error) {
+        return res.boom.badRequest(validation.error);
+    }
 
     const allowed = await policy.filterUpdate(db, req.session.auth);
     if (!allowed) {
