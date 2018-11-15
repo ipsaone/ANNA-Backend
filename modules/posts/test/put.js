@@ -56,7 +56,7 @@ test('Update', async t => {
 
     t.is(res.status, 200);
 
-    let post2 = await t.context.db.Post.findById(post.id)
+    let post2 = await t.context.db.Post.findByPk(post.id)
            
     t.is(post2.title, 'Edited title');
     t.false(post2.published)

@@ -1,6 +1,18 @@
 'use strict';
 
+const joi = require('joi');
 const policy = require('../mission_policy');
+
+
+const schema = joi.object().keys({
+    name: joi.string().trim(true).min(3),
+    markdown: joi.string().trim(true).min(5),
+    description: joi.any().forbidden(),
+    budgetAssigned: joi.number().positive(),
+    budgetUsed: joi.number().positive(),
+    groupId: joi.number().integer().positive(),
+    leaderId: joi.number().integer().positive().optional()
+});
 
 /**
  *
@@ -15,27 +27,26 @@ const policy = require('../mission_policy');
 
 module.exports = (db) => async (req, res) => {
 
-    const authorized = await policy.filterStore(req.session.auth);
-
+    const authorized = await policy.filterStore(db, req.session.auth);
     if (!authorized) {
         return res.boom.unauthorized();
     }
 
+    // Validate user input
+    const validation = joi.validate(req.body, schema);
+    if (validation.error) {
+        return res.boom.badRequest(validation.error);
+    }
 
     if (typeof req.body.leaderId === 'undefined') {
         req.body.leaderId = req.session.auth;
     }
 
-    try {
-        const mission = await db.Mission.create(req.body);
-
-
-        return res.status(200).json(mission);
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            return res.boom.badRequest();
-        }
-
-        return err;
+    let allowed = policy.filterStore(db, req.session.id);
+    if(!allowed) {
+        return res.boom.unauthorized();
     }
+
+    const mission = await db.Mission.create(req.body);
+    return res.status(200).json(mission);
 };

@@ -19,7 +19,7 @@ const db = require(path.join(root, './modules'));
  * @function filterIndex
  * @returns {Object} Returns all missions.
  */
-exports.filterIndex = () => Promise.resolve(true);
+exports.filterIndex = (db) => Promise.resolve(true);
 
 /**
  * Gets one mission.
@@ -27,7 +27,7 @@ exports.filterIndex = () => Promise.resolve(true);
  * @function filterShow
  * @returns {Object} Returns one mission.
  */
-exports.filterShow = () => Promise.resolve(true);
+exports.filterShow = (db) => Promise.resolve(true);
 
 /**
  * Filters users who can create a mission.
@@ -39,8 +39,8 @@ exports.filterShow = () => Promise.resolve(true);
  *
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
-exports.filterStore = async (userId) => {
-    const user = await db.User.findById(userId);
+exports.filterStore = async (db, userId) => {
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -59,8 +59,8 @@ exports.filterStore = async (userId) => {
  *
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
-exports.filterUpdate = async (userId) => {
-    const user = await db.User.findById(userId);
+exports.filterUpdate = async (db, userId) => {
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -79,8 +79,8 @@ exports.filterUpdate = async (userId) => {
  *
  * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
  */
-exports.filterDelete = async (userId) => {
-    const user = await db.User.findById(userId);
+exports.filterDelete = async (db, userId) => {
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -91,45 +91,72 @@ exports.filterDelete = async (userId) => {
 
 exports.filterIndexTasks = () => true;
 exports.filterShowTask = () => true;
-exports.filterStoreTask = async (contents, mission, userId) => {
+exports.filterStoreTask = async (db, mission, userId) => {
+
+    if (userId === mission.leaderId) {
+        return true;
+    }
+
+    const user = await db.User.findByPk(userId);
+    if (await user.isRoot()) {
+        return true;
+    }
+
+    return false;
+};
+exports.filterUpdateTask = async (db, contents, mission, userId) => {
 
     if (userId === mission.leaderId) {
         return contents;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
+    
     if (await user.isRoot()) {
         return contents;
     }
 
     return [];
 };
-exports.filterUpdateTask = async (contents, mission, userId) => {
+exports.filterDeleteTask = async (db, mission, userId) => {
 
     if (userId === mission.leaderId) {
-        return contents;
+        return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
-        return contents;
+        return true;
     }
 
-    return [];
+    return false;
 };
-exports.filterDeleteTask = async (contents, mission, userId) => {
 
+exports.filterStoreMember = async (db, mission, userId) => {
     if (userId === mission.leaderId) {
-        return contents;
+        return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (await user.isRoot()) {
-        return contents;
+        return true;
     }
 
-    return [];
+    return false;
+};
+exports.filterDeleteMember = async (db, mission, userId) => {
+    if (userId === mission.leaderId) {
+        return true;
+    }
+
+    const user = await db.User.findByPk(userId);
+
+    if (await user.isRoot()) {
+        return true;
+    }
+
+    return false;
 };

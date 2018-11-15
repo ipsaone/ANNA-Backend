@@ -15,7 +15,7 @@ const policy = require('../storage_policy');
 
 module.exports = (db) => async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('File ID must be an integer');
     }
     const fileId = parseInt(req.params.fileId, 10);
 
@@ -25,11 +25,10 @@ module.exports = (db) => async (req, res) => {
 
     if (dl) {
         // Find the file in database
-        const file = await db.File.findById(fileId);
-
-        // Send back the correct response, file or json
+        const file = await db.File.findByPk(fileId);
         if (!file) {
-            return res.boom.notFound();
+            console.log("download failed for file :", fileId);
+            return res.boom.notFound("file not found !");
         }
 
         // Revision parameter, to get an older version
@@ -68,5 +67,5 @@ module.exports = (db) => async (req, res) => {
         include: ['rights']
     });
 
-    return res.json(data);
+    return res.status(200).json(data);
 };

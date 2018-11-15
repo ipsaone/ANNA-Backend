@@ -19,7 +19,7 @@ const storage = require('./repository/storage');
  * @param {INTEGER} userId - The id of the user.
  * @returns {Promise} List all files.
  */
-exports.filterList = (db, folderId, userId) =>
+exports.filterList = async (db, folderId, userId) =>
 
     /** Check if directory has 'read' permission */
     storage.fileHasReadPermission(db, folderId, userId);
@@ -39,18 +39,14 @@ exports.filterUploadNew = async (db, folderId, userId) => {
 
     /** Check if directory has 'write' permission */
     const canWriteP = storage.fileHasWritePermission(db, folderId, userId);
-    const folder = await db.File.findById(folderId);
+    const folder = await db.File.findByPk(folderId);
     const canWrite = await canWriteP;
 
     if (!folder) {
-        console.log(`no file #${folderId}`);
+        console.log(`no folder #${folderId}`);
 
         return false;
     }
-
-    // Console.log(folder);
-    console.log(`canWrite : ${canWrite}`);
-    console.log(`isDir : ${folder.isDir}`);
 
     return canWrite && folder.isDir;
 
@@ -75,7 +71,7 @@ exports.filterUploadRev = async (db, fileId, userId) => {
      * @const file
      */
 
-    const file = await db.File.findById(fileId);
+    const file = await db.File.findByPk(fileId);
 
     if (!file) {
         console.log(`File not found : #${fileId}`);
@@ -111,7 +107,7 @@ exports.filterDownloadMeta = async (db, fileId, userId) => {
      * Checks if directory has 'read' permissions for metadata download
      * @const file
      */
-    const file = await db.File.findById(fileId);
+    const file = await db.File.findByPk(fileId);
 
     if (!file) {
         console.log(`No file with id ${fileId}`);
@@ -131,7 +127,7 @@ exports.filterDownloadMeta = async (db, fileId, userId) => {
 
 exports.filterDownloadContents = async (db, fileId, userId) => {
 
-    const file = await db.File.findById(fileId);
+    const file = await db.File.findByPk(fileId);
 
     if (file.isDir) {
         return false;
@@ -142,19 +138,24 @@ exports.filterDownloadContents = async (db, fileId, userId) => {
 
 exports.filterDelete = async (db, fileId, userId) => {
 
+    if(fileId == 1) {
+        return false;
+    }
+
+    console.log('filtering deletion for file ', fileId);
+
     // Check if directory has 'write' permission
-
-    const file = await db.File.findById(fileId);
-
+    const file = await db.File.findByPk(fileId);
     if (!file) {
         return false;
     }
 
-    const lastData = await file.getData(db);
 
+    const lastData = await file.getData(db);
     if (!lastData) {
         console.log(`No data for file #${fileId}`);
     }
+
 
     return storage.fileHasWritePermission(db, lastData.dirId, userId);
 };

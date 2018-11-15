@@ -51,7 +51,7 @@ test('Delete', async t => {
     let res = await t.context.request.delete('/posts/'+post.id);
     t.is(res.status, 204);
 
-    let post2 = await t.context.db.Post.findById(post.id);
+    let post2 = await t.context.db.Post.findByPk(post.id);
     t.is(post2, null);
 
 });

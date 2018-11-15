@@ -15,25 +15,31 @@ const policy = require('../../user_policy');
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('User ID must be an integer');
     }
     const userId = parseInt(req.params.userId, 10);
 
-    const groupsP = policy.filterAddGroups(db, req.body.groupsId, req.session.auth);
+    if (isNaN(parseInt(req.params.groupId, 10))) {
+        throw res.boom.badRequest('Group ID must be an integer');
+    }
+    const groupId = parseInt(req.params.groupId, 10);
 
-    const user = await db.User.findById(userId);
 
+
+    const allowedP = policy.filterAddGroup(db, groupId, userId, req.session.auth);
+
+    const user = await db.User.findByPk(userId);
     if (!user) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('User not found');
     }
 
-    const groups = await groupsP;
+    const allowed = await allowedP;
 
-    if (!groups || groups.length === 0) {
+    if (!allowed) {
         return res.boom.unauthorized();
     }
 
-    await user.addGroups(groups);
+    await user.addGroup(groupId);
     await user.save();
 
     return res.status(204).send();

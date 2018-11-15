@@ -15,6 +15,7 @@
  */
 
 const winston = require('winston');
+const sequelize = require('sequelize');
 
 /**
  *
@@ -40,8 +41,7 @@ const sendError = (res, err, type) => {
 
     // Build the error and send it
     const builder = res.boom[type];
-
-    builder(err.message);
+    builder(err);
 };
 
 const logError = (err) => {
@@ -49,10 +49,13 @@ const logError = (err) => {
     /**
      * CONSOLE OUTPUT
      */
+    console.error('Exception received by handler :')
     winston.error('Exception received by handler :');
     if (err instanceof Error) {
+        console.error(err.stack);
         winston.error(err.stack);
     } else {
+        console.error(`Error type : ${err.constructor.name}`);
         winston.error(`Error type : ${err.constructor.name}`);
         const except = new Error();
 
@@ -68,23 +71,28 @@ module.exports = (err, req, res, next) => {
     // Check a response has not been half-sent
     if (res.headersSent) {
         winston.debug('Hearders already sent', {reqid: req.id});
-
         return next(err);
     }
 
-    if (typeof err.type && err.type === 'entity.parse.failed') {
-        // Bad JSON was sent
-
+    // Sending an error is possible
+    if (typeof err.type && err.type === 'entity.parse.failed') { // Bad JSON was sent
         sendError(res, err, 'badRequest');
         winston.error('Could not parse entity', {reqid: req.id});
-    } else if (err.constructor.name === 'ValidationError') {
-        // Validation error
 
-        sendError(res, err, 'badRequest');
+    } else if (err instanceof sequelize.ValidationError) { // Validation error
+        sendError(res, err.errors.map(item => item.message), 'badRequest');
         winston.error('Unapropriate request', {reqid: req.id});
-    } else {
-        // Unknown error
 
+    } else if (err instanceof sequelize.ForeignKeyConstraintError) {
+        let message = 'Foreign key constraint error';
+        if(err.original.errno == 1451) {
+            message += ' (critical objects still exist)';
+        }
+        sendError(res, message, 'badRequest');
+        winston.error(message, {reqid: req.id});
+
+
+    } else { // Unknown error
         sendError(res, err, 'badImplementation');
         logError(err);
 

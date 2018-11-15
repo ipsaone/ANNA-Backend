@@ -22,13 +22,13 @@ module.exports = (db) =>
  * @returns {Object} Promise.
  *
  */
-    function (req, res, handle) {
+    async function (req, res, handle) {
         if (isNaN(parseInt(req.params.logId, 10))) {
-            throw res.boom.badRequest();
+            throw res.boom.badRequest('Log ID must be an integer');
         }
         const logId = parseInt(req.params.logId, 10);
 
-        return db.Log.findOne({
+        let log = await db.Log.findOne({
             where: {id: logId},
             include: [
                 'author',
@@ -36,13 +36,11 @@ module.exports = (db) =>
                 'helpers'
             ]
         })
-            .then((log) => policy.filterShow(db, log, req.session.auth))
-            .then((log) => {
-                if (log) {
-                    return res.status(200).json(log);
-                }
-                throw res.boom.notFound();
 
-            })
-            .catch((err) => handle(err));
+        log = await policy.filterShow(db, log, req.session.auth);
+        if (log) {
+            return res.status(200).json(log);
+        }
+
+        return res.boom.notFound();
     };

@@ -22,7 +22,7 @@
  * @returns {Promise} The author group if resolved.
  */
 const userIsAuthor = async (db, userId) => {
-    const user = await db.User.findById(userId, {include: ['groups']});
+    const user = await db.User.findByPk(userId, {include: ['groups']});
 
     if (user && user.groups) {
 
@@ -52,22 +52,20 @@ const userIsAuthor = async (db, userId) => {
  *
  * @returns {Promise} An array containing all published posts if resolved.
  */
-exports.filterIndex = (db, posts, userId) =>
+exports.filterIndex = async (db, posts, userId) => {
 
     // Only show drafts if user is an author
-    userIsAuthor(db, userId)
-        .then((isAuthor) => {
-            if (isAuthor) {
-                return posts;
-            }
+    let isAuthor = await userIsAuthor(db, userId);
+    if (isAuthor) {
+        return posts;
+    }
 
-            if (Array.isArray(posts)) {
-                return posts.filter((post) => post.published);
-            }
+    if (Array.isArray(posts)) {
+        return posts.filter((post) => post.published);
+    }
 
-            return [];
-
-        });
+    return [];
+}
 
 /**
  * Gets one post.
@@ -81,18 +79,17 @@ exports.filterIndex = (db, posts, userId) =>
  *
  * @returns {Promise} A post.
  */
-exports.filterShow = (db, post, userId) =>
+exports.filterShow = async (db, post, userId) =>{
+    let isAuthor = await userIsAuthor(db, userId);
+    if (post.published || isAuthor) {
+        // Only show drafts is user is an author.
+        return post;
+    }
 
-    // Only show drafts is user is an author.
-    userIsAuthor(db, userId)
-        .then((isAuthor) => {
-            if (post.published || isAuthor) {
-                return post;
-            }
+    return {};
+}
 
-            return {};
-
-        });
+    
 
 /**
  * Filters users who can create a post.
@@ -105,17 +102,16 @@ exports.filterShow = (db, post, userId) =>
  *
  * @returns {boolean} Either user is an author or the function throws an error 'Unauthorized'.
  */
-exports.filterStore = (db, userId) =>
+exports.filterStore = async (db, userId) => {
 
     // Only allow creation if user is an author.
-    userIsAuthor(db, userId)
-        .then((isAuthor) => {
-            if (isAuthor) {
-                return true;
-            }
+    let isAuthor = await userIsAuthor(db, userId);
 
-            return false;
-        });
+    let user = await db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+
+    return isAuthor || isRoot;
+}
 
 /**
  * Filters users who can update a post.
@@ -128,19 +124,16 @@ exports.filterStore = (db, userId) =>
  *
  * @returns {boolean} Either the user is an author or the function throws an error 'Unauthorized'.
  */
-exports.filterUpdate = (db, userId) =>
+exports.filterUpdate = async (db, userId) => {
 
-    // Only allow update if user is an author
-    userIsAuthor(db, userId)
-        .then((isAuthor) => {
-            if (isAuthor) {
-                return true;
-            }
+// Only allow update if user is an author
+    let isAuthor = await userIsAuthor(db, userId);
+    
+    let user = await db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
 
-            throw new Error('Unauthorized');
-
-
-        });
+    return isAuthor||isRoot;
+}
 
 /**
  * Filters users who can delete a post.
@@ -153,14 +146,14 @@ exports.filterUpdate = (db, userId) =>
  *
  * @returns {boolean} Either the user is an author or the function throws an error 'Unauthorized'.
  */
-exports.filterDelete = (db, userId) =>
+exports.filterDelete = async (db, userId) => {
 
     // Only allow delete if user is an author
-    userIsAuthor(db, userId)
-        .then((isAuthor) => {
-            if (isAuthor) {
-                return true;
-            }
+    let isAuthor = await userIsAuthor(db, userId)
+    
+    let user = await db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
 
-            throw new Error('Unauthorized');
-        });
+    return isAuthor || isRoot;
+
+}

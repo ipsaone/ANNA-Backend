@@ -8,6 +8,7 @@ const policy = require('../storage_policy');
  *
  * @param {obj} req     - The user request.
  * @param {obj} res     - The response to be sent.
+ * 
  * @todo for security, better escape req.body, like validating against a schema ?
  * @todo handle file contents upload !
  *
@@ -17,7 +18,7 @@ const policy = require('../storage_policy');
 
 module.exports = (db) => async (req, res) => {
     if (isNaN(parseInt(req.params.fileId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('File ID must be an integer');
     }
     const fileId = parseInt(req.params.fileId, 10);
 
@@ -37,9 +38,18 @@ module.exports = (db) => async (req, res) => {
         throw res.boom.unauthorized();
     }
 
-    const file = await db.File.findById(fileId);
+    const file = await db.File.findByPk(fileId);
+    let filePath = '';
+    if (req.file) {
+        filePath = req.file.path;
+    }
 
-    await file.addData(db, req.body, req.file.path, req.session.auth);
+    try {
+        let data = await file.addData(db, req.body, filePath, req.session.auth);
+        return res.status(200).json(data);
+    } catch (e) {
+        return res.boom.badRequest(e);
+    }
 
-    return res.status(200).json({});
+    
 };

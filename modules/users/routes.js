@@ -18,9 +18,11 @@ module.exports = (db) => {
     router.get('/:userId([0-9]+)/posts', userController.posts);
 
     router.route('/:userId([0-9]+)/groups')
-        .get(userController.getGroups)
-        .put(userController.addGroups)
-        .delete(userController.deleteGroups);
+        .get(userController.getGroups);
+
+    router.route('/:userId([0-9]+)/group/:groupId([0-9]+)')
+        .put(userController.addGroup)
+        .delete(userController.deleteGroup);
 
     return router;
 };

@@ -13,12 +13,12 @@
  */
 
 module.exports = (db) => async function (req, res) {
-    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
-        throw res.boom.badRequest();
+    if (isNaN(parseInt(req.params.groupId, 10))) {
+        throw res.boom.badRequest('Group ID must be an integer');
     }
     const groupId = parseInt(req.params.groupId, 10);
 
-    const group = await db.Group.findById(groupId);
+    const group = await db.Group.findByPk(groupId);
 
     if (!group) {
         throw res.boom.notFound();

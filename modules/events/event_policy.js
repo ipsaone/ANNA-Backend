@@ -38,12 +38,11 @@ exports.filterShow = () => Promise.resolve(true);
  *
  */
 exports.filterStore = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
     }
-
     return false;
 };
 
@@ -60,7 +59,7 @@ exports.filterStore = async (db, userId) => {
  *
  */
 exports.filterUpdate = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -82,7 +81,7 @@ exports.filterUpdate = async (db, userId) => {
  *
  */
 exports.filterDelete = async (db, userId) => {
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
         return true;
@@ -91,31 +90,29 @@ exports.filterDelete = async (db, userId) => {
     return false;
 };
 
-exports.filterStoreRegistered = async (db, eventId, targetId, userId) => {
+exports.filterStoreRegistered = async (db, targetId, userId) => {
 
     if (userId === targetId) {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     const userIsAdmin = await user.isRoot();
 
     if (userIsAdmin) {
         return true;
     }
 
-    console.log('False !!!!!');
-
     return false;
 };
 
-exports.filterDeleteRegistered = async (db, eventId, targetId, userId) => {
+exports.filterDeleteRegistered = async (db, targetId, userId) => {
 
     if (userId === targetId) {
         return true;
     }
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
     const userIsAdmin = await user.isRoot();
 
     if (userIsAdmin) {
