@@ -72,7 +72,8 @@ module.exports = Storage;
  * @returns {Object} Promise to file type.
  *
  */
-Storage.computeType = function (filePath) {
+Storage.computeType = function async (filePath) {
+
     return new Promise((resolve) => {
         magic.detectFile(filePath, (err, res) => {
             if (err) {
@@ -82,6 +83,7 @@ Storage.computeType = function (filePath) {
             resolve(res);
         });
     });
+
 };
 
 /**
@@ -96,16 +98,15 @@ Storage.computeType = function (filePath) {
  *
  */
 
-Storage.computeSize = function (filePath) {
+Storage.computeSize = async function (filePath) {
     const funct = util.promisify(fs.stat);
-
-
-    return funct(filePath).then((stat) => stat.size);
+    let stat = await funct(filePath);
+    return stat.size;
 };
 
 Storage.fileHasWritePermission = async (db, fileId, userId) => {
-    const fileP = db.File.findById(fileId);
-    const userP = db.User.findById(userId);
+    const fileP = db.File.findByPk(fileId);
+    const userP = db.User.findByPk(userId);
     const file = await fileP;
     const user = await userP;
 
@@ -139,8 +140,8 @@ Storage.fileHasWritePermission = async (db, fileId, userId) => {
 };
 
 Storage.fileHasReadPermission = async (db, fileId, userId) => {
-    const fileP = db.File.findById(fileId);
-    const userP = db.User.findById(userId);
+    const fileP = db.File.findByPk(fileId);
+    const userP = db.User.findByPk(userId);
     const file = await fileP;
     const user = await userP;
 
@@ -151,10 +152,10 @@ Storage.fileHasReadPermission = async (db, fileId, userId) => {
     }
 
     const fileDataP = file.getData(db);
-    const userGroupsP = user.getGroups(db);
+    const userGroupsP = user.getGroups();
     const userGroups = await userGroupsP;
     const fileData = await fileDataP;
-
+    
     if (!fileData || !userGroups) {
         console.error(`No fileData or userGroups for id ${fileId}`);
 

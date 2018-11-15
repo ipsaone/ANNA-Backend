@@ -14,24 +14,21 @@ const policy = require('../post_policy');
  *
  */
 
-module.exports = (db) => function (req, res, handle) {
+module.exports = (db) => async function (req, res, handle) {
     if (isNaN(parseInt(req.params.postId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Post ID must be an integer');
     }
     const postId = parseInt(req.params.postId, 10);
 
-    return db.Post.findOne({
+    let post = await db.Post.findOne({
         where: {id: postId},
         include: ['author']
     })
-        .then((post) => {
-            if (!post) {
-                throw res.boom.notFound();
-            }
+        
+    if (!post) {
+        throw res.boom.notFound();
+    }
 
-            return post;
-        })
-        .then((post) => policy.filterShow(db, post, req.session.auth))
-        .then((post) => res.status(200).json(post))
-        .catch((err) => handle(err));
+    post = await policy.filterShow(db, post, req.session.auth);
+    return res.status(200).json(post);
 };

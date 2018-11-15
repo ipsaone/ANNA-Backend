@@ -2,23 +2,58 @@
 
 const policy = require('../storage_policy');
 
-const getChildrenData = async (db, folderId) => {
-    let files = await db.File.findAll();
+const getChildrenData = async (db, folderId, options) => {
 
-    if (!files.map((item) => item.id).includes(folderId)) {
-        files = [];
+    let file = db.File;
+    if (options.filesOnly) {
+        file = file.scope('files');
+    } else if (options.foldersOnly) {
+        file = file.scope('folders');
+    }
+
+    let files = {};
+    try {
+        files = await file.findAll();
+    } catch (err) {
+        console.error(err);
+        return [];
     }
 
     let data = await Promise.all(files.map(async (thisFile) => {
-        const thisData = await thisFile.getData(db);
-
-        if (!thisData) {
-            throw new Error(`No data for file #${thisFile.id}`);
+        const d = await thisFile.getData(db);
+        if (!d) {
+            return {};
         }
 
+        
+        let thisData = d.toJSON();
         thisData.isDir = thisFile.isDir;
 
+
+        // Find previous data where the file exists
+        // Extract file size and type from there (for display only !)
+        let i = 0, prevData = {};
+        while(prevData = await thisFile.getData(db, i)) {
+            if(!prevData) {
+                break;
+            }
+
+            if(prevData.exists && prevData.size && prevData.type) {
+                thisData.size = prevData.size;
+                thisData.type = prevData.type;
+            }
+
+            i++;
+
+            if(i>1e6) {
+                throw new error('Infinite loop while extracting previous data size/type');
+            }
+        };
+
+
         return thisData;
+        
+        
     }));
 
 
@@ -43,41 +78,40 @@ const getChildrenData = async (db, folderId) => {
 module.exports = (db) => async (req, res) => {
     // Fail if the folder isn't defined
     if (!req.params.folderId || isNaN(parseInt(req.params.folderId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Folder ID must be an integer');
     }
     const folderId = parseInt(req.params.folderId, 10);
-    const file = db.File;
 
-    if (req.query.filesOnly) {
-        file.scope('files');
-    } else if (req.query.foldersOnly) {
-        file.scope('folders');
+    let file = await db.File.findByPk(folderId);
+    if(!file) {
+        return res.boom.badRequest('File not found');
     }
 
-    const childrenDataP = getChildrenData(db, folderId);
+    const childrenDataP = getChildrenData(db, folderId, req.query);
     const folderFileP = db.File.findOne({
         where: {id: folderId},
         rejectOnEmpty: true
     });
 
-    const authorized = policy.filterList(db, folderId, req.session.auth);
-
+    const authorized = await policy.filterList(db, folderId, req.session.auth);
     if (!authorized) {
-        throw res.boom.unauthorized();
+        return res.boom.unauthorized("folder list denied");
     }
 
     const folderFile = await folderFileP;
-
-
     const dirTreeP = folderFile.getDirTree(db);
     const folderData = await folderFile.getData(db);
+
+    
+    if(!folderData) {
+        return res.boom.internal();
+    }
 
     const response = folderData.toJSON();
 
     response.isDir = folderFile.isDir;
     response.dirTree = await dirTreeP;
     response.children = await childrenDataP;
-
 
     return res.status(200).json(response);
 };

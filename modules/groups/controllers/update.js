@@ -13,9 +13,10 @@
 
 module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
-        throw res.boom.badRequest();
+        throw res.boom.badRequest('Group ID must be an integer');
     }
     const groupId = parseInt(req.params.groupId, 10);
+    const group = await db.Group.findByPk(groupId);
 
     /*
      * To lower case to avoid security problems
@@ -23,14 +24,6 @@ module.exports = (db) => async function (req, res) {
      */
     req.body.name = req.body.name.toLowerCase();
 
-    try {
-        await db.Group.update(req.body, {where: {id: groupId}});
-
-        return res.status(204).json({});
-    } catch (err) {
-        if (err instanceof db.Sequelize.ValidationError) {
-            throw res.boom.badRequest();
-        }
-        throw err;
-    }
+    await group.update(req.body);
+    return res.status(200).json(group);
 };

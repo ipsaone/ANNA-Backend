@@ -20,39 +20,39 @@ const dataRep = require('../repository/data');
  * @constant computeValues
  * @param {Object} data - Data.
  * @implements {getPath}
- * @returns {Promise} The promise to retur data path or an error.
+ * @returns {Promise} The promise to return data path or an error.
  */
-const computeValues = (data) => {
-    const typeP = data.getPath()
-        .then((dataPath) => repo.computeType(dataPath))
-        .then((type) => {
-            data.type = type;
+const computeValues = async (data) => {
+    const path = await data.getPath();
 
-            return true;
-        })
-        .catch(() => {
-            data.type = '';
+    let file = await data.getFile();
+    if(file.isDir) {
+        data.size = -1;
+        data.type = 'folder';
+        return data;
+    }
+    if(!data.exists) {
+        data.size = -1;
+        data.type = ''
+        return data;
+    }
 
-            return true;
-        });
+    const typeP = repo.computeType(path);
+    const sizeP = repo.computeSize(path);
 
-    const sizeP = data.getPath()
-        .then((dataPath) => repo.computeSize(dataPath))
-        .then((size) => {
-            data.size = size;
+    try {
+        data.type = await typeP;
+    } catch (err) {
+        data.type = '';
+    }
 
-            return true;
-        })
-        .catch(() => {
-            data.size = -1;
+    try {
+        data.size = await sizeP;
+    } catch (err) {
+        data.size = -1;
+    }
 
-            return true;
-        });
-
-    return Promise.all([
-        sizeP,
-        typeP
-    ]);
+    return data;
 };
 
 /**
@@ -175,10 +175,6 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         timestamps: true,
         paranoid: true,
-        hooks: {
-            beforeCreate: computeValues,
-            beforeUpdate: computeValues
-        },
         freezeTableName: true
     });
 
@@ -260,6 +256,9 @@ module.exports = (sequelize, DataTypes) => {
 
         dataRep.setupPrototype(Data, sequelize);
     };
+
+    // Must be kept as an old-school function to use 'this'
+    Data.prototype.computeValues = function() {return computeValues(this)};
 
 
     return Data;

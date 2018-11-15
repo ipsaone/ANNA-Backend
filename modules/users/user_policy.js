@@ -81,7 +81,35 @@ exports.filterShow = (db, us, userId) => Promise.resolve(us)
  *
  * @returns {Object} Returns all users.
  */
-exports.filterStore = (db, user) => Promise.resolve(user);
+exports.filterStore = (db, user) => async (db, userId) => {
+    let user = db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+    if (!isRoot) {
+        return false;
+    }
+    
+    return true;
+};
+
+/**
+ * Filters users who can edit users.
+ *
+ * @function filterUpdate
+ *
+ * @param {obj} db - The database.
+ * @param {Object} user - A user.
+ *
+ * @returns {Object} Returns all users.
+ */
+exports.filterUpdate = (db, targetId, userId) => async (db, targetId, userId) => {
+    let user = db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+    if (!isRoot) {
+        return false;
+    }
+    
+    return true;
+};;
 
 /**
  * Filters users who can delete users.
@@ -93,7 +121,19 @@ exports.filterStore = (db, user) => Promise.resolve(user);
  *
  * @returns {Object} Returns all users.
  */
-exports.filterDelete = (db, user) => Promise.resolve(user);
+exports.filterDelete = async (db, targetId, userId) => {
+    if (targetId == userId || targetId == 1) {
+        return false;
+    }
+
+    let user = await db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+    if (!isRoot) {
+        return false;
+    }
+
+    return true;
+};
 
 /**
  * Filters users who can create groups.
@@ -106,17 +146,14 @@ exports.filterDelete = (db, user) => Promise.resolve(user);
  *
  * @returns {Promise} An array containing groups to which the user belongs.
  */
-exports.filterAddGroups = async (db, groupsId, userId) => {
-    const user = await db.User.findById(userId);
+exports.filterAddGroup = async (db, groupId, targetId, userId) => {
 
+    const user = await db.User.findByPk(userId);
     if (user && await user.isRoot()) {
-        return groupsId;
+        return true;
     }
 
-    const groups = await user.getGroups();
-
-
-    return groups.map((group) => group.id).filter((group) => groups.includes(group));
+    return false
 
 };
 
@@ -132,18 +169,18 @@ exports.filterAddGroups = async (db, groupsId, userId) => {
  *
  * @returns {Promise} A user can delete himself from a group but only root can delete other users from groups.
  */
-exports.filterDeleteGroups = async (db, groupsId, targetId, userId) => {
+exports.filterDeleteGroup = async (db, groupId, targetId, userId) => {
     if (targetId === userId) {
-        return groupsId;
+        return true;
     }
-    const user = await db.User.findById(userId);
 
+    const user = await db.User.findByPk(userId);
     if (user && await user.isRoot()) {
-        return groupsId;
+        return true;
     }
 
 
-    throw new Error('Unauthorized');
+    return false;
 
 
 };

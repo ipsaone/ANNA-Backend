@@ -22,15 +22,12 @@ module.exports = (db) =>
  * @returns {Object} Promise.
  *
  */
-    function (req, res, handle) {
-        return policy.filterStore(db, req.body, req.session.auth)
-            .then((builder) => db.Log.create(builder))
-            .then((log) => res.status(201).json(log))
-            .catch((err) => {
-                if (err instanceof db.Sequelize.ValidationError) {
-                    res.boom.badRequest(err);
-                }
-                throw err;
-            })
-            .catch((err) => handle(err));
+    async function (req, res) {
+        let authorized = policy.filterStore(db, req.session.auth);
+        if(!authorized) {
+            return res.boom.unauthorized();
+        }
+
+        let log = await db.Log.create(req.body);
+        return res.status(201).json(log);
     };

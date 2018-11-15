@@ -28,13 +28,13 @@ const bcrypt = require('bcrypt');
  * @returns {Promise} The promise to get the user's password.
  * @see {@link https://www.npmjs.com/package/password-hash}
  */
-const hashPassword = (user) => {
+const hashPassword = async (user) => {
     if (!user.changed('password')) {
         return user.getDataValue('password');
     }
 
-    return bcrypt.hash(user.getDataValue('password'), config.password.salt)
-        .then((hash) => user.setDataValue('password', hash));
+    let hash = await bcrypt.hash(user.getDataValue('password'), config.password.salt)
+    return user.setDataValue('password', hash);
 
 };
 

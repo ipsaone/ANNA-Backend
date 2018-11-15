@@ -16,17 +16,17 @@ const policy = require('../mission_policy');
 
 module.exports = (db) => async (req, res) => {
     if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest();
+        return res.boom.badRequest('Mission ID must be an integer');
     }
     const missionId = parseInt(req.params.missionId, 10);
 
-    const authorized = policy.filterShow();
+    const authorized = policy.filterShow(db);
 
     if (!authorized) {
         return req.boom.unauthorized();
     }
 
-    const mission = await db.Mission.findById(missionId, {
+    const mission = await db.Mission.findByPk(missionId, {
         include: [
             'tasks',
             'members'

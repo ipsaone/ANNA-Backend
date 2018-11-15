@@ -36,42 +36,20 @@ module.exports.setupPrototype = function (Data, sequelize) {
      *
      * @function getPath
      *
-     * @todo fix
-     *
-     *
      * @returns {string} Data path.
      *
      */
-    Data.prototype.getPath = async function () {
+    Data.prototype.getPath = async function (db) {
         let dataPath = '';
-        let id = 0;
 
-
-        if (this.id) {
-            id = this.id;
-        } else if (sequelize.getDialect() === 'mysql') {
-
-            /*
-             * Get next ID by getting Auto_increment value of the table
-             * ATTENTION : race condition here ?
-             */
-            const data = await sequelize.query('SHOW TABLE STATUS LIKE \'Data\'', {type: sequelize.QueryTypes.SELECT});
-
-            if (!data || data.length !== 1) {
-                throw new Error('Failed to find path');
-            }
-            id = data[0].Auto_increment;
-        } else if (sequelize.getDialect() === 'sqlite') {
-
-            // Simpler query for tests
-            const data = await sequelize.query('SELECT * FROM \'Data\' ORDER BY id DESC LIMIT 1');
-
-            if (!data || data.length !== 1) {
-                throw new Error('Failed to find path');
-            }
-            id = data[0].id + 1;
+        if(!this.id) {
+            throw new Error('Cannot find path for un-saved data !')
         }
+        let id = this.id;
 
+        if(this.isDir) {
+            throw new Error('Cannot find path for folder !');
+        }
         dataPath += `/${this.fileId}`;
         dataPath += `/${this.name}-#${id}`;
 
@@ -90,6 +68,6 @@ module.exports.setupPrototype = function (Data, sequelize) {
     Data.prototype.getRights = function (db) {
         // Only one right should exist for each data, no check needed
 
-        return db.Right.findById(this.rightsId);
+        return db.Right.findByPk(this.rightsId);
     };
 };

@@ -8,7 +8,7 @@ module.exports = (db) => ({
     delete: require('./delete')(db),
     posts: require('./posts.js')(db),
     getGroups: require('./groups/list')(db),
-    addGroups: require('./groups/store')(db),
-    deleteGroups: require('./groups/delete')(db)
+    addGroup: require('./groups/store')(db),
+    deleteGroup: require('./groups/delete')(db)
 });
 

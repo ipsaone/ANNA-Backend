@@ -18,7 +18,7 @@ const policy = require('../post_policy');
  *
  */
 
-module.exports = (db) => function (req, res, handle) {
+module.exports = (db) => async function (req, res) {
     let posts = db.Post;
 
     if (req.query.published) {
@@ -29,7 +29,7 @@ module.exports = (db) => function (req, res, handle) {
         }
     }
 
-    return posts.findAll({
+    let postsResponse = await posts.findAll({
         include: ['author'],
         order: [
             [
@@ -38,7 +38,6 @@ module.exports = (db) => function (req, res, handle) {
             ]
         ]
     })
-        .then((postsResponse) => policy.filterIndex(db, postsResponse, req.session.auth))
-        .then((postsFiltered) => res.status(200).json(postsFiltered))
-        .catch((err) => handle(err));
+    let postsFiltered = await policy.filterIndex(db, postsResponse, req.session.auth);
+    return res.status(200).json(postsFiltered);
 };

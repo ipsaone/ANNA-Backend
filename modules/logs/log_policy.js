@@ -13,11 +13,6 @@ const root = findRoot(__dirname);
 const path = require('path');
 const userPolicy = require(path.join(root, './modules/users/user_policy'));
 
-const allowed = [
-    'title',
-    'markdown'
-];
-
 /**
  * Get all logs, their author and dates.
  *
@@ -73,18 +68,8 @@ exports.filterShow = async (db, log, userId) => {
  *
  * @returns {Object} Returns users who can create logs.
  */
-exports.filterStore = (db, builder, userId) => {
-    const keys = Object.keys(builder);
-
-    keys.forEach((key) => {
-        if (!allowed.includes(key)) {
-            delete builder[key];
-        }
-    });
-
-    builder.authorId = userId;
-
-    return Promise.resolve(builder);
+exports.filterStore = async (log, userId) => {
+    return true;
 };
 
 /**
@@ -99,26 +84,16 @@ exports.filterStore = (db, builder, userId) => {
  *
  * @returns {boolean} Only root and the author of the log can update a log.
  */
-exports.filterUpdate = async (db, builder, logId, userId) => {
-
-    const keys = Object.keys(builder);
-
-    keys.forEach((key) => {
-        if (!allowed.includes(key)) {
-            delete builder[key];
-        }
-    });
-
-    const user = await db.User.findById(userId);
+exports.filterUpdate = async (db, logId, userId) => {
+    const user = await db.User.findByPk(userId);
 
     if (user && await user.isRoot()) {
-        return builder;
+        return true;
     }
 
-    const log = await db.Log.findById(logId);
-
+    const log = await db.Log.findByPk(logId);
     if (log.authorId === userId) {
-        return builder;
+        return true;
     }
 
     return false;
@@ -137,7 +112,7 @@ exports.filterUpdate = async (db, builder, logId, userId) => {
  */
 exports.filterDelete = async (db, userId) => {
 
-    const user = await db.User.findById(userId);
+    const user = await db.User.findByPk(userId);
 
     // Only root users can delete logs
     if (user && await user.isRoot()) {

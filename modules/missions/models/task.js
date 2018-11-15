@@ -79,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
         Task.belongsTo(models.Mission, {
             foreignKey: 'missionId',
             as: 'mission',
-            onDelete: 'RESTRICT',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         });
     };

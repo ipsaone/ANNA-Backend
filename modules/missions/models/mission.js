@@ -10,7 +10,10 @@
  * @module mission
  */
 
-const compileMd = () => '';
+const marked = require('marked');
+const compileMd = (mission, options) => {
+    mission.description = marked(mission.markdown);
+};
 
 /**
  * @function exports
@@ -58,7 +61,11 @@ module.exports = (sequelize, DataTypes) => {
          */
         markdown: {
             allowNull: true,
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            set (val) {
+                this.setDataValue('markdown', val); // Set this field with the raw markdown
+                this.setDataValue('description', marked(val));
+            }
         },
 
         /**

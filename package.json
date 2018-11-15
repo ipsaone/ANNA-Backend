@@ -34,7 +34,7 @@
     "sequelize": "^4.33.1",
     "sequelize-fixtures": "^0.7.0",
     "smtp-server": "^3.4.1",
-    "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+    "sqlite3": "^4.0.2",
     "tape": "^4.8.0",
     "winston": "^2.4.3",
     "winston-email": "^0.1.0",
@@ -61,7 +61,6 @@
     "nyc": "^12.0.2",
     "sequelize-cli": "^4.0.0",
     "sequelize-mock": "^0.10.2",
-    "sequelize-test-setup": "0.0.4",
     "sinon": "^6.0.0",
     "supertest": "^3.0.0",
     "umzug": "^2.1.0",
@@ -75,26 +74,36 @@
   "nyc": {
     "check-coverage": true,
     "cache": true,
-    "lines": 50,
-    "statements": 50,
-    "functions": 50,
-    "branches": 25,
-    "reporter": []
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 50,
+    "reporter": ["html", "text-summary"],
+    "exclude": [
+      "modules/**/test/*.js"
+    ]
+
+  },
+  "ava": {
+    "files" : "modules/**/test/*.js",
+    "powerAssert": true,
+    "babel": {}
   },
   "scripts": {
     "start": "node ./app.js",
-    "test": "nyc ava modules/**/test/*.js --verbose",
-    "watch-test": "ava modules/**/test/*.js --watch --verbose",
+    "test": "nyc ava --verbose",
+    "watch-test": "ava --watch --verbose",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",
     "clear-db": "sequelize db:migrate:undo:all && rm -r ../storage",
     "lint": "eslint --cache --fix --max-warnings 50 .",
     "lint-nofix": "eslint --cache --max-warnings 50 .",
-    "precommit": "cd ../../OneOs && vagrant ssh -c 'cd Anna/backend && bash pre-commit.sh'",
+    "precommit": "exit 0; vagrant ssh -c 'cd ANNA-Backend && bash pre-commit.sh'",
     "security": "nsp check .",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
-    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js"
+    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js",
+    "coverage": "http-server ./coverage -p 8080 -c-1 -o"
   },
   "engines": {
     "node": ">=8.9.0"

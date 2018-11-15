@@ -59,7 +59,6 @@ module.exports = (sequelize, DataTypes) => {
          * @param {obj} filePath - The path to the file to add data to.
          * @param {obj} userId - The user identifier.
          *
-         * @todo finish and test
          * @returns {Object} Promise to directory tree.
          *
          */
@@ -81,6 +80,11 @@ module.exports = (sequelize, DataTypes) => {
                 fileChanges.groupId = parseInt(fileChanges.groupId, 10);
             }
 
+            // self-move check
+            if(this.isDir && fileChanges.dirId && fileChanges.dirId == this.id) {
+                throw new Error('Cannot move folder inside itself');
+            }
+
             // Check isDir
             if (fileChanges.isDir === 'true' || fileChanges.isDir === true) {
                 fileChanges.isDir = true;
@@ -96,6 +100,9 @@ module.exports = (sequelize, DataTypes) => {
 
             if (previousData && !fileChanges.name) {
                 fileChanges.name = previousData.name;
+            } else {
+                // WHY IS IT URLENCODED ? I DON'T KNOW.
+                fileChanges.name = decodeURIComponent(fileChanges.name);
             }
 
             // Find if creating a right is needed
@@ -117,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             // Get groups for user and check groupId is legitimate
-            const user = await db.User.findById(fileChanges.ownerId);
+            const user = await db.User.findByPk(fileChanges.ownerId);
 
             if (!user) {
                 throw new Error('Invalid user');
@@ -134,10 +141,18 @@ module.exports = (sequelize, DataTypes) => {
             if (newRight) {
                 right = await db.Right.create(fileChanges);
             } else {
-                const file = await db.File.findById(fileChanges.fileId);
+                const file = await db.File.findByPk(fileChanges.fileId);
                 const fileData = await file.getData(db);
 
-                right = await fileData.getRights(db);
+                if (!fileData) {
+                    right = await db.Right.create(fileChanges);
+                } else {
+                    right = await fileData.getRights(db);
+                }
+
+                if(!right) {
+                    throw new Error('Internal error : no rights associated with data #'+fileData.id);
+                }
             }
             fileChanges.rightsId = right.id;
 
@@ -146,38 +161,28 @@ module.exports = (sequelize, DataTypes) => {
 
             try {
                 await access(filePath);
-                fileChanges.fileExists = true;
+                fileChanges.exists = true;
             } catch (err) {
-                console.log(`File exists : ${!err}`);
-                fileChanges.fileExists = false;
+                fileChanges.exists = false;
             }
 
-            const data = await db.Data.build(fileChanges);
+            const data = await db.Data.create(fileChanges);
             const dest = await data.getPath(db);
 
-            if (fileChanges.fileExists && !fileChanges.isDir) {
+            if (fileChanges.exists) {
 
-                console.log(`Moving from ${filePath} to ${dest}`);
+                if(fileChanges.isDir) {
+                    throw new Error('Cannot handle an upload for a folder !')
+                }
+
                 const move = util.promisify(mv);
+                await move(filePath, dest, {mkdirp: true,  clobber: true});
+            } 
 
-                await move(filePath, dest, {
-                    mkdirp: true,
-                    clobber: true
-                });
-                console.log('Moving done');
+            await data.computeValues();
+            await data.save();
 
-                await data.save();
-
-                return data;
-
-            } else if (!fileChanges.fileExists && fileChanges.isDir) {
-                await data.save();
-
-                return data;
-            }
-
-            throw new Error('Bad request');
-
+            return data;
 
         };
 
@@ -192,11 +197,9 @@ module.exports = (sequelize, DataTypes) => {
          * @returns {Object} Promise to file data.
          *
          */
-        File.prototype.getData = function (db, offset = 0) {
+        File.prototype.getData = async function (db, offset = 0) {
 
-            // Console.log(`Finding data of file #${this.id} with offset ${offset}`);
-
-            return db.Data
+            let data = await db.Data
 
             // Like findOne, but with order + offset
                 .findAll({
@@ -206,20 +209,17 @@ module.exports = (sequelize, DataTypes) => {
                     include: ['rights'],
                     order: [
                         [
-                            'createdAt',
-                            'DESC'
+                            'createdAt', 'DESC'
                         ]
                     ]
-                })
-
-                // FindAll is limited, so there will always be one result (or none -> undefined)
-                .then((data) => {
-                    if (data.length === 0) {
-                        return;
-                    }
-
-                    return data[0];
                 });
+
+            // FindAll is limited, so there will always be one result (or none -> undefined)
+            if (data.length === 0) {
+                return;
+            }
+
+            return data[0];
         };
 
         /**
@@ -235,9 +235,12 @@ module.exports = (sequelize, DataTypes) => {
 
             // Get parents' directory tree
             let fileDirTree = [];
+            if(!data) {
+                return fileDirTree;
+            }
 
             if (data.dirId !== 1) {
-                const file = await db.File.findById(data.dirId);
+                const file = await db.File.findByPk(data.dirId);
 
                 fileDirTree = await file.getDirTree(db);
             }
