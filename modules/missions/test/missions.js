@@ -31,7 +31,7 @@ test.beforeEach(async t => {
         email: 'test@test.com'
     });
 
-    t.context.user = await db.User.create({
+    t.context.user2 = await db.User.create({
       username: 'login_test2',
       password: 'password_test2',
       email: 'test2@test.com'
