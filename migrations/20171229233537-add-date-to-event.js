@@ -24,16 +24,18 @@ module.exports = {
      * @returns {Promise} The promise to create a table.
      *
      */
-    up: (queryInterface, Sequelize) => {
-        queryInterface.addColumn('Events', 'startDate', {
+    up: async (queryInterface, Sequelize) => {
+        await queryInterface.addColumn('Events', 'startDate', {
             allowNull: false,
             type: Sequelize.DATE
         });
 
-        queryInterface.addColumn('Events', 'endDate', {
+        await queryInterface.addColumn('Events', 'endDate', {
             allowNull: true,
             type: Sequelize.DATE
         });
+
+        return true;
     },
 
     /**
@@ -43,8 +45,10 @@ module.exports = {
      * @param {Object} queryInterface - A query interface.
      * @returns {Promise} The promise to remove a column.
      */
-    down: (queryInterface) => {
-        queryInterface.removeColumn('Events', 'startDate');
-        queryInterface.removeColumn('Events', 'endDate');
+    down: async (queryInterface) => {
+        await queryInterface.removeColumn('Events', 'startDate');
+        await queryInterface.removeColumn('Events', 'endDate');
+
+        return true;
     }
 };

@@ -24,12 +24,12 @@ module.exports = {
      * @returns {Promise} The promise to create a table.
      *
      */
-    up: (queryInterface, Sequelize) => {
+    up: (queryInterface, Sequelize) => 
         queryInterface.addColumn('Logs', 'deletedAt', {
             allowNull: true,
             type: Sequelize.DATE
-        });
-    },
+        })
+    ,
 
     /**
      * Removes columns from 'Logs'.
@@ -38,7 +38,7 @@ module.exports = {
      * @param {Object} queryInterface - A query interface.
      * @returns {Promise} The promise to remove a column.
      */
-    down: (queryInterface) => {
-        queryInterface.removeColumn('Logs', 'deletedAt');
-    }
+    down: (queryInterface) => 
+        queryInterface.removeColumn('Logs', 'deletedAt')
+    
 };

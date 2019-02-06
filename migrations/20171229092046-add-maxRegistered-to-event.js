@@ -24,13 +24,13 @@ module.exports = {
      * @returns {Promise} The promise to add a column.
      *
      */
-    up: (queryInterface, Sequelize) => {
+    up: (queryInterface, Sequelize) => 
         queryInterface.addColumn('Events', 'maxRegistered', {
             allowNull: true,
             defaultValue: Sequelize.NULL,
             type: Sequelize.INTEGER
-        });
-    },
+        })
+    ,
 
     /**
      * Removes column 'maxRegistered' from table 'Events'.
@@ -42,7 +42,7 @@ module.exports = {
      * @returns {Promise} The promise to remove a column.
      *
      */
-    down: (queryInterface) => {
-        queryInterface.removeColumn('Events', 'maxRegistered');
-    }
+    down: (queryInterface) => 
+        queryInterface.removeColumn('Events', 'maxRegistered')
+    
 };

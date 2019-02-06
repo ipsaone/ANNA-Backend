@@ -78,7 +78,7 @@
     "statements": 80,
     "functions": 80,
     "branches": 50,
-    "reporter": ["html", "text-summary"],
+    "reporter": ["html", "text"],
     "exclude": [
       "modules/**/test/*.js"
     ]

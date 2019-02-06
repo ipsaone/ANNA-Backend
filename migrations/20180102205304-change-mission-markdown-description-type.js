@@ -24,9 +24,11 @@ module.exports = {
      * @returns {Promise} The promise change columns.
      *
      */
-    up: (queryInterface, Sequelize) => {
-        queryInterface.changeColumn('Missions', 'markdown', {type: Sequelize.TEXT});
-        queryInterface.changeColumn('Missions', 'description', {type: Sequelize.TEXT});
+    up: async (queryInterface, Sequelize) => {
+        await queryInterface.changeColumn('Missions', 'markdown', {type: Sequelize.TEXT});
+        await queryInterface.changeColumn('Missions', 'description', {type: Sequelize.TEXT});
+
+        return true;
     },
 
     /**
@@ -40,8 +42,10 @@ module.exports = {
      * @returns {Promise} The promise change columns.
      *
      */
-    down: (queryInterface, Sequelize) => {
-        queryInterface.changeColumn('Missions', 'markdown', {type: Sequelize.STRING});
-        queryInterface.changeColumn('Missions', 'description', {type: Sequelize.STRING});
+    down: asyc (queryInterface, Sequelize) => {
+        await queryInterface.changeColumn('Missions', 'markdown', {type: Sequelize.STRING});
+        await queryInterface.changeColumn('Missions', 'description', {type: Sequelize.STRING});
+
+        return true;
     }
 };
