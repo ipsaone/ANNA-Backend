@@ -1,6 +1,7 @@
 'use strict';
 
 const policy = require('../mission_policy');
+const winston=require("winston");
 
 /**
  *
@@ -14,10 +15,8 @@ const policy = require('../mission_policy');
  */
 
 module.exports = (db) => async function (req, res) {
-    if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest('Mission ID must be an integer');
-    }
     const missionId = parseInt(req.params.missionId, 10);
+    winston.log.info('Deleting mission #'+missionId);
 
     const allowed = await policy.filterDelete(db, req.session.auth);
 

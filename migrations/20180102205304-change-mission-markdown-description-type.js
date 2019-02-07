@@ -42,7 +42,7 @@ module.exports = {
      * @returns {Promise} The promise change columns.
      *
      */
-    down: asyc (queryInterface, Sequelize) => {
+    down: async (queryInterface, Sequelize) => {
         await queryInterface.changeColumn('Missions', 'markdown', {type: Sequelize.STRING});
         await queryInterface.changeColumn('Missions', 'description', {type: Sequelize.STRING});
 
