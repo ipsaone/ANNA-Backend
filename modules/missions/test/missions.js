@@ -57,8 +57,8 @@ test('Create mission (root)', async (t) => {
             markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
-            groupId: t.context.user.id,
-            leaderId: t.context.group.id
+            groupId: t.context.group.id,
+            leaderId: t.context.user.id
         });
 
     t.is(res.status, 200);
