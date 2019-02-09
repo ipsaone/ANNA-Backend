@@ -16,7 +16,7 @@ const winston=require("winston");
 
 module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);
-    winston.log.info('Deleting mission #'+missionId);
+    winston.info('Deleting mission #'+missionId);
 
     const allowed = await policy.filterDelete(db, req.session.auth);
 

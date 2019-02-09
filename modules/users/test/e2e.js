@@ -80,14 +80,12 @@ test('Single', async t => {
 
 test('Add, edit and remove user', async t => {
     await t.context.user.addGroup(t.context.group);
-    //console.log('ma bite', t.context.group.id);
     let res = await t.context.request.post('/users')
         .send({
             username: 'someUser',
             password: 'somePassword',
             email: 'someEmail@mail.com'
         });
-    //console.log('respoonse', res);
     t.is(res.status, 201);
     t.is(res.body.username, 'someUser');
 
@@ -113,4 +111,33 @@ test('Add, edit and remove user', async t => {
     let res4 = await t.context.request.get('/users');
     t.is(res4.status, 200);
     t.is(res4.body.length, 1);
+});
+
+test('LeaderMissions', async t => {
+    await t.context.user.addGroup(t.context.group);
+    let res = await t.context.request.post('/users')
+        .send({
+            username: 'someUser',
+            password: 'somePassword',
+            email: 'someEmail@mail.com'
+        });
+    t.is(res.status, 201);
+    t.is(res.body.username, 'someUser');
+
+    let res2 = await t.context.request.post('/missions')
+        .send({
+            name: "test",
+            markdown: "# TEST",
+            budgetAssigned: 100,
+            budgetUsed: 40,
+            groupId: t.context.group.id,
+            leaderId: res.body.id
+        });
+
+    t.is(res2.status, 200);
+
+    let res3 = await t.context.request.get('/users/'+res.body.id);
+    t.is(res3.status, 200);
+    t.is(res3.body.leaderMissions.length, 1);
+
 });

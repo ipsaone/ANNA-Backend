@@ -7,8 +7,8 @@ const schema = joi.object().keys({
     name: joi.string().trim(true).min(3),
     markdown: joi.string().trim(true).min(5),
     description: joi.any().forbidden(),
-    budgetAssigned: joi.number().positive(),
-    budgetUsed: joi.number().positive(),
+    budgetAssigned: joi.number().min(0),
+    budgetUsed: joi.number().min(0),
     groupId: joi.number().integer().positive(),
     leaderId: joi.number().integer().positive()
 });

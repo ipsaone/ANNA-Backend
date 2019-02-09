@@ -13,7 +13,11 @@ module.exports = (db) => async (req, res) => {
     if (isNaN(parseInt(req.params.memberId, 10))) {
         return res.boom.badRequest('Member ID must be an integer');
     }
-    const memberId = parseInt(req.params.memberId, 10);           
+    const memberId = parseInt(req.params.memberId, 10);
+
+    if(mission.leaderId == memberId) {
+        return res.boom.badRequest("Cannot add the leader as member");
+    }
 
     const authorized = policy.filterStoreMember(db, mission, req.session.auth);
     if(!authorized) {

@@ -184,7 +184,7 @@ module.exports = (sequelize, DataTypes) => {
          * @function hasManyMission
          */
         User.hasMany(models.Mission, {
-            as: 'LeaderMissions',
+            as: 'leaderMissions',
             foreignKey: 'leaderId',
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'

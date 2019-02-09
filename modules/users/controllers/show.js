@@ -22,7 +22,8 @@ module.exports = (db) => async function (req, res) {
         include: [
             'groups',
             'events',
-            'participatingMissions'
+            'participatingMissions',
+            'leaderMissions'
         ]
     });
 

@@ -30,6 +30,11 @@ test.beforeEach(async t => {
         password: 'password_test',
         email: 'test@test.com'
     });
+    t.context.leader = await db.User.create({
+        username: 'leader_test',
+        password: 'password_test',
+        email: 'leader@test.com'
+    });
     let res = await request.post('/auth/login').send({
         username: 'login_test',
         password: 'password_test'
@@ -47,8 +52,8 @@ test.beforeEach(async t => {
             markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
-            groupId: t.context.user.id,
-            leaderId: t.context.group.id
+            groupId: t.context.group.id,
+            leaderId: t.context.leader.id
         });
     
     t.is(res2.status, 200);
@@ -56,8 +61,8 @@ test.beforeEach(async t => {
     
 });
 
-test('Add self to mission', async t => {
-    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/1');
+test('Add user to mission', async t => {
+    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id);
@@ -65,17 +70,23 @@ test('Add self to mission', async t => {
     t.is(res2.body.participatingMissions[0].name, 'test');
 });
 
-test('Remove self from mission', async t => {
-    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/1');
+test('Remove user from mission', async t => {
+    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id);
     t.is(res2.body.participatingMissions.length, 1);
     t.is(res2.body.participatingMissions[0].name, 'test');
 
-    let res3 = await t.context.request.delete('/missions/'+t.context.missionId+'/members/1');
+    let res3 = await t.context.request.delete('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
     t.is(res3.status, 200);
 
     let res4 = await t.context.request.get('/users/'+t.context.user.id);
     t.is(res4.body.participatingMissions.length, 0);
+});
+
+test('Add leader to mission', async t => {
+    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/'+t.context.leader.id);
+    t.is(res.status, 400);
+
 });
