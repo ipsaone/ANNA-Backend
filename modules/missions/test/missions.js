@@ -130,7 +130,7 @@ test('Create mission (negative budgetAssigned)', async (t) => {
     let res = await t.context.request.post('/missions')
         .send({
             name: "name",
-            markdown: "  ",
+            markdown: "#test",
             budgetAssigned: -3100,
             budgetUsed: 40,
             groupId: t.context.group.id,
@@ -146,7 +146,7 @@ test('Create mission (negative budgetUsed)', async (t) => {
     let res = await t.context.request.post('/missions')
         .send({
             name: "name",
-            markdown: "  ",
+            markdown: "#test",
             budgetAssigned: 3100,
             budgetUsed: -40,
             groupId: t.context.group.id,
@@ -154,6 +154,40 @@ test('Create mission (negative budgetUsed)', async (t) => {
         });
 
     t.is(res.status, 400);
+});
+
+
+test('Create mission (zero budgetUsed)', async (t) => {
+    await t.context.user.addGroup(t.context.group);
+    let res = await t.context.request.post('/missions')
+        .send({
+            name: "name",
+            markdown: "#test",
+            budgetAssigned: 3100,
+            budgetUsed: 0,
+            groupId: t.context.group.id,
+            leaderId: t.context.user.id
+        });
+
+    t.is(res.status, 200);
+    t.is(res.body.name, 'name');
+});
+
+
+test('Create mission (zero budgets)', async (t) => {
+    await t.context.user.addGroup(t.context.group);
+    let res = await t.context.request.post('/missions')
+        .send({
+            name: "name",
+            markdown: "#test",
+            budgetAssigned: 0,
+            budgetUsed: 0,
+            groupId: t.context.group.id,
+            leaderId: t.context.user.id
+        });
+
+    t.is(res.status, 200);
+    t.is(res.body.name, 'name');
 });
 
 

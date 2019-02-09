@@ -8,8 +8,8 @@ const schema = joi.object().keys({
     name: joi.string().trim(true).min(3),
     markdown: joi.string().trim(true).min(5),
     description: joi.any().forbidden(),
-    budgetAssigned: joi.number().positive(),
-    budgetUsed: joi.number().positive(),
+    budgetAssigned: joi.number().min(0),
+    budgetUsed: joi.number().min(0),
     groupId: joi.number().integer().positive(),
     leaderId: joi.number().integer().positive().optional()
 });
@@ -40,11 +40,6 @@ module.exports = (db) => async (req, res) => {
 
     if (typeof req.body.leaderId === 'undefined') {
         req.body.leaderId = req.session.auth;
-    }
-
-    let allowed = policy.filterStore(db, req.session.id);
-    if(!allowed) {
-        return res.boom.unauthorized();
     }
 
     const mission = await db.Mission.create(req.body);
