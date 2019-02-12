@@ -86,24 +86,22 @@
     ]
   },
   "ava": {
-    "files": "modules/**/test/*.js",
+    "files": "src/modules/**/test/*.js",
     "powerAssert": true,
     "babel": {}
   },
   "scripts": {
-    "start": "node ./app.js",
+    "start": "node ./src/app.js",
     "test": "nyc ava --verbose",
     "watch-test": "ava --watch --verbose",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",
-    "clear-db": "sequelize db:migrate:undo:all && rm -r ../storage",
+    "clear-db": "sequelize db:migrate:undo:all && rm -r ./storage",
     "lint": "eslint --cache --fix --max-warnings 50 ./modules/",
     "lint-nofix": "eslint --cache --max-warnings 50 ./modules/",
-    "precommit": "exit 0; vagrant ssh -c 'cd ANNA-Backend && bash pre-commit.sh'",
-    "security": "nsp check .",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
-    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./app.js",
+    "debug": "nodemon -L --inspect=0.0.0.0:9229 ./src/app.js",
     "coverage": "http-  server ./coverage -p 8080 -c-1 -o"
   },
   "engines": {
