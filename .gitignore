@@ -6,7 +6,7 @@
 
 .env
 
-node_modules/
+node_modules
 storage/*
 tmp/
 
@@ -23,6 +23,5 @@ doc/*
 logs/
 
 vm_build.log
-node_modules
 
 coverage/

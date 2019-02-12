@@ -67,7 +67,7 @@
   },
   "node_deb": {
     "entrypoints": {
-      "daemon": "./app.js"
+      "daemon": "./src/app.js"
     }
   },
   "nyc": {
@@ -82,7 +82,7 @@
       "text"
     ],
     "exclude": [
-      "modules/**/test/*.js"
+      "src/modules/**/test/*.js"
     ]
   },
   "ava": {
@@ -102,7 +102,7 @@
     "lint-nofix": "eslint --cache --max-warnings 50 ./modules/",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
     "debug": "nodemon -L --inspect=0.0.0.0:9229 ./src/app.js",
-    "coverage": "http-  server ./coverage -p 8080 -c-1 -o"
+    "coverage": "http-server ./coverage -p 8080 -c-1 -o"
   },
   "engines": {
     "node": ">=8.9.0"
