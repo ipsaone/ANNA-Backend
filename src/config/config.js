@@ -13,7 +13,7 @@ require('dotenv').config();
 const config = {
     app: {
         name: 'A.N.N.A',
-        version: '1.0.0'
+        version: '1.1.0'
     },
 
     password: {salt: 10},
@@ -74,7 +74,7 @@ const config = {
     },
 
     storage: {
-        folder: '../storage',
+        folder: '../../storage',
         temp: '/tmp'
     }
 };
