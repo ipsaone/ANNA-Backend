@@ -44,13 +44,13 @@ module.exports = (sequelize, DataTypes) => {
          * Creates plural associations with table 'Log'
          * @function belongsToManyLog
          */
-        /*
+        
         File.belongsToMany(db2.Log, {
             as: 'fileLogs',
             through: db2.FileLog,
             foreignKey: 'logId'
         });
-        */
+        
 
         /**
          *

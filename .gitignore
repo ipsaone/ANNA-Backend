@@ -11,7 +11,7 @@ storage/*
 tmp/
 
 *.log
-package-lock.json
+src/*.log
 access.log
 .nyc_output/
 

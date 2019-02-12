@@ -27,7 +27,7 @@ const buildRouter = (db) => {
 
         return true;
     });
-    //router.all('*', (req, res) => res.boom.notFound());
+    router.all('*', (req, res) => res.boom.notFound());
 
     return router;
 };

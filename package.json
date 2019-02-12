@@ -1,6 +1,6 @@
 {
   "name": "anna-backend",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Backend for ANNA intranet",
   "main": "app.js",
   "author": "IpsaOne DevTeam",
