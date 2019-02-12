@@ -171,6 +171,14 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+
+        /**
+         * @var {STRING} serialNbr
+         */
+        serialNbr: {
+            allowNull: true,
+            type: DataTypes.STRING,
         }
     }, {
         timestamps: true,

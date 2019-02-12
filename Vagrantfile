@@ -8,16 +8,12 @@ Vagrant.configure("2") do |config|
   config.vm.define "ANNA-BACKEND"
   config.vm.provider :virtualbox do |vb|
       vb.name = "ANNA-BACKEND"
-      vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+      vb.customize ['setextradata', :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/ANNA-Backend", '1']
   end
 
-  config.trigger.after :up, warn: "----------\n\n---! ANOTHER SHELL MUST BE USED FOR SSH !---\nThis shell is now blocked for synchronization\n\n----------", run: {inline: "vagrant rsync-auto"}
   config.vm.network "private_network", ip: "192.168.50.5"
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder ".", "/home/vagrant/ANNA-Backend", 
-    type: "rsync", 
-    rsync__args: ["--verbose", "--archive", "--delete", "-z", "--no-links"],
-    rsync__exclude: ["node_modules", ".git/", ".vagrant/", "coverage/", ".nyc_output/"]
+  config.vm.synced_folder ".", "/home/vagrant/ANNA-Backend"
 
   config.vm.provision "shell", path: "./vagrant/configure", privileged: false
 end
