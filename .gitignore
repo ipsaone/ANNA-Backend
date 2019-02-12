@@ -24,3 +24,5 @@ logs/
 
 vm_build.log
 node_modules
+
+coverage/

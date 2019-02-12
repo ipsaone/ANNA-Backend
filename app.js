@@ -12,7 +12,7 @@ const config = require('./config/config');
 const winston = require('winston');
 const dir = './logs';
 
-require('winston-email');
+require('winston-mail');
 require('winston/package.json');
 require('express-async-errors');
 
@@ -45,15 +45,16 @@ const loadApp = (options = {}) => {
     ];
 
     if (!process.env.TEST || !process.env.NOEMAIL) {
-        transports.push(new winston.transports.Email({
+        transports.push(new winston.transports.Mail({
             level: 'error',
             from: config.email.sender,
             to: config.email.errorManagers,
-            service: 'Gmail',
-            auth: {
-                user: config.email.sender,
-                pass: config.email.password
-            }
+            host: "smtp.gmail.com",
+            username: config.email.sender,
+            password: config.email.password,
+            port: 587,
+            ssl: false,
+            tls: true
         }));
     }
 
