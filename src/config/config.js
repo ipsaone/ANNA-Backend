@@ -74,7 +74,7 @@ const config = {
     },
 
     storage: {
-        folder: '../../storage',
+        folder: './storage',
         temp: '/tmp'
     }
 };
