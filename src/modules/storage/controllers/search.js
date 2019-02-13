@@ -4,7 +4,7 @@ const joi = require('joi');
 const async = require('async');
 const util = require('util');
 
-const includeOptions = ['previous_data'];
+const includeOptions = ['previous_data', 'serialNbr', 'name'];
 
 const schema = joi.object().keys({
     keyword: joi.string().required(),
@@ -28,8 +28,15 @@ module.exports = (db) => async (req, res) => {
     }
 
     // Find keyword in data
-    const options = {where: {name: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}}};
-    const matchingData = await db.Data.findAll(options);
+    const searches = [];
+    if(req.body.include && 'name' in req.body.include) {
+        searches.push({name: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}});
+    }
+    if(req.body.include && 'serialNbr' in req.body.include) {
+        searches.push({serialNbr: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}});
+    }
+    const options = {[db.Sequelize.Op.or]: searches};
+    const matchingData = await db.Data.findAll({where: options});
 
     // If all data are requested, send everything we find
     if (req.body.include && 'previous_data' in req.body.include) {
