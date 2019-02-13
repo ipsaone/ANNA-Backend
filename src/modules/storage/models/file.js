@@ -94,6 +94,11 @@ module.exports = (sequelize, DataTypes) => {
                 fileChanges.isDir = false;
             }
 
+            // Check serialNbr
+            if(fileChanges.serialNbr && this.isDir) {
+                throw new Error('Cannot give serialNbr to folder');
+            }
+
             // Replace fileId and ownerId, they are not needed
             fileChanges.fileId = this.id;
             if (userId) {

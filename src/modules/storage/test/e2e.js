@@ -149,3 +149,12 @@ test('Download file', async t => {
     t.is(res3.status, 200);
     t.true(res3.body instanceof Buffer);
 });
+
+test.todo('List files (base folder');
+test.todo('List files (other folder)');
+test.todo('Find data (by name, latest)');
+test.todo('Find data (by name, older');
+test.todo('Find data (by serialNbr, latest)');
+test.todo('Find data (by serialNbr, older');
+test.todo('Delete file');
+test.todo('Delete folder');
