@@ -9,26 +9,73 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
-const winston_cfg = require('./config/winston');
-const logdir = './logs';
-if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir);}
+const winston = require('winston');
+const dir = './logs';
 
+require('winston-mail');
 require('express-async-errors');
+
 require('dotenv').config();
 
 
 const loadApp = (options = {}) => {
 
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+
+    const transports = [
+        new winston.transports.Console({
+            level: 'warn',
+            colorize: true
+        }),
+        new winston.transports.File({
+            level: 'debug',
+            name: 'file#debug',
+            filename: './logs/debug.log',
+            colorize: true
+        }),
+        new winston.transports.File({
+            level: 'info',
+            name: 'file#info',
+            filename: './logs/info.log',
+            colorize: true
+        })
+    ];
+
+    if (!process.env.TEST || !process.env.NOEMAIL) {
+        transports.push(new winston.transports.Mail({
+            level: 'error',
+            from: config.email.sender,
+            to: config.email.errorManagers,
+            host: "smtp.gmail.com",
+            username: config.email.sender,
+            password: config.email.password,
+            port: 587,
+            ssl: false,
+            tls: true
+        }));
+    }
+
+    winston.configure({transports});
+    morgan.token('id', (req) => req.id.split('-')[0]);
+
     /*
      * Server config
      */
+
     const app = express();
     const {host, port} = config.app.getConnection();
+
+    if (options && !options.noLog) {
+        http.createServer(app).listen(port, host, function () {
+            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+        });
+    }
 
     /*
      * Middleware and logging
      */
-    winston_cfg();
     app.use(boom()); // Error responses
     app.use(helmet()); // Helmet offers different protection middleware
     app.use(require('./middlewares/rate_limit')); // Rate limit
@@ -36,7 +83,6 @@ const loadApp = (options = {}) => {
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
     if (options && !options.noLog) {
-        morgan.token('id', (req) => req.id.split('-')[0]);
         app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
         app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
     }
@@ -59,15 +105,13 @@ const loadApp = (options = {}) => {
     const factory = new ModulesFactory(factoryOptions);
 
     app.use(factory.router);
+
     app.use(require('./middlewares/exception')); // Error handling
 
-    if (options && !options.noLog) {
-        http.createServer(app).listen(port, host, function () {
-            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
-        });
-    }
-
-    return { app, modules: factory };
+    return {
+        app,
+        modules: factory
+    };
 };
 
 if (require.main === module) {
