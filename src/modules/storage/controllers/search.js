@@ -29,10 +29,10 @@ module.exports = (db) => async (req, res) => {
 
     // Find keyword in data
     const searches = [];
-    if(req.body.include && 'name' in req.body.include) {
+    if(req.body.include && req.body.include.includes('name')) {
         searches.push({name: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}});
     }
-    if(req.body.include && 'serialNbr' in req.body.include) {
+    if(req.body.include && req.body.include.includes('serialNbr')) {
         searches.push({serialNbr: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}});
     }
     const options = {[db.Sequelize.Op.or]: searches};

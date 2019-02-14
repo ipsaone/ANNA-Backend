@@ -152,9 +152,69 @@ test('Download file', async t => {
 
 test.todo('List files (base folder');
 test.todo('List files (other folder)');
-test.todo('Find data (by name, latest)');
+test('Find data (by name, latest)', async t => {
+    let res = await t.context.request.post('/storage/upload')
+        .attach('contents', path.join(root, 'src', './app.js'))
+        .field('isDir', false)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+
+    t.is(res.status, 200);
+    t.is(res.body.name, 'test');
+
+    let res2 = await t.context.request.get('/storage/files/search')
+        .send({
+            keyword: 'test',
+            upperFolder: t.context.folder.id,
+            include: ['name']
+        })
+
+    t.is(res2.body.length, 1);
+})
 test.todo('Find data (by name, older');
-test.todo('Find data (by serialNbr, latest)');
+test('Find data (by serialNbr, latest)', async t => {
+    let res = await t.context.request.post('/storage/upload')
+        .attach('contents', path.join(root, 'src', './app.js'))
+        .field('isDir', false)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+        .field('serialNbr', 'abc-def');
+
+    t.is(res.status, 200);
+    t.is(res.body.name, 'test');
+
+    let res2 = await t.context.request.get('/storage/files/search')
+        .send({
+            keyword: 'abc-def',
+            upperFolder: t.context.folder.id,
+            include: ['serialNbr']
+        })
+
+    t.is(res2.body.length, 1);
+});
 test.todo('Find data (by serialNbr, older');
 test.todo('Delete file');
-test.todo('Delete folder');
+test('Delete folder', async t => {
+    let res = await t.context.request.post('/storage/upload')
+        .field('isDir', true)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+        .field('ownerRead', true)
+        .field('groupRead', true)
+        .field('allRead', true)
+
+    t.is(res.status, 200);
+
+    let res88 = await t.context.request.get('/storage/files/list/'+t.context.folder.id);
+    t.is(res88.body.children.length, 1);
+
+
+    let res2 = await t.context.request.delete('/storage/files/'+res.body.id);
+    t.is(res2.status, 204);
+
+    let res_2 = await t.context.request.get('/storage/files/list/'+t.context.folder.id);
+    t.is(res_2.body.children.length, 0)
+});
