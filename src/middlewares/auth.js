@@ -27,12 +27,14 @@ const winston = require('winston');
  *
  */
 module.exports = (req, res, next) => {
-    winston.debug('Checks if user is logged in.', {reqid: req.id});
+    winston.debug('Check if user is logged in.', {reqid: req.id});
     if (req.path !== '/' && req.path !== '/auth/login' && req.path !== '/auth/check') {
         if (req.session.auth || config.session.check === 'false') {
+            winston.debug('User is logged. Request allowed', {reqid: req.id})
             return next();
         }
 
+        winston.info('Request rejected (not logged in)', {reqid: req.id});
         return res.boom.unauthorized('You must be logged in');
 
     }
