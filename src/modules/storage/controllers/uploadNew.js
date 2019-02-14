@@ -35,10 +35,10 @@ module.exports = (db) => async (req, res) => {
     const dirId = parseInt(req.body.dirId, 10);
 
     // Create the file and its data
-    winston.debug('Checking upload policies');
+    winston.debug('Checking (new) upload policies');
     const allowed = await policy.filterUploadNew(db, dirId, req.session.auth);
     if (!allowed) {
-        winston.info('Upload refused by policies');
+        winston.info('Upload (new) refused by policies');
         throw res.boom.unauthorized();
     }
 
