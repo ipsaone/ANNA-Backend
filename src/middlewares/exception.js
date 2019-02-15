@@ -36,7 +36,7 @@ const sendError = (res, err, type) => {
     const canSend = typeof res.boom !== 'undefined';
 
     if (!canSend) {
-        winston.error('Couldn\'t send error to client');
+        req.transaction.logger.error('Couldn\'t send error to client');
     }
 
     // Build the error and send it
@@ -49,14 +49,14 @@ const logError = (err) => {
     /**
      * CONSOLE OUTPUT
      */
-    winston.error('Exception received by handler', {err});
+    req.transaction.logger.error('Exception received by handler', {err});
     if (err instanceof Error) {
-        winston.error(err.stack);
+        req.transaction.logger.error(err.stack);
     } else {
-        winston.error(`Error type : ${err.constructor.name}`);
+        req.transaction.logger.error(`Error type : ${err.constructor.name}`);
         const except = new Error();
 
-        winston.error(except.stack);
+        req.transaction.logger.error(except.stack);
     }
 };
 
@@ -67,18 +67,18 @@ module.exports = (err, req, res, next) => {
 
     // Check a response has not been half-sent
     if (res.headersSent) {
-        winston.debug('Hearders already sent', {reqid: req.id});
+        req.transaction.logger.debug('Hearders already sent', {reqid: req.id});
         return next(err);
     }
 
     // Sending an error is possible
     if (typeof err.type && err.type === 'entity.parse.failed') { // Bad JSON was sent
         sendError(res, err, 'badRequest');
-        winston.error('Could not parse entity', {reqid: req.id});
+        req.transaction.logger.error('Could not parse entity', {reqid: req.id});
 
     } else if (err instanceof sequelize.ValidationError) { // Validation error
         sendError(res, err.errors.map(item => item.message), 'badRequest');
-        winston.error('Unapropriate request', {reqid: req.id});
+        req.transaction.logger.error('Unapropriate request', {reqid: req.id});
 
     } else if (err instanceof sequelize.ForeignKeyConstraintError) {
         let message = 'Foreign key constraint error';
@@ -86,7 +86,7 @@ module.exports = (err, req, res, next) => {
             message += ' (critical objects still exist)';
         }
         sendError(res, message, 'badRequest');
-        winston.error(message, {reqid: req.id});
+        req.transaction.logger.error(message, {reqid: req.id});
 
 
     } else { // Unknown error

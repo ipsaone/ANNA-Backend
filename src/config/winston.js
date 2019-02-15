@@ -5,25 +5,28 @@ require('winston-mail');
 
 
 const logdir = './logs';
+if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir);}
 
 
 const transports = [
     new winston.transports.Console({
         level: 'warn',
         colorize: true
-    }), /*
+    }), 
+
+    // SEE https://github.com/winstonjs/winston/issues/1573 
     new winston.transports.File({
         level: 'debug',
         filename: '../logs/debug.log',
-
     }),
     new winston.transports.File({
         level: 'info',
-        name: 'file#info',
         filename: '../logs/info.log',
-        colorize: true,
-    })*/
+    })
 ];
+
+
+
 
 if (!process.env.TEST || !process.env.NOEMAIL) {
     transports.push(new winston.transports.Mail({
@@ -39,9 +42,16 @@ if (!process.env.TEST || !process.env.NOEMAIL) {
     }));
 }
 
+transports.forEach((el) => {
+    el.setMaxListeners(100);
+})
+
 let format = winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint())
-module.exports = () => {
-    if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir);}
-    winston.configure({transports, format});
-    winston.debug('Winston is configured');
+
+module.exports = {
+    logdir,
+    winston_opts: {
+        transports,
+        format
+    }
 }

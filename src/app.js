@@ -9,7 +9,6 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
-const winston_cfg = require('./config/winston');
 
 
 require('express-async-errors');
@@ -23,7 +22,6 @@ const loadApp = (options = {}) => {
     /*
      * Server config
      */
-    winston_cfg();
     morgan.token('id', (req) => req.id.split('-')[0]);
     const app = express();
     const {host, port} = config.app.getConnection();
@@ -42,6 +40,7 @@ const loadApp = (options = {}) => {
     app.use(bodyParser.urlencoded({extended: true})); // POST parser
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
+    app.use(require('./middlewares/transaction')); // Build transaction object
     if (options && !options.noLog) {
         app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
         app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));

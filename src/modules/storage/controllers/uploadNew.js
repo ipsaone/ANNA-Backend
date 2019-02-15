@@ -22,7 +22,7 @@ module.exports = (db) => async (req, res) => {
      */
 
     // Escape req.body strings
-    winston.info('Escaping req.body strings')
+    req.transaction.logger.info('Escaping req.body strings')
     Object.keys(req.body).map((key) => {
         if (typeof req.body[key] === 'string') {
             req.body[key] = encodeURI(req.body[key]);
@@ -35,22 +35,22 @@ module.exports = (db) => async (req, res) => {
     const dirId = parseInt(req.body.dirId, 10);
 
     // Create the file and its data
-    winston.debug('Checking upload policies');
+    req.transaction.logger.debug('Checking upload policies');
     const allowed = await policy.filterUploadNew(db, dirId, req.session.auth);
     if (!allowed) {
-        winston.info('Upload refused by policies');
+        req.transaction.logger.info('Upload refused by policies');
         throw res.boom.unauthorized();
     }
 
     let filePath = '';
     if (req.file) {
-        winston.debug('Reading file path');
+        req.transaction.logger.debug('Reading file path');
         filePath = req.file.path;
     }
 
-    winston.info('Creating file')
+    req.transaction.logger.info('Creating file')
     const data = await db.File.createNew(db, req.body, filePath, req.session.auth);
 
-    winston.info('Sending created data');
+    req.transaction.logger.info('Sending created data');
     return res.status(200).json(data);
 };

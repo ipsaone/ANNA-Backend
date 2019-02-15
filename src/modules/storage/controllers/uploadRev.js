@@ -21,7 +21,7 @@ module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
 
     // Escape req.body strings
-    winston.info('Escaping res.body strings');
+    req.transaction.logger.info('Escaping res.body strings');
     Object.keys(req.body).map(function (key) {
         if (typeof req.body[key] === 'string') {
             req.body[key] = escape(req.body[key]);
@@ -31,14 +31,14 @@ module.exports = (db) => async (req, res) => {
     });
 
     // Find the file in database and add new data
-    winston.debug('Checking policies')
+    req.transaction.logger.debug('Checking policies')
     const allowed = await policy.filterUploadRev(db, fileId, req.session.auth);
     if (!allowed) {
-        winston.info('Upload (rev) refused by policies');
+        req.transaction.logger.info('Upload (rev) refused by policies');
         throw res.boom.unauthorized();
     }
 
-    winston.debug('Finding file and reading path')
+    req.transaction.logger.debug('Finding file and reading path')
     const file = await db.File.findByPk(fileId);
     let filePath = '';
     if (req.file) {
@@ -47,10 +47,10 @@ module.exports = (db) => async (req, res) => {
 
 
     try {
-        winston.debug('adding data');
+        req.transaction.logger.debug('adding data');
         let data = await file.addData(db, req.body, filePath, req.session.auth);
 
-        winston.info('Responding with new data');
+        req.transaction.logger.info('Responding with new data');
         return res.status(200).json(data);
     } catch (e) {
         return res.boom.badRequest(e);

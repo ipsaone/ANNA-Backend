@@ -21,12 +21,12 @@ module.exports = (db) => async (req, res) => {
     const dl = req.query.download && req.query.download === 'true';
     if (dl) {
 
-        winston.debug('Starting file download routine');
+        req.transaction.logger.debug('Starting file download routine');
 
         // Find the file in database
         const file = await db.File.findByPk(fileId);
         if (!file) {
-            winston.info("download failed", {fileId: fileId});
+            req.transaction.logger.info("download failed", {fileId: fileId});
             return res.boom.notFound("file not found !");
         }
 
@@ -34,46 +34,46 @@ module.exports = (db) => async (req, res) => {
         let rev = 0;
         if (!isNaN(parseInt(req.query.revision, 10))) {
             rev = parseInt(req.query.revision, 10);
-            winston.debug('Successfully parsed revision request', {revision : rev});
+            req.transaction.logger.debug('Successfully parsed revision request', {revision : rev});
         }
 
-        winston.debug('Requesting target data', {revision: rev})
+        req.transaction.logger.debug('Requesting target data', {revision: rev})
         const data = await file.getData(db, rev);
         if (!data) {
             winston
             return res.boom.notFound('This revision doesn\'t exist');
         }
 
-        winston.debug('Checking policy');
+        req.transaction.logger.debug('Checking policy');
         const allowed = await policy.filterDownloadContents(db, fileId, req.session.auth);
         if (!allowed) {
-            winston.info('Download request refused by policy');
+            req.transaction.logger.info('Download request refused by policy');
             return res.boom.unauthorized();
         }
 
-        winston.debug('Requesting data path');
+        req.transaction.logger.debug('Requesting data path');
         const dataPath = await data.getPath(true);
-        winston.debug('Data path request successful', {path: dataPath});
+        req.transaction.logger.debug('Data path request successful', {path: dataPath});
 
-        winston.info('Sending file', {data: data.name});
+        req.transaction.logger.info('Sending file', {data: data.name});
         return res.download(dataPath, data.name);
     }
 
-    winston.info('Starting metadata download routine');
+    req.transaction.logger.info('Starting metadata download routine');
 
-    winston.debug('Checking policy')
+    req.transaction.logger.debug('Checking policy')
     const allowed = await policy.filterDownloadMeta(db, fileId, req.session.auth);
     if (!allowed) {
-        winston.info('Metadata download refused by policy');
+        req.transaction.logger.info('Metadata download refused by policy');
         throw res.boom.unauthorized();
     }
 
-    winston.debug('Requesting corresponding data');
+    req.transaction.logger.debug('Requesting corresponding data');
     const data = await db.Data.findAll({
         where: {fileId},
         include: ['rights']
     });
 
-    winston.info('Sending metadata', {data: data})
+    req.transaction.logger.info('Sending metadata', {data: data})
     return res.status(200).json(data);
 };
