@@ -44,7 +44,7 @@ const sendError = (res, err, type) => {
     builder(err);
 };
 
-const logError = (err) => {
+const logError = (req, err) => {
 
     /**
      * CONSOLE OUTPUT
@@ -91,7 +91,7 @@ module.exports = (err, req, res, next) => {
 
     } else { // Unknown error
         sendError(res, err, 'badImplementation');
-        logError(err);
+        logError(req, err);
 
     }
 

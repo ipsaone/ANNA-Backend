@@ -1,5 +1,6 @@
 const winston = require('winston');
 const config = require('./config');
+const path = require('path');
 const fs = require('fs'); // File system
 require('winston-mail');
 
@@ -17,11 +18,11 @@ const transports = [
     // SEE https://github.com/winstonjs/winston/issues/1573 
     new winston.transports.File({
         level: 'debug',
-        filename: '../logs/debug.log',
+        filename: path.join(logdir, 'debug.log'),
     }),
     new winston.transports.File({
         level: 'info',
-        filename: '../logs/info.log',
+        filename: path.join(logdir, 'info.log'),
     })
 ];
 
@@ -44,14 +45,9 @@ if (!process.env.TEST || !process.env.NOEMAIL) {
 
 transports.forEach((el) => {
     el.setMaxListeners(100);
-})
-
-let format = winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint())
+});
 
 module.exports = {
     logdir,
-    winston_opts: {
-        transports,
-        format
-    }
+    transports
 }

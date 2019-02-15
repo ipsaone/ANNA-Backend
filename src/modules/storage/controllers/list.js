@@ -3,9 +3,9 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 
-const getChildrenData = async (db, folderId, options) => {
+const getChildrenData = async (db, folderId, options, transaction) => {
 
-    req.transaction.logger.debug('getChildrenData called', {folderId, options});
+    transaction.logger.debug('getChildrenData called', {folderId, options});
 
     let file = db.File;
     if (options.filesOnly) {
@@ -16,20 +16,20 @@ const getChildrenData = async (db, folderId, options) => {
         file = file.scope('folders');
     }
 
-    req.transaction.logger.debug('Requesting all files')
+    transaction.logger.debug('Requesting all files')
     let files = {};
     try {
         files = await file.findAll();
     } catch (err) {
-        req.transaction.logger.error("Couldn't retrieve files list from db", {err});
+        transaction.logger.error("Couldn't retrieve files list from db", {err});
         return [];
     }
 
-    req.transaction.logger.debug('Getting last data where real file exists for each file')
+    transaction.logger.debug('Getting last data where real file exists for each file')
     let data = await Promise.all(files.map(async (thisFile) => {
         const d = await thisFile.getData(db);
         if (!d) {
-            req.transaction.logger.debug('getData failed, returning empty object', {thisFile : thisFile.toJSON()})
+            transaction.logger.debug('getData failed, returning empty object', {thisFile : thisFile.toJSON()})
             return {};
         }
 
@@ -39,7 +39,7 @@ const getChildrenData = async (db, folderId, options) => {
 
         // Find previous data where the file exists
         // Extract file size and type from there (for display only !)
-        req.transaction.logger.debug("Iterating on data to find last existing file", {thisFile : thisFile.toJSON()});
+        transaction.logger.debug("Iterating on data to find last existing file", {thisFile : thisFile.toJSON()});
         let i = 0, prevData = {};
         while(prevData = await thisFile.getData(db, i)) {
             if(!prevData) {
@@ -54,7 +54,7 @@ const getChildrenData = async (db, folderId, options) => {
             i++;
 
             if(i>1e6) {
-                req.transaction.logger.error('Infinite loop while extracting previous data size/type', {thisFile : thisFile.toJSON()})
+                transaction.logger.error('Infinite loop while extracting previous data size/type', {thisFile : thisFile.toJSON()})
                 throw new error('Infinite loop while extracting previous data size/type');
             }
         };
@@ -65,11 +65,11 @@ const getChildrenData = async (db, folderId, options) => {
         
     }));
 
-    req.transaction.logger.debug('Filtering data')
+    transaction.logger.debug('Filtering data')
     data = data.filter((item) => item.dirId === folderId);
     data = data.filter((item) => item.fileId !== 1);
 
-    req.transaction.logger.debug('Returning found data', {data})
+    transaction.logger.debug('Returning found data', {data})
     return data;
 
 };
@@ -96,7 +96,7 @@ module.exports = (db) => async (req, res) => {
     }
 
     req.transaction.logger.debug('Starting request for children data for folder', {folderId});
-    const childrenDataP = getChildrenData(db, folderId, req.query);
+    const childrenDataP = getChildrenData(db, folderId, req.query, req.transaction);
     const folderFileP = db.File.findOne({
         where: {id: folderId},
         rejectOnEmpty: true
