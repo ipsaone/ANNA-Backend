@@ -9,10 +9,9 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
-const winston = require('winston');
-const dir = './logs';
+const winston_cfg = require('./config/winston');
 
-require('winston-mail');
+
 require('express-async-errors');
 
 require('dotenv').config();
@@ -20,52 +19,19 @@ require('dotenv').config();
 
 const loadApp = (options = {}) => {
 
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-
-    const transports = [
-        new winston.transports.Console({
-            level: 'warn',
-            colorize: true
-        }),
-        new winston.transports.File({
-            level: 'debug',
-            name: 'file#debug',
-            filename: './logs/debug.log',
-            colorize: true
-        }),
-        new winston.transports.File({
-            level: 'info',
-            name: 'file#info',
-            filename: './logs/info.log',
-            colorize: true
-        })
-    ];
-
-    if (!process.env.TEST || !process.env.NOEMAIL) {
-        transports.push(new winston.transports.Mail({
-            level: 'error',
-            from: config.email.sender,
-            to: config.email.errorManagers,
-            host: "smtp.gmail.com",
-            username: config.email.sender,
-            password: config.email.password,
-            port: 587,
-            ssl: false,
-            tls: true
-        }));
-    }
-
-    winston.configure({transports});
-    morgan.token('id', (req) => req.id.split('-')[0]);
-
+    
     /*
      * Server config
      */
-
+    winston_cfg();
+    morgan.token('id', (req) => req.id.split('-')[0]);
     const app = express();
     const {host, port} = config.app.getConnection();
+    if (options && !options.noLog) {
+        http.createServer(app).listen(port, host, function () {
+            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+        });
+    }
 
     if (options && !options.noLog) {
         http.createServer(app).listen(port, host, function () {
@@ -95,7 +61,7 @@ const loadApp = (options = {}) => {
      * Special options
      */
     app.set('trust proxy', 1); // Trust reverse proxy
-    app.options('*', require('./middlewares/cors')); // Pre-flight
+    app.options('*', require('./middlewares/cors'));    // Pre-flight
     
     /*
      * Routing and error catching
@@ -105,7 +71,6 @@ const loadApp = (options = {}) => {
     const factory = new ModulesFactory(factoryOptions);
 
     app.use(factory.router);
-
     app.use(require('./middlewares/exception')); // Error handling
 
     return {

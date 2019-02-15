@@ -49,13 +49,10 @@ const logError = (err) => {
     /**
      * CONSOLE OUTPUT
      */
-    console.error('Exception received by handler :')
-    winston.error('Exception received by handler :');
+    winston.error('Exception received by handler', {err});
     if (err instanceof Error) {
-        console.error(err.stack);
         winston.error(err.stack);
     } else {
-        console.error(`Error type : ${err.constructor.name}`);
         winston.error(`Error type : ${err.constructor.name}`);
         const except = new Error();
 
