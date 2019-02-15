@@ -33,12 +33,6 @@ const loadApp = (options = {}) => {
         });
     }
 
-    if (options && !options.noLog) {
-        http.createServer(app).listen(port, host, function () {
-            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
-        });
-    }
-
     /*
      * Middleware and logging
      */

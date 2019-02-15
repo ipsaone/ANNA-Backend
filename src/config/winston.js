@@ -14,9 +14,7 @@ const transports = [
     }), /*
     new winston.transports.File({
         level: 'debug',
-        name: 'file#debug',
         filename: '../logs/debug.log',
-        colorize: true,
 
     }),
     new winston.transports.File({
@@ -45,4 +43,5 @@ let format = winston.format.combine(winston.format.timestamp(), winston.format.p
 module.exports = () => {
     if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir);}
     winston.configure({transports, format});
+    winston.debug('Winston is configured');
 }
