@@ -1,14 +1,13 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+const assert = require('assert');
 
-module.exports.login = async (db, username, password) => {
-    if (!db) {
-        throw new Error('No database given');
-    }
+module.exports.login = async (transaction, username, password) => {
+    transaction.logger.debug('Finding user', {username});
 
     // Find user in database
-    const user = await db.User.findOne({
+    const user = await transaction.db.User.findOne({
         where: {username},
         include: [
             'groups',
@@ -19,16 +18,20 @@ module.exports.login = async (db, username, password) => {
 
     // Check user was found
     if (!user) {
+        transaction.logger.debug('User not found');
         return false;
     }
 
     // Compare password to hash
+    transaction.logger.debug('Comparing hashes');
     const passwordAccepted = await bcrypt.compare(password, user.password);
 
     if (!passwordAccepted) {
+        transaction.logger.debug('Password refused');
         return false;
     }
 
+    transaction.logger.debug('Password accepted');
 
     return user;
 };

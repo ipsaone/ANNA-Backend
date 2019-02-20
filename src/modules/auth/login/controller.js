@@ -40,7 +40,7 @@ module.exports = function (db) {
 
         // Login user
         req.transaction.logger.info('Logging in', {username: req.body.username});
-        const user = await repo.login(db, req.body.username, req.body.password);
+        const user = await repo.login(req.transaction, req.body.username, req.body.password);
 
         if (!user) {
             req.transaction.logger.debug('Login failed');

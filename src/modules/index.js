@@ -5,60 +5,11 @@
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
+const uuidv4 = require('uuid/v4');
 
 const Sequelize = require('sequelize');
-
-const buildRouter = (db) => {
-    // Importing routes
-    const router = require('express').Router();
-
-    router.use('/', require('./home').routes);
-    const directories =
-          require('fs').readdirSync(path.join(root, 'src', 'modules'))
-              .map((name) => path.join(root, 'src', 'modules', name))
-              .filter((source) => require('fs').lstatSync(source)
-                  .isDirectory())
-              .map((folder) => path.basename(folder));
-
-    directories.map((dir) => {
-        const thisModule = require(path.join(root, 'src', 'modules', dir));
-
-        router.use(`/${dir}`, thisModule.routes(db));
-
-        return true;
-    });
-    router.all('*', (req, res) => res.boom.notFound());
-
-    return router;
-};
-
-const buildDB = (sequelize) => {
-    const db = {};
-
-    // Importing models and associations
-    const options = {
-        root: __dirname,
-        realpath: true
-    };
-    const modelFiles = require('glob').sync('./src/models/*.js', options);
-    const moduleFiles = require('glob').sync('./src/modules/**/models/*.js', options);
-
-    modelFiles.concat(moduleFiles).forEach((file) => {
-        const model = sequelize.import(file);
-
-        db[model.name] = model;
-    });
-    Object.keys(db).forEach((modelName) => {
-        if (db[modelName].associate) {
-            db[modelName].associate(db);
-        }
-    });
-
-    db.sequelize = sequelize;
-    db.Sequelize = Sequelize;
-
-    return db;
-};
+const buildRouter = require('./buildRouter');
+const buildDB = require('./buildDB');
 
 module.exports = class ModuleFactory {
     constructor (options) {
@@ -78,7 +29,7 @@ module.exports = class ModuleFactory {
 
         if (test) {
             // For tests, load in-memory SQLite database !
-            this.testDatabases = 0;
+            let uuid = uuidv4();
             this.db = buildDB(new Sequelize(`test${this.testDatabases}`, null, null, config));
         } else {
             this.db = buildDB(new Sequelize(config.database, config.username, config.password, config));
