@@ -65,11 +65,11 @@ const getChildrenData = async (db, folderId, options, transaction) => {
         
     }));
 
-    transaction.logger.debug('Filtering data')
+    transaction.logger.debug('Filtering data');
     data = data.filter((item) => item.dirId === folderId);
     data = data.filter((item) => item.fileId !== 1);
 
-    transaction.logger.debug('Returning found data', {data})
+    transaction.logger.debug('Returning found data', {data});
     return data;
 
 };

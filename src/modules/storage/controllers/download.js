@@ -74,6 +74,6 @@ module.exports = (db) => async (req, res) => {
         include: ['rights']
     });
 
-    req.transaction.logger.info('Sending metadata', {data: data})
+    req.transaction.logger.info('Sending metadata', {data: data.map(e => e.toJSON())})
     return res.status(200).json(data);
 };

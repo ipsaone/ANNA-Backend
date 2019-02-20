@@ -75,7 +75,7 @@ module.exports = (db) => async (req, res) => {
 
     }));
 
-    req.transaction.logger.info('Returning found data', {data: filteredData});
+    req.transaction.logger.debug('Returning found data', {data: filteredData.map(e => e.toJSON())});
     return res.status(200).json(filteredData);
 
 };
