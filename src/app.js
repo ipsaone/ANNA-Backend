@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
+const now = require('performance-now');
 
 
 require('express-async-errors');
@@ -18,6 +19,7 @@ require('dotenv').config();
 
 const loadApp = (options = {}) => {
 
+    let start = now();
     
     /*
      * Server config
@@ -28,6 +30,7 @@ const loadApp = (options = {}) => {
     if (options && !options.noLog) {
         http.createServer(app).listen(port, host, function () {
             console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+            console.log("Startup time 1 : ", now() - start);
         });
     }
 
@@ -65,6 +68,8 @@ const loadApp = (options = {}) => {
 
     app.use(factory.router);
     app.use(require('./middlewares/exception')); // Error handling
+
+    console.log("Startup time 2 : ", now() - start);
 
     return {
         app,
