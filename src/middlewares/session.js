@@ -45,6 +45,8 @@ module.exports = session({
     secret: config.session.secret,
     resave: false,
     saveUninitialized: false,
+    rolling: true,
+    maxAge: 1000*60*30, // 1000ms * 60s * 30min
 
     /**
      * Secure cookies !

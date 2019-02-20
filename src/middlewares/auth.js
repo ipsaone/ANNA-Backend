@@ -30,6 +30,7 @@ module.exports = (req, res, next) => {
     req.transaction.logger.debug('Check if user is logged in.', {reqid: req.id});
     if (req.path !== '/' && req.path !== '/auth/login' && req.path !== '/auth/check') {
         if (req.session.auth || config.session.check === 'false') {
+            req.session.touch();
             req.transaction.logger.debug('User is logged. Request allowed', {reqid: req.id})
             req.transaction.userId = req.session.auth;
             return next();
