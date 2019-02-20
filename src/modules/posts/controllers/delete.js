@@ -14,16 +14,19 @@ const policy = require('../post_policy');
  */
 
 module.exports = (db) => async function (req, res) {
-    if (isNaN(parseInt(req.params.postId, 10))) {
-        throw res.boom.badRequest('Post ID must be an integer');
-    }
     const postId = parseInt(req.params.postId, 10);
+    req.transaction.logger.info('Post deletion controller invoked', {postId});
 
+    req.transaction.logger.debug('Filtering deletion');
     let authorized = await policy.filterDelete(db, req.session.auth);
     if(!authorized) {
+        req.transaction.logger.info('Deletion denied');
         return res.boom.unauthorized();
     }
-    
-    db.Post.destroy({where: {id: postId}})
+
+    req.transaction.logger.info('Deleting post');
+    db.Post.destroy({where: {id: postId}});
+
+    req.transaction.logger.info('Sending response');
     return res.status(204).json({});
 };
