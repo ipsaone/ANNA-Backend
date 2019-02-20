@@ -23,6 +23,8 @@ module.exports = function (db) {
             logged = true;
         }
 
+        req.transaction.logger.debug('Checking login', {logged: req.session.auth});
+
         // Send response
         return res.status(200).json({logged});
     };

@@ -5,10 +5,10 @@ const winston_cfg = require('../config/winston');
 
 module.exports = (req, res, next) => {
     req.transaction = {};
-    req.transaction.id = req.id;
+    req.transaction.info = {requestId : req.id};
 
     let format = winston.format.combine(
-        winston.format.label({label : {transactionId : req.transaction.id}}),
+        winston.format.label({label : {transactionInfo : req.transaction.info}}),
         winston.format.timestamp(), 
         winston.format.prettyPrint(),
     );

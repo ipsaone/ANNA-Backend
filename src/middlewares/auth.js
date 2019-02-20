@@ -32,7 +32,8 @@ module.exports = (req, res, next) => {
         if (req.session.auth || config.session.check === 'false') {
             req.session.touch();
             req.transaction.logger.debug('User is logged. Request allowed', {reqid: req.id})
-            req.transaction.userId = req.session.auth;
+            req.transaction.info.userId = req.session.auth;
+            req.transaction.info.sessionId = req.session.id;
             return next();
         }
 
