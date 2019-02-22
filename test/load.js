@@ -16,8 +16,8 @@ function startTest() {
     console.log('Starting tests');
     let inst = cannon({
         url : "http://"+connection.host+":"+connection.port,
-        connections: 1e3,
-        amount: 1e4,
+        connections: 1e4,
+        amount: 1e5,
         headers: {'Content-type': 'application/json; charset=utf-8'},
         requests: [
             {
