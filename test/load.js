@@ -4,19 +4,19 @@ const cannon = require('autocannon');
 const config = require('../src/config/config');
 const fs = require('fs');
 
-load();
 let connection = config.app.getConnection();
+load();
 
-async function load() {
+function load() {
     const loadApp = require('../src/app');
-    let {app, modules} = loadApp({up_cb: startTest});
+    let {app, modules} = loadApp({up_cb: startTest, noLog: true});
 }
 
 function startTest() {
-    console.log('Starting load test');
-    cannon({
+    console.log('Starting tests');
+    let inst = cannon({
         url : "http://"+connection.host+":"+connection.port,
-        connections: 1e4,
+        connections: 1e3,
         amount: 1e4,
         headers: {'Content-type': 'application/json; charset=utf-8'},
         requests: [
@@ -29,7 +29,14 @@ function startTest() {
                 })
             },
         ]
-    },
-        fs.appendFileSync.bind(null, "./logs/load.log")
+    }, (err, res) => {
+        if(err) { console.err(err); } 
+
+        process.exit(0); 
+    }
     );
+
+    cannon.track(inst, {outputStream: process.stdout})
+
+    
 }

@@ -35,9 +35,10 @@ const loadApp = (options = {}) => {
                 const elapsedHrTime = process.hrtime(start);
                 const elapsed = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
                 console.log("Started in", elapsed, "ms");
-                if(options.up_cb) {
-                    options.up_cb();
-                }
+            }
+
+            if(options.up_cb) {
+                options.up_cb();
             }
         });
     }
