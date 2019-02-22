@@ -103,7 +103,8 @@
     "lint-nofix": "eslint --cache --max-warnings 50 ./modules/",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
     "debug": "nodemon -L --inspect=0.0.0.0:9229 ./src/app.js",
-    "coverage": "http-server ./coverage -p 8080 -c-1 -o"
+    "coverage": "http-server ./coverage -p 8080 -c-1 -o",
+    "load": "node ./test/load.js"
   },
   "engines": {
     "node": ">=8.9.0"

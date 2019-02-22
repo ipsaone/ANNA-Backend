@@ -2,6 +2,7 @@
 
 'use strict';
 
+const fs = require('fs');
 require('dotenv').config();
 
 /*
@@ -43,7 +44,7 @@ const config = {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            logging: false,
+            logging: fs.appendFileSync.bind(null, "./logs/db.log"),
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
@@ -62,7 +63,7 @@ const config = {
             host: '',
             username: '',
             password: '',
-            logging: false, // Prevent Sequelize from outputting the query on the console
+            logging: fs.appendFileSync.bind(null, "./logs/db_test.log"), // Prevent Sequelize from outputting the query on the console
             redis: this.session,
             force: true,
             operatorsAliases: false,

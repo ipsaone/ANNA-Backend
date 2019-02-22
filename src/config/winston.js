@@ -44,7 +44,7 @@ if (!process.env.TEST || !process.env.NOEMAIL) {
 }
 
 transports.forEach((el) => {
-    el.setMaxListeners(100);
+    el.setMaxListeners(1e5);
 });
 
 module.exports = {
