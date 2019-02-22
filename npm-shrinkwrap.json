@@ -19044,11 +19044,6 @@
         }
       }
     },
-    "performance-now": {
-      "version": "2.1.0",
-      "resolved": "https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz",
-      "integrity": "sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns="
-    },
     "sequelize": {
       "version": "4.42.0",
       "resolved": "https://registry.npmjs.org/sequelize/-/sequelize-4.42.0.tgz",

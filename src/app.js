@@ -9,7 +9,6 @@ const morgan = require('morgan');
 const fs = require('fs'); // File system
 const path = require('path');
 const config = require('./config/config');
-const now = require('performance-now');
 
 
 require('express-async-errors');
@@ -19,7 +18,8 @@ require('dotenv').config();
 
 const loadApp = (options = {}) => {
 
-    let start = now();
+    let start = process.hrtime();
+    if(!options) { exit(-1); }
     
     /*
      * Server config
@@ -27,10 +27,15 @@ const loadApp = (options = {}) => {
     morgan.token('id', (req) => req.id.split('-')[0]);
     const app = express();
     const {host, port} = config.app.getConnection();
-    if (options && !options.noLog) {
+    
+    if(!options.test) { // Listen only when out of testing settings
         http.createServer(app).listen(port, host, function () {
-            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
-            console.log("Startup time 1 : ", now() - start);
+            if (!options.noLog) {
+                console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+                const elapsedHrTime = process.hrtime(start);
+                const elapsed = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+                console.log("Started in", elapsed, "ms");
+            }
         });
     }
 
@@ -44,7 +49,8 @@ const loadApp = (options = {}) => {
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
     app.use(require('./middlewares/transaction')); // Build transaction object
-    if (options && !options.noLog) {
+    app.use(require('./middlewares/timing'));
+    if (!options.noLog) {
         app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
         app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
     }
@@ -68,8 +74,6 @@ const loadApp = (options = {}) => {
 
     app.use(factory.router);
     app.use(require('./middlewares/exception')); // Error handling
-
-    console.log("Startup time 2 : ", now() - start);
 
     return {
         app,
