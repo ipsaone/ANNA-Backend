@@ -44,7 +44,12 @@ const config = {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            logging: fs.appendFileSync.bind(null, "./logs/db.log"),
+            logging: data => {
+                return false; // comment here to log to file
+                fs.appendFile("./logs/db.log", data, (err, res) => {
+                    if(err) { throw err; }
+                });
+            },
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
