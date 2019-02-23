@@ -13,18 +13,23 @@ module.exports = (db) => async function (req, res) {
     // Check mission and task are associated
     const mission = await db.Mission.findByPk(missionId);
     const task = await db.Task.findByPk(taskId);
+    req.transaction.logger.info('Finding mission and task', {missionId, taskId});
     if (!task.missionId === missionId) {
+        req.transaction.logger.info('Task doesn\'t belog to mission');
         return res.boom.badRequest('Task doesn\'t belong to this mission');
     }
 
     // Check user has permissions to delete the task
+    req.transaction.logger.info('Invoking policies');
     const allowed = policy.filterDeleteTask(req.transaction, mission, req.session.auth);
 
     if (!allowed) {
+        req.transaction.logger.info('Policies denied access');
         return res.boom.unauthorized();
     }
 
     // Delete the task and answer accordingly
+    req.transaction.logger.info('Destroying task and sending response');
     await task.destroy();
 
     return res.status(204).json({});
