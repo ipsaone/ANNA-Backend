@@ -3,9 +3,6 @@
 
 module.exports = (db) => async function (req, res) {
     // Check mission ID
-    if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest('Mission ID must be an integer');
-    }
     const missionId = parseInt(req.params.missionId, 10);
 
     const mission = await db.Mission.findByPk(missionId);
@@ -13,6 +10,8 @@ module.exports = (db) => async function (req, res) {
     if (!mission) {
         return req.boom.notFound(`no mission with id ${missionId}`);
     }
+
+    req.transaction.logger.warn('Needs calling policies here');
 
     const tasks = await mission.getTasks();
 

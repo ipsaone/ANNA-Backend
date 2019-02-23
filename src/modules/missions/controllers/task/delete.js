@@ -5,15 +5,9 @@ const policy = require('../../mission_policy');
 module.exports = (db) => async function (req, res) {
 
     // Check mission ID
-    if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest('Mission ID must be an integer');
-    }
     const missionId = parseInt(req.params.missionId, 10);
 
     // Check task ID
-    if (isNaN(parseInt(req.params.taskId, 10))) {
-        return res.boom.badRequest('Task ID must be an integer');
-    }
     const taskId = parseInt(req.params.taskId, 10);
 
     // Check mission and task are associated
@@ -24,7 +18,7 @@ module.exports = (db) => async function (req, res) {
     }
 
     // Check user has permissions to delete the task
-    const allowed = policy.filterDeleteTask(db, mission, req.session.auth);
+    const allowed = policy.filterDeleteTask(req.transaction, mission, req.session.auth);
 
     if (!allowed) {
         return res.boom.unauthorized();

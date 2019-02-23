@@ -5,9 +5,6 @@ const policy = require('../../mission_policy');
 
 module.exports = (db) => async function (req, res) {
     // Check mission ID
-    if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest('Mission ID must be an integer');
-    }
     const missionId = parseInt(req.params.missionId, 10);
     const mission = await db.Mission.findByPk(missionId);
 
@@ -16,9 +13,6 @@ module.exports = (db) => async function (req, res) {
     }
 
     // Check task ID
-    if (isNaN(parseInt(req.params.taskId, 10))) {
-        return res.boom.badRequest('Task ID must be an integer');
-    }
     const taskId = parseInt(req.params.taskId, 10);
 
     // Check mission and task are associated
@@ -28,7 +22,7 @@ module.exports = (db) => async function (req, res) {
     }
 
     // Check user has permissions to see the task
-    const allowed = policy.filterShowTask(req.session.auth);
+    const allowed = policy.filterShowTask(req.transaction, req.session.auth);
 
     if (!allowed) {
         return res.boom.unauthorized();

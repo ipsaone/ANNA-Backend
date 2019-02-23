@@ -16,7 +16,7 @@ module.exports = (db) => async function (req, res) {
         return res.boom.notFound(`No mission with id ${missionId}`);
     }
 
-    const authorized = await policy.filterStoreTask(db, mission, req.session.auth);
+    const authorized = await policy.filterStoreTask(req.transaction, mission, req.session.auth);
     if (!authorized) {
         return res.boom.unauthorized();
     }
