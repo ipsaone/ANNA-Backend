@@ -18,7 +18,7 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Post deletion controller invoked', {postId});
 
     req.transaction.logger.debug('Filtering deletion');
-    let authorized = await policy.filterDelete(db, req.session.auth);
+    let authorized = await policy.filterDelete(req.transaction, req.session.auth);
     if(!authorized) {
         req.transaction.logger.info('Deletion denied');
         return res.boom.unauthorized();
