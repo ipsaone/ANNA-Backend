@@ -32,7 +32,8 @@ const config = {
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
-        check: process.env.CHECK_AUTH
+        check: process.env.CHECK_AUTH,
+        timeout: 1000*60*30
     },
 
     logging: {level: 'debug'},
