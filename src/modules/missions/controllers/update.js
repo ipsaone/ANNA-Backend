@@ -25,25 +25,33 @@ const schema = joi.object().keys({
  */
 
 module.exports = (db) => async function (req, res) {
-    if (isNaN(parseInt(req.params.missionId, 10))) {
-        return res.boom.badRequest('Mission ID must be an integer');
-    }
     const missionId = parseInt(req.params.missionId, 10);
 
     // Validate user input
+    req.transaction.logger.info('Validating input') ;
     const validation = joi.validate(req.body, schema);
     if (validation.error) {
+        req.transaction.logger.info('Input refused by validator');
         return res.boom.badRequest(validation.error);
     }
 
-    const allowed = await policy.filterUpdate(db, req.session.auth);
+    req.transaction.logger.info('Invoking policies');
+    const allowed = await policy.filterUpdate(req.transaction, req.session.auth);
     if (!allowed) {
+        req.transaction.logger.info('Policies denied mission update');
         return res.boom.unauthorized();
     }
 
+    req.transaction.logger.info('Finding mission');
     let mission = await db.Mission.findByPk(missionId);
+    if(!mission) {
+        req.transaction.logger.info('Mission not found');
+        return res.boom.notFound();
+    }
+
+    req.transaction.logger.info('Updating mission');
     await mission.update(req.body);
    
-    
+    req.transaction.logger.info('Sending mission');
     return res.status(200).json(mission);
 };

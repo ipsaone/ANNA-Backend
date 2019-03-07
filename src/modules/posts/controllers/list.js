@@ -46,7 +46,7 @@ module.exports = (db) => async function (req, res) {
     })
 
     req.transaction.logger.debug('Filtering posts');
-    let postsFiltered = await policy.filterIndex(db, postsResponse, req.session.auth);
+    let postsFiltered = await policy.filterIndex(req.transaction, postsResponse, req.session.auth);
 
     req.transaction.logger.info('Sending response posts');
     return res.status(200).json(postsFiltered);

@@ -46,7 +46,7 @@ module.exports = session({
     resave: false,
     saveUninitialized: false,
     rolling: true,
-    maxAge: 1000*60*30, // 1000ms * 60s * 30min
+    maxAge: config.session.timeout, 
 
     /**
      * Secure cookies !

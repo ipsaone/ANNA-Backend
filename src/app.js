@@ -18,6 +18,8 @@ require('dotenv').config();
 
 const loadApp = (options = {}) => {
 
+    let start = process.hrtime();
+    if(!options) { exit(-1); }
     
     /*
      * Server config
@@ -25,9 +27,19 @@ const loadApp = (options = {}) => {
     morgan.token('id', (req) => req.id.split('-')[0]);
     const app = express();
     const {host, port} = config.app.getConnection();
-    if (options && !options.noLog) {
+    
+    if(!options.test) { // Listen only when out of testing settings
         http.createServer(app).listen(port, host, function () {
-            console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+            if (!options.noLog) {
+                console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
+                const elapsedHrTime = process.hrtime(start);
+                const elapsed = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+                console.log("Started in", elapsed, "ms");
+            }
+
+            if(options.up_cb) {
+                options.up_cb();
+            }
         });
     }
 
@@ -41,7 +53,8 @@ const loadApp = (options = {}) => {
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
     app.use(require('./middlewares/transaction')); // Build transaction object
-    if (options && !options.noLog) {
+    app.use(require('./middlewares/timing'));
+    if (!options.noLog) {
         app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));
         app.use(morgan('[:date[iso] #:id] Completed in :response-time ms (HTTP :status with length :res[content-length])'));
     }
