@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.groupId, 10))) {
         throw res.boom.badRequest('Group ID must be an integer');

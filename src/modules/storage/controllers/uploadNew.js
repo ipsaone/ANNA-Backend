@@ -3,23 +3,8 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 
-/**
- *
- * Upload a new file.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async (req, res) => {
-
-    /*
-     * ATTENTION : NO INPUT VALIDATION !
-     * (Integer checking for dirId/groupId)
-     */
 
     // Escape req.body strings
     req.transaction.logger.info('Escaping req.body strings')

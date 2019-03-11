@@ -1,49 +1,22 @@
 'use strict';
 
-/**
- * @file
- * @see {@link module:mission}
- */
-
-/**
- * @module mission
- */
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
 
-/**
- * Gets all missions.
- *
- * @function filterIndex
- * @returns {Object} Returns all missions.
- */
+
 exports.filterIndex = async (transaction) => {
     transaction.logger.info('Index mission always authorized');
     return true;
 }
 
-/**
- * Gets one mission.
- *
- * @function filterShow
- * @returns {Object} Returns one mission.
- */
+
 exports.filterShow = async (transaction) => {
     transaction.logger.info('Show mission always authorized');
     return true;
 }
 
-/**
- * Filters users who can create a mission.
- * Only root can create a mission.
- *
- * @function filterStore
- *
- * @param {INTEGER} userId - The id of the user.
- *
- * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
- */
+
 exports.filterStore = async (transaction, userId) => {
     transaction.logger.debug('Finding user');
     const user = await transaction.db.User.findByPk(userId);
@@ -57,16 +30,7 @@ exports.filterStore = async (transaction, userId) => {
     return false;
 };
 
-/**
- * Filters the users who can update a mission.
- * Only root can update a mission.
- *
- * @function filterUpdate
- *
- * @param {INTEGER} userId - The id of the user.
- *
- * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
- */
+
 exports.filterUpdate = async (transaction, userId) => {
     transaction.logger.debug('Finding user');
     const user = await transaction.db.User.findByPk(userId);
@@ -81,16 +45,7 @@ exports.filterUpdate = async (transaction, userId) => {
     return false;
 };
 
-/**
- * Filters users who can delete a mission.
- * Only root can delete a mission.
- *
- * @function filterDelete
- *
- * @param {INTEGER} userId - The id of the user trying to delete a mission.
- *
- * @returns {boolean} Either the user is root or the function throws an error 'Unauthorized'.
- */
+
 exports.filterDelete = async (transaction, userId) => {
     transaction.logger.debug('Finding user');
     const user = await transaction.db.User.findByPk(userId);

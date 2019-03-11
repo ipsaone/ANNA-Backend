@@ -6,16 +6,6 @@ const repo = require('../repositories');
 
 module.exports = (db) =>
 
-/**
- *
- * Gets all events.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
     async function (req, res) {
 
     // Check user is authorized

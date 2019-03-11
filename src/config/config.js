@@ -5,12 +5,6 @@
 const fs = require('fs');
 require('dotenv').config();
 
-/*
- * Logs a SQL request.
- *
- * @param data - The data to log.
- * @returns True.
- */
 const config = {
     app: {
         name: 'A.N.N.A',

@@ -13,16 +13,7 @@ const schema = joi.object().keys({
     leaderId: joi.number().integer().positive()
 });
 
-/**
- *
- * Updates an existing mission.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
+
 
 module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);

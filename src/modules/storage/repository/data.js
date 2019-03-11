@@ -10,14 +10,7 @@ const config = require(path.join(root, './src/config/config'));
 
 module.exports.setupPrototype = function (Data, sequelize) {
 
-    /**
-     *
-     * Get URL for a data object.
-     * Is designed to be bound to the data object.
-     *
-     * @returns {string} Data URL.
-     *
-     */
+    
     Data.prototype.getUrl = function () {
         let url = '/storage/files/';
 
@@ -29,16 +22,7 @@ module.exports.setupPrototype = function (Data, sequelize) {
         return Promise.resolve(url);
     };
 
-    /**
-     *
-     * Get file system path for a data object.
-     * Is designed to be bound to the data object.
-     *
-     * @function getPath
-     *
-     * @returns {string} Data path.
-     *
-     */
+    
     Data.prototype.getPath = async function (db) {
         let dataPath = '';
 
@@ -57,14 +41,6 @@ module.exports.setupPrototype = function (Data, sequelize) {
 
     };
 
-    /**
-     *
-     * Get rights for a data object.
-     *
-     * @param {obj} db - The database.
-     * @returns {Object} Promise to rights.
-     *
-     */
     Data.prototype.getRights = function (db) {
         // Only one right should exist for each data, no check needed
 

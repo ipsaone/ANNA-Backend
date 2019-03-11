@@ -14,16 +14,7 @@ const schema = joi.object().keys({
     leaderId: joi.number().integer().positive().optional()
 });
 
-/**
- *
- * Create and store a new mission.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
+
 
 module.exports = (db) => async (req, res) => {
 

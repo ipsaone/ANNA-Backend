@@ -1,15 +1,5 @@
 'use strict';
 
-/**
- *
- * Creates a new group and stores it.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
@@ -17,10 +7,6 @@ module.exports = (db) => async function (req, res) {
         throw res.boom.badRequest('Group name must be an integer');
     }
 
-    /*
-     * To lower case to avoid security problems
-     * (users trying to create 'auTHOrs' group to gain rights)
-     */
     req.body.name = req.body.name.toLowerCase();
 
     const group = await db.Group.create(req.body);

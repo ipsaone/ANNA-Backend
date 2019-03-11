@@ -3,17 +3,6 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 
-/**
- *
- * Download a file or its metadata.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
-
 module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
 

@@ -1,15 +1,5 @@
 'use strict';
 
-/**
- *
- * Logs out a user.
- *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- *
- * @returns {Object} promise
- *
- */
 
 
 module.exports = () => (req, res) => {

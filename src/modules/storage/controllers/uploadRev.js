@@ -3,20 +3,6 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 
-/**
- *
- * Upload a new revision for an existing file.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- * 
- * @todo for security, better escape req.body, like validating against a schema ?
- * @todo handle file contents upload !
- *
- * @returns {obj} Promise.
- *
- */
-
 module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
 

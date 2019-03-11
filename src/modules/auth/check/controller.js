@@ -1,21 +1,8 @@
 'use strict';
 
-/**
- * @param {db} obj
- */
 
 module.exports = function (db) {
 
-    /**
-     *
-     * Logs in a user.
-     *
-     * @param {obj} req      - The user request.
-     * @param {obj} res      - The response to be sent.
-     *
-     * @returns {Object} Promise.
-     *
-     */
     return async (req, res) => {
 
         let logged = false;

@@ -14,10 +14,6 @@ const schema = joi.object().keys({
 
 });
 
-/**
- * Search a keyword in all data/files
- */
-
 
 module.exports = (db) => async (req, res) => {
 

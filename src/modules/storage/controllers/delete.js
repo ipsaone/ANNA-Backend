@@ -3,16 +3,7 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 
-/**
- *
- * Deletes a file or folder.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
+
 
 module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);

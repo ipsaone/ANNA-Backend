@@ -1,34 +1,7 @@
 'use strict';
 
-/**
- * @file
- * @see {@link module:exception}
- */
-
-/**
- * @module exception
- */
-
-/*
- * Commented line to fix eslint error 'http is assigned a value but never used.'
- * const http = require('http');
- */
-
 const winston = require('winston');
 const sequelize = require('sequelize');
-
-/**
- *
- * Handles a raised exception
- * If possible, send an error to the client
- * Logs the errors to console
- * @function exports
- *
- * @param {obj} err     the exception that was raised
- * @param {obj} req     the user request
- * @param {obj} res     the response to be sent
- *
- */
 
 const sendError = (res, err, type) => {
 
@@ -46,9 +19,6 @@ const sendError = (res, err, type) => {
 
 const logError = (req, err) => {
 
-    /**
-     * CONSOLE OUTPUT
-     */
     req.transaction.logger.error('Exception received by handler', {err});
     if (err instanceof Error) {
         req.transaction.logger.error(err.stack);

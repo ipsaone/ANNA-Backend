@@ -21,9 +21,6 @@ const loadApp = (options = {}) => {
     let start = process.hrtime();
     if(!options) { exit(-1); }
     
-    /*
-     * Server config
-     */
     morgan.token('id', (req) => req.id.split('-')[0]);
     const app = express();
     const {host, port} = config.app.getConnection();
@@ -43,9 +40,6 @@ const loadApp = (options = {}) => {
         });
     }
 
-    /*
-     * Middleware and logging
-     */
     app.use(boom()); // Error responses
     app.use(helmet()); // Helmet offers different protection middleware
     app.use(require('./middlewares/rate_limit')); // Rate limit
@@ -63,15 +57,9 @@ const loadApp = (options = {}) => {
     app.use(require('./middlewares/session')); // Session management
     app.use(require('./middlewares/auth')); // Auth check
 
-    /*
-     * Special options
-     */
     app.set('trust proxy', 1); // Trust reverse proxy
     app.options('*', require('./middlewares/cors'));    // Pre-flight
-    
-    /*
-     * Routing and error catching
-     */
+
     const ModulesFactory = require('./modules');
     const factoryOptions = {test: options.test};
     const factory = new ModulesFactory(factoryOptions);
