@@ -7,7 +7,7 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Post store controller invoked');
 
     req.transaction.logger.info('Checking store policies');
-    const allowed = await policy.filterStore(db, req.session.auth);
+    const allowed = await policy.filterStore(req.transaction, req.session.auth);
     if (!allowed) {
         req.transaction.logger.info('Post store denied');
         return res.boom.unauthorized();

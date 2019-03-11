@@ -18,7 +18,7 @@ module.exports = (db) => async function (req, res, handle) {
     }
 
     req.transaction.logger.info('Checking post details policy');
-    post = await policy.filterShow(db, post, req.session.auth);
+    post = await policy.filterShow(req.transaction, post, req.session.auth);
 
     req.transaction.logger.info('Sending response');
     return res.status(200).json(post);

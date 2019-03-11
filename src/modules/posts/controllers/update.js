@@ -9,7 +9,7 @@ module.exports = (db) => async function (req, res, handle) {
     req.transaction.logger.info('Post update controller invoked', {postId});
 
     req.transaction.logger.info('Checking policies');
-    let authorized = await policy.filterUpdate(db, req.session.auth);
+    let authorized = await policy.filterUpdate(req.transaction, req.session.auth);
     if (!authorized) {
         req.transaction.logger.info('Policies check failed, request denied');
         return res.boom.unauthorized('You must be an author to edit a post');
