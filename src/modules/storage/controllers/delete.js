@@ -18,7 +18,7 @@ module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
 
     req.transaction.logger.debug('Checking policy');
-    const authorized = await policy.filterDelete(db, fileId, req.session.auth);
+    const authorized = await policy.filterDelete(req.transaction, fileId, req.session.auth);
     if (!authorized) {
         req.transaction.logger.info('Deletion refused by policy');
         throw res.boom.unauthorized();

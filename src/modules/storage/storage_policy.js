@@ -19,10 +19,13 @@ const storage = require('./repository/storage');
  * @param {INTEGER} userId - The id of the user.
  * @returns {Promise} List all files.
  */
-exports.filterList = async (db, folderId, userId) =>
+exports.filterList = async (transaction, folderId, userId) => {
+
+    transaction.logger.info('Granting access on read permission');
 
     /** Check if directory has 'read' permission */
-    storage.fileHasReadPermission(db, folderId, userId);
+    return storage.fileHasReadPermission(transaction, folderId, userId);
+}
 
 /**
  * Filters users who can upload files.
@@ -35,19 +38,21 @@ exports.filterList = async (db, folderId, userId) =>
  *
  * @returns {Promise} Uploads a file if directory has 'write' Permission.
  */
-exports.filterUploadNew = async (db, folderId, userId) => {
+exports.filterUploadNew = async (transaction, folderId, userId) => {
+    transaction.logger.info('Filtering new upload');
 
     /** Check if directory has 'write' permission */
-    const canWriteP = storage.fileHasWritePermission(db, folderId, userId);
-    const folder = await db.File.findByPk(folderId);
+    const canWriteP = storage.fileHasWritePermission(transaction, folderId, userId);
+    const folder = await transaction.db.File.findByPk(folderId);
     const canWrite = await canWriteP;
 
     if (!folder) {
-        console.log(`no folder #${folderId}`);
+        transaction.logger.info(`no folder #${folderId}`);
 
         return false;
     }
 
+    transaction.logger.info('Returning authorization', { canWrite, isDir: folder.isDir});
     return canWrite && folder.isDir;
 
 };
@@ -63,7 +68,8 @@ exports.filterUploadNew = async (db, folderId, userId) => {
  *
  * @returns {Promise} Update metadata if resolved.
  */
-exports.filterUploadRev = async (db, fileId, userId) => {
+exports.filterUploadRev = async (transaction, fileId, userId) => {
+    transaction.logger.info('Filtering revision upload');
 
     /**
      * Check if directory has 'write' permission for metadata update
@@ -71,22 +77,25 @@ exports.filterUploadRev = async (db, fileId, userId) => {
      * @const file
      */
 
-    const file = await db.File.findByPk(fileId);
+    transaction.logger.debug('Finding file');
+    const file = await transaction.db.File.findByPk(fileId);
 
     if (!file) {
-        console.log(`File not found : #${fileId}`);
+        transaction.logger.info(`File not found : #${fileId}`);
 
         return false;
     }
 
-    const lastData = await file.getData(db);
+    transaction.logger.info('Finding data');
+    const lastData = await file.getData(transaction.db);
 
     if (!lastData) {
-        console.log(`No data for file #${fileId}`);
+        transaction.logger.warn(`No data for file #${fileId}`);
     }
 
 
-    return storage.fileHasWritePermission(db, lastData.dirId, userId);
+    transaction.logger.info('Finding write permission');
+    return storage.fileHasWritePermission(transaction, lastData.dirId, userId);
 
 };
 
@@ -101,61 +110,70 @@ exports.filterUploadRev = async (db, fileId, userId) => {
  *
  * @returns {Promise} Downloads metadata if directory has 'read' permission.
  */
-exports.filterDownloadMeta = async (db, fileId, userId) => {
+exports.filterDownloadMeta = async (transaction, fileId, userId) => {
 
     /**
      * Checks if directory has 'read' permissions for metadata download
      * @const file
      */
-    const file = await db.File.findByPk(fileId);
+    transaction.logger.info('finding file');
+    const file = await transaction.db.File.findByPk(fileId);
 
     if (!file) {
-        console.log(`No file with id ${fileId}`);
+        transaction.logger.info(`No file with id ${fileId}`);
 
         return false;
     }
 
-    const lastData = await file.getData(db);
+    transaction.logger.info('Finding data');
+    const lastData = await file.getData(transaction.db);
 
     if (!lastData) {
-        console.log(`No data for file #${fileId}`);
+        transaction.logger.warn(`No data for file #${fileId}`);
     }
 
-    return storage.fileHasReadPermission(db, lastData.dirId, userId);
+    transaction.logger.info('Authorization granted if read permission');
+    return storage.fileHasReadPermission(transaction, lastData.dirId, userId);
 
 };
 
-exports.filterDownloadContents = async (db, fileId, userId) => {
+exports.filterDownloadContents = async (transaction, fileId, userId) => {
 
-    const file = await db.File.findByPk(fileId);
+    transaction.logger.info('Finding file');
+    const file = await transaction.db.File.findByPk(fileId);
 
     if (file.isDir) {
+        transaction.logger.info('File is directory, denying');
         return false;
     }
 
-    return storage.fileHasReadPermission(db, fileId, userId);
+    transaction.logger.info('Authorization granted if read permission');
+    return storage.fileHasReadPermission(transaction, fileId, userId);
 };
 
-exports.filterDelete = async (db, fileId, userId) => {
+exports.filterDelete = async (transaction, fileId, userId) => {
 
     if(fileId == 1) {
+        transaction.logger.info('Denying suppression of file 1');
         return false;
     }
 
-    console.log('filtering deletion for file ', fileId);
+    transaction.logger.info('filtering deletion for file ', fileId);
 
     // Check if directory has 'write' permission
-    const file = await db.File.findByPk(fileId);
+    const file = await transaction.db.File.findByPk(fileId);
     if (!file) {
+        transaction.logger.info('File not found');
         return false;
     }
 
 
-    const lastData = await file.getData(db);
+    const lastData = await file.getData(transaction.db);
     if (!lastData) {
-        console.log(`No data for file #${fileId}`);
+        transaction.logger.warn(`No data for file #${fileId}`);
     }
 
 
-    return storage.fileHasWritePermission(db, lastData.dirId, userId);
+    transaction.logger.info('Authorization granted on write permission');
+    return storage.fileHasWritePermission(transaction, lastData.dirId, userId);
 };

@@ -33,7 +33,7 @@ const config = {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
         check: process.env.CHECK_AUTH,
-        timeout: 1000*60*30
+        timeout: 1000*60*1
     },
 
     logging: {level: 'debug'},

@@ -3,8 +3,8 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 
-const getChildrenData = async (db, folderId, options, transaction) => {
-
+const getChildrenData = async (folderId, options, transaction) => {
+    let db = transaction.db;
     transaction.logger.debug('getChildrenData called', {folderId, options});
 
     let file = db.File;
@@ -96,14 +96,14 @@ module.exports = (db) => async (req, res) => {
     }
 
     req.transaction.logger.debug('Starting request for children data for folder', {folderId});
-    const childrenDataP = getChildrenData(db, folderId, req.query, req.transaction);
+    const childrenDataP = getChildrenData(folderId, req.query, req.transaction);
     const folderFileP = db.File.findOne({
         where: {id: folderId},
         rejectOnEmpty: true
     });
 
     req.transaction.logger.debug('Checking policies')
-    const authorized = await policy.filterList(db, folderId, req.session.auth);
+    const authorized = await policy.filterList(req.transaction, folderId, req.session.auth);
     if (!authorized) {
         req.transaction.logger.info('Folder list denied by policies');
         return res.boom.unauthorized("folder list denied");

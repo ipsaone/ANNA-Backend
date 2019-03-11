@@ -36,7 +36,7 @@ module.exports = (db) => async (req, res) => {
 
     // Create the file and its data
     req.transaction.logger.debug('Checking upload policies');
-    const allowed = await policy.filterUploadNew(db, dirId, req.session.auth);
+    const allowed = await policy.filterUploadNew(req.transaction, dirId, req.session.auth);
     if (!allowed) {
         req.transaction.logger.info('Upload refused by policies');
         throw res.boom.unauthorized();

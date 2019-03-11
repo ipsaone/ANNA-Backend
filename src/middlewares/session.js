@@ -39,7 +39,8 @@ module.exports = session({
     store: new Redis({
         // Session store options
         socket: config.session.socket,
-        logErrors: true
+        logErrors: true,
+        ttl: config.session.timeout // SEE https://github.com/tj/connect-redis/issues/251
     }),
 
     secret: config.session.secret,

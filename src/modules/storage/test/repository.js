@@ -114,21 +114,23 @@ async function filePermissionMacro(t, input) {
         password: 'testPassword2'
     });
 
+    let trans = {db, logger: {info: null, warn: null}};
+
     await dataP;
-    let ownerWriteOK = await repo.fileHasWritePermission(db, file.id, user.id);
-    let ownerReadOK = await repo.fileHasReadPermission(db, file.id, user.id);
+    let ownerWriteOK = await repo.fileHasWritePermission(trans, file.id, user.id);
+    let ownerReadOK = await repo.fileHasReadPermission(trans, file.id, user.id);
     t.is(ownerWriteOK, input.ownerWrite||input.allWrite);
     t.is(ownerReadOK, input.ownerRead||input.allRead);
 
     await groupAddUserP;
-    let groupWriteOK = await repo.fileHasWritePermission(db, file.id, groupUser.id);
-    let groupReadOK = await repo.fileHasReadPermission(db, file.id, groupUser.id); 
+    let groupWriteOK = await repo.fileHasWritePermission(trans, file.id, groupUser.id);
+    let groupReadOK = await repo.fileHasReadPermission(trans, file.id, groupUser.id); 
     t.is(groupWriteOK, input.groupWrite||input.allWrite);
     t.is(groupReadOK, input.groupRead||input.allRead);   
 
     let otherUser = await otherUserP;
-    let allWriteOK = await repo.fileHasWritePermission(db, file.id, otherUser.id);
-    let allReadOK = await repo.fileHasReadPermission(db, file.id, otherUser.id);
+    let allWriteOK = await repo.fileHasWritePermission(trans, file.id, otherUser.id);
+    let allReadOK = await repo.fileHasReadPermission(trans, file.id, otherUser.id);
     t.is(allWriteOK, input.allWrite);
     t.is(allReadOK, input.allRead);
 }

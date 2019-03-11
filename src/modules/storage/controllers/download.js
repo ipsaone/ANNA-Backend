@@ -45,7 +45,7 @@ module.exports = (db) => async (req, res) => {
         }
 
         req.transaction.logger.debug('Checking policy');
-        const allowed = await policy.filterDownloadContents(db, fileId, req.session.auth);
+        const allowed = await policy.filterDownloadContents(req.transaction, fileId, req.session.auth);
         if (!allowed) {
             req.transaction.logger.info('Download request refused by policy');
             return res.boom.unauthorized();
@@ -62,7 +62,7 @@ module.exports = (db) => async (req, res) => {
     req.transaction.logger.info('Starting metadata download routine');
 
     req.transaction.logger.debug('Checking policy')
-    const allowed = await policy.filterDownloadMeta(db, fileId, req.session.auth);
+    const allowed = await policy.filterDownloadMeta(req.transaction, fileId, req.session.auth);
     if (!allowed) {
         req.transaction.logger.info('Metadata download refused by policy');
         throw res.boom.unauthorized();

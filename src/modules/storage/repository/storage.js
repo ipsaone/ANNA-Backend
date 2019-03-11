@@ -104,21 +104,28 @@ Storage.computeSize = async function (filePath) {
     return stat.size;
 };
 
-Storage.fileHasWritePermission = async (db, fileId, userId) => {
+Storage.fileHasWritePermission = async (transaction, fileId, userId) => {
+    const db = transaction.db;
+    const log = transaction.logger;
+    
+    log.info('finding file and user');
     const fileP = db.File.findByPk(fileId);
     const userP = db.User.findByPk(userId);
     const file = await fileP;
     const user = await userP;
 
     if (!file || !user) {
+        log.info('File or user not found, write permission denied');
         return false;
     }
 
+    log.info('Finding file data and user groups');
     const fileDataP = file.getData(db);
     const userGroupsP = user.getGroups(db);
     const userGroups = await userGroupsP;
     const fileData = await fileDataP;
 
+    log.info('Finding rights')
     const fileRightsP = fileData.getRights(db);
 
     const userGroupsIds = userGroups.map((group) => group.id);
@@ -129,39 +136,49 @@ Storage.fileHasWritePermission = async (db, fileId, userId) => {
 
 
     if (userIsOwner === true && fileRights.ownerWrite === true) {
+        log.info('Write granted : user is owner and owner can write');
         return true;
     } else if (userIsInGroup === true && fileRights.groupWrite === true) {
+        log.info('Write granted : user is in group and group can write');
         return true;
     } else if (fileRights.allWrite === true) {
+        log.info('Write granted : all can write');
         return true;
     }
 
+    log.info('Write denied');
     return false;
 };
 
-Storage.fileHasReadPermission = async (db, fileId, userId) => {
+Storage.fileHasReadPermission = async (transaction, fileId, userId) => {
+    const db = transaction.db;
+    const log = transaction.logger;
+
+    log.info('Finding file and user');
     const fileP = db.File.findByPk(fileId);
     const userP = db.User.findByPk(userId);
     const file = await fileP;
     const user = await userP;
 
     if (!file || !user) {
-        console.error(`Couldn't find file or user for file id ${fileId} and user id ${userId}`);
+        log.info(`Couldn't find file or user for file id ${fileId} and user id ${userId}`);
 
         return false;
     }
 
+    log.info('finding file data and user groups');
     const fileDataP = file.getData(db);
     const userGroupsP = user.getGroups();
     const userGroups = await userGroupsP;
     const fileData = await fileDataP;
     
     if (!fileData || !userGroups) {
-        console.error(`No fileData or userGroups for id ${fileId}`);
+        log.info(`No fileData or userGroups for id ${fileId}`);
 
         return false;
     }
 
+    log.info('finding rights');
     const fileRightsP = fileData.getRights(db);
 
     const userGroupsIds = userGroups.map((group) => group.id);
@@ -171,18 +188,23 @@ Storage.fileHasReadPermission = async (db, fileId, userId) => {
     const fileRights = await fileRightsP;
 
     if (!fileRights) {
-        console.error('Couldn\'t find associated rights !');
+        log.info('Couldn\'t find associated rights !');
 
         return false;
     }
 
-    if (fileRights.allRead === true) {
+    
+    if (userIsOwner === true && fileRights.ownerRead === true) {
+        log.info('Read granted : user is owner and owner can read');
         return true;
     } else if (userIsInGroup === true && fileRights.groupRead === true) {
+        log.info('Read granted : user is in group and group can read');
         return true;
-    } else if (userIsOwner === true && fileRights.ownerRead === true) {
+    } else if (fileRights.allRead === true) {
+        log.info('Read granted : all can read');
         return true;
-    }
+    } 
 
+    log.info('Read denied');
     return false;
 };

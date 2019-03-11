@@ -42,6 +42,7 @@ module.exports = (req, res, next) => {
 
     }
 
+    req.transaction.logger.debug('Request allowed, session not touched');   
     return next();
 
 };

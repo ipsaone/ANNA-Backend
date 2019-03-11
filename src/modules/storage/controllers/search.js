@@ -44,6 +44,8 @@ module.exports = (db) => async (req, res) => {
     req.transaction.logger.debug('Starting search', {options});
     const matchingData = await db.Data.findAll({where: options});
 
+    req.transaction.logger.warn('Policies needed here !');
+
     // If all data are requested, send everything we find
     if (req.body.include && 'previous_data' in req.body.include) {
         req.transaction.logger.debug('Sending all found data');
