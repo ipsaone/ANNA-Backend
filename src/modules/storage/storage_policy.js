@@ -1,24 +1,8 @@
 'use strict';
 
-/**
- * @file
- * @see {@link module:storage}
- */
 
-/**
- * @module storage
- */
 const storage = require('./repository/storage');
 
-/**
- * List files in directory.
- *
- * @function filterList
- * @param {obj} db - The database.
- * @param {INTEGER} folderId - The id of the selected folder.
- * @param {INTEGER} userId - The id of the user.
- * @returns {Promise} List all files.
- */
 exports.filterList = async (transaction, folderId, userId) => {
 
     transaction.logger.info('Granting access on read permission');
@@ -27,17 +11,6 @@ exports.filterList = async (transaction, folderId, userId) => {
     return storage.fileHasReadPermission(transaction, folderId, userId);
 }
 
-/**
- * Filters users who can upload files.
- *
- * @function filterUploadNew
- *
- * @param {obj} db - The database.
- * @param {INTEGER} folderId - The id of the selected folder.
- * @param {INTEGER} userId - The id of the user.
- *
- * @returns {Promise} Uploads a file if directory has 'write' Permission.
- */
 exports.filterUploadNew = async (transaction, folderId, userId) => {
     transaction.logger.info('Filtering new upload');
 
@@ -57,25 +30,10 @@ exports.filterUploadNew = async (transaction, folderId, userId) => {
 
 };
 
-/**
- * Filters users who can update files.
- *
- * @function filterUploadRev
- *
- * @param {obj} db - The database.
- * @param {INTEGER} fileId - The id of the file.
- * @param {INTEGER} userId - The id of the user.
- *
- * @returns {Promise} Update metadata if resolved.
- */
+
 exports.filterUploadRev = async (transaction, fileId, userId) => {
     transaction.logger.info('Filtering revision upload');
-
-    /**
-     * Check if directory has 'write' permission for metadata update
-     * Check if file has 'write' permission for file update
-     * @const file
-     */
+    
 
     transaction.logger.debug('Finding file');
     const file = await transaction.db.File.findByPk(fileId);
@@ -99,17 +57,6 @@ exports.filterUploadRev = async (transaction, fileId, userId) => {
 
 };
 
-/**
- * Filters users who can download metadata.
- *
- * @function filterDownloadMeta
- *
- * @param {obj} db - The database.
- * @param {INTEGER} fileId - The id of the file.
- * @param {INTEGER} userId - The id of the user.
- *
- * @returns {Promise} Downloads metadata if directory has 'read' permission.
- */
 exports.filterDownloadMeta = async (transaction, fileId, userId) => {
 
     /**

@@ -1,27 +1,9 @@
 'use strict';
 
-/**
- * @file Defines a model for 'File' table in database and its associations with the other tables
- * @see {@link module:file}
- */
 const mv = require('mv');
 const fs = require('fs');
 const util = require('util');
 
-/**
- * @module file
- */
-
-/**
- * Defines a mapping between model and table 'File'
- * @function exports
- *
- * @param {Object} sequelize - The Sequelize object.
- * @param {Object} DataTypes - DataTypes
- *
- * @returns {Object} Returns File
- *
- */
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
@@ -40,10 +22,6 @@ module.exports = (sequelize, DataTypes) => {
 
     File.associate = function (db2) {
 
-        /**
-         * Creates plural associations with table 'Log'
-         * @function belongsToManyLog
-         */
         
         File.belongsToMany(db2.Log, {
             as: 'fileLogs',
@@ -52,24 +30,8 @@ module.exports = (sequelize, DataTypes) => {
         });
         
 
-        /**
-         *
-         * Add data for a file object.
-         *
-         * @param {obj} db - The database.
-         * @param {obj} fileChanges - The changes in this data.
-         * @param {obj} filePath - The path to the file to add data to.
-         * @param {obj} userId - The user identifier.
-         *
-         * @returns {Object} Promise to directory tree.
-         *
-         */
         File.prototype.addData = async function (db, fileChanges, filePath, userId) {
 
-            /*
-             * Check group ID input
-             * Other integer inputs are replaced anyway
-             */
             const previousData = await this.getData(db);
 
             if (isNaN(parseInt(fileChanges.groupId, 10))) {
@@ -194,16 +156,6 @@ module.exports = (sequelize, DataTypes) => {
         };
 
 
-        /**
-         *
-         * Get all data for a file object.
-         *
-         * @param {obj} db - The database.
-         * @param {integer} offset - How old the data is.
-         *
-         * @returns {Object} Promise to file data.
-         *
-         */
         File.prototype.getData = async function (db, offset = 0) {
 
             let data = await db.Data
@@ -229,14 +181,6 @@ module.exports = (sequelize, DataTypes) => {
             return data[0];
         };
 
-        /**
-         *
-         * Get diretory tree for a file object.
-         *
-         * @param {obj} db - The database.
-         * @returns {Object} Promise to directory tree.
-         *
-         */
         File.prototype.getDirTree = async function (db) {
             const data = await this.getData(db);
 
@@ -257,19 +201,6 @@ module.exports = (sequelize, DataTypes) => {
         };
 
 
-        /**
-         *
-         * Create a new file object.
-         *
-         * @param {obj} db - The database.
-         * @param {Object} changes - The file metadata.
-         * @param {string} filePath - The file path to create.
-         * @param {integer} userId - The user id.
-         * @todo max-params
-         *
-         * @returns {Object} Promise to success boolean.
-         *
-         */
         File.createNew = function (db, changes, filePath, userId) {
             let isDir = false;
 

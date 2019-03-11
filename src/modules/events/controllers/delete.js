@@ -2,16 +2,6 @@
 
 const policy = require('../event_policy');
 
-/**
- *
- * Deletes an event.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {

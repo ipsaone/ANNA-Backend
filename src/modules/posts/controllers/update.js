@@ -2,17 +2,7 @@
 
 const policy = require('../post_policy');
 
-/**
- *
- * Updates an existing post.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handling function.
- *
- * @returns {Object} Promise.
- *
- */
+
 
 module.exports = (db) => async function (req, res, handle) {
     const postId = parseInt(req.params.postId, 10);

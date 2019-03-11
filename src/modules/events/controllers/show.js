@@ -7,16 +7,7 @@ const path = require('path');
 const policy = require('../event_policy');
 const userPolicy = require(path.join(root, './src/modules/users/user_policy'));
 
-/*
- *
- * Gets a single event
- *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- *
- * @returns {Object} promise
- *
- */
+
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.eventId, 10))) {
         return res.boom.badRequest('Event ID must be an integer');

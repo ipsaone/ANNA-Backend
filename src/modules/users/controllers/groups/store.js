@@ -2,16 +2,6 @@
 
 const policy = require('../../user_policy');
 
-/**
- *
- * Add user to group.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {

@@ -3,16 +3,6 @@
 const policy = require('../mission_policy');
 
 
-/**
- *
- * Get a single mission.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async (req, res) => {
     const missionId = parseInt(req.params.missionId, 10);

@@ -9,22 +9,9 @@ const schema = joi.object().keys({
     password: joi.string().required()
 });
 
-/**
- * @param {db} obj
- */
 
 module.exports = function (db) {
 
-    /**
-     *
-     * Logs in a user.
-     *
-     * @param {obj} req      - The user request.
-     * @param {obj} res      - The response to be sent.
-     *
-     * @returns {Object} Promise.
-     *
-     */
     return async (req, res) => {
 
         req.transaction.logger.info('Login controller invoked');

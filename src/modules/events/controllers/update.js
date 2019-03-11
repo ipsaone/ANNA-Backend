@@ -12,22 +12,8 @@ const schema = joi.object().keys({
 });
 
 
-/**
- * @param {obj} db - The databas.
- * @returns {Function} - The controller.
- */
 module.exports = (db) =>
 
-/**
- *
- * Updates an existing event.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
     async function (req, res) {
         // Check route
         if (isNaN(parseInt(req.params.eventId, 10))) {

@@ -1,15 +1,5 @@
 'use strict';
 
-/**
- *
- * Get an existing group.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.groupId, 10))) {

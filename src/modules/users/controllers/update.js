@@ -9,16 +9,6 @@ const schema = joi.object().keys({
     password: joi.string().min(6)
 });
 
-/**
- *
- * Updates an existing user.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {

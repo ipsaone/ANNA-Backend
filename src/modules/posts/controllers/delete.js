@@ -2,16 +2,6 @@
 
 const policy = require('../post_policy');
 
-/**
- *
- * Deletes an existing post.
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res) {
     const postId = parseInt(req.params.postId, 10);

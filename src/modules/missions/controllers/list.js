@@ -2,16 +2,7 @@
 
 const policy = require('../mission_policy');
 
-/**
- *
- * Get all existing missions.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
+
 
 module.exports = (db) => async (req, res) => {
     req.transaction.logger.info('Invoking policies');

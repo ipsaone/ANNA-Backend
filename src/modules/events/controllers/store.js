@@ -11,17 +11,6 @@ const schema = joi.object().keys({
     endDate: joi.string()
 });
 
-/*
- *
- * Creates a new event and stores it
- *
- * @param {Object} req - the user request
- * @param {Object} res - the response to be sent
- * @param {Object} handle - the error handling function
- *
- * @returns {Object} promise
- *
- */
 module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
         return res.boom.badRequest('Event name must be a string');

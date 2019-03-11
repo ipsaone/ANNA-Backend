@@ -1,20 +1,5 @@
 'use strict';
 
-/**
- *
- * Get all user's posts.
- * Can get altered with scopes.
- *
- * @example GET /users/:userId/posts?published=true  -> return all published posts
- * @example GET /users/:userId/posts?published=false -> return all drafted posts
- *
- * @param {obj} req     - The user request.
- * @param {obj} res     - The response to be sent.
- * @param {obj} handle  - The error handler.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async function (req, res, handle) {
     if (isNaN(parseInt(req.params.userId, 10))) {
