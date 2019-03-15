@@ -28,6 +28,7 @@ module.exports = (db) => async (req, res) => {
     const file = await db.File.findByPk(fileId);
     let filePath = '';
     if (req.file) {
+        req.transaction.logger.debug('Reading file path');      
         filePath = req.file.path;
     }
 
@@ -42,5 +43,5 @@ module.exports = (db) => async (req, res) => {
         return res.boom.badRequest(e);
     }
 
-    
+
 };
