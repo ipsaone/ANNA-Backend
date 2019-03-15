@@ -1,7 +1,12 @@
 const winston = require('winston');
 const winston_cfg = require('../config/winston');
 
+let globalFormat = winston.format.combine(winston.format.timestamp(), winston.format.json());
+let globalLogger = winston.createLogger({transports: winston_cfg.transports, format: globalFormat});
 
+process.on('uncaughtException', err => {
+    globalLogger.error('Unexpected, uncaught exception. Quitting');
+})
 
 module.exports = (req, res, next) => {
     req.transaction = {};
