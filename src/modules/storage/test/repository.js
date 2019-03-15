@@ -114,7 +114,7 @@ async function filePermissionMacro(t, input) {
         password: 'testPassword2'
     });
 
-    let trans = {db, logger: {info: null, warn: null}};
+    let trans = {db, logger: {info: () => {}, warn: () => {}}};
 
     await dataP;
     let ownerWriteOK = await repo.fileHasWritePermission(trans, file.id, user.id);
