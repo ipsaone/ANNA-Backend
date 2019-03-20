@@ -5,14 +5,13 @@ let globalFormat = winston.format.combine(winston.format.timestamp(), winston.fo
 let globalLogger = winston.createLogger({transports: winston_cfg.transports, format: globalFormat});
 
 process.on('uncaughtException', err => {
-    let err = new Error();
-    globalLogger.error('Unexpected, uncaught exception. Quitting', {error : err.stack || e});
+    globalLogger.error('Unexpected, uncaught exception. Quitting', {error : err});
 })
 
 module.exports = (req, res, next) => {
     req.transaction = {};
     req.transaction.info = {requestId : req.id};
-    
+
     let lbl_format = winston.format.label({label : {transactionInfo : req.transaction.info}});
     let json_format = winston.format.json();
     let timestamp_format = winston.format.timestamp();
