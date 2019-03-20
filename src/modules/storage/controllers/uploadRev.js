@@ -28,15 +28,20 @@ module.exports = (db) => async (req, res) => {
     const file = await db.File.findByPk(fileId);
     let filePath = '';
     if (req.file) {
-        req.transaction.logger.debug('Reading file path');
+        req.transaction.logger.debug('Reading file path');      
         filePath = req.file.path;
     }
 
-    req.transaction.logger.debug('adding data');
-    let data = await file.addData(db, req.body, filePath, req.session.auth);
 
-    req.transaction.logger.info('Responding with new data');
-    return res.status(200).json(data);
+    try {
+        req.transaction.logger.debug('adding data');
+        let data = await file.addData(db, req.body, filePath, req.session.auth);
+
+        req.transaction.logger.info('Responding with new data');
+        return res.status(200).json(data);
+    } catch (e) {
+        return res.boom.badRequest(e);
+    }
 
 
 };

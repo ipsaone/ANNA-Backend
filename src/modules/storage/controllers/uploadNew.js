@@ -33,7 +33,7 @@ module.exports = (db) => async (req, res) => {
         filePath = req.file.path;
     }
 
-    req.transaction.logger.info('Creating file');
+    req.transaction.logger.info('Creating file')
     const data = await db.File.createNew(db, req.body, filePath, req.session.auth);
 
     req.transaction.logger.info('Sending created data');
