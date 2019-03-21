@@ -33,7 +33,7 @@ exports.filterUploadNew = async (transaction, folderId, userId) => {
 
 exports.filterUploadRev = async (transaction, fileId, userId) => {
     transaction.logger.info('Filtering revision upload');
-    
+
 
     transaction.logger.debug('Finding file');
     const file = await transaction.db.File.findByPk(fileId);
@@ -50,7 +50,6 @@ exports.filterUploadRev = async (transaction, fileId, userId) => {
     if (!lastData) {
         transaction.logger.warn(`No data for file #${fileId}`);
     }
-
 
     transaction.logger.info('Finding write permission');
     return storage.fileHasWritePermission(transaction, lastData.dirId, userId);
@@ -119,7 +118,6 @@ exports.filterDelete = async (transaction, fileId, userId) => {
     if (!lastData) {
         transaction.logger.warn(`No data for file #${fileId}`);
     }
-
 
     transaction.logger.info('Authorization granted on write permission');
     return storage.fileHasWritePermission(transaction, lastData.dirId, userId);
