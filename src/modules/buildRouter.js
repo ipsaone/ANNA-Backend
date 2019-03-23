@@ -6,7 +6,13 @@ module.exports = (db) => {
     // Importing routes
     const router = require('express').Router();
 
-    router.use((req, res, next) => { req.transaction.db = db; next(); });
+    router.use((req, res, next) => { 
+        req.transaction.db = db;
+        req.transaction.db.sequelize.options.logging = data => {
+            req.transaction.logger.debug('SQL request', {data: data});
+        }
+        return next();
+    });
     router.use('/', require('./home').routes);
     const directories =
           require('fs').readdirSync(path.join(root, 'src', 'modules'))

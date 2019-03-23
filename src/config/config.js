@@ -39,12 +39,6 @@ const config = {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            logging: data => {
-                return false; // comment here to log to file
-                fs.appendFile("./logs/db.log", data, (err, res) => {
-                    if(err) { throw err; }
-                });
-            },
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
             operatorsAliases: false,
@@ -63,7 +57,8 @@ const config = {
             host: '',
             username: '',
             password: '',
-            logging: fs.appendFileSync.bind(null, "./logs/db_test.log"), // Prevent Sequelize from outputting the query on the console
+            logging: data => 
+                fs.appendFileSync.bind(null, "./logs/db_test.log"), // Prevent Sequelize from outputting the query on the console
             redis: this.session,
             force: true,
             operatorsAliases: false,

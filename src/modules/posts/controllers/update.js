@@ -8,6 +8,8 @@ module.exports = (db) => async function (req, res, handle) {
     const postId = parseInt(req.params.postId, 10);
     req.transaction.logger.info('Post update controller invoked', {postId});
 
+    req.transaction.logger.warn('MISSING SCHEMA');
+
     req.transaction.logger.info('Checking policies');
     let authorized = await policy.filterUpdate(req.transaction, req.session.auth);
     if (!authorized) {

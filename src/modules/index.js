@@ -26,7 +26,6 @@ module.exports = class ModuleFactory {
 
         const config = require(path.join(root, 'src', this.configPath));
 
-
         if (test) {
             // For tests, load in-memory SQLite database !
             let uuid = uuidv4();

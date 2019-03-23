@@ -3,6 +3,7 @@
 const joi = require('joi');
 const async = require('async');
 const util = require('util');
+const policy = require('../storage_policy');
 const winston = require('winston');
 
 const includeOptions = ['previous_data', 'serialNbr', 'name'];
@@ -40,8 +41,6 @@ module.exports = (db) => async (req, res) => {
     req.transaction.logger.debug('Starting search', {options});
     const matchingData = await db.Data.findAll({where: options});
 
-    req.transaction.logger.warn('Policies needed here !');
-
     // If all data are requested, send everything we find
     if (req.body.include && 'previous_data' in req.body.include) {
         req.transaction.logger.debug('Sending all found data');
@@ -73,8 +72,10 @@ module.exports = (db) => async (req, res) => {
 
     }));
 
-    req.transaction.logger.debug('Returning found data', {data: filteredData.map(e => e.toJSON())});
-    return res.status(200).json(filteredData);
+    let results = policy.filterSearch(req.transaction, filteredData);
+
+    req.transaction.logger.debug('Returning found data', {data: results.map(e => e.toJSON())});
+    return res.status(200).json(results.map(e => e.toJSON()));
 
 };
 

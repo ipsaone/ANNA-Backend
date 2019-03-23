@@ -124,3 +124,8 @@ exports.filterDelete = async (transaction, fileId, userId) => {
     transaction.logger.info('Authorization granted on write permission');
     return storage.fileHasWritePermission(transaction, lastData.dirId, userId);
 };
+
+exports.filterSearch = async(transaction, files) => {
+    transaction.logger.warn('NEED TO IMPLEMENT POLICY HERE');
+    return files;
+}
