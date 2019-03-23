@@ -4,7 +4,7 @@ const policy = require('../storage_policy');
 const winston = require('winston');
 
 module.exports = (db) => async (req, res) => {
-    const fileId = parseInt(req.params.fileId, 10);
+    const fileId = parseInt(req.body.fileId, 10);
 
     // Escape req.body strings
     req.transaction.logger.info('Escaping res.body strings');
@@ -17,7 +17,7 @@ module.exports = (db) => async (req, res) => {
     });
 
     // Find the file in database and add new data
-    req.transaction.logger.debug('Checking policies')
+    req.transaction.logger.debug('Checking policies');
     const allowed = await policy.filterUploadRev(req.transaction, fileId, req.session.auth);
     if (!allowed) {
         req.transaction.logger.info('Upload (rev) refused by policies');
@@ -28,7 +28,7 @@ module.exports = (db) => async (req, res) => {
     const file = await db.File.findByPk(fileId);
     let filePath = '';
     if (req.file) {
-        req.transaction.logger.debug('Reading file path');      
+        req.transaction.logger.debug('Reading file path');
         filePath = req.file.path;
     }
 
