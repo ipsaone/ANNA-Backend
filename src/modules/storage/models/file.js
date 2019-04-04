@@ -63,8 +63,12 @@ module.exports = (sequelize, DataTypes) => {
 
             // Replace fileId and ownerId, they are not needed
             fileChanges.fileId = this.id;
-            if (userId) {
-                fileChanges.ownerId = userId;
+            if(!fileChanges.ownerId) {
+                if (userId) {
+                    fileChanges.ownerId = userId;
+                } else {
+                    throw new Error('No owner can be deduced');
+                }
             }
 
             if (previousData && !fileChanges.name) {
