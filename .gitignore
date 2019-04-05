@@ -3,24 +3,16 @@
 .config/
 .npm/
 .vagrant/
-
-.env
-
-node_modules/
-storage/*
-tmp/
-
-*.log
-package-lock.json
-access.log
 .nyc_output/
 
+tmp/
 out/
-.doc/
-doc/*
+doc/
+storage/
+coverage/
 
+.env
 .eslintcache
-logs/
-
-vm_build.log
 node_modules
+
+*.log
