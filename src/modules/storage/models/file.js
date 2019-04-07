@@ -30,51 +30,65 @@ module.exports = (sequelize, DataTypes) => {
         });
         
 
-        File.prototype.addData = async function (db, fileChanges, filePath, userId) {
-
+        File.prototype.addData = async function (transaction) {
+            let db = transaction.db;
+            let fileChanges = transaction.reqBody;
+            let log = transaction.logger;
             const previousData = await this.getData(db);
 
+            log.info("Finding group");
             if (isNaN(parseInt(fileChanges.groupId, 10))) {
+                log.debug("No groupId given");
                 if (previousData) {
+                    log.debug("groupId taken from previous data");
                     fileChanges.groupId = previousData.groupId;
                 } else {
-                    throw new Error('Group is not an integer');
+                    throw transaction.boom.badRequest('Group is not an integer');
                 }
             } else {
+                log.debug("Successful group parse from request");
                 fileChanges.groupId = parseInt(fileChanges.groupId, 10);
             }
 
             // self-move check
             if(this.isDir && fileChanges.dirId && fileChanges.dirId == this.id) {
-                throw new Error('Cannot move folder inside itself');
+                log.info("Tried to move folder inside itself");
+                throw transaction.boom.badRequest('Cannot move folder inside itself');
             }
 
             // Check isDir
             if (fileChanges.isDir === 'true' || fileChanges.isDir === true) {
+                log.info("directory detected");
                 fileChanges.isDir = true;
             } else {
+                log.info("file detected");
                 fileChanges.isDir = false;
             }
 
             // Check serialNbr
             if(fileChanges.serialNbr && this.isDir) {
-                throw new Error('Cannot give serialNbr to folder');
+                log.info("Tried giving serialNbr to folder");
+                throw transaction.boom.badRequest('Cannot give serialNbr to folder');
             }
 
             // Replace fileId and ownerId, they are not needed
             fileChanges.fileId = this.id;
             if(!fileChanges.ownerId) {
+                log.info("no ownerId detected");
                 if (userId) {
+                    log.info("setting ownerId to userId")
                     fileChanges.ownerId = userId;
                 } else {
-                    throw new Error('No owner can be deduced');
+                    throw transaction.boom.badRequest('No owner can be deduced');
                 }
             }
 
             if (previousData && !fileChanges.name) {
+                log.info("Deduced name from previous data");
                 fileChanges.name = previousData.name;
             } else {
                 // WHY IS IT URLENCODED ? I DON'T KNOW.
+                log.info("decoding name from request. WHY IS IT URLENCODED ?");
                 fileChanges.name = decodeURIComponent(fileChanges.name);
             }
 
@@ -91,70 +105,89 @@ module.exports = (sequelize, DataTypes) => {
 
             for (const i of rights) {
                 if (typeof fileChanges[i] !== 'undefined') {
+                    log.info("New right needed");
                     newRight = true;
                     break;
                 }
             }
 
             // Get groups for user and check groupId is legitimate
+            log.info("Finding owner user");
             const user = await db.User.findByPk(fileChanges.ownerId);
 
             if (!user) {
-                throw new Error('Invalid user');
+                log.info("Failed to find owner user");
+                throw transaction.boom.badRequest('Invalid user');
             }
+
+            log.info("Finding owner user groups");
             const groups = await user.getGroups(db);
 
             if (!groups.map((grp) => grp.id).includes(fileChanges.groupId)) {
-                throw new Error('Invalid group');
+                log.info("Couldn't find requested group in owner user groups");
+                throw transaction.boom.badRequest('Invalid group');
             }
 
             // Create new right, or find the previous right and keep it
             let right = {};
-
             if (newRight) {
+                log.info("Creating new right");
                 right = await db.Right.create(fileChanges);
             } else {
-                const file = await db.File.findByPk(fileChanges.fileId);
-                const fileData = await file.getData(db);
-
-                if (!fileData) {
+                if (!previousData) {
+                    log.info("No data from previous file, creating new right");
                     right = await db.Right.create(fileChanges);
                 } else {
-                    right = await fileData.getRights(db);
+                    log.info("Retrieving right from data");
+                    right = await previousData.getRights(db);
                 }
 
                 if(!right) {
-                    throw new Error('Internal error : no rights associated with data #'+fileData.id);
+                    log.error("No rights associated with data", {data : fileData});
+                    throw transaction.boom.badImplementation('Internal error : no rights associated with data #'+fileData.id);
                 }
             }
+
+            log.info("Replacing request rightsId");
             fileChanges.rightsId = right.id;
 
             // Check file upload
             const access = util.promisify(fs.access);
-
             try {
+                log.info("Checking uploaded file");
                 await access(filePath);
+                log.info("Uploaded file found !");
                 fileChanges.exists = true;
             } catch (err) {
+                log.info("Uploaded file not found", {err});
                 fileChanges.exists = false;
             }
 
+            log.info("Creating data");
             const data = await db.Data.create(fileChanges);
+
+            log.info("Finding new path for uploaded file");
             const dest = await data.getPath(db);
 
             if (fileChanges.exists) {
 
                 if(fileChanges.isDir) {
-                    throw new Error('Cannot handle an upload for a folder !')
+                    log.info("Uploaded file for folder !");
+                    throw transaction.boom.badRequest('Cannot handle an upload for a folder !')
                 }
 
+                log.info("Moving file");
                 const move = util.promisify(mv);
                 await move(filePath, dest, {mkdirp: true,  clobber: true});
             } 
 
+            log.info("Computing values from uploaded file");
             await data.computeValues();
+
+            log.info("Saving new data");
             await data.save();
 
+            log.info("Returning new created data");
             return data;
 
         };
@@ -205,15 +238,16 @@ module.exports = (sequelize, DataTypes) => {
         };
 
 
-        File.createNew = function (db, changes, filePath, userId) {
-            let isDir = false;
+        File.createNew = async function (transaction) {
+            let changes = transaction.reqBody;
 
+            let isDir = false;
             if (typeof changes.isDir !== 'undefined' && (changes.isDir === true || changes.isDir === 'true')) {
                 isDir = true;
             }
 
-            return db.File.create({isDir})
-                .then((file) => file.addData(db, changes, filePath, userId));
+            let file = await db.File.create({isDir})
+            await file.addData(transaction);
         };
 
     };
