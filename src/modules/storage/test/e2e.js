@@ -150,6 +150,38 @@ test('Download file', async t => {
     t.true(res3.body instanceof Buffer);
 });
 
+
+test("Upload file", async t => {
+    let form = new FormData();
+
+    let data = {
+        dirId: "1",
+        exists: true,
+        groupId: 1,
+        hidden: false,
+        name: "policy.js",
+        ownerId: "2",
+        }
+
+    if (data.contents !== undefined) {
+        form.append('contents', data.contents);
+    }
+    form.append('name', data.name);
+    form.append('isDir', (data.isDir) ? data.isDir : false);
+    form.append('dirId', data.dirId);
+    form.append('groupId', data.groupId);
+    form.append('ownerId', data.ownerId);
+    form.append('allRead', data.allRead);
+    form.append('allWrite', data.allWrite);
+    form.append('groupRead', data.groupRead);
+    form.append('groupWrite', data.groupWrite);
+    form.append('ownerWrite', data.ownerWrite);
+    form.append('ownerRead', data.ownerRead);
+
+   let res = await t.context.request.post('/storage/upload').send(form)
+    .attach('contents', 'policy.js');
+});
+
 test.todo('List files (base folder');
 test.todo('List files (other folder)');
 test('Find data (by name, latest)', async t => {

@@ -11,11 +11,11 @@ exports.filterList = async (transaction, folderId, userId) => {
     return storage.fileHasReadPermission(transaction, folderId, userId);
 }
 
-exports.filterUploadNew = async (transaction, folderId, userId) => {
+exports.filterUploadNew = async (transaction, folderId) => {
     transaction.logger.info('Filtering new upload');
 
     /** Check if directory has 'write' permission */
-    const canWriteP = storage.fileHasWritePermission(transaction, folderId, userId);
+    const canWriteP = storage.fileHasWritePermission(transaction, folderId, transaction.info.userId);
     const folder = await transaction.db.File.findByPk(folderId);
     const canWrite = await canWriteP;
 
@@ -52,7 +52,7 @@ exports.filterUploadRev = async (transaction, fileId, userId) => {
     }
 
     transaction.logger.info('Finding write permission');
-    return storage.fileHasWritePermission(transaction, lastData.dirId, userId);
+    return storage.fileHasWritePermission(transaction, lastData.dirId, transaction.info.userId);
 
 };
 

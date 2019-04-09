@@ -95,6 +95,7 @@
   "scripts": {
     "start": "node ./src/app.js",
     "test": "nyc ava --verbose",
+    "test-module" : "./test/test_module.sh",
     "watch-test": "ava --watch --verbose",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
