@@ -35,7 +35,7 @@ module.exports = (db) => async (req, res) => {
 
     try {
         req.transaction.logger.debug('adding data');
-        let data = await file.addData(db, req.body, filePath, req.session.auth);
+        let data = await file.addData(req.transaction);
 
         req.transaction.logger.info('Responding with new data');
         return res.status(200).json(data);

@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             const previousData = await this.getData(db);
 
             log.info("Finding group");
-            if (isNaN(parseInt(fileChanges.groupId, 10))) {
+            if ((typeof fileChanges.groupId === 'undefined') || isNaN(parseInt(fileChanges.groupId, 10))) {
                 log.debug("No groupId given");
                 if (previousData) {
                     log.debug("groupId taken from previous data");
@@ -240,9 +240,10 @@ module.exports = (sequelize, DataTypes) => {
 
         File.createNew = async function (transaction) {
             let changes = transaction.reqBody;
+            let db = transaction.db;
 
             let isDir = false;
-            if (typeof changes.isDir !== 'undefined' && (changes.isDir === true || changes.isDir === 'true')) {
+            if ((typeof changes.isDir !== 'undefined') && (changes.isDir === true || changes.isDir === 'true')) {
                 isDir = true;
             }
 

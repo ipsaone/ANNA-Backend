@@ -27,10 +27,10 @@ module.exports = (db) => async (req, res) => {
         throw res.boom.unauthorized();
     }
 
-    transaction.filePath = '';
+    req.transaction.filePath = '';
     if (req.file) {
         req.transaction.logger.info('Reading file path');
-        transaction.filePath = req.file.path;
+        req.transaction.filePath = req.file.path;
     }
 
     req.transaction.logger.info('Creating file')
