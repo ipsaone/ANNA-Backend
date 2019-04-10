@@ -31,7 +31,7 @@ exports.filterUploadNew = async (transaction, folderId) => {
 };
 
 
-exports.filterUploadRev = async (transaction, fileId, userId) => {
+exports.filterUploadRev = async (transaction, fileId) => {
     transaction.logger.info('Filtering revision upload');
 
 

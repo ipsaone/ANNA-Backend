@@ -145,12 +145,14 @@ module.exports = (sequelize, DataTypes) => {
 
             log.info("Replacing request rightsId");
             fileChanges.rightsId = right.id;
+            let filePath = transaction.filePath;
 
             // Check file upload
             const access = util.promisify(fs.access);
             try {
                 log.info("Checking uploaded file");
                 await access(filePath);
+                
                 log.info("Uploaded file found !");
                 fileChanges.exists = true;
             } catch (err) {
@@ -172,13 +174,13 @@ module.exports = (sequelize, DataTypes) => {
                     throw transaction.boom.badRequest('Cannot handle an upload for a folder !')
                 }
 
-                log.info("Moving file");
+                log.info("Moving file", {filePath, dest});
                 const move = util.promisify(mv);
                 await move(filePath, dest, {mkdirp: true,  clobber: true});
             } 
 
             log.info("Computing values from uploaded file");
-            await data.computeValues();
+            await data.computeValues(transaction);
             log.debug("Values computed", {data});
 
             log.info("Saving new data");

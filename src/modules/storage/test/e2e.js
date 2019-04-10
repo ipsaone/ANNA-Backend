@@ -78,7 +78,6 @@ test('Upload file', async t => {
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id);
 
-    console.log("TEUB", res.body);
     t.is(res.status, 200);
     t.is(res.body.name, 'test');
     t.is(res.body.hidden, false);
@@ -100,6 +99,7 @@ test('Upload revision', async t => {
     t.is(res2.status, 200);
     t.is(res2.body.name, 'testEdited');
     t.is(res2.body.hidden, false);
+    t.is(res2.body.exists, false);
    // t.is(res2.body.dirId, t.context.folder.id);
 
     let res3 = await t.context.request.put('/storage/upload/'+res1.body.id)

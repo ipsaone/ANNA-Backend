@@ -10,16 +10,6 @@ module.exports = (db) => async (req, res) => {
     req.transaction.reqBody = req.body;
     req.transaction.file = req.file;
 
-    // Escape req.body strings
-    req.transaction.logger.info('Escaping req.body strings')
-    Object.keys(req.body).map((key) => {
-        if (typeof req.body[key] === 'string') {
-            req.body[key] = encodeURI(req.body[key]);
-        }
-
-        return true;
-    });
-
     // Check folderId
     const dirId = parseInt(req.body.dirId, 10);
 
