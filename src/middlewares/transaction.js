@@ -10,7 +10,7 @@ process.on('uncaughtException', err => {
 
 module.exports = (req, res, next) => {
     req.transaction = {boom : res.boom, reqBody: req.body};
-    req.transaction.info = {requestId : req.id};
+    req.transaction.info = {requestId : req.id, path : req.originalUrl};
 
     let lbl_format = winston.format.label({label : {transactionInfo : req.transaction.info}});
     let json_format = winston.format.json();

@@ -6,6 +6,10 @@ const winston = require('winston');
 
 module.exports = (db) => async (req, res) => {
 
+    // Needed because multer just modified it
+    req.transaction.reqBody = req.body;
+    req.transaction.file = req.file;
+
     // Escape req.body strings
     req.transaction.logger.info('Escaping req.body strings')
     Object.keys(req.body).map((key) => {
@@ -26,6 +30,7 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.info('Upload refused by policies');
         throw res.boom.unauthorized();
     }
+    req.transaction.logger.info('Upload policies accepted request');
 
     req.transaction.filePath = '';
     if (req.file) {
@@ -36,6 +41,7 @@ module.exports = (db) => async (req, res) => {
     req.transaction.logger.info('Creating file')
     const data = await db.File.createNew(req.transaction);
 
-    req.transaction.logger.info('Sending created data');
+
+    req.transaction.logger.info('Sending created data', {data});
     return res.status(200).json(data);
 };

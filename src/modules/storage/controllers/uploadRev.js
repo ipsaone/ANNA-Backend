@@ -4,6 +4,11 @@ const policy = require('../storage_policy');
 const winston = require('winston');
 
 module.exports = (db) => async (req, res) => {
+
+    // Needed because multer just modified it
+    req.transaction.reqBody = req.body;
+    req.transaction.file = req.file;
+
     const fileId = parseInt(req.body.fileId, 10);
 
     // Escape req.body strings

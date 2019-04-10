@@ -76,8 +76,9 @@ test('Upload file', async t => {
         .field('isDir', false)
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
+        .field('groupId', t.context.group.id);
 
+    console.log("TEUB", res.body);
     t.is(res.status, 200);
     t.is(res.body.name, 'test');
     t.is(res.body.hidden, false);
@@ -117,6 +118,7 @@ test('Create folder', async t => {
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id)
+
 
     t.is(res.status, 200);
     t.is(res.body.name, 'test')

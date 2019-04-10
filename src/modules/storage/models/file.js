@@ -37,8 +37,8 @@ module.exports = (sequelize, DataTypes) => {
             const previousData = await this.getData(db);
 
             log.info("Finding group");
-            if ((typeof fileChanges.groupId === 'undefined') || isNaN(parseInt(fileChanges.groupId, 10))) {
-                log.debug("No groupId given");
+            if (isNaN(parseInt(fileChanges.groupId, 10))) {
+                log.info("No groupId given");
                 if (previousData) {
                     log.debug("groupId taken from previous data");
                     fileChanges.groupId = previousData.groupId;
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
                     throw transaction.boom.badRequest('Group is not an integer');
                 }
             } else {
-                log.debug("Successful group parse from request");
+                log.info("Successful group parse from request");
                 fileChanges.groupId = parseInt(fileChanges.groupId, 10);
             }
 
@@ -74,13 +74,8 @@ module.exports = (sequelize, DataTypes) => {
             // Replace fileId and ownerId, they are not needed
             fileChanges.fileId = this.id;
             if(!fileChanges.ownerId) {
-                log.info("no ownerId detected");
-                if (userId) {
-                    log.info("setting ownerId to userId")
-                    fileChanges.ownerId = userId;
-                } else {
-                    throw transaction.boom.badRequest('No owner can be deduced');
-                }
+                log.info("setting ownerId to userId")
+                fileChanges.ownerId = transaction.info.userId;
             }
 
             if (previousData && !fileChanges.name) {
@@ -165,6 +160,7 @@ module.exports = (sequelize, DataTypes) => {
 
             log.info("Creating data");
             const data = await db.Data.create(fileChanges);
+            log.debug("Data created", {data});
 
             log.info("Finding new path for uploaded file");
             const dest = await data.getPath(db);
@@ -183,11 +179,14 @@ module.exports = (sequelize, DataTypes) => {
 
             log.info("Computing values from uploaded file");
             await data.computeValues();
+            log.debug("Values computed", {data});
 
             log.info("Saving new data");
             await data.save();
+            log.debug("Data saved");
 
             log.info("Returning new created data");
+            log.debug("Returned data details", {data});
             return data;
 
         };
@@ -248,7 +247,10 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             let file = await db.File.create({isDir})
-            await file.addData(transaction);
+            let data = await file.addData(transaction);
+
+            return data;
+        
         };
 
     };
