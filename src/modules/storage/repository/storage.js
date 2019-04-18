@@ -108,7 +108,7 @@ Storage.fileHasWritePermission = async (transaction, fileId, userId) => {
     const db = transaction.db;
     const log = transaction.logger;
     
-    log.info('finding file and user');
+    log.info('finding file and user', {fileId, userId});
     const fileP = db.File.findByPk(fileId);
     const userP = db.User.findByPk(userId);
     const file = await fileP;
@@ -154,7 +154,7 @@ Storage.fileHasReadPermission = async (transaction, fileId, userId) => {
     const db = transaction.db;
     const log = transaction.logger;
 
-    log.info('Finding file and user');
+    log.info('Finding file and user', {fileId, userId});
     const fileP = db.File.findByPk(fileId);
     const userP = db.User.findByPk(userId);
     const file = await fileP;

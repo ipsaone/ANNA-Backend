@@ -76,7 +76,7 @@ test('Upload file', async t => {
         .field('isDir', false)
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
+        .field('groupId', t.context.group.id);
 
     t.is(res.status, 200);
     t.is(res.body.name, 'test');
@@ -99,6 +99,7 @@ test('Upload revision', async t => {
     t.is(res2.status, 200);
     t.is(res2.body.name, 'testEdited');
     t.is(res2.body.hidden, false);
+    t.is(res2.body.exists, false);
    // t.is(res2.body.dirId, t.context.folder.id);
 
     let res3 = await t.context.request.put('/storage/upload/'+res1.body.id)
@@ -117,6 +118,7 @@ test('Create folder', async t => {
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id)
+
 
     t.is(res.status, 200);
     t.is(res.body.name, 'test')

@@ -1,0 +1,1 @@
+ava --verbose 'src/modules/'$1'/test/*.js'

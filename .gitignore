@@ -16,3 +16,4 @@ coverage/
 node_modules
 
 *.log
+backup/settings.sh

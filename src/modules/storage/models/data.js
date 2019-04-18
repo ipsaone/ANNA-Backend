@@ -7,34 +7,44 @@ const repo = require('../repository');
 const dataRep = require('../repository/data');
 
 
-const computeValues = async (data) => {
+const computeValues = async (data, transaction) => {
+    transaction.logger.info("Finding file path");
     const path = await data.getPath();
 
+    transaction.logger.info("Finding data file");
     let file = await data.getFile();
+
     if(file.isDir) {
+        transaction.logger.info("File is a directory, setting size and type as default");
         data.size = -1;
         data.type = 'folder';
         return data;
     }
     if(!data.exists) {
+        transaction.logger.info("File is said not to exist, setting size and type as default");
         data.size = -1;
         data.type = ''
         return data;
     }
 
+    transaction.logger.info("Starting computations");
     const typeP = repo.computeType(path);
     const sizeP = repo.computeSize(path);
 
     try {
         data.type = await typeP;
+        transaction.logger.info("Type deduced correctly");
     } catch (err) {
         data.type = '';
+        transaction.logger.info("Exception while deducing type");
     }
 
     try {
         data.size = await sizeP;
+        transaction.logger.info("Size deduced correctly");
     } catch (err) {
         data.size = -1;
+        transaction.logger.info("Exception while deducing size");
     }
 
     return data;
@@ -156,7 +166,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     // Must be kept as an old-school function to use 'this'
-    Data.prototype.computeValues = function() {return computeValues(this)};
+    Data.prototype.computeValues = function(transaction) {return computeValues(this, transaction)};
 
 
     return Data;
