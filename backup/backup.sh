@@ -1,6 +1,6 @@
 # VARIABLES
 OUTPUT_FOLDER="/home/vagrant"
-OUTPUT_FILE="save1.tgz"
+OUTPUT_FILE=backup_$(date +%m-%d-%Y).tgz
 MYSQL_USERNAME="root"
 MYSQL_PWD="secret"
 TMP_FOLDER="/tmp"
