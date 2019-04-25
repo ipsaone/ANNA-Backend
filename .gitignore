@@ -1,21 +1,19 @@
-.idea/
-.cache/
-.config/
-.npm/
-.vagrant/
-.nyc_output/
+/.idea/
+/.cache/
+/.config/
+/.npm/
+/.vagrant/
+/.nyc_output/
 
-tmp/
-out/
-doc/
-coverage/
-./storage
-
+/tmp/
+/out/
+/doc/
+/coverage/
 
 .env
-.eslintcache
-node_modules
+/.eslintcache
+/node_modules
 
 *.log
-backup/settings.sh
+/backup/settings.sh
 /storage/
