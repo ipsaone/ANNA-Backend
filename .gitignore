@@ -8,8 +8,9 @@
 tmp/
 out/
 doc/
-storage/
 coverage/
+./storage
+
 
 .env
 .eslintcache
@@ -17,3 +18,4 @@ node_modules
 
 *.log
 backup/settings.sh
+/storage/

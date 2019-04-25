@@ -99,6 +99,8 @@ exports.filterDownloadContents = async (transaction, fileId, userId) => {
 
 exports.filterDelete = async (transaction, fileId, userId) => {
 
+    transaction.logger.warn('Path not implemented : delete folder -> check rights on files inside');
+
     if(fileId == 1) {
         transaction.logger.info('Denying suppression of file 1');
         return false;

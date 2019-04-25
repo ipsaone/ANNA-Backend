@@ -12,7 +12,6 @@ const chance = require('chance').Chance();
 
 const fs = require('fs');
 
-
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
     let {app, modules} = loadApp({test: true, noLog: true});
@@ -68,92 +67,8 @@ test.beforeEach(async t => {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now())
     });
-})
-
-test('Upload file', async t => {
-    let res = await t.context.request.post('/storage/upload')
-        .attach('contents', path.join(root, 'src', './app.js'))
-        .field('isDir', false)
-        .field('name', 'test')
-        .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id);
-
-    t.is(res.status, 200);
-    t.is(res.body.name, 'test');
-    t.is(res.body.hidden, false);
-    t.is(res.body.type, 'text/plain');
-    //t.is(res.body.dirId, t.context.folder.id);
 });
 
-test('Upload revision', async t => {
-    let res1 = await t.context.request.post('/storage/upload')
-        .attach('contents', path.join(root, 'src', './app.js'))
-        .field('isDir', false)
-        .field('name', 'test')
-        .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
-
-    let res2 = await t.context.request.put('/storage/upload/'+res1.body.id)
-        .field('name', 'testEdited')
-
-    t.is(res2.status, 200);
-    t.is(res2.body.name, 'testEdited');
-    t.is(res2.body.hidden, false);
-    t.is(res2.body.exists, false);
-   // t.is(res2.body.dirId, t.context.folder.id);
-
-    let res3 = await t.context.request.put('/storage/upload/'+res1.body.id)
-        .attach('contents', path.join(root, './package.json'))
-    
-    t.is(res3.status, 200);
-    t.is(res3.body.name, 'testEdited');
-    t.is(res3.body.exists, true);
-    t.is(res3.body.type,'text/plain');
-    t.is(res3.body.hidden, false);
-});
-
-test('Create folder', async t => {
-    let res = await t.context.request.post('/storage/upload')
-        .field('isDir', true)
-        .field('name', 'test')
-        .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
-
-
-    t.is(res.status, 200);
-    t.is(res.body.name, 'test')
-    t.is(res.body.type, 'folder');
-    t.is(res.body.size, -1);
-    t.is(res.body.exists, false);
-    t.is(res.body.hidden, false);
-
-})
-
-test('Download file', async t => {
-    let res = await t.context.request.post('/storage/upload')
-        .attach('contents', path.join(root, 'src', './app.js'))
-        .field('isDir', false)
-        .field('name', 'test')
-        .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
-        .field('ownerRead', true)
-
-        t.is(res.status, 200);
-
-    let res2 = await t.context.request.get('/storage/files/'+res.body.id);
-    t.is(res2.status, 200);
-    t.is(res2.body.length, 1);
-    t.is(res2.body[0].name, 'test');
-    t.is(res2.body[0].exists, true);
-    t.is(res2.body[0].hidden, false);
-
-    let res3 = await t.context.request.get('/storage/files/'+res.body.id+"?download=true");
-    t.is(res3.status, 200);
-    t.true(res3.body instanceof Buffer);
-});
-
-test.todo('List files (base folder');
-test.todo('List files (other folder)');
 test('Find data (by name, latest)', async t => {
     let res = await t.context.request.post('/storage/upload')
         .attach('contents', path.join(root, 'src', './app.js'))
@@ -174,7 +89,7 @@ test('Find data (by name, latest)', async t => {
 
     t.is(res2.body.length, 1);
 })
-test.todo('Find data (by name, older');
+test.todo('Find data (by name, older)');
 test('Find data (by serialNbr, latest)', async t => {
     let res = await t.context.request.post('/storage/upload')
         .attach('contents', path.join(root, 'src', './app.js'))
