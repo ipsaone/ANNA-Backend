@@ -67,4 +67,4 @@ test.beforeEach(async t => {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now())
     });
-})
+});
