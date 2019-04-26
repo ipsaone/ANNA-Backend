@@ -400,5 +400,3 @@ test('Delete mission', async t => {
     let res3 = await t.context.db.Mission.findAll();
     t.is(res3.length, 0);
 });
-
-test.todo('Get single mission');
