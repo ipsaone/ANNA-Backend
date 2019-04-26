@@ -84,4 +84,9 @@ test('Attendants limit', async t => {
     t.is(res3.body.registered.length, 0);
 })
 
-test.todo('Attendant policy');
+test.todo('Store event (not authorized)');
+test.todo('Update event (not aurthorized)');
+test.todo('Delete event (not authorized)');
+test.todo('Add user to event (not authorized)');
+test.todo('Add user to event (event is full)');
+test.todo('Remove user from event (not authorized)');
