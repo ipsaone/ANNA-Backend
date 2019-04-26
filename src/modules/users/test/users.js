@@ -38,7 +38,7 @@ test.beforeEach(async t => {
     })
 
     t.is(res.status, 200)
-})
+});
 
 test('All', async t => {
     let user1 = await t.context.db.User.create({
@@ -142,5 +142,5 @@ test('LeaderMissions', async t => {
 
 });
 
+
 test.todo('Get user posts');
-test.todo('User policies');

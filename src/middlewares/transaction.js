@@ -5,7 +5,8 @@ let globalFormat = winston.format.combine(winston.format.timestamp(), winston.fo
 let globalLogger = winston.createLogger({transports: winston_cfg.transports, format: globalFormat});
 
 process.on('uncaughtException', err => {
-    globalLogger.error('Unexpected, uncaught exception. Quitting', {error : err});
+    globalLogger.error('Unexpected, uncaught exception. Quitting', {error : String(err)});
+    console.error(err);
 })
 
 module.exports = (req, res, next) => {
