@@ -40,7 +40,7 @@ test.beforeEach(async t => {
     t.is(res.status, 200)
 })
 
-test('All', async t => {
+test('Get all', async t => {
     let user1 = await t.context.db.User.create({
         username: 'someUser',
         password: 'somePassword',
@@ -59,7 +59,7 @@ test('All', async t => {
 
 });
 
-test('Single', async t => {
+test('Get single', async t => {
     let user = await t.context.db.User.create({
         username: 'someUser',
         password: 'somePassword',
@@ -141,3 +141,6 @@ test('LeaderMissions', async t => {
     t.is(res3.body.leaderMissions.length, 1);
 
 });
+
+test.todo('Get user posts');
+test.todo('User policies');
