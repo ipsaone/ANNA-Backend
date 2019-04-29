@@ -8,6 +8,8 @@ module.exports = (db) => async function (req, res) {
     }
     req.body.name = req.body.name.toLowerCase();
 
+    req.transaction.logger.error("GROUP POLICIES NEEDED !!!");
+
     req.transaction.logger.info('Creating group');
     const group = await db.Group.create(req.body);
 

@@ -9,6 +9,8 @@ module.exports = (db) => async function (req, res) {
     }
     const groupId = parseInt(req.params.groupId, 10);
 
+    req.transaction.logger.error("GROUP POLICIES NEEDED !!!");
+
     req.transaction.logger.info('Finding group');
     const group = await db.Group.findByPk(groupId);
 

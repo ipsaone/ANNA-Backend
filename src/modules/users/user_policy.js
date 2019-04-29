@@ -5,6 +5,8 @@ exports.filterIndex = (db, users, userId) => Promise.resolve(users)
     .then((us) => us.map((thisUser) => {
         let user = {};
 
+        console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
         if (thisUser instanceof db.User) {
             user = thisUser.toJSON();
         } else {
@@ -22,6 +24,8 @@ exports.filterIndex = (db, users, userId) => Promise.resolve(users)
 
 exports.filterShow = (db, us, userId) => Promise.resolve(us)
     .then((thisUser) => {
+        console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
         let user = {};
 
         if (thisUser instanceof db.User) {
@@ -42,6 +46,8 @@ exports.filterShow = (db, us, userId) => Promise.resolve(us)
     });
 
 exports.filterStore = (db, user) => async (db, userId) => {
+    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
     let user = db.User.findByPk(userId);
     let isRoot = await user.isRoot();
     if (!isRoot) {
@@ -52,6 +58,8 @@ exports.filterStore = (db, user) => async (db, userId) => {
 };
 
 exports.filterUpdate = (db, targetId, userId) => async (db, targetId, userId) => {
+    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
     let user = db.User.findByPk(userId);
     let isRoot = await user.isRoot();
     if (!isRoot) {
@@ -62,6 +70,8 @@ exports.filterUpdate = (db, targetId, userId) => async (db, targetId, userId) =>
 };;
 
 exports.filterDelete = async (db, targetId, userId) => {
+    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
     if (targetId == userId || targetId == 1) {
         return false;
     }
@@ -76,6 +86,8 @@ exports.filterDelete = async (db, targetId, userId) => {
 };
 
 exports.filterAddGroup = async (db, groupId, targetId, userId) => {
+    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
 
     const user = await db.User.findByPk(userId);
     if (user && await user.isRoot()) {
@@ -87,6 +99,8 @@ exports.filterAddGroup = async (db, groupId, targetId, userId) => {
 };
 
 exports.filterDeleteGroup = async (db, groupId, targetId, userId) => {
+    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+
     if (targetId === userId) {
         return true;
     }

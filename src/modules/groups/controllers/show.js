@@ -5,6 +5,8 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.debug('Invoking group show controller')
     const groupId = parseInt(req.params.groupId, 10);
 
+    req.transaction.logger.error("GROUP POLICIES NEEDED !!!");
+
     req.transaction.logger.info('Finding group');
     const group = await db.Group.findOne({
         where: {id: groupId},
