@@ -9,6 +9,8 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |vb|
       vb.name = "ANNA-BACKEND"
       vb.customize ['setextradata', :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/ANNA-Backend", '1']
+      vb.cpus = 4
+      vb.memory = 2048
   end
 
   config.vm.network "private_network", ip: "192.168.50.5"

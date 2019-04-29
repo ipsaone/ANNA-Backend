@@ -69,5 +69,5 @@ test.beforeEach(async t => {
     });
 });
 
-test.todo('List files (base folder');
+test.todo('List files (base folder)');
 test.todo('List files (other folder)');

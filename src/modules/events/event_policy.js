@@ -1,14 +1,21 @@
 'use strict';
 
 
-exports.filterIndex = () => Promise.resolve(true);
+exports.filterIndex = async () => {
+    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    return true;
+}
 
 
-exports.filterShow = () => Promise.resolve(true);
+exports.filterShow = async () => {
+    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    return true;
+};
 
 
 exports.filterStore = async (db, userId) => {
     const user = await db.User.findByPk(userId);
+    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (user && await user.isRoot()) {
         return true;
@@ -19,6 +26,7 @@ exports.filterStore = async (db, userId) => {
 
 exports.filterUpdate = async (db, userId) => {
     const user = await db.User.findByPk(userId);
+    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (user && await user.isRoot()) {
         return true;
@@ -30,6 +38,7 @@ exports.filterUpdate = async (db, userId) => {
 
 exports.filterDelete = async (db, userId) => {
     const user = await db.User.findByPk(userId);
+    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (user && await user.isRoot()) {
         return true;
@@ -39,6 +48,8 @@ exports.filterDelete = async (db, userId) => {
 };
 
 exports.filterStoreRegistered = async (db, targetId, userId) => {
+
+    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (userId === targetId) {
         return true;
@@ -55,6 +66,8 @@ exports.filterStoreRegistered = async (db, targetId, userId) => {
 };
 
 exports.filterDeleteRegistered = async (db, targetId, userId) => {
+
+    console.error("UPGRADE ME TO TRANSACTIONS");
 
     if (userId === targetId) {
         return true;
