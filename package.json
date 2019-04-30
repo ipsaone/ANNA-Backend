@@ -81,10 +81,11 @@
     "branches": 50,
     "reporter": [
       "html",
-      "text"
+      "text-summary"
     ],
     "exclude": [
-      "src/modules/**/test/*.js"
+      "src/modules/**/test/*.js",
+      "src/modules/logs"
     ]
   },
   "ava": {
