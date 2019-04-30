@@ -1,5 +1,6 @@
 'use strict';
 
+let policy = require("../group_policy");
 
 module.exports = (db) => async function (req, res) {
     if (typeof req.body.name !== 'string') {
@@ -8,7 +9,10 @@ module.exports = (db) => async function (req, res) {
     }
     req.body.name = req.body.name.toLowerCase();
 
-    req.transaction.logger.error("GROUP POLICIES NEEDED !!!");
+    const allowed = policy.filterStore(req.transaction);
+    if(!allowed) {
+        return res.boom.unauthorized();
+    }
 
     req.transaction.logger.info('Creating group');
     const group = await db.Group.create(req.body);

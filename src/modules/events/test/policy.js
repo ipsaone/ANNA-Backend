@@ -141,5 +141,8 @@ test('Events addition, list, details, edition and suppression (organizer)', asyn
     t.is(res5.body.length, 1);
 
 });
-test.todo('Add user to event (not authorized)');
-test.todo('Remove user from event (not authorized)');
+
+test.todo('Add user to event (no group)');
+test.todo('Remove user from event (no group)');
+test.todo('Add user to event (organizer)');
+test.todo('Remove user from event (organizer)');

@@ -1,6 +1,6 @@
 'use strict';
 
-
+let policy = require("../group_policy");
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.groupId, 10))) {
@@ -9,7 +9,10 @@ module.exports = (db) => async function (req, res) {
     }
     const groupId = parseInt(req.params.groupId, 10);
 
-    req.transaction.logger.error("GROUP POLICIES NEEDED !!!");
+    const allowed = policy.filterDelete(req.transaction);
+    if(!allowed) {
+        return res.boom.unauthorized();
+    }
 
     req.transaction.logger.info('Finding group');
     const group = await db.Group.findByPk(groupId);
