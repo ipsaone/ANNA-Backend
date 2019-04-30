@@ -1,7 +1,7 @@
 'use strict';
 
 const joi = require('joi');
-const policy = require('../mission_policy');
+const policy = require('../policies/mission_policy');
 
 
 const schema = joi.object().keys({

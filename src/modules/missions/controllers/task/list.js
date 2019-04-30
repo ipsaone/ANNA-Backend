@@ -1,5 +1,6 @@
 'use strict';
 
+const policy = require('../../policies/mission_task_policy');
 
 module.exports = (db) => async function (req, res) {
     // Check mission ID
@@ -13,7 +14,10 @@ module.exports = (db) => async function (req, res) {
         return req.boom.notFound(`no mission with id ${missionId}`);
     }
 
-    req.transaction.logger.warn('Needs calling policies here');
+    const allowed = policy.filterIndexTasks(req.transaction) 
+    if(!allowed) {
+        return res.boom.unauthorized();
+    }
 
     req.transaction.logger.info('Finding tasks');
     const tasks = await mission.getTasks();

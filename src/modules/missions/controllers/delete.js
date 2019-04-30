@@ -1,6 +1,6 @@
 'use strict';
 
-const policy = require('../mission_policy');
+const policy = require('../policies/mission_policy');
 const winston=require("winston");
 
 

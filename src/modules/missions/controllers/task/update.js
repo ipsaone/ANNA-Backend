@@ -1,6 +1,6 @@
 'use strict';
 
-const policy = require('../../mission_policy');
+const policy = require('../../policies/mission_task_policy');
 
 module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);
