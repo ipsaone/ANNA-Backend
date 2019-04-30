@@ -57,7 +57,7 @@ test.beforeEach(async t => {
 });
 
 
-test('Add, edit and remove task from mission', async t => {
+test('Add, show, list, edit and remove task from mission', async t => {
     let res = await t.context.request.post('/missions/'+t.context.mission.id+'/tasks')
         .send({
             done: false,
@@ -68,6 +68,11 @@ test('Add, edit and remove task from mission', async t => {
     let res2 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks');
     t.is(res2.status, 200);
     t.is(res2.body.length, 1);
+    t.is(res2.body[0].name, 'test');
+
+    let res0 = await t.context.request.get('/missions/'+t.context.mission.id+'/task/'+res.body.id);
+    t.is(res0.status, 200);
+    t.is(res0.body.name, 'test');
 
     let res6 = await t.context.request.put('/missions/'+t.context.mission.id+'/task/'+res.body.id)
         .send({

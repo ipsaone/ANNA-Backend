@@ -1,6 +1,6 @@
 'use strict';
 
-const policy = require('../../policies/mission_policy');
+const policy = require('../../policies/mission_task_policy');
 
 
 module.exports = (db) => async function (req, res) {
@@ -36,5 +36,5 @@ module.exports = (db) => async function (req, res) {
 
     // Delete the task and answer accordingly
     req.transaction.logger.info('Sending task');
-    return res.status(204).json(task);
+    return res.status(200).json(task);
 };
