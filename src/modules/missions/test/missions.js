@@ -49,289 +49,306 @@ test.beforeEach(async t => {
 
 });
 
-test('Create mission (root)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "test",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
 
-    t.is(res.status, 200);
-    t.is(res.body.name, 'test');
-    t.is(res.body.description.startsWith('<h1 id="test">TEST</h1>'), true);
+test('Create mission (multiple scenarios)', async t => {
+    // ROOT
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "test",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 200);
+        t.is(res.body.name, 'test');
+        t.is(res.body.description.startsWith('<h1 id="test">TEST</h1>'), true);
+    }
+
+    // NO GROUP
+    {
+        await t.context.user.setGroups([]);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "test",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 401);
+    }
+
+    // NO NAME FOR MISSION
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 400);
+    }
+
+    // BLANK NAME FOR MISSION
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "     ",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 400);
+    }
+
+    // NO MARKDOWN FOR MISSION
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "name",
+                markdown: "",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 400);
+    }
+
+    // NEGATIVE BUDGETASSIGNED
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "name",
+                markdown: "#test",
+                budgetAssigned: -3100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 400);
+    }
+
+    // NEGATIVE BUDGETUSED
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "name",
+                markdown: "#test",
+                budgetAssigned: 3100,
+                budgetUsed: -40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 400);
+    }
+
+    // ZERO BUDGETUSED
+    {
+            await t.context.user.addGroup(t.context.group);
+            let res = await t.context.request.post('/missions')
+            .send({
+                name: "name",
+                markdown: "#test",
+                budgetAssigned: 3100,
+                budgetUsed: 0,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 200);
+        t.is(res.body.name, 'name');
+    }
+
+    // ZERO BUDGETS
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "name",
+                markdown: "#test",
+                budgetAssigned: 0,
+                budgetUsed: 0,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 200);
+        t.is(res.body.name, 'name');
+    }
 });
 
-test('Create mission (not root)', async (t) => {
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "test",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
+test('Edit mission (multiple scenarios)', async t => {
+    // ROOT
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "test",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-    t.is(res.status, 401);
-});
+        t.is(res.status, 200);
 
-test('Create mission (no name)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
+        let res2 = await t.context.request.put('/missions/'+res.body.id)
+            .send({
+                name: "testEdited"
+            });
 
-    t.is(res.status, 400);
-});
+        t.is(res2.status, 200);
+        t.is(res2.body.name, 'testEdited');
+    }
 
-test('Create mission (blank name)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "     ",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res.status, 400);
-});
-
-test('Create mission (no markdown)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
+    // NO NAME
+    {
+        await t.context.user.addGroup(t.context.group);
+        let mission = await t.context.db.Mission.create({
             name: "name",
-            markdown: "",
+            markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
             groupId: t.context.group.id,
             leaderId: t.context.user.id
         });
 
-    t.is(res.status, 400);
-});
+        let res2 = await t.context.request.put('/missions/'+mission.id)
+            .send({
+                name: "  "
+            });
 
-test('Create mission (negative budgetAssigned)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "name",
-            markdown: "#test",
-            budgetAssigned: -3100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
+        t.is(res2.status, 400);
+    }
 
-    t.is(res.status, 400);
-});
-
-
-test('Create mission (negative budgetUsed)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "name",
-            markdown: "#test",
-            budgetAssigned: 3100,
-            budgetUsed: -40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res.status, 400);
-});
-
-
-test('Create mission (zero budgetUsed)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "name",
-            markdown: "#test",
-            budgetAssigned: 3100,
-            budgetUsed: 0,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res.status, 200);
-    t.is(res.body.name, 'name');
-});
-
-
-test('Create mission (zero budgets)', async (t) => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "name",
-            markdown: "#test",
-            budgetAssigned: 0,
-            budgetUsed: 0,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res.status, 200);
-    t.is(res.body.name, 'name');
-});
-
-
-test('Edit mission', async t => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
+    // NO GROUP & NO LEADER
+    {
+        await t.context.user.setGroups([]);
+        let mission = await t.context.db.Mission.create({
             name: "test",
             markdown: "# TEST",
             budgetAssigned: 100,
             budgetUsed: 40,
             groupId: t.context.group.id,
-            leaderId: t.context.user.id
+            leaderId: t.context.user2.id
         });
 
-    t.is(res.status, 200);
+        let res2 = await t.context.request.put('/missions/'+mission.id)
+            .send({
+                name: "testEdited"
+            });
 
-    let res2 = await t.context.request.put('/missions/'+res.body.id)
-        .send({
-            name: "testEdited"
-        });
+        t.is(res2.status, 401);
+    }
 
-    t.is(res2.status, 200);
-    t.is(res2.body.name, 'testEdited');
-});
+    // NO MARKDOWN
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "test",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-test('Edit mission (no name)', async t => {
-    await t.context.user.addGroup(t.context.group);
-    let mission = await t.context.db.Mission.create({
-        name: "name",
-        markdown: "# TEST",
-        budgetAssigned: 100,
-        budgetUsed: 40,
-        groupId: t.context.group.id,
-        leaderId: t.context.user.id
-    });
+        t.is(res.status, 200);
 
-    let res2 = await t.context.request.put('/missions/'+mission.id)
-        .send({
-            name: "  "
-        });
+        let res2 = await t.context.request.put('/missions/'+res.body.id)
+            .send({
+                name: "testEdited",
+                markdown: " ",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-    t.is(res2.status, 400);
-});
+        t.is(res2.status, 400);
+    }
 
-test('Edit mission (not root & not leader)' , async t => {
-    let mission = await t.context.db.Mission.create({
-        name: "test",
-        markdown: "# TEST",
-        budgetAssigned: 100,
-        budgetUsed: 40,
-        groupId: t.context.group.id,
-        leaderId: t.context.user2.id
-    });
+    // NEGATIVE BUDGETASSIGNED
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "test",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-    let res2 = await t.context.request.put('/missions/'+mission.id)
-        .send({
-            name: "testEdited"
-        });
+        t.is(res.status, 200);
 
-    t.is(res2.status, 401);
-});
+        let res2 = await t.context.request.put('/missions/'+res.body.id)
+            .send({
+                name: "testEdited",
+                markdown: "# TEST",
+                budgetAssigned: -100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-test('Edit mission (no markdown)', async t => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "test",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
+        t.is(res2.status, 400);
+    }
+    
+    // NEGATIVE BUDGETUSED
+    {
+        await t.context.user.addGroup(t.context.group);
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "test",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-    t.is(res.status, 200);
+        t.is(res.status, 200);
 
-    let res2 = await t.context.request.put('/missions/'+res.body.id)
-        .send({
-            name: "testEdited",
-            markdown: " ",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
+        let res2 = await t.context.request.put('/missions/'+res.body.id)
+            .send({
+                name: "testEdited",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: -40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
 
-    t.is(res2.status, 400);
-});
-
-
-test('Edit mission (negative budgetAssigned)', async t => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "test",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res.status, 200);
-
-    let res2 = await t.context.request.put('/missions/'+res.body.id)
-        .send({
-            name: "testEdited",
-            markdown: "# TEST",
-            budgetAssigned: -100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res2.status, 400);
-});
-
-test('Edit mission (negative budgetUsed)', async t => {
-    await t.context.user.addGroup(t.context.group);
-    let res = await t.context.request.post('/missions')
-        .send({
-            name: "test",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: 40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res.status, 200);
-
-    let res2 = await t.context.request.put('/missions/'+res.body.id)
-        .send({
-            name: "testEdited",
-            markdown: "# TEST",
-            budgetAssigned: 100,
-            budgetUsed: -40,
-            groupId: t.context.group.id,
-            leaderId: t.context.user.id
-        });
-
-    t.is(res2.status, 400);
-});
+        t.is(res2.status, 400);
+    }
+})
 
 test('List missions', async t => {
     await t.context.user.addGroup(t.context.group);
@@ -400,5 +417,3 @@ test('Delete mission', async t => {
     let res3 = await t.context.db.Mission.findAll();
     t.is(res3.length, 0);
 });
-
-test.todo('Get single mission');
