@@ -11,6 +11,8 @@ const path = require('path');
 const supertest = require('supertest');
 
 test('Real startup smoke test', async t => {
+    process.stdout.write = chunk => {}; // NOM NOM EAT ALL THE OUTPUT
+
     const loadApp = require(path.join(root, 'src', './app'));
     let {app, modules} = loadApp();
     
