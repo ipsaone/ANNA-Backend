@@ -34,9 +34,6 @@ const loadApp = (options = {}) => {
                 console.log("Started in", elapsed, "ms");
             }
 
-            if(options.up_cb) {
-                options.up_cb();
-            }
         });
     }
 

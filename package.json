@@ -89,7 +89,7 @@
     ]
   },
   "ava": {
-    "files": "src/modules/**/test/*.js",
+    "files": ["src/modules/**/test/*.js", "test/*.js"],
     "verbose": true,
     "babel": {},
     "concurrency": 4
