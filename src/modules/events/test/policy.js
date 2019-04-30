@@ -37,10 +37,14 @@ test.beforeEach(async t => {
     t.context.group = await db.Group.create({
         name: "root"
     });
+    
+    t.context.group2 = await db.Group.create({
+        name: "root"
+    });
 });
 
 
-test('Events addition, list, details, edition and suppression (not root)', async t => {
+test('Events addition, list, details, edition and suppression (no group)', async t => {
 
     let res0 = await t.context.request.post('/events')
         .send({
@@ -96,7 +100,46 @@ test('Events addition, list, details, edition and suppression (not root)', async
 });
 
 
-test.todo('Update event (not aurthorized)');
-test.todo('Delete event (not authorized)');
+test('Events addition, list, details, edition and suppression (organizer)', async t => {
+    t.context.user.addGroup(t.context.group2.id);
+
+    let res0 = await t.context.request.post('/events')
+        .send({
+            name: "test",
+            markdown: "# TEST",
+            maxRegistered: 10,
+            startDate : Date.now().toString(),
+            endDate: Date.now().toString()
+        })
+    t.is(res0.status, 201);
+
+    let res = await t.context.request.post('/events')
+        .send({
+            name: "test",
+            markdown: "# TEST",
+            maxRegistered: 10,
+            startDate : Date.now().toString(),
+            endDate: Date.now().toString()
+        })
+    t.is(res.status, 201);
+
+    let res2 = await t.context.request.get('/events/'+res.body.id);
+    t.is(res2.status, 200);
+    t.is(res2.body.name, 'test');
+
+    let res3 = await t.context.request.put('/events/'+res.body.id)
+        .send({
+            name: 'testEdited'
+        });
+    t.is(res3.status, 200);
+
+    let res4 = await t.context.request.delete('/events/'+res.body.id);
+    t.is(res4.status, 204);
+    
+    let res5 = await t.context.request.get('/events');
+    t.is(res5.status, 200);
+    t.is(res5.body.length, 1);
+
+});
 test.todo('Add user to event (not authorized)');
 test.todo('Remove user from event (not authorized)');

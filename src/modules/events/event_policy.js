@@ -2,14 +2,12 @@
 
 
 exports.filterIndex = async (transaction) => {
-    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.info("Filtering events list");
     return true;
 }
 
 
 exports.filterShow = async (transaction) => {
-    transaction.logger.warn("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.info("Filtering events show");
     return true;
 };
@@ -21,12 +19,18 @@ exports.filterStore = async (transaction, userId) => {
 
     transaction.logger.info("Finding user");
     const user = await db.User.findByPk(userId);
-    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     transaction.logger.info("Checking if user is root");
     if (user && await user.isRoot()) {
         return true;
     }
+
+    transaction.logger.info("Checking if user is organizer");
+    const groups = await user.getGroups();
+    if(groups.includes('organizers')) {
+        return true;
+    }
+
     return false;
 };
 
@@ -37,10 +41,15 @@ exports.filterUpdate = async (transaction, userId) => {
 
     transaction.logger.info("Finding user");
     const user = await db.User.findByPk(userId);
-    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     transaction.logger.info("Checking if user is root");
     if (user && await user.isRoot()) {
+        return true;
+    }
+    
+    transaction.logger.info("Checking if user is organizer");
+    const groups = await user.getGroups();
+    if(groups.includes('organizers')) {
         return true;
     }
 
@@ -54,12 +63,18 @@ exports.filterDelete = async (transaction, userId) => {
 
     transaction.logger.info("Finding user");
     const user = await db.User.findByPk(userId);
-    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     transaction.logger.info("Checking if user is root");
     if (user && await user.isRoot()) {
         return true;
     }
+    
+    transaction.logger.info("Checking if user is organizer");
+    const groups = await user.getGroups();
+    if(groups.includes('organizers')) {
+        return true;
+    }
+
 
     return false;
 };
@@ -68,7 +83,6 @@ exports.filterStoreRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;
     transaction.logger.info("Filtering registered user storage");
 
-    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.warn("TODO : CHECK A PLACE IS AVAILABLE !");
 
     if (userId === targetId) {
@@ -84,13 +98,19 @@ exports.filterStoreRegistered = async (transaction, targetId, userId) => {
     if (userIsAdmin) {
         return true;
     }
+
+    transaction.logger.info("Checking if user is organizer");
+    const groups = await user.getGroups();
+    if(groups.includes('organizers')) {
+        return true;
+    }
+
     return false;
 };
 
 exports.filterDeleteRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;
 
-    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.warn("TODO : CHECK A PLACE IS AVAILABLE !");
 
     if (userId === targetId) {
@@ -106,6 +126,13 @@ exports.filterDeleteRegistered = async (transaction, targetId, userId) => {
     if (userIsAdmin) {
         return true;
     }
+
+    transaction.logger.info("Checking if user is organizer");
+    const groups = await user.getGroups();
+    if(groups.includes('organizers')) {
+        return true;
+    }
+
 
     return false;
 };
