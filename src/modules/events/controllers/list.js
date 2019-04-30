@@ -10,7 +10,7 @@ module.exports = (db) =>
 
     // Check user is authorized
         req.transaction.logger.info('Invoking policies');
-        const authorized = policy.filterIndex(db);
+        const authorized = policy.filterIndex(req.transaction);
 
         if (!authorized) {
             req.transaction.logger.info('Policies denied access');

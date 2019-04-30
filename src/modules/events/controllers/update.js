@@ -40,7 +40,7 @@ module.exports = (db) =>
 
         // Check authorization
         req.transaction.logger.info('Invoking policies');
-        const authorized = await policy.filterUpdate(db, req.session.auth);
+        const authorized = await policy.filterUpdate(req.transaction, req.session.auth);
         if (!authorized) {
             req.transaction.logger.info('Policies denied access');
             return res.boom.unauthorized('You are not allowed to edit this event');

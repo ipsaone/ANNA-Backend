@@ -27,7 +27,7 @@ module.exports = (db) => async function (req, res) {
 
 
     req.transaction.logger.info('Invoking policies');
-    const allowed = await policy.filterShow(event, req.session.id);
+    const allowed = await policy.filterShow(req.transaction, event, req.session.id);
 
     if (!allowed) {
         req.transaction.logger.info('Policies denied access');

@@ -1,21 +1,23 @@
 'use strict';
 
 
-exports.filterIndex = async () => {
-    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+exports.filterIndex = async (transaction) => {
+    console.error("TODO :ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     return true;
 }
 
 
-exports.filterShow = async () => {
-    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+exports.filterShow = async (transaction) => {
+    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     return true;
 };
 
 
-exports.filterStore = async (db, userId) => {
+exports.filterStore = async (transaction, userId) => {
+    const db = transaction.db;
+
     const user = await db.User.findByPk(userId);
-    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (user && await user.isRoot()) {
         return true;
@@ -24,9 +26,11 @@ exports.filterStore = async (db, userId) => {
 };
 
 
-exports.filterUpdate = async (db, userId) => {
+exports.filterUpdate = async (transaction, userId) => {
+    const db = transaction.db;
+
     const user = await db.User.findByPk(userId);
-    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (user && await user.isRoot()) {
         return true;
@@ -36,9 +40,11 @@ exports.filterUpdate = async (db, userId) => {
 };
 
 
-exports.filterDelete = async (db, userId) => {
+exports.filterDelete = async (transaction, userId) => {
+    const db = transaction.db;
+
     const user = await db.User.findByPk(userId);
-    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (user && await user.isRoot()) {
         return true;
@@ -47,9 +53,10 @@ exports.filterDelete = async (db, userId) => {
     return false;
 };
 
-exports.filterStoreRegistered = async (db, targetId, userId) => {
+exports.filterStoreRegistered = async (transaction, targetId, userId) => {
+    const db = transaction.db;
 
-    console.error("TODO : UPGRADE EVENTS POLICY TO TRANSACTIONS, ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (userId === targetId) {
         return true;
@@ -65,9 +72,10 @@ exports.filterStoreRegistered = async (db, targetId, userId) => {
     return false;
 };
 
-exports.filterDeleteRegistered = async (db, targetId, userId) => {
+exports.filterDeleteRegistered = async (transaction, targetId, userId) => {
+    const db = transaction.db;
 
-    console.error("UPGRADE ME TO TRANSACTIONS");
+    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     if (userId === targetId) {
         return true;
