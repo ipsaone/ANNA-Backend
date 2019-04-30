@@ -8,7 +8,8 @@ const db = modules.db;
 module.exports = {
     up: (queryInterface) => queryInterface.bulkInsert('Groups', [
         {name: 'root'},
-        {name: 'authors'}
+        {name: 'authors'},
+        {name : 'organizers'}
     ])
         .then(() => {
             const rootUser = db.User.findOne({where: {username: 'root'}});
@@ -17,13 +18,8 @@ module.exports = {
             const addRootGroup = db.Group.findOne({where: {name: 'root'}})
                 .then((group) => rootUser.then((root) => root.addGroup(group.id)));
 
-            const addAuthorsGroup = db.Group.findOne({where: {name: 'authors'}})
-                .then((group) => rootUser.then((root) => root.addGroup(group.id)));
-            /* eslint-enable promise/no-nesting */
-
             return Promise.all([
-                addRootGroup,
-                addAuthorsGroup
+                addRootGroup
             ]);
         })
         .catch((err) => console.log(err)),
