@@ -2,14 +2,14 @@
 
 
 exports.filterIndex = async (transaction) => {
-    console.error("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.info("Filtering events list");
     return true;
 }
 
 
 exports.filterShow = async (transaction) => {
-    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.info("Filtering events show");
     return true;
 };
@@ -21,7 +21,7 @@ exports.filterStore = async (transaction, userId) => {
 
     transaction.logger.info("Finding user");
     const user = await db.User.findByPk(userId);
-    console.error("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     transaction.logger.info("Checking if user is root");
     if (user && await user.isRoot()) {
@@ -37,7 +37,7 @@ exports.filterUpdate = async (transaction, userId) => {
 
     transaction.logger.info("Finding user");
     const user = await db.User.findByPk(userId);
-    console.error("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     transaction.logger.info("Checking if user is root");
     if (user && await user.isRoot()) {
@@ -54,7 +54,7 @@ exports.filterDelete = async (transaction, userId) => {
 
     transaction.logger.info("Finding user");
     const user = await db.User.findByPk(userId);
-    console.error("TODO : ADD LOGGING, ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
 
     transaction.logger.info("Checking if user is root");
     if (user && await user.isRoot()) {
@@ -68,7 +68,7 @@ exports.filterStoreRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;
     transaction.logger.info("Filtering registered user storage");
 
-    console.error("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.warn("TODO : CHECK A PLACE IS AVAILABLE !");
 
     if (userId === targetId) {
@@ -90,7 +90,7 @@ exports.filterStoreRegistered = async (transaction, targetId, userId) => {
 exports.filterDeleteRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;
 
-    console.error("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
+    transaction.logger.warn("TODO : ADD 'ORGANIZERS' GROUP TO MANAGE EVENTS RIGHTS");
     transaction.logger.warn("TODO : CHECK A PLACE IS AVAILABLE !");
 
     if (userId === targetId) {
