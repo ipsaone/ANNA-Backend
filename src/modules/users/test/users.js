@@ -143,7 +143,68 @@ test('LeaderMissions', async t => {
 });
 
 
-test.todo('Get user posts');
-test.todo('List user groups');
-test.todo('Add user to group');
-test.todo('Remove user from group');
+test('Get user posts', async t => {
+    let res = await t.context.request.get('/users/'+t.context.user.id+'/posts');
+    t.is(res.status, 200);
+    t.is(res.body.length, 0);
+
+    await t.context.db.Post.create({
+        title: 'TEST_POST_1',
+        markdown: '#TEST',
+        authorId: t.context.user.id,
+    });
+
+    let res2 = await t.context.request.get('/users/'+t.context.user.id+'/posts');
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 1);
+    t.is(res2.body[0].title, 'TEST_POST_1');
+
+});
+
+
+test('List user groups', async t => {
+    let res = await t.context.request.get('/users/'+t.context.user.id+'/groups');
+    t.is(res.status, 200);
+    t.is(res.body.length, 0);
+
+    await t.context.user.addGroup(t.context.group);
+
+    let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 1);
+    t.is(res2.body[0].name, 'root');
+
+
+});
+
+
+test('Add user to group', async t => {
+    await t.context.user.addGroup(t.context.group);
+
+    const group2 = await t.context.db.Group.create({
+        name: "test"
+    });
+
+    let res = await t.context.request.put('/users/'+t.context.user.id+'/group/'+group2.id);
+    t.is(res.status, 204);
+
+    let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 2);
+
+
+
+
+});
+
+
+test('Remove user from group', async t => {
+    await t.context.user.addGroup(t.context.group);
+
+    let res = await t.context.request.delete('/users/'+t.context.user.id+'/group/'+t.context.group.id);
+    t.is(res.status, 204);
+
+    let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
+    t.is(res2.status, 200);
+    t.is(res2.body.length, 0);
+});

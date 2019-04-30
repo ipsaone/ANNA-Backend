@@ -10,7 +10,7 @@ const path = require('path');
 
 const supertest = require('supertest');
 
-test.todo("Fix all tests of this file")
+test.todo("POSPONED TO A LATER DATE")
 
 /*
 

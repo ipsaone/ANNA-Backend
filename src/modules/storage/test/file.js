@@ -53,10 +53,5 @@ test('Add data', async (t) => {
     t.is(type, 'text/plain');
 });
 
-test.skip('Get data', async t => {
-    t.pass();
-})
-
-test.skip('Create new', async t => {
-    t.pass();
-});
+test.todo('Get data');
+test.todo('Create new');
