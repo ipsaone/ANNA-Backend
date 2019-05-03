@@ -1,40 +1,17 @@
 'use strict';
 
 
-exports.filterIndex = (db, users, userId) => Promise.resolve(users)
-    .then((us) => us.map((thisUser) => {
-        let user = {};
+exports.filterIndex = async (transaction, users, userId) => {
+    const db = transaction.db;
 
-        console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+    return users.map((thisUser) => {
+        let user = {};
 
         if (thisUser instanceof db.User) {
             user = thisUser.toJSON();
         } else {
             // Else, assume it's already JSON !
             user = thisUser;
-        }
-
-        delete user.password;
-        if (user.id !== userId) {
-            delete user.email;
-        }
-
-        return user;
-    }));
-
-exports.filterShow = (db, us, userId) => Promise.resolve(us)
-    .then((thisUser) => {
-        console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
-
-        let user = {};
-
-        if (thisUser instanceof db.User) {
-            user = thisUser.toJSON();
-        } else if (thisUser) {
-            // Else, assume it's already JSON !
-            user = thisUser;
-        } else {
-            return {};
         }
 
         delete user.password;
@@ -44,11 +21,35 @@ exports.filterShow = (db, us, userId) => Promise.resolve(us)
 
         return user;
     });
+};
 
-exports.filterStore = (db, user) => async (db, userId) => {
-    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+exports.filterShow = async (transaction, thisUser, userId) => {
+    
+    const db = transaction.db;
 
-    let user = db.User.findByPk(userId);
+    let user = {};
+
+    if (thisUser instanceof db.User) {
+        user = thisUser.toJSON();
+    } else if (thisUser) {
+        // Else, assume it's already JSON !
+        user = thisUser;
+    } else {
+        return {};
+    }
+
+    delete user.password;
+    if (user.id !== userId) {
+        delete user.email;
+    }
+
+    return user;
+};
+
+exports.filterStore = async (transaction, userId) => {
+    const db = transaction.db;
+    
+    let user = await db.User.findByPk(userId);
     let isRoot = await user.isRoot();
     if (!isRoot) {
         return false;
@@ -57,10 +58,10 @@ exports.filterStore = (db, user) => async (db, userId) => {
     return true;
 };
 
-exports.filterUpdate = (db, targetId, userId) => async (db, targetId, userId) => {
-    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+exports.filterUpdate = async (transaction, targetId, userId) =>{
+    const db = transaction.db;
 
-    let user = db.User.findByPk(userId);
+    let user = await db.User.findByPk(userId);
     let isRoot = await user.isRoot();
     if (!isRoot) {
         return false;
@@ -69,8 +70,8 @@ exports.filterUpdate = (db, targetId, userId) => async (db, targetId, userId) =>
     return true;
 };;
 
-exports.filterDelete = async (db, targetId, userId) => {
-    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+exports.filterDelete = async (transaction, targetId, userId) => {
+    const db = transaction.db;
 
     if (targetId == userId || targetId == 1) {
         return false;
@@ -85,8 +86,8 @@ exports.filterDelete = async (db, targetId, userId) => {
     return true;
 };
 
-exports.filterAddGroup = async (db, groupId, targetId, userId) => {
-    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+exports.filterAddGroup = async (transaction, groupId, targetId, userId) => {
+    const db = transaction.db;
 
 
     const user = await db.User.findByPk(userId);
@@ -98,8 +99,8 @@ exports.filterAddGroup = async (db, groupId, targetId, userId) => {
 
 };
 
-exports.filterDeleteGroup = async (db, groupId, targetId, userId) => {
-    console.error("TODO : USERS POLICY TO USER TRANSACTIONS");
+exports.filterDeleteGroup = async (transaction, groupId, targetId, userId) => {
+    const db = transaction.db;
 
     if (targetId === userId) {
         return true;

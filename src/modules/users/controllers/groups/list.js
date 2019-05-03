@@ -17,6 +17,8 @@ module.exports = (db) => async function (req, res) {
         include: ['groups']
     });
 
+    req.transaction.logger.warn('NEED TO CALL POLICIES HERE');
+
     if(!user) {
         req.transaction.logger.info('User not found');
         return res.boom.badRequest('User not found');

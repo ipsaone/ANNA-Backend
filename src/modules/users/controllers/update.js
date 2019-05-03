@@ -22,7 +22,7 @@ module.exports = (db) => async function (req, res) {
     }
 
     req.transaction.logger.info('Invoking policies');
-    let authorized = policy.filterUpdate(db, req.params.userId, req.session.auth);
+    let authorized = policy.filterUpdate(req.transaction, req.params.userId, req.session.auth);
     if(!authorized) {
         req.transaction.logger.info('Policies denied access');
         return res.boom.unauthorized();

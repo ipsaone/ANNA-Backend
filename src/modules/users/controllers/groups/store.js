@@ -9,7 +9,7 @@ module.exports = (db) => async function (req, res) {
 
 
     req.transaction.logger.info('Invoking policies');
-    const allowedP = policy.filterAddGroup(db, groupId, userId, req.session.auth);
+    const allowedP = policy.filterAddGroup(req.transaction, groupId, userId, req.session.auth);
 
     req.transaction.logger.info('Finding user');
     const user = await db.User.findByPk(userId);

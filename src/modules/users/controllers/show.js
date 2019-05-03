@@ -20,6 +20,8 @@ module.exports = (db) => async function (req, res) {
         ]
     });
 
+    req.transaction.logger.warn('NEED TO CALL POLICIES HERE');
+
     if (!user) {
         req.transaction.logger.info('User not found');
         throw res.boom.notFound();

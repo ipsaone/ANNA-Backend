@@ -20,10 +20,10 @@ exports.filterIndex = (db, logs, userId) => {
     return Promise.all(promises).then(() => logs);
 };
 
-exports.filterShow = async (db, log, userId) => {
+exports.filterShow = async (transaction, log, userId) => {
     const filtered = log.toJSON();
 
-    filtered.author = await userPolicy.filterShow(db, log.author, userId);
+    filtered.author = await userPolicy.filterShow(transaction, log.author, userId);
 
     return filtered;
 };

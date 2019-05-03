@@ -6,7 +6,7 @@ module.exports = (db) => async function (req, res) {
     const userId = parseInt(req.params.userId, 10);
 
     req.transaction.logger.info('Invoking policies');
-    let authorized = policy.filterDelete(db, req.params.userId, req.session.auth);
+    let authorized = policy.filterDelete(req.transaction, req.params.userId, req.session.auth);
     if(!authorized) {
         req.transaction.logger.info('Policies denied access');
         return res.boom.unauthorized();
