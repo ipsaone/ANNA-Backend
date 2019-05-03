@@ -83,8 +83,6 @@ exports.filterStoreRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;
     transaction.logger.info("Filtering registered user storage");
 
-    transaction.logger.warn("TODO : CHECK A PLACE IS AVAILABLE !");
-
     if (userId === targetId) {
         transaction.logger.info("Self-assign authorized");
         return true;
