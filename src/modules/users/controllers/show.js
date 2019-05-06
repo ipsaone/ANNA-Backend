@@ -1,6 +1,6 @@
 'use strict';
 
-
+const policy = require('../user_policy');
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
@@ -20,14 +20,19 @@ module.exports = (db) => async function (req, res) {
         ]
     });
 
-    req.transaction.logger.warn('NEED TO CALL POLICIES HERE');
-
     if (!user) {
         req.transaction.logger.info('User not found');
-        throw res.boom.notFound();
+        return res.boom.notFound();
+    }
+
+    req.transaction.logger.info('Invoking policies');
+    let filteredUser = await policy.filterShow(req.transaction, user);
+    if(!filteredUser) {
+        req.transaction.logger.info('Policies denied access');
+        return res.boom.unauthorized();
     }
 
     req.transaction.logger.info('Returning user');
-    return res.status(200).json(user);
+    return res.status(200).json(filteredUser);
 
 };

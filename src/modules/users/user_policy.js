@@ -1,7 +1,7 @@
 'use strict';
 
 
-exports.filterIndex = async (transaction, users, userId) => {
+exports.filterIndex = async (transaction, users) => {
     const db = transaction.db;
 
     return users.map((thisUser) => {
@@ -15,7 +15,7 @@ exports.filterIndex = async (transaction, users, userId) => {
         }
 
         delete user.password;
-        if (user.id !== userId) {
+        if (user.id !== transaction.info.userId) {
             delete user.email;
         }
 
@@ -23,7 +23,7 @@ exports.filterIndex = async (transaction, users, userId) => {
     });
 };
 
-exports.filterShow = async (transaction, thisUser, userId) => {
+exports.filterShow = async (transaction, thisUser) => {
     
     const db = transaction.db;
 
@@ -39,7 +39,7 @@ exports.filterShow = async (transaction, thisUser, userId) => {
     }
 
     delete user.password;
-    if (user.id !== userId) {
+    if (user.id !== transaction.info.userId) {
         delete user.email;
     }
 

@@ -23,7 +23,7 @@ exports.filterIndex = (db, logs, userId) => {
 exports.filterShow = async (transaction, log, userId) => {
     const filtered = log.toJSON();
 
-    filtered.author = await userPolicy.filterShow(transaction, log.author, userId);
+    filtered.author = await userPolicy.filterShow(transaction, log.author);
 
     return filtered;
 };

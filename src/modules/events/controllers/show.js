@@ -37,7 +37,7 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Invoking policies for users in the event');
     const promises = [];
     for (let i = 0; i < event.registered.length; i++) {
-        promises.push(userPolicy.filterShow(req.transaction, event.registered[i], req.session.auth).then((reg) => {
+        promises.push(userPolicy.filterShow(req.transaction, event.registered[i]).then((reg) => {
             event.registered[i] = reg;
             return true;
         }));
