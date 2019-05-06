@@ -1,12 +1,25 @@
 'use strict';
 
 const policy = require('../post_policy');
+const joi = require('joi');
 
+const schema = joi.object().keys({
+    title : joi.string().trim(true).required(),
+    markdown : joi.string().trim(true).required(),
+    authorId : joi.number().required(),
+    published : joi.boolean()
+});
 
 module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Post store controller invoked');
 
-    req.transaction.logger.warn('MISSING SCHEMA');
+    // Validate user input
+    req.transaction.logger.info('Validating input');
+    const validation = joi.validate(req.body, schema);
+    if (validation.error) {
+        req.transaction.logger.info('Input denied by validator');
+        return res.boom.badRequest(validation.error);
+    }
 
     req.transaction.logger.info('Checking store policies');
     const allowed = await policy.filterStore(req.transaction, req.session.auth);

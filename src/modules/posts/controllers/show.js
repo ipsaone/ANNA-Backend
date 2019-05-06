@@ -2,6 +2,7 @@
 
 const policy = require('../post_policy');
 
+
 module.exports = (db) => async function (req, res, handle) {
     const postId = parseInt(req.params.postId, 10);
     req.transaction.logger.info('Post details controller invoked', {postId});
