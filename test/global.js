@@ -48,7 +48,6 @@ test('Error handling', async t => {
     process.stdout.write = chunk => {}; // NOM NOM EAT ALL THE OUTPUT
 
     let res2 = await request.get('/error');
-    console.log(res2.body);
     t.is(res2.status, 500);
 
     process.stdout.write = old_stdout;
