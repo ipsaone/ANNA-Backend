@@ -1,6 +1,6 @@
 'use strict';
 
-// Const policy = require('../../user_policy');
+const policy = require('../../user_policy');
 
 
 
@@ -17,7 +17,12 @@ module.exports = (db) => async function (req, res) {
         include: ['groups']
     });
 
-    req.transaction.logger.warn('NEED TO CALL POLICIES HERE');
+    req.transaction.logger.info('Invoking policies');
+    let filteredUser = await policy.filterShow(req.transaction, user);
+    if(!filteredUser) {
+        req.transaction.logger.info('Policies denied access');
+        return res.boom.unauthorized();
+    }
 
     if(!user) {
         req.transaction.logger.info('User not found');
