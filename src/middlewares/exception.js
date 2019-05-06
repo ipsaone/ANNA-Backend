@@ -14,7 +14,7 @@ const sendError = (res, err, type) => {
 
     // Build the error and send it
     const builder = res.boom[type];
-    builder(err);
+    return builder(err);
 };
 
 const logError = (req, err) => {

@@ -14,6 +14,7 @@ module.exports = (db) => {
         return next();
     });
     router.use('/', require('./home').routes);
+    router.use('/error', require('./error').routes);
     const directories =
           require('fs').readdirSync(path.join(root, 'src', 'modules'))
               .map((name) => path.join(root, 'src', 'modules', name))
