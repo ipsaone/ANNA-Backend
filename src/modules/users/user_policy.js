@@ -54,6 +54,21 @@ exports.filterStore = async (transaction, userId) => {
     if (!isRoot) {
         return false;
     }
+
+    let duplicates = await db.User.findAll({
+        where: {
+            username : transaction.reqBody.username
+        }
+    });
+
+    if(duplicates.length > 0) {
+
+        if(duplicates.length > 1) {
+            transaction.logger.warn('ATTENTION : ' + duplicates.length - 1 + ' user(s) with duplicate name for username ' + transaction.reqBody.username);
+        }
+
+        return false;
+    }
     
     return true;
 };

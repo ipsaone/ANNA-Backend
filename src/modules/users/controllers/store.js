@@ -26,8 +26,6 @@ module.exports = (db) => async function (req, res) {
         return res.boom.unauthorized();
     }
 
-    req.transaction.logger.warn('CHECK DUPLICATE NAMES !');
-
     req.transaction.logger.info('Creating user');
     const user = await db.User.create(req.body);
 
