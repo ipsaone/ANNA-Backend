@@ -92,3 +92,6 @@ test('Add, show, list, edit and remove task from mission', async t => {
     t.is(res4.status, 200);
     t.is(res4.body.length, 0);
 });
+
+
+test.todo('Add, show, list, edit and remove task from mission (not root)');

@@ -90,3 +90,7 @@ test('Add leader to mission', async t => {
     t.is(res.status, 400);
 
 });
+
+test.todo('Add user to mission (not root)');
+test.todo('Remove user from mission (not root)');
+test.todo('Add leader to mission (not root)');
