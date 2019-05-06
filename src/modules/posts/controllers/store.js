@@ -6,6 +6,8 @@ const policy = require('../post_policy');
 module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Post store controller invoked');
 
+    req.transaction.logger.warn('MISSING SCHEMA');
+
     req.transaction.logger.info('Checking store policies');
     const allowed = await policy.filterStore(req.transaction, req.session.auth);
     if (!allowed) {
