@@ -125,8 +125,11 @@ exports.filterDelete = async (transaction, fileId, userId) => {
 
 exports.filterSearch = async(transaction, files) => {
 
+    transaction.logger.info('Filtering search');
+
     return files.filter(async data => {
         // For each data, remove if can't read folder
+        transaction.logger.debug('Filtering file ' + data.fileId);
         return storage.fileHasReadPermission(transaction, data.dirId, transaction.info.userId);
     });
 
