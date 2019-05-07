@@ -40,37 +40,39 @@ module.exports = (db) => async (req, res) => {
     const options = {[db.Sequelize.Op.or]: searches};
     req.transaction.logger.debug('Starting search', {options});
     const matchingData = await db.Data.findAll({where: options});
+    let filteredData;
 
     // If all data are requested, send everything we find
     if (req.body.include && 'previous_data' in req.body.include) {
         req.transaction.logger.debug('Sending all found data');
-        return matchingData;
+        filteredData = matchingData;
+    } else {
+
+        // Otherwise, filter data
+        req.transaction.logger.debug('Filtering data')
+        const filterPromise = util.promisify(async.filter);
+        filteredData = await filterPromise(matchingData, async.asyncify(async (el) => {
+
+            // Find the file corresponding to data
+            req.transaction.logger.debug('finding file from data', {data: el.toJSON()})
+            const file = await db.File.findByPk(el.fileId);
+            if (!file) {
+                req.transaction.logger.error('Couldn\t find file from data', {data: el.toJSON()})
+                return false;
+            }
+
+            // Find the most recent data from the file
+            req.transaction.logger.debug('Finding most recent data')
+            const lastData = await file.getData(db);
+            if (lastData.id !== el.id) {
+                req.transaction.logger.debug('Last data id doesn\'t match this data id', {lastData: lastData.toJSON(), thisData: el.toJSON()})
+                return false;
+            }
+
+            return true;
+
+        }));
     }
-
-    // Otherwise, filter data
-    req.transaction.logger.debug('Filtering data')
-    const filterPromise = util.promisify(async.filter);
-    const filteredData = await filterPromise(matchingData, async.asyncify(async (el) => {
-
-        // Find the file corresponding to data
-        req.transaction.logger.debug('finding file from data', {data: el.toJSON()})
-        const file = await db.File.findByPk(el.fileId);
-        if (!file) {
-            req.transaction.logger.error('Couldn\t find file from data', {data: el.toJSON()})
-            return false;
-        }
-
-        // Find the most recent data from the file
-        req.transaction.logger.debug('Finding most recent data')
-        const lastData = await file.getData(db);
-        if (lastData.id !== el.id) {
-            req.transaction.logger.error('Last data id doesn\'t match this data id', {lastData: lastData.toJSON(), thisData: el.toJSON()})
-            return false;
-        }
-
-        return true;
-
-    }));
 
     let results = await policy.filterSearch(req.transaction, filteredData);
     req.transaction.logger.debug('Returning found data', {data: results.map(e => e.toJSON())});

@@ -126,12 +126,10 @@ exports.filterDelete = async (transaction, fileId, userId) => {
 };
 
 exports.filterSearch = async(transaction, files) => {
-    transaction.logger.warn('NEED TO IMPLEMENT POLICY HERE');
 
-    // For each data
-        // Find folder
-        // Find rights of folder
-        // Remove if can't read folder
-
-    return files;
+    return files.filter(async data => {
+        // For each data, remove if can't read folder
+        return storage.fileHasReadPermission(transaction, data.dirId, transaction.info.userId);
+    });
+    
 }
