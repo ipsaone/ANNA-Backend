@@ -27,7 +27,13 @@ test.beforeEach(async t => {
     })
 })
 
-test('Login', async t => {
+test('Login, logout, check', async t => {
+
+    // CANNOT LOGOUT WITHOUT LOGGING IN BEFORE
+    let res1 = await t.context.request.get('/auth/logout')
+    t.is(res1.status, 401);
+
+    // LOGIN
     let SuccessRes = await t.context.request.post('/auth/login')
         .send({
             username: 'login_test',
@@ -36,6 +42,12 @@ test('Login', async t => {
 
     t.is(SuccessRes.status, 200);
 
+    // CHECK LOGIN
+    let res = await t.context.request.get('/auth/check')
+    t.is(res.status, 200);
+    t.is(res.body.logged, true);
+
+    // TRY BAD LOGIN
     let badPasswordRes = await t.context.request.post('/auth/login')
         .send({
             username: 'login_test',
@@ -51,42 +63,13 @@ test('Login', async t => {
         })
 
     t.true(badUserRes.status == 401)
-});
 
-
-
-test('Logout', async t => {
-    let res1 = await t.context.request.get('/auth/logout')
-    t.is(res1.status, 401);
-
-    let SuccessRes = await t.context.request.post('/auth/login')
-        .send({
-            username: 'login_test',
-            password: 'password_test'
-        })
-
-    t.is(SuccessRes.status, 200);
-
+    // LOGOUT
     let res2 = await t.context.request.get('/auth/logout')
     t.is(res2.status, 200);
-});
 
-test('Check (connected)', async t => {
-    let SuccessRes = await t.context.request.post('/auth/login')
-        .send({
-            username: 'login_test',
-            password: 'password_test'
-        })
-
-    t.is(SuccessRes.status, 200);
-
-    let res = await t.context.request.get('/auth/check')
-    t.is(res.status, 200);
-    t.is(res.body.logged, true);
-});
-
-test('Check (not connected)', async t => {
-    let res = await t.context.request.get('/auth/check')
-    t.is(res.status, 200);
-    t.is(res.body.logged, false);
+    // CHECK LOGOUT
+    let res3 = await t.context.request.get('/auth/check')
+    t.is(res3.status, 200);
+    t.is(res3.body.logged, false);
 });
