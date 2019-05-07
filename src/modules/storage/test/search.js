@@ -70,7 +70,7 @@ test.beforeEach(async t => {
     });
 });
 
-test('Find data (by name, latest)', async t => {
+test('Find data', async t => {
     // UPLOAD FILE
     let res = await t.context.request.post('/storage/upload')
         .attach('contents', path.join(root, 'src', './app.js'))
@@ -78,36 +78,29 @@ test('Find data (by name, latest)', async t => {
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id)
-
+        .field('serialNbr', 'abc-def');
     t.is(res.status, 200);
     t.is(res.body.name, 'test');
 
-    // FIND FILE
+    // FIND FILE BY NAME
     let res2 = await t.context.request.get('/storage/files/search')
         .send({
             keyword: 'test',
             upperFolder: t.context.folder.id,
             include: ['name']
         })
-
     t.is(res2.body.length, 1);
     t.is(res2.body[0].name, 'test');
-})
 
-test.todo('Find data (by name, older)');
+    // FIND FILE BY SERIAL NUMBER
+    let res3 = await t.context.request.get('/storage/files/search')
+        .send({
+            keyword: 'abc-def',
+            upperFolder: t.context.folder.id,
+            include: ['serialNbr']
+        })
 
-test('Find data policy', async t => {
-    
-    // UPLOAD FILE
-    let res = await t.context.request.post('/storage/upload')
-        .attach('contents', path.join(root, 'src', './app.js'))
-        .field('isDir', false)
-        .field('name', 'test')
-        .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
-
-    t.is(res.status, 200);
-    t.is(res.body.name, 'test');
+    t.is(res3.body.length, 1);
 
     // REMOVE READ RIGHTS
     t.context.right.ownerRead = false;
@@ -116,35 +109,15 @@ test('Find data policy', async t => {
     t.context.right.save();
 
     // CONFIRM YOU CAN'T READ
-    let res2 = await t.context.request.get('/storage/files/search')
+    let res4 = await t.context.request.get('/storage/files/search')
         .send({
             keyword: 'test',
             upperFolder: t.context.folder.id,
             include: ['name']
         })
 
-    t.is(res2.body.length, 0);
-});
+    t.is(res4.body.length, 0);
+})
 
-test('Find data (by serialNbr, latest)', async t => {
-    let res = await t.context.request.post('/storage/upload')
-        .attach('contents', path.join(root, 'src', './app.js'))
-        .field('isDir', false)
-        .field('name', 'test')
-        .field('dirId', t.context.folder.id)
-        .field('groupId', t.context.group.id)
-        .field('serialNbr', 'abc-def');
-
-    t.is(res.status, 200);
-    t.is(res.body.name, 'test');
-
-    let res2 = await t.context.request.get('/storage/files/search')
-        .send({
-            keyword: 'abc-def',
-            upperFolder: t.context.folder.id,
-            include: ['serialNbr']
-        })
-
-    t.is(res2.body.length, 1);
-});
+test.todo('Find data (by name, older)');
 test.todo('Find data (by serialNbr, older)');
