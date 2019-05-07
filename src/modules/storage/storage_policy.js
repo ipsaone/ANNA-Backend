@@ -3,6 +3,12 @@
 
 const storage = require('./repository/storage');
 
+// FROM HERE : https://stackoverflow.com/questions/33355528
+async function filter(arr, callback) {
+  const fail = Symbol()
+  return (await Promise.all(arr.map(async item => (await callback(item)) ? item : fail))).filter(i=>i!==fail)
+}
+
 exports.filterList = async (transaction, folderId, userId) => {
 
     transaction.logger.info('Granting access on read permission');
@@ -127,7 +133,7 @@ exports.filterSearch = async(transaction, files) => {
 
     transaction.logger.info('Filtering search');
 
-    return files.filter(async data => {
+    return filter(files, data => {
         // For each data, remove if can't read folder
         transaction.logger.debug('Filtering file ' + data.fileId);
         return storage.fileHasReadPermission(transaction, data.dirId, transaction.info.userId);

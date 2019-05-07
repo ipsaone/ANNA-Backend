@@ -47,7 +47,8 @@ test.beforeEach(async t => {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now())
     });
-    await t.context.db.Right.create({
+
+    t.context.right = await t.context.db.Right.create({
         groupWrite: true,
         groupRead: true,
         ownerWrite: true,
@@ -70,6 +71,7 @@ test.beforeEach(async t => {
 });
 
 test('Find data (by name, latest)', async t => {
+    // UPLOAD FILE
     let res = await t.context.request.post('/storage/upload')
         .attach('contents', path.join(root, 'src', './app.js'))
         .field('isDir', false)
@@ -80,6 +82,7 @@ test('Find data (by name, latest)', async t => {
     t.is(res.status, 200);
     t.is(res.body.name, 'test');
 
+    // FIND FILE
     let res2 = await t.context.request.get('/storage/files/search')
         .send({
             keyword: 'test',
@@ -88,8 +91,41 @@ test('Find data (by name, latest)', async t => {
         })
 
     t.is(res2.body.length, 1);
+    t.is(res2.body[0].name, 'test');
 })
+
 test.todo('Find data (by name, older)');
+
+test('Find data policy', async t => {
+    
+    // UPLOAD FILE
+    let res = await t.context.request.post('/storage/upload')
+        .attach('contents', path.join(root, 'src', './app.js'))
+        .field('isDir', false)
+        .field('name', 'test')
+        .field('dirId', t.context.folder.id)
+        .field('groupId', t.context.group.id)
+
+    t.is(res.status, 200);
+    t.is(res.body.name, 'test');
+
+    // REMOVE READ RIGHTS
+    t.context.right.ownerRead = false;
+    t.context.right.groupRead = false;
+    t.context.right.allRead = false;
+    t.context.right.save();
+
+    // CONFIRM YOU CAN'T READ
+    let res2 = await t.context.request.get('/storage/files/search')
+        .send({
+            keyword: 'test',
+            upperFolder: t.context.folder.id,
+            include: ['name']
+        })
+
+    t.is(res2.body.length, 0);
+});
+
 test('Find data (by serialNbr, latest)', async t => {
     let res = await t.context.request.post('/storage/upload')
         .attach('contents', path.join(root, 'src', './app.js'))

@@ -75,6 +75,8 @@ module.exports = (db) => async (req, res) => {
     }
 
     let results = await policy.filterSearch(req.transaction, filteredData);
+
+
     req.transaction.logger.debug('Returning found data', {data: results.map(e => e.toJSON())});
     return res.status(200).json(results.map(e => e.toJSON()));
 
