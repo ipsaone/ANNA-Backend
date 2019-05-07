@@ -29,7 +29,6 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.debug('Requesting target data', {revision: rev})
         const data = await file.getData(db, rev);
         if (!data) {
-            winston
             return res.boom.notFound('This revision doesn\'t exist');
         }
 
