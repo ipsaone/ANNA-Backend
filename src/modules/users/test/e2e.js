@@ -40,7 +40,7 @@ test.beforeEach(async t => {
     t.is(res.status, 200)
 })
 
-test('All', async t => {
+test('Get all or single', async t => {
     let user1 = await t.context.db.User.create({
         username: 'someUser',
         password: 'somePassword',
@@ -57,24 +57,14 @@ test('All', async t => {
     t.is(res.status, 200);
     t.is(res.body.length, 3); // The 3rd one is created in beforeEach()
 
-});
-
-test('Single', async t => {
-    let user = await t.context.db.User.create({
-        username: 'someUser',
-        password: 'somePassword',
-        email: 'someEmail@mail.com'
-    })
-
-    let res = await t.context.request.get('/users/'+user.id)
-    t.is(res.status, 200);
+    let res8 = await t.context.request.get('/users/'+user1.id)
+    t.is(res8.status, 200);
 
     let res2 = await t.context.request.get('/users/-3')
     t.is(res2.status, 404);
 
     let res3 = await t.context.request.get('/users/abc')
     t.is(res3.status, 404)
-
 
 });
 
