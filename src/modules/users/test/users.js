@@ -152,14 +152,53 @@ test('Get user posts', async t => {
         title: 'TEST_POST_1',
         markdown: '#TEST',
         authorId: t.context.user.id,
+
+
     });
 
-    let res2 = await t.context.request.get('/users/'+t.context.user.id+'/posts');
-    t.is(res2.status, 200);
-    t.is(res2.body.length, 1);
-    t.is(res2.body[0].title, 'TEST_POST_1');
+    await t.context.db.Post.create({
+        title: 'TEST_POST_11',
+        markdown: '#TEST',
+        authorId: t.context.user.id,
+        published: true       
+
+    });
+
+    await t.context.db.Post.create({
+        title : 'TEST_POST_2',
+        markdown : '#TEST',
+        authorId: t.context.user.id,
+        published: false
+
+
+    })
+
+    {
+        let res2 = await t.context.request.get('/users/'+t.context.user.id+'/posts');
+        t.is(res2.status, 200);
+        t.is(res2.body.length, 3);
+        t.is(res2.body[0].title, 'TEST_POST_1');
+    }
+
+    {
+        let res2 = await t.context.request.get('/users/'+t.context.user.id+'/posts?published=true');
+        t.is(res2.status, 200);
+        t.is(res2.body.length, 1);
+        t.is(res2.body[0].title, 'TEST_POST_11');
+    }
+
+    {
+        let res2 = await t.context.request.get('/users/'+t.context.user.id+'/posts?published=false');
+        t.is(res2.status, 200);
+        t.is(res2.body.length, 2);
+        t.is(res2.body[0].title, 'TEST_POST_1');
+        t.is(res2.body[1].title, 'TEST_POST_2');
+    }
+
 
 });
+
+
 
 
 test('List user groups', async t => {
