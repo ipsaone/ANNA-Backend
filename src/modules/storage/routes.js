@@ -22,7 +22,7 @@ module.exports = (db) => {
     router.get('/files/list/:folderId([0-9]+)', storageController.list);
 
     // Search for files
-    router.get('/files/search', storageController.search);
+    router.post('/files/search', storageController.search);
 
     // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
     router.get('/files/:fileId([0-9]+)', storageController.download);
