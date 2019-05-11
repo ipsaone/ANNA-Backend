@@ -9,10 +9,10 @@ const getChildrenData = async (folderId, options, transaction) => {
 
     let file = db.File;
     if (options.filesOnly) {
-        req.transaction.logger.debug('Scoping to files only');
+        transaction.logger.debug('Scoping to files only');
         file = file.scope('files');
     } else if (options.foldersOnly) {
-        req.transaction.logger.debug('Scoping to folders only');
+        transaction.logger.debug('Scoping to folders only');
         file = file.scope('folders');
     }
 
