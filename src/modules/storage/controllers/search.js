@@ -36,9 +36,17 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.debug('Adding serialNbr search option');
         searches.push({serialNbr: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}});
     }
-    const options = {[db.Sequelize.Op.or]: searches};
-    req.transaction.logger.debug('Starting search', {options});
+    let folder = req.body.upperFolder ? req.body.upperFolder : 1;
+    const options = {
+        [db.Sequelize.Op.and]: [
+            {fileId: {[db.Sequelize.Op.ne] : 1}},
+            {dirId: folder}, 
+            {[db.Sequelize.Op.or]: searches}
+        ]
+    };
+    req.transaction.logger.debug('Starting search', {folder: folder, options: JSON.stringify(options), searches: JSON.stringify(searches)});
     const matchingData = await db.Data.findAll({where: options});
+    req.transaction.logger.debug('Search results', {matchingData});
     let filteredData;
 
     // If all data are requested, send everything we find
