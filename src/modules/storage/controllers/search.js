@@ -15,7 +15,6 @@ const schema = joi.object().keys({
 
 });
 
-
 module.exports = (db) => async (req, res) => {
 
     // Validate user input
