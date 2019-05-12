@@ -83,7 +83,7 @@ test('Find data', async t => {
     t.is(res.body.name, 'test');
 
     // FIND FILE BY NAME
-    let res2 = await t.context.request.get('/storage/files/search')
+    let res2 = await t.context.request.post('/storage/files/search')
         .send({
             keyword: 'test',
             upperFolder: t.context.folder.id,
@@ -93,7 +93,7 @@ test('Find data', async t => {
     t.is(res2.body[0].name, 'test');
 
     // FIND FILE BY SERIAL NUMBER
-    let res3 = await t.context.request.get('/storage/files/search')
+    let res3 = await t.context.request.post('/storage/files/search')
         .send({
             keyword: 'abc-def',
             upperFolder: t.context.folder.id,
@@ -109,7 +109,7 @@ test('Find data', async t => {
     t.context.right.save();
 
     // CONFIRM YOU CAN'T READ
-    let res4 = await t.context.request.get('/storage/files/search')
+    let res4 = await t.context.request.post('/storage/files/search')
         .send({
             keyword: 'test',
             upperFolder: t.context.folder.id,
