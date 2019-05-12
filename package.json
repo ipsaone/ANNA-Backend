@@ -99,7 +99,7 @@
   },
   "scripts": {
     "start": "node ./src/app.js",
-    "test": "./test/test.sh",
+    "test": "bash ./test/test.sh",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",
