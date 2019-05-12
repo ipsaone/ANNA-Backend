@@ -44,8 +44,8 @@ const config = {
             operatorsAliases: false,
             dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
-                maxConnections: 50,
-                maxIdleTime: 10
+                min: 5,
+                max : 500,
             }
         };
 
