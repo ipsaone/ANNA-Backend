@@ -8,7 +8,6 @@ const winston = require('winston');
 
 module.exports = (req, res, next) => {
     req.transaction.logger.debug('Check if user is logged in.', {reqid: req.id});
-    console.log(req.session);
     if (req.path !== '/' && req.path !== '/auth/login' && req.path !== '/auth/check') {
         if (req.session.auth || config.session.check === 'false') {
             req.session.touch();
