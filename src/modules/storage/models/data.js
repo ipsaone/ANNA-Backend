@@ -110,6 +110,7 @@ module.exports = (sequelize, DataTypes) => {
         serialNbr: {
             allowNull: true,
             type: DataTypes.STRING,
+            defaultValue: ''
         }
     }, {
         timestamps: true,
