@@ -36,28 +36,17 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.debug('Adding serialNbr search option');
         searches.push({serialNbr: {[db.Sequelize.Op.like]: `%${req.body.keyword}%`}});
     }
-    let searchFunction = async (folder) => {
-        const options = {
-            [db.Sequelize.Op.and]: [
-                {fileId: {[db.Sequelize.Op.ne] : 1}},
-                {dirId: folder}, 
-                {[db.Sequelize.Op.or]: searches}
-            ]
-        };
-        req.transaction.logger.warn('SEARCH RECURSIVELY IN CHILD FOLDERS');
-        req.transaction.logger.debug('Starting search', {folder: folder, options: JSON.stringify(options), searches: JSON.stringify(searches)});
-        const matchingData = await db.Data.findAll({where: options});
-        req.transaction.logger.debug('Search results', {matchingData});
-        for(let i = 0; i < matchingData.length; i++) {
-            if(matchingData[i].type === 'folder') {
-                
-            }
-        }
-
-        return 
-    }
     let folder = req.body.upperFolder ? req.body.upperFolder : 1;
-    let matchingData = await searchFunction(folder);
+    const options = {
+        [db.Sequelize.Op.and]: [
+            {fileId: {[db.Sequelize.Op.ne] : 1}},
+            {dirId: folder}, 
+            {[db.Sequelize.Op.or]: searches}
+        ]
+    };
+    req.transaction.logger.debug('Starting search', {folder: folder, options: JSON.stringify(options), searches: JSON.stringify(searches)});
+    const matchingData = await db.Data.findAll({where: options});
+    req.transaction.logger.debug('Search results', {matchingData});
     let filteredData;
 
     // If all data are requested, send everything we find
@@ -75,7 +64,7 @@ module.exports = (db) => async (req, res) => {
             req.transaction.logger.debug('finding file from data', {data: el.toJSON()})
             const file = await db.File.findByPk(el.fileId);
             if (!file) {
-                req.transaction.logger.error('Couldn\'t find file from data', {data: el.toJSON()})
+                req.transaction.logger.error('Couldn\t find file from data', {data: el.toJSON()})
                 return false;
             }
 
