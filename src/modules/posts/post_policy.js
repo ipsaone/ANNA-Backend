@@ -23,7 +23,8 @@ exports.filterIndex = async (transaction, posts, userId) => {
     // Only show drafts if user is an author
     transaction.logger.info('Checking if user is author');
     let isAuthor = await userIsAuthor(transaction, userId);
-    if (isAuthor) {
+    let user = await transaction.db.User.findByPk(userId);
+    if (isAuthor || user.isRoot()) {
         transaction.logger.info('User is author, returning all posts');
         return posts;
     }
@@ -38,7 +39,8 @@ exports.filterIndex = async (transaction, posts, userId) => {
 
 exports.filterShow = async (transaction, post, userId) =>{
     let isAuthor = await userIsAuthor(transaction, userId);
-    if (post.published || isAuthor) {
+    let user = await transaction.db.User.findByPk(userId);
+    if (post.published || (isAuthor || user.isRoot())) {
         // Only show drafts is user is an author.
         transaction.logger.info('User is author or post is published, returning post') ;
         return post;
