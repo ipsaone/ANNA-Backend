@@ -2,6 +2,13 @@
 
 const winston = require('winston');
 const sequelize = require('sequelize');
+const nodemailer = require('nodemailer');
+const config = require('../config/config');
+
+var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: config.email.auth,
+  });
 
 const sendError = (res, err, type) => {
 

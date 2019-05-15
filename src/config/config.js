@@ -19,7 +19,14 @@ const config = {
         errorManagers: [
             'declaverie@gmail.com',
             'clement.chandon@gmail.com'
-        ]
+        ],
+        auth: {
+            type: 'oauth2',
+            user: 'YOUR_GMAIL_ADDRESS',
+            clientId: 'YOUR_CLIENT_ID',
+            clientSecret: 'YOUR_CLIENT_SECRET',
+            refreshToken: 'YOUR_REFRESH_TOKEN',
+        }
     },
 
 
