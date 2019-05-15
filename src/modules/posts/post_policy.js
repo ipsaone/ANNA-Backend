@@ -74,7 +74,7 @@ exports.filterUpdate = async (transaction, userId) => {
     if(isAuthor) { return true; }
 
     transaction.logger.info('User is not author, checking if root');
-    let user = await db.User.findByPk(userId);
+    let user = await transaction.db.User.findByPk(userId);
     let isRoot = await user.isRoot();
 
     return isRoot;
@@ -88,7 +88,7 @@ exports.filterDelete = async (transaction, userId) => {
     if(isAuthor) { return true; }
 
     transaction.logger.info('User is not author, checking if root');
-    let user = await db.User.findByPk(userId);
+    let user = await transaction.db.User.findByPk(userId);
     let isRoot = await user.isRoot();
 
     return isRoot;
