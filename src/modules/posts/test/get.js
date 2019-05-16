@@ -42,6 +42,7 @@ test('All', async t => {
         title: 'TEST_POST_1',
         markdown: '#TEST',
         authorId: t.context.user.id,
+        published: false
     })
 
     await t.context.db.Post.create({
