@@ -33,7 +33,7 @@
     "mv": "^2.1.1",
     "mysql2": "^1.5.2",
     "nodemailer": "^6.1.1",
-    "sequelize": "^4.44.0",
+    "sequelize": "^5.8.6",
     "smtp-server": "^3.4.1",
     "sqlite3": "^4.0.8",
     "tape": "^4.10.1",
@@ -63,7 +63,7 @@
     "sequelize-cli": "^5.4.0",
     "sequelize-mock": "^0.10.2",
     "sinon": "^7.3.2",
-    "supertest": "^3.0.0",
+    "supertest": "^4.0.2",
     "umzug": "^2.1.0",
     "wrk": "^1.2.0"
   },
