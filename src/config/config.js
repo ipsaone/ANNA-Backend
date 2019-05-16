@@ -48,7 +48,6 @@ const config = {
             database: process.env.DB_NAME,
             redis: this.session,
             force: process.env.DB_FORCE_SYNC,
-            operatorsAliases: false,
             dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
                 min: 5,
@@ -68,7 +67,6 @@ const config = {
                 fs.appendFileSync.bind(null, "./logs/db_test.log"), // Prevent Sequelize from outputting the query on the console
             redis: this.session,
             force: true,
-            operatorsAliases: false,
             pool: {
                 maxConnections: 50,
                 maxIdleTime: 10
