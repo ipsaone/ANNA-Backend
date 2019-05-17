@@ -109,12 +109,7 @@ module.exports = (sequelize, DataTypes) => {
 
     User.prototype.isRoot = async function () {
         const groups = await this.getGroups();
-
-        if (groups.find((group) => group.name === 'root')) {
-            return true;
-        }
-
-        return false;
+        return groups.find((group) => group.name === 'root');
 
     };
 
