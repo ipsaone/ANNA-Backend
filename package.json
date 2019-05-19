@@ -109,7 +109,8 @@
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
     "debug": "nodemon -L --inspect=0.0.0.0:9229 ./src/app.js",
     "coverage": "http-server ./coverage -p 8080 -c-1 -o",
-    "load": "node --prof --no-logfile-per-isolate --logfile=./logs/v8_raw.log ./test/load.js && node --prof-process ./logs/v8_raw.log > ./logs/v8_proc.log"
+    "load": "node --prof --no-logfile-per-isolate --logfile=./logs/v8_raw.log ./test/load.js && node --prof-process ./logs/v8_raw.log > ./logs/v8_proc.log",
+    "deploy": "rm -rf ./node_modules/ && npm install && npm migrate"
   },
   "engines": {
     "node": ">=8.9.0"
