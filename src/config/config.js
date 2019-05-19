@@ -51,7 +51,7 @@ const config = {
             dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
                 min: 5,
-                max : 500,
+                max : 130,
             }
         };
 
