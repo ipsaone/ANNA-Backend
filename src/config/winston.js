@@ -2,7 +2,6 @@ const winston = require('winston');
 const config = require('./config');
 const path = require('path');
 const fs = require('fs'); // File system
-require('winston-mail');
 
 
 const logdir = './logs';
@@ -30,17 +29,7 @@ const transports = [
 
 
 if (!process.env.TEST || !process.env.NOEMAIL) {
-    transports.push(new winston.transports.Mail({
-        level: 'error',
-        from: config.email.sender,
-        to: config.email.errorManagers,
-        host: "smtp.gmail.com",
-        username: config.email.sender,
-        password: config.email.password,
-        port: 587,
-        ssl: false,
-        tls: true
-    }));
+    
 }
 
 transports.forEach((el) => {
