@@ -66,6 +66,7 @@ test('All', async t => {
 
     t.is(res2.status, 200);
     t.is(res2.body.length, 2); // I am an author, I should see all posts
+
 });
 
 test('Published', async t => {

@@ -6,12 +6,10 @@ const userIsAuthor = async (transaction, userId) => {
     const user = await transaction.db.User.findByPk(userId, {include: ['groups']});
 
     if (user && user.groups) {
-
-
-    transaction.logger.debug('Groups found, looking for "authors"');
-    return Boolean(user.groups
-            .map((group) => group.name)
-            .find((name) => name === 'authors'));
+        transaction.logger.debug('Groups found, looking for "authors"', {groups : user.groups});
+        let found = user.groups.map(group => group.name).find(name => name === 'authors');
+        transaction.logger.debug('Filtered groups', {AuthorsFound: found, result: Boolean(found)});
+        return Boolean(found);
     }
 
     return [];
@@ -24,14 +22,19 @@ exports.filterIndex = async (transaction, posts, userId) => {
     transaction.logger.info('Checking if user is author');
     let isAuthor = await userIsAuthor(transaction, userId);
     let user = await transaction.db.User.findByPk(userId);
-    if (isAuthor || user.isRoot()) {
+    transaction.logger.debug('Check results', {isAuthor});
+    if (isAuthor || await user.isRoot()) {
         transaction.logger.info('User is author, returning all posts');
+        transaction.logger.debug('No posts filtered', {posts});
         return posts;
     }
 
+    transaction.logger.info('User is not author, filtering');
     if (Array.isArray(posts)) {
 
-        return posts.filter((post) => post.published);
+        let filtered = posts.filter((post) => post.published);
+        transaction.logger.debug('Filtered posts', {filtered});
+        return filtered;
     }
 
     return [];
