@@ -6,18 +6,6 @@ const path = require('path');
 
 const config = require(path.join(root, './src/config/config'));
 
-const bcrypt = require('bcrypt');
-
-
-const hashPassword = async (user) => {
-    if (!user.changed('password')) {
-        return user.getDataValue('password');
-    }
-
-    let hash = await bcrypt.hash(user.getDataValue('password'), config.password.salt)
-    return user.setDataValue('password', hash);
-
-};
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -35,14 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             unique: true
         },
 
-        password: {
+        secretsId: {
             allowNull: false,
-            type: DataTypes.STRING
-        }
-    }, {
-        hooks: {
-            beforeCreate: hashPassword,
-            beforeUpdate: hashPassword
+            type: DataTypes.INTEGER,
         }
     });
 
@@ -105,6 +88,13 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
         });
+
+        User.hasOne(models.UserSecrets, {
+            as: 'secrets',
+            foreignKey: 'secretsId',
+            onDelete: 'SET NULL',
+            onUpdate: 'CASCADE'
+        })
     };
 
     User.prototype.isRoot = async function () {
