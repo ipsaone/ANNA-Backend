@@ -247,3 +247,9 @@ test('Remove user from group', async t => {
     t.is(res2.status, 200);
     t.is(res2.body.length, 0);
 });
+
+
+test('No password when fetching user in database', async t => {
+    let curUser = await t.context.db.User.findByPk(t.context.user.id);
+    t.is('password' in curUser, false);
+});
