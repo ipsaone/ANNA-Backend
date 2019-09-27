@@ -32,14 +32,5 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    User.associate = function (models) {
-        UserSecrets.belongsTo(models.User, {
-            as: 'user',
-            foreignKey: 'secretsId',
-            onDelete: 'SET NULL',
-            onUpdate: 'CASCADE'
-        });
-    }
-
     return UserSecrets;
 };

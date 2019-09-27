@@ -18,9 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         email: {
-            allowNull: false,
+            allowNull: false,   
             type: DataTypes.STRING,
             unique: true
+        },
+
+        password: {
+            allowNull: true,
+            type: DataTypes.VIRTUAL
         },
 
         secretsId: {
@@ -28,6 +33,26 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
         }
     });
+
+    let createSecretsHook = async (user, options) => {
+        const secrets = await sequelize.models.UserSecrets.create({
+            password: user.password
+        });
+
+        delete user.password;
+        user.secretsId = secrets.id;
+    };
+
+    let removeSecretsHook = async  (user, options) => {
+        let secrets = await user.getSecrets();
+        await secrets.destroy();
+    };
+
+    // Maybe bulk hooks are needed ?
+    User.addHook('beforeValidate', createSecretsHook);
+    User.addHook('validationFailed', removeSecretsHook);
+
+
 
     User.associate = function (models) {
 
@@ -94,7 +119,7 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'secretsId',
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
-        })
+        });
     };
 
     User.prototype.isRoot = async function () {
