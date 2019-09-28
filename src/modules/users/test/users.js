@@ -251,5 +251,5 @@ test('Remove user from group', async t => {
 
 test('No password when fetching user in database', async t => {
     let curUser = await t.context.db.User.findByPk(t.context.user.id);
-    t.is('password' in curUser, false);
+    t.is(!curUser.password, true);
 });

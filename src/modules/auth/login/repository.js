@@ -24,12 +24,10 @@ module.exports.login = async (transaction, username, password) => {
     }
 
     let secrets = await user.getSecrets();
-    let found = await transaction.db.UserSecrets.findAll();
-    debugger;
 
     // Compare password to hash
     transaction.logger.debug('Comparing hashes');
-    const passwordAccepted = await bcrypt.compare(password, user.secrets.password);
+    const passwordAccepted = await bcrypt.compare(password, secrets.password);
 
     if (!passwordAccepted) {
         transaction.logger.debug('Password refused');

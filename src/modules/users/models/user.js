@@ -26,21 +26,14 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             allowNull: true,
             type: DataTypes.VIRTUAL
-        },
-
-        secretsId: {
-            allowNull: false,
-            type: DataTypes.INTEGER,
         }
     });
 
     let createSecretsHook = async (user, options) => {
         const secrets = await sequelize.models.UserSecrets.create({
-            password: user.password
+            password: user.password,
+            userId: user.id
         });
-
-        delete user.password;
-        user.secretsId = secrets.id;
     };
 
     let removeSecretsHook = async  (user, options) => {
@@ -48,9 +41,15 @@ module.exports = (sequelize, DataTypes) => {
         await secrets.destroy();
     };
 
+    let updateSecretsHook = async (user, options) => {
+        let secrets = await user.getSecrets();
+        await secrets.update(user);
+    }
+
     // Maybe bulk hooks are needed ?
-    User.addHook('beforeValidate', createSecretsHook);
-    User.addHook('validationFailed', removeSecretsHook);
+    User.addHook('afterCreate', createSecretsHook);
+    User.addHook('afterDestroy', removeSecretsHook);
+    User.addHook('afterUpdate', updateSecretsHook);
 
 
 
@@ -113,13 +112,14 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
         });
-
+        
         User.hasOne(models.UserSecrets, {
             as: 'secrets',
-            foreignKey: 'secretsId',
-            onDelete: 'SET NULL',
+            foreignKey: 'userId',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         });
+        
     };
 
     User.prototype.isRoot = async function () {

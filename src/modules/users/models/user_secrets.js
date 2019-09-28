@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             allowNull: false,
             type: DataTypes.STRING
+        },
+
+        userId: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     }, {
         hooks: {

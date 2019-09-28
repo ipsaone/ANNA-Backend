@@ -17,6 +17,11 @@ module.exports = {
             type: Sequelize.STRING
         },
 
+        userId: {
+          allowNull: false,
+          type: Sequelize.INTEGER
+        },
+
         createdAt: {
             allowNull: false,
             type: Sequelize.DATE
@@ -26,19 +31,13 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         }
-      }),
-
-      queryInterface.addColumn('Users', 'secretsId', {
-        allowNull: false,
-        type: Sequelize.INTEGER
       })
     ]);
   },
 
   down: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.dropTable('UserSecrets'),
-      queryInterface.removeColumn('Users', 'secretsId')
+      queryInterface.dropTable('UserSecrets')
     ]);
   }
 };
