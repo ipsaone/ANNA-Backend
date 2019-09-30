@@ -40,6 +40,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: false,
             type: DataTypes.BOOLEAN
+        },
+
+        public: {
+            allowNull: true,
+            defaultValue: false,
+            type: DataTypes.BOOLEAN
         }
     }, {timestamps: false});
 

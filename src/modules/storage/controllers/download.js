@@ -19,6 +19,7 @@ module.exports = (db) => async (req, res) => {
             return res.boom.notFound("file not found !");
         }
 
+
         // Revision parameter, to get an older version
         let rev = 0;
         if (!isNaN(parseInt(req.query.revision, 10))) {

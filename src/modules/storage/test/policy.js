@@ -10,3 +10,5 @@ test.todo('download file (no rights on file)');
 test.todo('delete file (no rights on file)');
 test.todo('delete folder (no rights on files inside)');
 test.todo('find in folder (no rights on folder)');
+test.todo('download metadata (public');
+test.todo('download file (public)');
