@@ -91,3 +91,5 @@ test('Download file', async t => {
     t.is(res3.status, 200);
     t.true(res3.body instanceof Buffer);
 });
+
+test.todo('Download public file, unlogged');
