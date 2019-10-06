@@ -1,6 +1,8 @@
 'use strict';
 
 const policy = require('../storage_policy');
+const fs = require('fs');
+const util = require('util');
 const winston = require('winston');
 
 module.exports = (db) => async (req, res) => {
@@ -43,6 +45,19 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.debug('Requesting data path');
         const dataPath = await data.getPath(true);
         req.transaction.logger.debug('Data path request successful', {path: dataPath});
+
+        
+        req.transaction.logger.debug('Checking file exists');
+        let accessP = util.promisify(fs.access);
+        try {
+            await accessP(dataPath, fs.constants.R_OK);
+            req.transaction.logger.debug('File access OK');
+            
+        } catch (e) {
+            req.transaction.logger.debug('File access denied');
+            console.error(e);
+            return res.boom.notFound('File not found on disk');
+        }   
 
         req.transaction.logger.info('Sending file', {data: data.name});
         return res.download(dataPath, data.name);

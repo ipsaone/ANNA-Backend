@@ -2,7 +2,6 @@
 
 
 const config = require('../config/config');
-const winston = require('winston');
 const minimatch = require('minimatch');
 
 let authorized_paths = [
@@ -17,6 +16,7 @@ module.exports = (req, res, next) => {
     
    // Checks if the requested path isn't in whitelist
     if ( authorized_paths.map(path => minimatch(req.path, path)).filter(match => (match === true)).length === 0 ) {
+        req.transaction.logger.debug('Path needs login', {session: req.session});
         if (req.session.auth || config.session.check === 'false') {
             req.session.touch();
             req.transaction.logger.debug('User is logged. Request allowed', {reqid: req.id})

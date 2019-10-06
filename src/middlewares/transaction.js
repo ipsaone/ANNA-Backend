@@ -19,8 +19,6 @@ module.exports = (req, res, next) => {
     let format = winston.format.combine(lbl_format, timestamp_format, json_format);
     req.transaction.logger = winston.createLogger({transports: winston_cfg.transports, format});
 
-  
-
     req.transaction.logger.debug('Transaction created successfully')
     return next();
 

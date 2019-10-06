@@ -8,13 +8,7 @@ module.exports.login = async (transaction, username, password) => {
 
     // Find user in database
     const user = await transaction.db.User.findOne({
-        where: {username},
-        include: [
-            'groups',
-            'events',
-            'participatingMissions',
-            'secrets'
-        ]
+        where: {username}
     });
 
     // Check user was found

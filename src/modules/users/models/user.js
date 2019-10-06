@@ -34,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
             password: user.password,
             userId: user.id
         });
+
+        delete user.password;
+        
     };
 
     let removeSecretsHook = async  (user, options) => {

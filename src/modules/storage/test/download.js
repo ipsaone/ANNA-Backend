@@ -76,9 +76,8 @@ test('Download file', async t => {
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id)
-        .field('ownerRead', true)
-
-        t.is(res.status, 200);
+        .field('ownerRead', true);
+    t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/storage/files/'+res.body.id);
     t.is(res2.status, 200);
