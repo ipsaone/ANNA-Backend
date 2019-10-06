@@ -29,6 +29,10 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Creating user');
     const user = await db.User.create(req.body);
 
+    req.transaction.logger.info('Adding to default group');
+    let group = await req.transaction.db.Group.findAll({where: {name: 'default'}});
+    await user.addGroup(group.id);
+
     req.transaction.logger.info('Returning user');
     return res.status(201).json(user);
 

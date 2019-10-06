@@ -253,3 +253,5 @@ test('No password when fetching user in database', async t => {
     let curUser = await t.context.db.User.findByPk(t.context.user.id);
     t.is(!curUser.password, true);
 });
+
+test.todo('Default group');

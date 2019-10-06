@@ -8,11 +8,15 @@ module.exports = {
         await queryInterface.bulkInsert('Groups', [
             {name: 'root', id: 1},
             {name: 'authors', id: 2},
-            {name : 'organizers', id: 3}
+            {name : 'organizers', id: 3},
+            {name: 'default', id: 4}
         ])
             
         await queryInterface.bulkInsert('UserGroup', [
-            {id: 1, userId: 1, groupId: 1}
+            {id: 1, userId: 1, groupId: 1},
+            {id: 1, userId: 1, groupId: 2},
+            {id: 1, userId: 1, groupId: 3},
+            {id: 1, usedId: 1, groupId: 4}
         ])
         
     },
