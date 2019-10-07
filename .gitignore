@@ -9,7 +9,6 @@
 /out/
 /doc/
 /coverage/
-/crashes/
 
 .env
 /.eslintcache
