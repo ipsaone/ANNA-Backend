@@ -32,6 +32,9 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest('Event size cannot be negative')
     }
 
+    // Adding creatorId
+    req.body.creatorId = req.transaction.info.userId;
+
 
     req.transaction.logger.info('Invoking policies');
     const authorized = await policy.filterStore(req.transaction, req.session.auth);

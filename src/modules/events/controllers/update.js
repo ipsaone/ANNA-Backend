@@ -38,6 +38,9 @@ module.exports = (db) =>
             return res.boom.badRequest(validation.error);
         }
 
+        // Adding creatorId
+        req.body.creatorId = req.transaction.info.userId;
+
         // Check authorization
         req.transaction.logger.info('Invoking policies');
         const authorized = await policy.filterUpdate(req.transaction, req.session.auth);
