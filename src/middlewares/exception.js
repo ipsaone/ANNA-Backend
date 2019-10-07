@@ -91,12 +91,10 @@ module.exports = (err, req, res, next) => {
     if (typeof err.type && err.type === 'entity.parse.failed') { // Bad JSON was sent
         sendError(res, err, 'badRequest');
         req.transaction.logger.error('Could not parse entity', {reqid: req.id});
-        next();
 
     } else if (err instanceof sequelize.ValidationError) { // Validation error
         sendError(res, err.errors.map(item => item.message), 'badRequest');
         req.transaction.logger.error('Unapropriate request', {reqid: req.id});
-        next();
 
     } else if (err instanceof sequelize.ForeignKeyConstraintError) {
         let message = 'Foreign key constraint error';
@@ -105,18 +103,18 @@ module.exports = (err, req, res, next) => {
         }
         sendError(res, message, 'badRequest');
         req.transaction.logger.error(message, {reqid: req.id});
-        next();
 
 
     } else { // Unknown error
         
         logError(req, err);
         let saveP = saveLogs(req, res, err)
-        saveP.then(() => {
+        return saveP.then(() => {
             sendError(res, err, 'badImplementation');
-            next();
+
         })
         
-
     }
+
+    return true;
 };
