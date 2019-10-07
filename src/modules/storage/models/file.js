@@ -36,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
             let log = transaction.logger;
             const previousData = await this.getData(db);
 
+            log.info('Defining creatorId');
+            fileChanges.creatorId = transaction.info.userId;
+
             log.info("Finding group");
             if (isNaN(parseInt(fileChanges.groupId, 10))) {
                 log.info("No groupId given");

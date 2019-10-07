@@ -99,6 +99,7 @@ async function filePermissionMacro(t, input) {
         rightsId: right.id,
         groupId: group.id,
         hidden: false,
+        creatorId: 1,
     });
 
     let groupUser = await db.User.create({

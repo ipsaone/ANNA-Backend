@@ -65,7 +65,8 @@ test.beforeEach(async t => {
         groupId: 1,
         rightsId: 1,
         createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now())
+        updatedAt: new Date(Date.now()),
+        creatorId: 1,
     });
 });
 

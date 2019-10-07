@@ -14,9 +14,9 @@ module.exports = {
             
         await queryInterface.bulkInsert('UserGroup', [
             {id: 1, userId: 1, groupId: 1},
-            {id: 1, userId: 1, groupId: 2},
-            {id: 1, userId: 1, groupId: 3},
-            {id: 1, usedId: 1, groupId: 4}
+            {id: 2, userId: 1, groupId: 2},
+            {id: 3, userId: 1, groupId: 3},
+            {id: 4, userId: 1, groupId: 4}
         ])
         
     },

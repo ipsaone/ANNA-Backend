@@ -67,7 +67,8 @@ test('Get URL', async (t) => {
         dirId: t.context.dir.id,
         ownerId: t.context.user.id,
         groupId: t.context.group.id,
-        rightsId: t.context.right.id
+        rightsId: t.context.right.id,
+        creatorId: 1,
     })
 
     let url = await data.getUrl();
@@ -85,7 +86,8 @@ test('Get path', async t => {
         dirId: t.context.dir.id,
         ownerId: t.context.user.id,
         groupId: t.context.group.id,
-        rightsId: t.context.right.id
+        rightsId: t.context.right.id,
+        creatorId: 1,
     })
 
     let path = await data.getPath();
@@ -101,7 +103,8 @@ test('Get rights', async t => {
         dirId: t.context.dir.id,
         ownerId: t.context.user.id,
         groupId: t.context.group.id,
-        rightsId: t.context.right.id
+        rightsId: t.context.right.id,
+        creatorId: 1,
     })
 
     let right = await data.getRights(t.context.db);

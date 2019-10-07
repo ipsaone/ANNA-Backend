@@ -111,6 +111,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.STRING,
             defaultValue: ''
+        },
+
+        creatorId: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         }
     }, {
         timestamps: true,
