@@ -4,6 +4,11 @@ const winston = require('winston');
 const sequelize = require('sequelize');
 const nodemailer = require('nodemailer');
 const config = require('../config/config');
+const fs = require('fs');
+const util = require('util');
+const { zip } = require('zip-a-folder');
+const findRoot = require('find-root');
+const path = require('path');
 
 var transporter = nodemailer.createTransport({
       service: 'gmail',
