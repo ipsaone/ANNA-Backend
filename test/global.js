@@ -7,6 +7,8 @@ const test = require('ava');
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
+const util = require('util');
+const fs = require('fs');
 
 const supertest = require('supertest');
 
@@ -51,4 +53,14 @@ test('Error handling', async t => {
     t.is(res2.status, 500);
 
     process.stdout.write = old_stdout;
+
+    let files = await util.promisify(fs.readdir)(path.join(root, "crashes"));
+
+    // sleep five seconds
+    await new Promise(resolve=>{
+        setTimeout(resolve, 5000);
+    });
+
+    let newfiles = await util.promisify(fs.readdir)(path.join(root, "crashes"));
+    t.is(newfiles.length > files.length, true);
 })

@@ -35,7 +35,7 @@
     "mysql2": "^1.5.2",
     "nodemailer": "^6.3.0",
     "redis": "^2.8.0",
-    "sequelize": "^5.19.1",
+    "sequelize": "^5.19.4",
     "smtp-server": "^3.4.1",
     "sqlite3": "^4.1.0",
     "tape": "^4.11.0",
@@ -91,7 +91,7 @@
     ],
     "verbose": true,
     "babel": {},
-    "concurrency": 4
+    "concurrency": 16
   },
   "scripts": {
     "start": "node ./src/app.js",
@@ -99,7 +99,7 @@
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "init-db": "npm run migrate && npm run seed",
-    "clear-db": "sequelize db:migrate:undo:all && rm -r ./storage",
+    "clear-db": "sequelize db:migrate:undo:all && rm -rf ./storage",
     "lint": "eslint --cache --fix --max-warnings 50 ./modules/",
     "lint-nofix": "eslint --cache --max-warnings 50 ./modules/",
     "doc": "jsdoc ./ -r -c node_modules/jsdoc/conf.json",
