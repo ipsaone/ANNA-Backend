@@ -42,6 +42,38 @@ const logError = (req, err) => {
 // eslint-disable-next-line max-params
 module.exports = (err, req, res, next) => {
 
+    const saveLogs = async (req, res, err) => {
+      const root = findRoot(__dirname);
+      const time = Math.floor(Date.now() / 1000);
+
+      // Create crashes folder
+      try {
+          await (util.promisify(fs.mkdir))(path.join(root, 'crashes'), {recursive: true});
+      } catch (e) {
+          if(e.code != 'EEXIST') { throw e; }
+      }
+      // Create temp folder
+      const temp = path.join(root, 'crashes', 'temp-crash-' + time)
+      const mkdirP = util.promisify(fs.mkdir)
+      await mkdirP(temp);
+
+      // Copy files
+      const copyFileP = util.promisify(fs.copyFile)
+      await copyFileP(path.join(root, 'logs', 'debug.log'), path.join(temp, 'debug.log'));
+      await copyFileP(path.join(root, 'logs', 'info.log'), path.join(temp, 'info.log'));
+
+      // Create new file
+      await (util.promisify(fs.writeFile))(path.join(temp, 'crashinfo.log'),
+          "err : \n" + err + "\n\req : \n" + req + "\n\res : \n" + res);
+
+      // Zip
+      await zip(temp, path.join(root, 'crashes', 'crash-' + time + '.zip'));
+
+      // Delete crashes folder
+      await (util.promisify(fs.rmdir))(temp);
+
+}
+
     // Check a response has not been half-sent
     if (res.headersSent) {
         req.transaction.logger.debug('Hearders already sent', {reqid: req.id});
@@ -72,9 +104,8 @@ module.exports = (err, req, res, next) => {
         let saveP = saveLogs(req, res, err)
         return saveP.then(() => {
             sendError(res, err, 'badImplementation');
-
         })
-        
+
     }
 
     return true;
