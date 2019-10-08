@@ -196,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
 
         };
 
+        File.prototype.getDataById = function(db, id) {
+            return db.Data.findByPk(id, {include: ['rights']});
+        }
+
 
         File.prototype.getData = async function (db, offset = 0) {
 

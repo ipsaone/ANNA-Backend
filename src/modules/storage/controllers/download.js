@@ -22,15 +22,29 @@ module.exports = (db) => async (req, res) => {
         }
 
 
-        // Revision parameter, to get an older version
+        // Revision or data parameter, to get an older version
         let rev = 0;
+        let dataId = 0;
+        let hasRev = false;
+        let hasDId = false;
         if (!isNaN(parseInt(req.query.revision, 10))) {
             rev = parseInt(req.query.revision, 10);
+            hasRev = true;
             req.transaction.logger.debug('Successfully parsed revision request', {revision : rev});
+        } else if(!isNaN(parseInt(req.query.data, 10))) {
+            dataId = parseInt(req.query.data, 10);
+            hasDId = true;
+            req.transaction.logger.debug('Successfully parsed data request', {revision : rev});
         }
 
         req.transaction.logger.debug('Requesting target data', {revision: rev})
-        const data = await file.getData(db, rev);
+        let data;
+        if(hasDId) {
+            data = await file.getDataById(db, dataId);
+        } else {
+            data = await file.getData(db, rev);
+        }
+
         if (!data) {
             return res.boom.notFound('This revision doesn\'t exist');
         }
