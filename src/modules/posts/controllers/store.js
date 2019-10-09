@@ -21,13 +21,6 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest(validation.error);
     }
 
-    req.transaction.logger.info('Checking store policies');
-    const allowed = await policy.filterStore(req.transaction, req.session.auth);
-    if (!allowed) {
-        req.transaction.logger.info('Post store denied');
-        return res.boom.unauthorized();
-    }
-
     if(typeof req.body.title == 'string') {
         req.body.title = req.body.title.trim();
     } else {

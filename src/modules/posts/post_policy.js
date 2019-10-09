@@ -1,35 +1,12 @@
 'use strict';
 
-const userIsAuthor = async (transaction, userId) => {
-
-    transaction.logger.debug('Finding user to check if author');
-    const user = await transaction.db.User.findByPk(userId, {include: ['groups']});
-
-    if (user && user.groups) {
-        transaction.logger.debug('Groups found, looking for "authors"', {groups : user.groups});
-        let found = user.groups.map(group => group.name).find(name => name === 'authors');
-        transaction.logger.debug('Filtered groups', {AuthorsFound: found, result: Boolean(found)});
-        return Boolean(found);
-    }
-
-    return [];
-
-};
-
 exports.filterIndex = async (transaction, posts, userId) => {
 
-    // Only show drafts if user is an author
-    transaction.logger.info('Checking if user is author');
-    let isAuthor = await userIsAuthor(transaction, userId);
-    let user = await transaction.db.User.findByPk(userId);
-    transaction.logger.debug('Check results', {isAuthor});
-    if (isAuthor || await user.isRoot()) {
-        transaction.logger.info('User is author, returning all posts');
-        transaction.logger.debug('No posts filtered', {posts});
+    if(transaction.info.isAuthorized) {
         return posts;
     }
 
-    transaction.logger.info('User is not author, filtering');
+    transaction.logger.info('User is not in authorized group, filtering');
     if (Array.isArray(posts)) {
 
         let filtered = posts.filter((post) => post.published);
@@ -41,9 +18,8 @@ exports.filterIndex = async (transaction, posts, userId) => {
 }
 
 exports.filterShow = async (transaction, post, userId) =>{
-    let isAuthor = await userIsAuthor(transaction, userId);
-    let user = await transaction.db.User.findByPk(userId);
-    if (post.published || (isAuthor || user.isRoot())) {
+   
+    if (post.published || transaction.info.isAuthorized) {
         // Only show drafts is user is an author.
         transaction.logger.info('User is author or post is published, returning post') ;
         return post;
@@ -51,49 +27,4 @@ exports.filterShow = async (transaction, post, userId) =>{
 
     transaction.logger.info('User is not author or post is not published');
     return {};
-}
-
-
-
-exports.filterStore = async (transaction, userId) => {
-
-    // Only allow creation if user is an author.
-    transaction.logger.info('Checking if user is author');
-    let isAuthor = await userIsAuthor(transaction, userId);
-    if(isAuthor) { return true; }
-
-    transaction.logger.info('User is not author, checking if root');
-    let user = await transaction.db.User.findByPk(userId);
-    let isRoot = await user.isRoot();
-
-    return isRoot;
-}
-
-exports.filterUpdate = async (transaction, userId) => {
-
-    // Only allow update if user is an author
-    transaction.logger.info('Checking if user is author');
-    let isAuthor = await userIsAuthor(transaction, userId);
-    if(isAuthor) { return true; }
-
-    transaction.logger.info('User is not author, checking if root');
-    let user = await transaction.db.User.findByPk(userId);
-    let isRoot = await user.isRoot();
-
-    return isRoot;
-}
-
-exports.filterDelete = async (transaction, userId) => {
-
-    // Only allow delete if user is an author
-    transaction.logger.info('Checking if user is author');
-    let isAuthor = await userIsAuthor(transaction, userId)
-    if(isAuthor) { return true; }
-
-    transaction.logger.info('User is not author, checking if root');
-    let user = await transaction.db.User.findByPk(userId);
-    let isRoot = await user.isRoot();
-
-    return isRoot;
-
 }
