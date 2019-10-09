@@ -1,7 +1,6 @@
 'use strict';
 
 const joi = require('joi');
-const policy = require('../policies/mission_policy');
 
 
 const schema = joi.object().keys({
@@ -25,15 +24,6 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.info('Input denied by validator');
         return res.boom.badRequest(validation.error);
     }
-
-    // Check policies
-    req.transaction.logger.info('Invoking policies');
-    const authorized = await policy.filterStore(req.transaction, req.session.auth);
-    if (!authorized) {
-        req.transaction.logger.info('Policies denier mission store');
-        return res.boom.unauthorized();
-    }
-
 
     if (typeof req.body.leaderId === 'undefined') {
         req.transaction.logger.info('Setting automatic leaderId');

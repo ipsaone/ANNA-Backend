@@ -2,6 +2,7 @@ const winston = require('winston');
 const config = require('./config');
 const path = require('path');
 const fs = require('fs'); // File system
+require('winston-daily-rotate-file');
 
 
 const logdir = './logs';
@@ -17,12 +18,32 @@ const transports = [
     // SEE https://github.com/winstonjs/winston/issues/1573 
     new winston.transports.File({
         level: 'debug',
-        filename: path.join(logdir, 'debug.log'),
+        filename: path.join(logdir, 'debug-norot.log'),
     }),
+    new winston.transports.DailyRotateFile({
+        level: 'debug',
+        filename: 'debug.log',
+        zippedArchive: true,
+        date_format: "YYYY-MM-DD",
+        maxSize: '2m',
+        maxFiles: '90d',
+        dirname: path.join(logdir, '%DATE%')
+    }),
+
     new winston.transports.File({
         level: 'info',
-        filename: path.join(logdir, 'info.log'),
-    })
+        filename: path.join(logdir, 'info-norot.log'),
+    }),
+    new winston.transports.DailyRotateFile({
+        level: 'info',
+        filename: 'info.log',
+        zippedArchive: true,
+        date_format: "YYYY-MM-DD",
+        maxSize: '2m',
+        maxFiles: '90d',
+        dirname: path.join(logdir,'%DATE%')
+    }),
+
 ];
 
 

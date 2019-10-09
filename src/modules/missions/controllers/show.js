@@ -1,20 +1,7 @@
 'use strict';
 
-const policy = require('../policies/mission_policy');
-
-
-
 module.exports = (db) => async (req, res) => {
     const missionId = parseInt(req.params.missionId, 10);
-
-    req.transaction.logger.info('Invoking policy');
-    const authorized = policy.filterShow(req.transaction);
-
-
-    if (!authorized) {
-        req.transaction.logger.info('Policy denied show');
-        return req.boom.unauthorized();
-    }
 
     req.transaction.logger.info('Finding mission')
     const mission = await db.Mission.findByPk(missionId, {

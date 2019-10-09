@@ -1,6 +1,9 @@
-/* eslint new-cap: 0*/
-
 'use strict';
+
+const findRoot = require('find-root');
+const path = require('path');
+const root = findRoot(__dirname);
+const acl = require(path.join(root, 'src', 'middlewares', 'access-control.js'));
 
 
 module.exports = (db) => {
@@ -24,14 +27,14 @@ module.exports = (db) => {
 
 
     router.route('/:missionId([0-9]+)')
-        .get(missionController.show)
-        .put(missionController.update)
-        .delete(missionController.delete);
+        .get(acl("show-mission"), missionController.show)
+        .put(acl("update-mission"), missionController.update)
+        .delete(acl("delete-mission"), missionController.delete);
 
 
     router.route('/')
-        .get(missionController.index)
-        .post(missionController.store);
+        .get(acl("index-missions"), missionController.index)
+        .post(acl("store-mission"), missionController.store);
 
 
     return router;

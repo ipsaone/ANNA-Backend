@@ -1,20 +1,23 @@
 // ACCESS CONTROL LIST
 module.exports = [
     // [item, [group1, group2, ....] ],
-    
-    ["handle-users", ["root"]],
-    ["handle-storage", ["root"]],
 
-    ["index-posts", ["root", "authors", "default"]],
+    ["index-posts", ["default"]],
     ["store-post", ["root", "authors"]],
-    ["show-post", ["root", "authors", "default"]],
+    ["show-post", ["default"]],
     ["update-post", ["root", "authors"]],
     ["delete-post", ["root", "authors"]],
+
+    ["index-missions", ["default"]],
+    ["show-mission", ["default"]],
+    ["store-mission", ["root"]],
+    ["update-mission", ["root"]],
+    ["delete-mission", ["root"]],
 
 
 
     ["handle-missions", ["root"]],
     ["handle-groups", ["root"]],
-    ["handle-events", ["organizers"]]
+    ["handle-events", ["root", "organizers"]]
 
 ]

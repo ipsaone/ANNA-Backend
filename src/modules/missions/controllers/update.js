@@ -1,7 +1,6 @@
 'use strict';
 
 const joi = require('joi');
-const policy = require('../policies/mission_policy');
 
 const schema = joi.object().keys({
     name: joi.string().trim(true).min(3),
@@ -24,13 +23,6 @@ module.exports = (db) => async function (req, res) {
     if (validation.error) {
         req.transaction.logger.info('Input refused by validator');
         return res.boom.badRequest(validation.error);
-    }
-
-    req.transaction.logger.info('Invoking policies');
-    const allowed = await policy.filterUpdate(req.transaction, req.session.auth);
-    if (!allowed) {
-        req.transaction.logger.info('Policies denied mission update');
-        return res.boom.unauthorized();
     }
 
     req.transaction.logger.info('Finding mission');
