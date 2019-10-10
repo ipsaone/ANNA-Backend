@@ -72,7 +72,7 @@ test('Error handling', async t => {
     let newfiles = await util.promisify(fs.readdir)(path.join(root, "crashes"));
 
     let newfile = newfiles.filter(f => !files.includes(f));
-    t.is(newfiles.length, files.length + 1);
+    t.is(newfiles.length > files.length, true);
 
     newfile = newfile[0];
     await util.promisify(fs.unlink)(path.join(root, 'crashes', newfile))

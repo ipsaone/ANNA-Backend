@@ -43,7 +43,7 @@ const loadApp = (options = {}) => {
     app.use(bodyParser.urlencoded({extended: true})); // POST parser
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
-    app.use(require('./middlewares/transaction')); // Build transaction object
+    app.use(require('./middlewares/transaction')(options)); // Build transaction object
     app.use(require('./middlewares/timing'));
     if (!options.noLog) {
         app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));

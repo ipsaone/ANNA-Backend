@@ -15,7 +15,7 @@ const fs = require('fs');
 
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -58,7 +58,7 @@ test('File type/size', async (t) => {
 async function filePermissionMacro(t, input) {
 
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();

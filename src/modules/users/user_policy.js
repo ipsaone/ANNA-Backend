@@ -4,6 +4,10 @@
 exports.filterIndex = async (transaction, users) => {
     const db = transaction.db;
 
+    let userId = transaction.info.userId;
+    let user = await db.User.findByPk(userId);
+    let isRoot = await user.isRoot();
+
     return users.map((thisUser) => {
         let user = {};
 
@@ -15,10 +19,6 @@ exports.filterIndex = async (transaction, users) => {
         }
 
         delete user.password;
-        if (user.id !== transaction.info.userId) {
-            delete user.email;
-        }
-
         return user;
     });
 };
