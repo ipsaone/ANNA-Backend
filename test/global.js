@@ -26,7 +26,7 @@ test('Real startup smoke test', async t => {
     process.stdout.write = old_stdout;
 });
 
-test('Error handling', async t => {
+test('Error handling (PLEASE CHECK TRELLO)', async t => {
     const loadApp = require(path.join(root, 'src', './app'));
     let {app, modules} = loadApp({test: true, noLog: true});
     
@@ -63,11 +63,6 @@ test('Error handling', async t => {
     t.is(res2.status, 500);
 
     process.stdout.write = old_stdout;
-
-    // sleep five seconds
-    await new Promise(resolve=>{
-        setTimeout(resolve, 5000);
-    });
 
     let newfiles = await util.promisify(fs.readdir)(path.join(root, "crashes"));
 

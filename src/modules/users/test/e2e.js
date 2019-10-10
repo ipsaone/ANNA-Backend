@@ -25,6 +25,10 @@ test.beforeEach(async t => {
         name: "root"
     });
 
+    t.context.group2 = await db.Group.create({
+        name: "default"
+    })
+
 
     t.context.user = await db.User.create({
         username: 'login_test',
@@ -93,6 +97,7 @@ test('Add, edit and remove user', async t => {
     let res6 = await t.context.request.get('/users/'+res.body.id);
     t.is(res6.status, 200);
     t.is(res6.body.username, "testEdited");
+    t.is(res6.body.groups.map(g => g.name).includes("default"), true);
 
 
     let res2 = await t.context.request.delete('/users/'+res.body.id);

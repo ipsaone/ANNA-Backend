@@ -10,6 +10,7 @@ const { zip } = require('zip-a-folder');
 const findRoot = require('find-root');
 const path = require('path');
 const moment = require('moment');
+const request = require('request-promise-native');
 const rimraf = require('rimraf');
 
 var transporter = nodemailer.createTransport({
@@ -69,19 +70,67 @@ const saveLogs = async (req, res, err) => {
 
     // Create new file
     await (util.promisify(fs.writeFile))(path.join(temp, 'crashinfo.log'),
-        "err : \n" + err + "\n\req : \n" + req + "\n\res : \n" + res);
+        "err : \n" + JSON.stringify(err) + "\nreq : \n" + JSON.stringify(req) + "\nres : \n" + JSON.stringify(res));
 
     // Zip
     await zip(temp, path.join(root, 'crashes', 'crash-' + date  + '-' + time + '.zip'));
 
     // Delete crashes folder
     await (util.promisify(rimraf))(temp);
+
+    // Upload on Trello
+    let list_id = "5d9f455e6b055c64ebe6d01f"
+    if(!process.env.TRELLO_KEY || !process.env.TRELLO_TOKEN) {
+        let msg = "Cannot upload error zip to trello : need key and token !"
+        console.error(msg);
+        req.transaction.logger.error(msg);
+        return true;
+    }
+
+    const key = process.env.TRELLO_KEY;
+    const token = process.env.TRELLO_TOKEN;
+    let name = "ERROR 500 at "+req.originalUrl+" ("+date+' '+time+")";
+    if(req.transaction.options.test) {
+        name = "[TEST] ERROR";
+    }
+    let desc = err;
+    let card_res = await request({
+        method: "POST",
+        uri: "https://api.trello.com/1/cards/", 
+        json: true,
+        qs: {
+            name: name,
+            desc: desc,
+            idList: list_id,
+            key, token
+          }
+    });
+    let attachment_path = path.join(root, 'crashes', 'crash-' + date  + '-' + time + '.zip');
+    let upload_res = await request({
+        method: "POST",
+        uri: "https://api.trello.com/1/cards/"+card_res.id+"/attachments",
+        json: true,
+        qs: {
+            name: "CRASH LOGS",
+            key, token
+        },
+        headers: {
+            "Content-Type": "multipart/form-data"
+        },
+        formData : {
+            "file" : fs.createReadStream(attachment_path)
+        }
+    });
+
+    req.transaction.logger.error("Uploaded as card id "+upload_res.id);
+
+
 }
 
 
 // No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
-module.exports = (err, req, res, next) => {
+const handler = async (err, req, res) => {
 
     // Check a response has not been half-sent
     if (res.headersSent) {
@@ -108,14 +157,12 @@ module.exports = (err, req, res, next) => {
 
 
     } else { // Unknown error
-        sendError(res, err, 'badImplementation');
         logError(req, err);
-        let saveP = saveLogs(req, res, err);
-        return saveP.then(() => {
-            sendError(res, err, 'badImplementation');
-        });
-
+        await saveLogs(req, res, err);
+        sendError(res, err, 'badImplementation');
     }
+};
 
-    return true;
+module.exports = (err, req, res, next) => {
+    return Promise.resolve(handler(err, req, res)).catch(err => {console.error(err); return next(err, req, res);});
 };

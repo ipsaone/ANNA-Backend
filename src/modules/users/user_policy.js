@@ -39,10 +39,6 @@ exports.filterShow = async (transaction, thisUser) => {
     }
 
     delete user.password;
-    if (user.id !== transaction.info.userId) {
-        delete user.email;
-    }
-
     return user;
 };
 
