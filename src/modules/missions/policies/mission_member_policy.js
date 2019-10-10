@@ -1,15 +1,7 @@
 
 exports.filterStoreMember = async (transaction, mission, userId) => {
-    if (userId === mission.leaderId) {
-        transaction.logger.info('Store member authorized : is leader');
-        return true;
-    }
-
-    transaction.logger.debug('Finding user');
-    const user = await transaction.db.User.findByPk(userId);
-
-    if (await user.isRoot()) {
-        transaction.logger.info('Store member authorized : is root');
+    if (userId === mission.leaderId  || transaction.info.isAuthorized) {
+        transaction.logger.info('Store member authorized');
         return true;
     }
 
@@ -18,16 +10,8 @@ exports.filterStoreMember = async (transaction, mission, userId) => {
 };
 
 exports.filterDeleteMember = async (transaction, mission, userId) => {
-    if (userId === mission.leaderId) {
-        transaction.logger.info('Delete member authorized : is leader');
-        return true;
-    }
-
-    transaction.logger.debug('Finding user');
-    const user = await transaction.db.User.findByPk(userId);
-
-    if (await user.isRoot()) {
-        transaction.logger.info('Delete member authorized : is root');
+    if (userId === mission.leaderId  || transaction.info.isAuthorized) {
+        transaction.logger.info('Delete member authorized');
         return true;
     }
 

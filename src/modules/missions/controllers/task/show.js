@@ -25,16 +25,7 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest('This task doesn\'t belong to this mission');
     }
 
-    // Check user has permissions to see the task
-    req.transaction.logger.info('invoking policies');
-    const allowed = policy.filterShowTask(req.transaction, req.session.auth);
-
-    if (!allowed) {
-        req.transaction.logger.info('policies denied request');
-        return res.boom.unauthorized();
-    }
-
-    // Delete the task and answer accordingly
+    // Send the task
     req.transaction.logger.info('Sending task');
     return res.status(200).json(task);
 };

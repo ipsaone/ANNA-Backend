@@ -12,18 +12,18 @@ module.exports = (db) => {
 
 
     router.route('/:missionId([0-9]+)/task/:taskId([0-9]+)')
-        .get(missionController.showTask)
-        .put(missionController.updateTask)
-        .delete(missionController.deleteTask);
+        .get(acl("show-task", true), missionController.showTask)
+        .put(acl("update-task", true), missionController.updateTask)
+        .delete(acl("delete-task", true), missionController.deleteTask);
 
 
     router.route('/:missionId([0-9]+)/tasks')
-        .get(missionController.indexTasks)
-        .post(missionController.storeTask);
+        .get(acl("index-tasks", true), missionController.indexTasks)
+        .post(acl("store-task", true), missionController.storeTask);
 
     router.route('/:missionId([0-9]+)/members/:memberId([0-9]+)')
-        .put(missionController.storeMember)
-        .delete(missionController.deleteMember);
+        .put(acl("add-member-mission", true), missionController.storeMember)
+        .delete(acl("rem-member-mission", true), missionController.deleteMember);
 
 
     router.route('/:missionId([0-9]+)')

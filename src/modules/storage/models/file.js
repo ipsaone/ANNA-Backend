@@ -3,6 +3,7 @@
 const mv = require('mv');
 const fs = require('fs');
 const util = require('util');
+const hasha = require('hasha');
 
 
 module.exports = (sequelize, DataTypes) => {
@@ -158,6 +159,7 @@ module.exports = (sequelize, DataTypes) => {
                 
                 log.info("Uploaded file found !");
                 fileChanges.exists = true;
+                fileChanges.sha1 = await hasha.fromFile(filePath, {algorithm: 'sha1'});
             } catch (err) {
                 log.info("Uploaded file not found", {err});
                 fileChanges.exists = false;

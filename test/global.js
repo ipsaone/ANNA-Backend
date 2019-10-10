@@ -1,7 +1,6 @@
 'use strict';
 
 process.env.TEST = true;
-
 const test = require('ava');
 
 const findRoot = require('find-root');
@@ -49,12 +48,21 @@ test('Error handling', async t => {
     let old_stdout = process.stdout.write;
     process.stdout.write = chunk => {}; // NOM NOM EAT ALL THE OUTPUT
 
+    let files = [];
+    try {
+        let files = await util.promisify(fs.readdir)(path.join(root, "crashes"));
+    } catch (e) {
+
+        // Ignore ENOENT (directory doesn't exist)
+        if (e.code != 'ENOENT') {
+            throw e;
+        }
+    }
+
     let res2 = await request.get('/error');
     t.is(res2.status, 500);
 
     process.stdout.write = old_stdout;
-
-    let files = await util.promisify(fs.readdir)(path.join(root, "crashes"));
 
     // sleep five seconds
     await new Promise(resolve=>{
@@ -62,5 +70,10 @@ test('Error handling', async t => {
     });
 
     let newfiles = await util.promisify(fs.readdir)(path.join(root, "crashes"));
-    t.is(newfiles.length > files.length, true);
+
+    let newfile = newfiles.filter(f => !files.includes(f));
+    t.is(newfiles.length, files.length + 1);
+
+    newfile = newfile[0];
+    await util.promisify(fs.unlink)(path.join(root, 'crashes', newfile))
 })

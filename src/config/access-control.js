@@ -13,6 +13,13 @@ module.exports = [
     ["store-mission", ["root"]],
     ["update-mission", ["root"]],
     ["delete-mission", ["root"]],
+    ["index-tasks", ["default"]],
+    ["show-task", ["default"]],
+    ["store-task", ["root"]],
+    ["update-task", ["root"]],
+    ["delete-task", ["root"]],
+    ["add-member-mission", ["root"]],
+    ["rem-member-mission", ["root"]],
 
 
 

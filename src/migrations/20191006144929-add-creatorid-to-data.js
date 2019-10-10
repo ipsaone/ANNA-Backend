@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => 
     queryInterface.addColumn('Data', 'creatorId', {
-      allowNull: true,
+      allowNull: false,
       type: Sequelize.INTEGER
     }),
 

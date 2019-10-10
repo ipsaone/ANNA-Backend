@@ -14,11 +14,6 @@ module.exports = (db) => async function (req, res) {
         return req.boom.notFound(`no mission with id ${missionId}`);
     }
 
-    const allowed = policy.filterIndexTasks(req.transaction) 
-    if(!allowed) {
-        return res.boom.unauthorized();
-    }
-
     req.transaction.logger.info('Finding tasks');
     const tasks = await mission.getTasks();
 

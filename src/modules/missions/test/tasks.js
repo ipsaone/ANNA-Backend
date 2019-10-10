@@ -112,7 +112,11 @@ test('Add, show, list, edit and remove task from mission (leader, not root)', as
 
     t.is(res8.status, 200);  
     t.context.mission = res8.body;
-    await t.context.user.setGroups([]);
+
+    let def_group = await t.context.db.Group.create({
+        name: "default"
+    })
+    await t.context.user.setGroups(def_group.id);
 
     let res = await t.context.request.post('/missions/'+t.context.mission.id+'/tasks')
         .send({

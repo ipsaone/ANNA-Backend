@@ -116,6 +116,11 @@ module.exports = (sequelize, DataTypes) => {
         creatorId: {
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+
+        sha1: {
+            allowNull: true,
+            type: DataTypes.STRING
         }
     }, {
         timestamps: true,
