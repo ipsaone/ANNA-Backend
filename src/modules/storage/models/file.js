@@ -102,6 +102,7 @@ module.exports = (sequelize, DataTypes) => {
                 'allWrite'
             ];
 
+            // TODO : Undefined rights should be true by default
             for (const i of rights) {
                 if (typeof fileChanges[i] !== 'undefined') {
                     log.info("New right needed");
@@ -159,7 +160,10 @@ module.exports = (sequelize, DataTypes) => {
                 
                 log.info("Uploaded file found !");
                 fileChanges.exists = true;
+
+                log.info("Computing sha1");
                 fileChanges.sha1 = await hasha.fromFile(filePath, {algorithm: 'sha1'});
+                log.debug("sha1 computed", fileChanges.sha1);
             } catch (err) {
                 log.info("Uploaded file not found", {err});
                 fileChanges.exists = false;

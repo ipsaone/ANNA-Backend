@@ -25,6 +25,7 @@
     "glob": "^7.1.4",
     "hasha": "^5.1.0",
     "helmet": "^3.21.1",
+    "inquirer": "^7.0.0",
     "joi": "^14.3.1",
     "marked": "^0.7.0",
     "minimatch": "^3.0.4",
@@ -41,6 +42,7 @@
     "sequelize": "^5.19.4",
     "smtp-server": "^3.4.1",
     "sqlite3": "^4.1.0",
+    "superagent-throttle": "^1.0.1",
     "tape": "^4.11.0",
     "uid": "0.0.2",
     "uuid": "^3.3.3",
@@ -111,7 +113,8 @@
     "coverage": "http-server ./coverage -p 8080 -c-1 -o",
     "load": "node --prof --no-logfile-per-isolate --logfile=./logs/v8_raw.log ./test/load.js && node --prof-process ./logs/v8_raw.log > ./logs/v8_proc.log",
     "deploy": "rm -rf ./node_modules/ && npm install && npm migrate",
-    "linux-setup-ssh": "vagrant ssh-config > ~/.ssh/config"
+    "linux-setup-ssh": "vagrant ssh-config > ~/.ssh/config",
+    "mirror-storage": "node ./devops/mirror_storage.js"
   },
   "engines": {
     "node": ">=8.9.0"
