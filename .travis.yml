@@ -3,7 +3,8 @@ node_js:
   - 10
 services:
   - redis-server
+
 deploy:
   skip-cleanup: true,
   provider: script,
-  script: 
+  script: ls
