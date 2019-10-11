@@ -94,7 +94,8 @@
     ],
     "verbose": true,
     "babel": {},
-    "concurrency": 16
+    "concurrency": 8,
+    "serial": true
   },
   "scripts": {
     "start": "node ./src/app.js",
@@ -114,6 +115,6 @@
     "mirror-storage": "node ./devops/mirror_storage.js"
   },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.16.3"
   }
 }
