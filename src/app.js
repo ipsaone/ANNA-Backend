@@ -26,7 +26,7 @@ const loadApp = (options = {}) => {
     const {host, port} = config.app.getConnection();
     
     if(!options.test) { // Listen only when out of testing settings
-        http.createServer(app).listen(port, host, function () {
+        let server = http.createServer(app).listen(port, host, function () {
             if (!options.noLog) {
                 console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
                 const elapsedHrTime = process.hrtime(start);
@@ -34,6 +34,14 @@ const loadApp = (options = {}) => {
                 console.log("Started in", elapsed, "ms");
             }
 
+        });
+
+        process.on('SIGINT', function() {
+            console.log("\nCaught interrupt signal, exiting...");
+            server.close(() => {
+                console.log("All done !");
+                
+            })
         });
     }
 
