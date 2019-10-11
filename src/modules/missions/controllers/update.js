@@ -1,6 +1,7 @@
 'use strict';
 
 const joi = require('joi');
+const policy = require('../policies/mission_policy.js');
 
 const schema = joi.object().keys({
     name: joi.string().trim(true).min(3),
@@ -17,7 +18,6 @@ const schema = joi.object().keys({
 module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);
 
-    // Validate user input
     req.transaction.logger.info('Validating input') ;
     const validation = joi.validate(req.body, schema);
     if (validation.error) {
@@ -30,6 +30,13 @@ module.exports = (db) => async function (req, res) {
     if(!mission) {
         req.transaction.logger.info('Mission not found');
         return res.boom.notFound();
+    }
+
+    req.transaction.logger.info('Invoking policies');
+    const authorized = await policy.filterUpdate(req.transaction, mission, req.session.auth);
+    if(!authorized) {
+        req.transaction.logger.info('Policies denied request');
+        return res.boom.unauthorized();
     }
 
     req.transaction.logger.info('Updating mission');

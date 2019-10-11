@@ -225,6 +225,30 @@ test('Edit mission (multiple scenarios)', async t => {
         t.is(res2.body.name, 'testEdited');
     }
 
+    // LEADER
+    {
+        let res = await t.context.request.post('/missions')
+            .send({
+                name: "testBLABLA",
+                markdown: "# TEST",
+                budgetAssigned: 100,
+                budgetUsed: 40,
+                groupId: t.context.group.id,
+                leaderId: t.context.user.id
+            });
+
+        t.is(res.status, 200);
+
+        await t.context.user.setGroups([]);
+        let res2 = await t.context.request.put('/missions/'+res.body.id)
+            .send({
+                name: "testEdited2"
+            });
+
+        t.is(res2.status, 200);
+        t.is(res2.body.name, "testEdited2")
+    }
+
     // NO NAME
     {
         await t.context.user.addGroup(t.context.group);
@@ -259,7 +283,7 @@ test('Edit mission (multiple scenarios)', async t => {
 
         let res2 = await t.context.request.put('/missions/'+mission.id)
             .send({
-                name: "testEdited"
+                name: "testEdited3"
             });
 
         t.is(res2.status, 401);
@@ -282,7 +306,7 @@ test('Edit mission (multiple scenarios)', async t => {
 
         let res2 = await t.context.request.put('/missions/'+res.body.id)
             .send({
-                name: "testEdited",
+                name: "testEdited8",
                 markdown: " ",
                 budgetAssigned: 100,
                 budgetUsed: 40,
@@ -298,7 +322,7 @@ test('Edit mission (multiple scenarios)', async t => {
         await t.context.user.addGroup(t.context.group);
         let res = await t.context.request.post('/missions')
             .send({
-                name: "test",
+                name: "test41",
                 markdown: "# TEST",
                 budgetAssigned: 100,
                 budgetUsed: 40,
@@ -310,7 +334,7 @@ test('Edit mission (multiple scenarios)', async t => {
 
         let res2 = await t.context.request.put('/missions/'+res.body.id)
             .send({
-                name: "testEdited",
+                name: "testEdited42",
                 markdown: "# TEST",
                 budgetAssigned: -100,
                 budgetUsed: 40,
@@ -326,7 +350,7 @@ test('Edit mission (multiple scenarios)', async t => {
         await t.context.user.addGroup(t.context.group);
         let res = await t.context.request.post('/missions')
             .send({
-                name: "test",
+                name: "test888",
                 markdown: "# TEST",
                 budgetAssigned: 100,
                 budgetUsed: 40,
@@ -338,7 +362,7 @@ test('Edit mission (multiple scenarios)', async t => {
 
         let res2 = await t.context.request.put('/missions/'+res.body.id)
             .send({
-                name: "testEdited",
+                name: "testEdited999",
                 markdown: "# TEST",
                 budgetAssigned: 100,
                 budgetUsed: -40,

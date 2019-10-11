@@ -28,7 +28,7 @@ test('Real startup smoke test', async t => {
 
 test('Error handling (PLEASE CHECK TRELLO)', async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testSaveLogs: true});
     
     const request = require('supertest').agent(app);
     const db = await modules.syncDB();

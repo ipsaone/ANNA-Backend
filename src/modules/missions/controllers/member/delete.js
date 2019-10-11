@@ -10,7 +10,7 @@ module.exports = (db) => async (req, res) => {
     const memberId = parseInt(req.params.memberId, 10);
 
     req.transaction.logger.info('Invoking policies');
-    const authorized = policy.filterDeleteMember(req.transaction, mission, req.session.auth);
+    const authorized = await policy.filterDeleteMember(req.transaction, mission, req.session.auth);
     if(!authorized) {
         req.transaction.logger.info('Policies denied request');
         return res.boom.unauthorized();

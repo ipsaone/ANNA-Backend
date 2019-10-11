@@ -12,6 +12,7 @@ const path = require('path');
 const moment = require('moment');
 const request = require('request-promise-native');
 const rimraf = require('rimraf');
+const flatted = require('flatted');
 
 var transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -47,6 +48,10 @@ const logError = (req, err) => {
 
 const saveLogs = async (req, res, err) => {
 
+    if(req.transaction.options.test && !req.transaction.options.testSaveLogs) {
+        return true;
+    }
+
     const root = findRoot(__dirname);
     const date = moment().format('YYYY-MM-DD');
     const time = moment().format('HH-mm-ss-SSS');
@@ -69,8 +74,9 @@ const saveLogs = async (req, res, err) => {
     await copyFileP(path.join(logs, 'info.log'), path.join(temp, 'info.log'));
 
     // Create new file
+    // Note : we use flatted because JSON.stringify() throws errors with circular structures
     await (util.promisify(fs.writeFile))(path.join(temp, 'crashinfo.log'),
-        "err : \n" + JSON.stringify(err) + "\nreq : \n" + JSON.stringify(req) + "\nres : \n" + JSON.stringify(res));
+        "err : \n" + flatted.stringify(err) + "\nreq : \n" + flatted.stringify(req) + "\nres : \n" + flatted.stringify(res));
 
     // Zip
     await zip(temp, path.join(root, 'crashes', 'crash-' + date  + '-' + time + '.zip'));

@@ -17,7 +17,7 @@ module.exports = (db) => async (req, res) => {
     }
 
     req.transaction.logger.info('Invoking policies');
-    const authorized = policy.filterStoreMember(req.transaction, mission, req.session.auth);
+    const authorized = await policy.filterStoreMember(req.transaction, mission, req.session.auth);
     if(!authorized) {
         req.transaction.logger.info('Policies denied request');
         return res.boom.unauthorized();

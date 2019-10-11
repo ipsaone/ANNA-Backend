@@ -1,10 +1,7 @@
 const winston = require('winston');
 
 
-process.on('uncaughtException', err => {
-    globalLogger.error('Unexpected, uncaught exception. Quitting', {error : String(err)});
-    console.error(err);
-})
+let done = false;
 
 module.exports = options => {
 
@@ -12,6 +9,15 @@ module.exports = options => {
 
     let globalFormat = winston.format.combine(winston.format.timestamp(), winston.format.json());
     let globalLogger = winston.createLogger({transports: winston_cfg.transports, format: globalFormat});
+
+    if(!done) {
+        // Will be called multiple times for tests, so let's limit it
+        process.on('uncaughtException', err => {
+            globalLogger.error('Unexpected, uncaught exception. Quitting', {error : String(err)});
+            console.error(err);
+        })
+        done = true;
+    }
 
     return (req, res, next) => {
         req.transaction = {boom : res.boom, reqParams: req.params, reqBody: req.body};

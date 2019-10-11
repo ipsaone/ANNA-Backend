@@ -28,7 +28,7 @@ module.exports = (db) => {
 
     router.route('/:missionId([0-9]+)')
         .get(acl("show-mission"), missionController.show)
-        .put(acl("update-mission"), missionController.update)
+        .put(acl("update-mission", true), missionController.update)
         .delete(acl("delete-mission"), missionController.delete);
 
 
