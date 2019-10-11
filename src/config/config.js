@@ -34,6 +34,8 @@ const config = {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
         check: process.env.CHECK_AUTH,
+        test_host: 'localhost',
+        test_port: '6379',
         timeout: 1000*60*1
     },
 

@@ -5,18 +5,29 @@ const session = require('express-session'); // Session management
 const redis = require('redis');
 const Redis = require('connect-redis')(session); // Session store
 
-let client = redis.createClient({
-    path: config.session.socket
-})
+let session_conf = config.session;
+let client;
+if(process.env.travis) {
+    client = redis.createClient({
+        host: session_conf.test_host,
+        port: session_conf.test_port
+    })
+} else {
+    client = redis.createClient({
+        path: session_conf.socket
+    })
+}
+
+
 
 module.exports = session({
     client,
-    ttl: config.session.timeout, // SEE https://github.com/tj/connect-redis/issues/251
-    secret: config.session.secret,
+    ttl: session_conf.timeout, // SEE https://github.com/tj/connect-redis/issues/251
+    secret: session_conf.secret,
     resave: false,
     saveUninitialized: false,
     rolling: true,
-    maxAge: config.session.timeout, 
+    maxAge: session_conf.timeout, 
 
     cookie: {
         secure: false,
