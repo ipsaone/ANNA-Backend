@@ -1,6 +1,11 @@
 'use strict';
 
 let policy = require("../group_policy");
+const joi = require('joi');
+
+const schema = joi.object().keys({
+    groupId: joi.number().integer().positive()
+})
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.groupId, 10))) {
@@ -8,6 +13,13 @@ module.exports = (db) => async function (req, res) {
         throw res.boom.badRequest('Group ID must be an integer');
     }
     const groupId = parseInt(req.params.groupId, 10);
+    
+    req.transaction.logger.info('Validating schema');
+    const validation = joi.validate(req.body, schema);
+    if (validation.error) {
+        req.transaction.logger.info('Schema validation error', {error : validation.error});
+        return res.boom.badRequest(validation.error);
+    }
 
     const allowed = policy.filterDelete(req.transaction);
     if(!allowed) {
