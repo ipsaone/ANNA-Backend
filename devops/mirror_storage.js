@@ -7,23 +7,11 @@ const root = findRoot(__dirname);
 const fs = require('fs');
 const inquirer = require('inquirer');
 const hasha = require('hasha');
+const superagent = require('superagent');
 
-// Initialize backend
-const loadApp = require(path.join(root, 'src', './app'));
-let {app, modules} = loadApp({noLog: true});
-const request = require('supertest').agent(app);
-const db = modules.db;
 
-// Throttle requests
-const Throttle = require('superagent-throttle');
-let throttle = new Throttle({
-    active: true,     // set false to pause queue
-    rate: 100,          // how many requests can be sent every `ratePer`
-    ratePer: 60000,   // number of ms in which `rate` requests may be sent
-    concurrent: 20     // how many requests can be sent concurrently
-  });
-request.use(throttle.plugin());
 let group;
+let request;
 
 async function main() {
 
@@ -35,6 +23,7 @@ async function main() {
     }
     const basefolder = process.argv[2];
     let new_base = "";
+    let online_url = "";
     console.log("Mirroring", basefolder);
         // OPTIONS
     if(process.argv.length > 3) {
@@ -50,9 +39,44 @@ async function main() {
                     i++;
                     break;
                 }
+
+                case '--online': {
+                    if(!process.argv[i]){ 
+                        console.log('--online needs a parameter.');
+                        console.log('example : node mirror_storage.js ./test --online localhost:8888')
+                    }
+
+                    online_url = process.argv[i];
+                    i++;
+                    break;
+                }
             }
         }
     }
+    
+    // Get connection
+    if(online_url) {
+        if(online_url[online_url.length - 1] == '/') {
+            online_url = online_url.substr(0, online_url.length - 1);
+        }
+        request = require('supertest').agent(online_url);
+    } else {
+        // Initialize backend
+        const loadApp = require(path.join(root, 'src', './app'));
+        let {app, modules} = loadApp({noLog: true});
+        request = require('supertest').agent(app);
+        const db = modules.db;
+    }
+
+    // Throttle requests
+    const Throttle = require('superagent-throttle');
+    let throttle = new Throttle({
+        active: true,     // set false to pause queue
+        rate: 100,          // how many requests can be sent every `ratePer`
+        ratePer: 60000,   // number of ms in which `rate` requests may be sent
+        concurrent: 20     // how many requests can be sent concurrently
+    });
+    request.use(throttle.plugin());
 
     // Get credentials
     // That's not done on the command-line because of the security risk !

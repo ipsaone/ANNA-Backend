@@ -113,6 +113,10 @@ exports.filterAddGroup = async (transaction, groupId, targetId, userId) => {
 exports.filterDeleteGroup = async (transaction, groupId, targetId, userId) => {
     const db = transaction.db;
 
+    if(groupId == 4) { // group : {name: 'default', id: 4}
+        return false;
+    }
+
     if (targetId === userId) {
         return true;
     }

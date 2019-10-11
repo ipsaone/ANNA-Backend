@@ -4,6 +4,7 @@
 /.npm/
 /.vagrant/
 /.nyc_output/
+.git/
 
 /tmp/
 /out/
@@ -19,3 +20,4 @@
 *.log
 /backup/settings.sh
 /storage/
+/sha1.json
