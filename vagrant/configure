@@ -22,11 +22,11 @@ sudo apt-get -qy update >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "Installing base packages"
-sudo apt-get -qy install curl build-essential git g++ >> /home/vagrant/vm_build.log 2>&1
+sudo apt-get -qy install curl build-essential git g++ htop >> /home/vagrant/vm_build.log 2>&1
 
 
 echo -e "Installing NodeJS"
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - >> /home/vagrant/vm_build.log 2>&1
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - >> /home/vagrant/vm_build.log 2>&1
 sudo apt-get -qy install nodejs >> /home/vagrant/vm_build.log 2>&1
 cd /home/vagrant/ANNA-Backend
 rm -rf ~/.node_modules

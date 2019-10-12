@@ -2,27 +2,32 @@
 
 'use strict';
 
+const findRoot = require('find-root');
+const path = require('path');
+const root = findRoot(__dirname);
+const acl = require(path.join(root, 'src', 'middlewares', 'access-control.js'));
+
 module.exports = (db) => {
     const router = require('express').Router();
     const userController = require('./controllers')(db);
 
     router.route('/')
-        .get(userController.index)
-        .post(userController.store);
+        .get(acl("index-users"), userController.index)
+        .post(acl("store-user"), userController.store);
 
     router.route('/:userId([0-9]+)')
-        .get(userController.show)
-        .put(userController.update)
-        .delete(userController.delete);
+        .get(acl("show-user"), userController.show)
+        .put(acl("update-user"), userController.update)
+        .delete(acl("delete-user"), userController.delete);
 
-    router.get('/:userId([0-9]+)/posts', userController.posts);
+    router.get('/:userId([0-9]+)/posts', acl("index-user-posts"), userController.posts);
 
     router.route('/:userId([0-9]+)/groups')
-        .get(userController.getGroups);
+        .get(acl("index-user-groups"), userController.getGroups);
 
     router.route('/:userId([0-9]+)/group/:groupId([0-9]+)')
-        .put(userController.addGroup)
-        .delete(userController.deleteGroup);
+        .put(acl("store-user-group"), userController.addGroup)
+        .delete(acl("delete-user-group"), userController.deleteGroup);
 
     return router;
 };

@@ -11,7 +11,7 @@ module.exports = (item, allow=false) => {
         process.exit(1);
     }
 
-    routeGroups = route[0];
+    let routeGroups = route[0];
     if(!Array.isArray(routeGroups)) {
         console.error("(2) Bad access control for item " + item);
         process.exit(1);
@@ -22,7 +22,7 @@ module.exports = (item, allow=false) => {
         const user = await req.transaction.db.User.findByPk(req.transaction.info.userId);
         const groups = await user.getGroups();
 
-        req.transaction.logger.debug('finding', routeGroups, 'in', groups.map(g => g.name), '(route is', route[0][0], ')');
+        req.transaction.logger.debug('finding', groups.map(g => g.name), 'in', routeGroups, '(route is', route[0][0], ')');
 
         const names = groups.map(group => group.name);
         const filtered = names.filter(name => routeGroups.includes(name))

@@ -1,12 +1,21 @@
 'use strict';
 
+const policy = require('../user_policy.js');
 
-module.exports = (db) => async function (req, res, handle) {
+
+module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.userId, 10))) {
         req.transaction.logger.info('User ID must be an integer');
         throw res.boom.badRequest('User ID must be an integer');
     }
     const userId = parseInt(req.params.userId, 10);
+
+    req.transaction.logger.info('Invoking policies');
+    let filteredUser = await policy.filterIndexPosts(req.transaction);
+    if(!filteredUser) {
+        req.transaction.logger.info('Policies denied access');
+        return res.boom.unauthorized();
+    }
 
     let posts = db.Post;
     if (req.query.published) {

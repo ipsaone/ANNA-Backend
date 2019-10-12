@@ -47,6 +47,13 @@ test.beforeEach(async t => {
         name: "root"
     });
 
+    t.context.group2 = await db.Group.create({
+        name: "default"
+    });
+
+    await t.context.user.addGroup(t.context.group2.id);
+    await t.context.user2.addGroup(t.context.group2.id);
+
 });
 
 

@@ -28,6 +28,11 @@ test.beforeEach(async t => {
         email: 'test@test.com'
     })
 
+    let group = await t.context.db.Group.create({
+        name: 'default'
+    });
+    await t.context.user.addGroup(group.id);
+
     let res = await request.post('/auth/login').send({
         username: 'login_test',
         password: 'password_test'
@@ -104,10 +109,10 @@ test('Drafted', async t => {
 
     t.is(res.status, 200)
 
-    t.is(res.body.length, 1)
+    t.is(res.body.length, 1);
 
     t.false(res.body[0].published);
-    t.falsy(res.body[0].publishedAt)
+    t.falsy(res.body[0].publishedAt);
 
 });
 

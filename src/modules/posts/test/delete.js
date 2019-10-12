@@ -48,6 +48,7 @@ test('Delete', async t => {
     });
     await t.context.user.addGroup(group.id);
 
+
     let res = await t.context.request.delete('/posts/'+post.id);
     t.is(res.status, 204);
 

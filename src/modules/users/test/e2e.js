@@ -36,6 +36,8 @@ test.beforeEach(async t => {
         email: 'test@test.com'
     })
 
+    t.context.user.addGroup(t.context.group2.id);
+
     let res = await request.post('/auth/login').send({
         username: 'login_test',
         password: 'password_test'
@@ -55,6 +57,9 @@ test('Get all or single', async t => {
         password: 'somePassword56',
         email: 'someEmail212@mail.com'
     })
+    await user1.addGroup(t.context.group2.id);
+    await user2.addGroup(t.context.group2.id);
+
 
     let res = await t.context.request.get('/users')
 

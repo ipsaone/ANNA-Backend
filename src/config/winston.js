@@ -27,7 +27,7 @@ module.exports = options => {
             zippedArchive: true,
             date_format: "YYYY-MM-DD",
             maxSize: '2m',
-            maxFiles: '90d',
+            maxFiles: '10d',
             dirname: path.join(logdir, '%DATE%')
         }));
         transports.push(new winston.transports.DailyRotateFile({
@@ -51,7 +51,7 @@ module.exports = options => {
             zippedArchive: true,
             date_format: "YYYY-MM-DD",
             maxSize: '2m',
-            maxFiles: '90d',
+            maxFiles: '10d',
             dirname: path.join(logdir, 'test')
         }));
     }

@@ -2,7 +2,6 @@
 
 const winston = require('winston');
 const sequelize = require('sequelize');
-const nodemailer = require('nodemailer');
 const config = require('../config/config');
 const fs = require('fs');
 const util = require('util');
@@ -14,10 +13,6 @@ const request = require('request-promise-native');
 const rimraf = require('rimraf');
 const flatted = require('flatted');
 
-var transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: config.email.auth,
-  });
 
 const sendError = (res, err, type) => {
 

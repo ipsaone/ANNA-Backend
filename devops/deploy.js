@@ -69,12 +69,23 @@ let main = async () => {
     // Check REDIS connectivity
 
     // Install NPM packages
+    {
+        console.log("Installing NPM packages...")
+        let {stdout, stderr} = await exec("npm install");
+        if(stdout.search("running") === -1) {
+            console.error("Failed to install NPM packages");
+            process.exit(-1);
+        }
+        console.log("NPM packages OK");
+    }
 
     // Migrate database
 
     // Run tests
 
     // Start production manager
+
+    // Stop old version
 }
 
 main();

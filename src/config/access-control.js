@@ -28,6 +28,7 @@ module.exports = [
     ["store-user", ["root"]],
     ["update-user", ["root"]],
     ["delete-user", ["root"]],
+    ["index-user-posts", ["default"]],
     ["index-user-groups", ["default"]],
     ["store-user-group", ["root"]],
     ["delete-user-group", ["root"]],

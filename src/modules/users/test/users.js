@@ -25,12 +25,18 @@ test.beforeEach(async t => {
         name: "root"
     });
 
+    t.context.defaultGroup = await db.Group.create({
+        name: "default"
+    });
+
 
     t.context.user = await db.User.create({
         username: 'login_test',
         password: 'password_test',
         email: 'test@test.com'
     })
+
+    t.context.user.addGroup(t.context.defaultGroup.id);
 
     let res = await request.post('/auth/login').send({
         username: 'login_test',
@@ -65,6 +71,7 @@ test('Single', async t => {
         password: 'somePassword',
         email: 'someEmail@mail.com'
     })
+    user.addGroup(t.context.defaultGroup.id);
 
     let res = await t.context.request.get('/users/'+user.id)
     t.is(res.status, 200);
@@ -204,14 +211,15 @@ test('Get user posts', async t => {
 test('List user groups', async t => {
     let res = await t.context.request.get('/users/'+t.context.user.id+'/groups');
     t.is(res.status, 200);
-    t.is(res.body.length, 0);
+    t.is(res.body.length, 1);
 
     await t.context.user.addGroup(t.context.group);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
     t.is(res2.status, 200);
-    t.is(res2.body.length, 1);
-    t.is(res2.body[0].name, 'root');
+    t.is(res2.body.length, 2);
+    t.is(res2.body[0].name, 'default');
+    t.is(res2.body[1].name, 'root');
 
 
 });
@@ -229,7 +237,7 @@ test('Add user to group', async t => {
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
     t.is(res2.status, 200);
-    t.is(res2.body.length, 2);
+    t.is(res2.body.length, 3);
 
 
 
@@ -245,7 +253,7 @@ test('Remove user from group', async t => {
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
     t.is(res2.status, 200);
-    t.is(res2.body.length, 0);
+    t.is(res2.body.length, 1);
 });
 
 
