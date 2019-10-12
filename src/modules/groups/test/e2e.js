@@ -26,7 +26,11 @@ test.beforeEach(async t => {
         username: 'login_test',
         password: 'password_test',
         email: 'test@test.com'
-    })
+    });
+
+    const group = await db.Group.create({ name: "default" });
+    await t.context.user.addGroup(group.id);
+    
 
     let res = await request.post('/auth/login').send({
         username: 'login_test',
@@ -36,7 +40,10 @@ test.beforeEach(async t => {
     t.is(res.status, 200)
 })
 
-test('add, edit and delete group', async t => {
+test('add, edit and delete group (root)', async t => {
+    const group2 = await t.context.db.Group.create({ name: 'root' });
+    await t.context.user.addGroup(group2.id);
+
     let res = await t.context.request.post('/groups/')
         .send({
             name: 'test'
@@ -47,7 +54,7 @@ test('add, edit and delete group', async t => {
 
     let res3 = await t.context.request.get('/groups');
     t.is(res3.status, 200);
-    t.is(res3.body.length, 1);
+    t.is(res3.body.length, 3); // root, default, test
 
     let res5 = await t.context.request.put('/groups/'+res.body.id)
         .send({
@@ -66,5 +73,5 @@ test('add, edit and delete group', async t => {
 
     let res4 = await t.context.request.get('/groups');
     t.is(res4.status, 200);
-    t.is(res4.body.length, 0);
+    t.is(res4.body.length, 2);
 });
