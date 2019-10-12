@@ -40,7 +40,7 @@ const loadApp = (options = {}) => {
             console.log("\nCaught interrupt signal, exiting...");
             server.close(() => {
                 console.log("All done !");
-                
+                process.exit(0);
             })
         });
     }

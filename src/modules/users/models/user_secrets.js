@@ -29,6 +29,18 @@ module.exports = (sequelize, DataTypes) => {
         userId: {
             allowNull: false,
             type: DataTypes.INTEGER
+        },
+
+        resetToken: {
+            allowNull: true,
+            type: DataTypes.STRING,
+            defaultValue: ""
+        },
+
+        resetTokenDate: {
+            allowNull: true,
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         }
     }, {
         hooks: {
