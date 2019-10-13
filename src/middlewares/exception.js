@@ -65,8 +65,10 @@ const saveLogs = async (req, res, err) => {
     // Copy files
     const copyFileP = util.promisify(fs.copyFile)
     const logs = path.join(root, 'logs', date);
-    await copyFileP(path.join(logs, 'debug.log'), path.join(temp, 'debug.log'));
-    await copyFileP(path.join(logs, 'info.log'), path.join(temp, 'info.log'));
+    await copyFileP(path.join(logs, 'debug.log'), path.join(temp, 'debug.log'))
+        .catch(e => console.error(e)); // Ignore errors
+    await copyFileP(path.join(logs, 'info.log'), path.join(temp, 'info.log'))
+        .catch(e => console.error(e)); // Ignore errors
 
     // Create new file
     // Note : we use flatted because JSON.stringify() throws errors with circular structures
@@ -80,7 +82,7 @@ const saveLogs = async (req, res, err) => {
     await (util.promisify(rimraf))(temp);
 
     // Upload on Trello
-    let list_id = "5d9f455e6b055c64ebe6d01f"
+    let list_id = process.env.TRELLO_LIST
     if(!process.env.TRELLO_KEY || !process.env.TRELLO_TOKEN) {
         let msg = "Cannot upload error zip to trello : need key and token !"
         console.error(msg);
