@@ -2,6 +2,24 @@
 
 const policy = require('../storage_policy');
 const winston = require('winston');
+const joi = require('joi');
+
+const schema = joi.object().keys({
+    dirId: joi.number().integer().positive().required(),
+    groupId: joi.number().integer().positive(),
+    isDir: joi.boolean(),
+    serialNbr: joi.string(),
+    fileId: joi.number().integer().positive(),
+    ownerId: joi.number().integer().positive(),
+    name: joi.string(),
+    ownerRead : joi.boolean(),
+    ownerWrite: joi.boolean(),
+    groupRead: joi.boolean(),
+    groupWrite: joi.boolean(),
+    allRead: joi.boolean(),
+    allWrite: joi.boolean(),
+    
+});
 
 
 module.exports = (db) => async (req, res) => {
@@ -9,6 +27,14 @@ module.exports = (db) => async (req, res) => {
     // Needed because multer just modified it
     req.transaction.reqBody = req.body;
     req.transaction.file = req.file;
+
+     // Validate user input
+     req.transaction.logger.info('Validating schema');
+     const validation = joi.validate(req.body, schema);
+     if (validation.error) {
+         req.transaction.logger.info('Schema validation failed');
+         return res.boom.badRequest(validation.error);
+     }
 
     // Check folderId
     const dirId = parseInt(req.body.dirId, 10);

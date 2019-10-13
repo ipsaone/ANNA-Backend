@@ -2,11 +2,21 @@
 
 const policy = require('../storage_policy');
 const winston = require('winston');
+const joi = require('joi');
 
-
+const schema = joi.object().keys({});
 
 module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
+
+     // Validate user input
+     req.transaction.logger.info('Validating schema');
+     const validation = joi.validate(req.body, schema);
+     if (validation.error) {
+         req.transaction.logger.info('Schema validation failed');
+         console.error(validation.error);
+         return res.boom.badRequest(validation.error);
+     }
 
     req.transaction.logger.debug('Checking policy');
     const authorized = await policy.filterDelete(req.transaction, fileId, req.session.auth);

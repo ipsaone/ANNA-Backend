@@ -3,10 +3,20 @@
 const policy = require('../storage_policy');
 const fs = require('fs');
 const util = require('util');
-const winston = require('winston');
+const joi = require('joi');
+
+const schema = joi.object().keys({});
 
 module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
+
+     // Validate user input
+     req.transaction.logger.info('Validating schema');
+     const validation = joi.validate(req.body, schema);
+     if (validation.error) {
+         req.transaction.logger.info('Schema validation failed');
+         return res.boom.badRequest(validation.error);
+     }
 
     // Download parameter, to get file metadata or contents
     const dl = req.query.download && req.query.download === 'true';
