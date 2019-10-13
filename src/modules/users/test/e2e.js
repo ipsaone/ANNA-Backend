@@ -141,3 +141,41 @@ test('LeaderMissions', async t => {
     t.is(res3.body.leaderMissions.length, 1);
 
 });
+
+test('Add, list and remove another user\'s groups', async t => {
+    let user1 = await t.context.db.User.create({
+        username: 'someUser',
+        password: 'somePassword',
+        email: 'someEmail@mail.com'
+    })
+    user1.addGroup(t.context.group2.id);
+
+    let group = await t.context.db.Group.create({
+        name: "test"
+    });
+
+    let res0 = await t.context.request.get('/users/'+user1.id+'/groups');
+    t.is(res0.status, 200);
+    t.is(res0.body.length, 1);
+    t.is(res0.body[0].name, "default")
+
+    let res2 = await t.context.request.put('/users/'+user1.id+'/group/'+group.id);
+    t.is(res2.status, 401); // We can't insert someone in some other group
+
+    await t.context.user.addGroup(t.context.group.id); // become root
+
+    let res5 = await t.context.request.put('/users/'+user1.id+'/group/'+group.id);
+    t.is(res5.status, 204); 
+
+    let res1 = await t.context.request.get('/users/'+user1.id+'/groups');
+    t.is(res1.status, 200);
+    t.is(res1.body.length, 2);
+    
+    let res3 = await t.context.request.delete('/users/'+user1.id+'/group/'+group.id);
+    t.is(res3.status, 204);
+
+    let res4 = await t.context.request.get('/users/'+user1.id+'/groups');
+    t.is(res4.status, 200);
+    t.is(res4.body.length, 1);
+
+});

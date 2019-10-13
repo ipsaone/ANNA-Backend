@@ -31,7 +31,8 @@ exports.filterDeleteGroup = async (transaction, groupId, targetId, userId) => {
         return true;
     }
 
-    if (transaction.isAuthorized()) {
+    
+    if (transaction.info.isAuthorized) {
         return true;
     }
 
