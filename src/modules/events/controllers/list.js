@@ -8,7 +8,7 @@ module.exports = (db) =>
 
     async function (req, res) {
 
-    // Check user is authorized
+        // Check user is authorized
         req.transaction.logger.info('Invoking policies');
         const authorized = policy.filterIndex(req.transaction);
 

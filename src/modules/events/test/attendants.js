@@ -31,6 +31,10 @@ test.beforeEach(async t => {
     t.context.group = await db.Group.create({
         name: "root"
     });
+    t.context.group2 = await db.Group.create({
+        name: "default"
+    });
+    await t.context.user.addGroup(t.context.group2.id);
     let res = await request.post('/auth/login').send({
         username: 'login_test',
         password: 'password_test'

@@ -43,5 +43,7 @@ module.exports = [
     ["show-event", ["default"]],
     ["store-event", ["root", "organizers"]],
     ["update-event", ["root", "organizers"]],
-    ["delete-event", ["root", "organizers"]]
+    ["delete-event", ["root", "organizers"]],
+    ["store-event-attendant", ["root", "organizers"]],
+    ["delete-event-attendant", ["root", "organizers"]]
 ]
