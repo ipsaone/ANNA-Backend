@@ -23,7 +23,9 @@ exports.filterAddGroup = async (transaction, groupId, targetId, userId) => true;
 exports.filterDeleteGroup = async (transaction, groupId, targetId, userId) => {
     const db = transaction.db;
 
-    if(groupId == 4) { // group : {name: 'default', id: 4}
+    
+    let group = await transaction.db.Group.findByPk(groupId);
+    if(group.name === "default")  {
         return false;
     }
 

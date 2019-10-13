@@ -19,7 +19,7 @@ module.exports = (db) => async function (req, res) {
     }
     
     req.transaction.logger.info('Invoking policies');
-    const allowed = await policy.filterDeleteGroup(req.transaction, req.body.groupId, userId, req.session.auth);
+    const allowed = await policy.filterDeleteGroup(req.transaction, groupId, userId, req.session.auth);
     if (!allowed) {
         req.transaction.logger.info('Policies denied request');
         return res.boom.unauthorized();

@@ -13,7 +13,6 @@ let authorized_paths = [
 
 module.exports = (req, res, next) => {
     req.transaction.logger.debug('Check if user is logged in.', {reqid: req.id});
-    
    // Checks if the requested path isn't in whitelist
     if ( authorized_paths.map(path => minimatch(req.path, path)).filter(match => (match === true)).length === 0 ) {
         req.transaction.logger.debug('Path needs login', {session: req.session});

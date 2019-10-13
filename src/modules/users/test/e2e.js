@@ -179,3 +179,13 @@ test('Add, list and remove another user\'s groups', async t => {
     t.is(res4.body.length, 1);
 
 });
+
+test('Root cannot remove itself from default group', async t => {
+    // https://trello.com/c/NAe9H4PI
+
+    let res = await t.context.request.delete(
+        '/users/'+t.context.user.id
+        +'/group/'+t.context.group2.id);
+    t.is(res.status, 401);
+
+})

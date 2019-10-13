@@ -25,7 +25,7 @@ const loadApp = (options = {}) => {
     const app = express();
     const {host, port} = config.app.getConnection();
     
-    if(!options.test) { // Listen only when out of testing settings
+    if(!options.test && !options.noServ) { // Listen only when out of testing settings
         let server = http.createServer(app).listen(port, host, function () {
             if (!options.noLog) {
                 console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
