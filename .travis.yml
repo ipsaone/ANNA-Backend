@@ -4,5 +4,10 @@ node_js:
 services:
   - redis-server
 
-script:
-  - ./devops/build.sh
+deploy:
+  skip-cleanup: true,
+  provider: script,
+  script: ./devops/build.sh
+  on:
+    tags: true
+    all_branches: true
