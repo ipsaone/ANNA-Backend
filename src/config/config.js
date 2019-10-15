@@ -52,8 +52,10 @@ const config = {
             force: process.env.DB_FORCE_SYNC,
             dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
-                min: 5,
-                max : 130,
+                min: 0,
+                max : 20,
+                idle: 1000,
+                evict: 1000
             }
         };
 

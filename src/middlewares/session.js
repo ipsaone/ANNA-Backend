@@ -21,7 +21,7 @@ if(process.env.travis) {
 
 
 module.exports = session({
-  //  store: new RedisStore({ client }),
+    store: new RedisStore({ client }),
     ttl: session_conf.timeout, // SEE https://github.com/tj/connect-redis/issues/251
     secret: session_conf.secret,
     resave: false,

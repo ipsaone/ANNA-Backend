@@ -6,18 +6,18 @@ const joi = require('joi');
 
 const schema = joi.object().keys({
     dirId: joi.number().integer().positive().required(),
-    groupId: joi.number().integer().positive(),
-    isDir: joi.boolean(),
-    serialNbr: joi.string(),
-    fileId: joi.number().integer().positive(),
-    ownerId: joi.number().integer().positive(),
-    name: joi.string(),
-    ownerRead : joi.boolean(),
-    ownerWrite: joi.boolean(),
-    groupRead: joi.boolean(),
-    groupWrite: joi.boolean(),
-    allRead: joi.boolean(),
-    allWrite: joi.boolean(),
+    groupId: joi.number().integer().positive().optional(),
+    isDir: joi.boolean().optional(),
+    serialNbr: joi.string().optional(),
+    fileId: joi.number().integer().positive().optional(),
+    ownerId: joi.number().integer().positive().optional(),
+    name: joi.string().required(),
+    ownerRead : joi.boolean().optional(),
+    ownerWrite: joi.boolean().optional(),
+    groupRead: joi.boolean().optional(),
+    groupWrite: joi.boolean().optional(),
+    allRead: joi.boolean().optional(),
+    allWrite: joi.boolean().optional(),
     
 });
 

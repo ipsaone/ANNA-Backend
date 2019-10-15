@@ -96,7 +96,7 @@ const saveLogs = async (req, res, err) => {
     if(req.transaction.options.test) {
         name = "[TEST] ERROR";
     }
-    let desc = err;
+    let desc = JSON.stringify(err);
     let card_res = await request({
         method: "POST",
         uri: "https://api.trello.com/1/cards/", 

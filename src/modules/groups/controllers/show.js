@@ -3,9 +3,7 @@
 let policy = require("../group_policy");
 const joi = require('joi');
 
-const schema = joi.object().keys({
-    groupId: joi.number().integer().positive()
-})
+const schema = joi.object().keys({})
 
 module.exports = (db) => async function (req, res) {
     req.transaction.logger.debug('Invoking group show controller')

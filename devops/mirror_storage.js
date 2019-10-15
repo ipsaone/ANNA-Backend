@@ -135,6 +135,7 @@ async function main() {
                 .field('allRead', true)
                 .field('allWrite', true)
 
+
             if(new_req.status != 200) {
                 console.error("Couldn't create new base folder ( error", new_req.status, ":", new_req.body, ")"); 
                 process.exit(-1);
@@ -197,7 +198,7 @@ async function mirror(localpath, remote_id) {
                 let local_sha1 = await hasha.fromFile(path.join(localpath, entry.name), {algorithm: 'sha1'});
 
                 // Compare sha1 
-                // console.log("comparing", last_meta.sha1, "and", local_sha1);
+                console.log("comparing", last_meta.sha1, "and", local_sha1);
                 if(meta_req.body.sha1 === local_sha1) {
                     // don't reupload
                     console.log("File already exists :", path.join(localpath, entry.name));
@@ -208,7 +209,6 @@ async function mirror(localpath, remote_id) {
                     // Upload revision
                     console.log("Uploading revision :", path.join(localpath, entry.name));
                     let rev_req = await request.put('/storage/upload/'+remote_file.fileId)
-                        .attach('contents', path.join(root, './package.json'))
                         .field('isDir', false)
                         .field('name', entry.name)
                         .field('dirId', remote_id)
@@ -219,6 +219,7 @@ async function mirror(localpath, remote_id) {
                         .field('groupWrite', true)
                         .field('allRead', true)
                         .field('allWrite', true)
+                        .attach('contents', path.join(localpath, entry.name));
                         
                     
                     if(rev_req.status !== 200) {
@@ -231,9 +232,7 @@ async function mirror(localpath, remote_id) {
             else {
                 // upload new
                 console.log("Uploading new file :", path.join(localpath, entry.name));
-                let file_contents = await util.promisify(fs.readFile)(path.join(localpath, entry.name))
                 let upload_req = await request.post('/storage/upload')
-                    .attach('contents', file_contents)
                     .field('isDir', false)
                     .field('name', entry.name)
                     .field('dirId', remote_id)
@@ -244,6 +243,7 @@ async function mirror(localpath, remote_id) {
                     .field('groupWrite', true)
                     .field('allRead', true)
                     .field('allWrite', true)
+                    .attach('contents', path.join(localpath, entry.name));
                     
 
                 if(!upload_req.status === 200) {

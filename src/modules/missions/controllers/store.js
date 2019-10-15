@@ -4,12 +4,12 @@ const joi = require('joi');
 
 
 const schema = joi.object().keys({
-    name: joi.string().trim(true).min(3),
+    name: joi.string().trim(true).min(3).required(),
     markdown: joi.string().trim(true).min(5),
     description: joi.any().forbidden(),
-    budgetAssigned: joi.number().min(0),
-    budgetUsed: joi.number().min(0),
-    groupId: joi.number().integer().positive(),
+    budgetAssigned: joi.number().min(0).optional(),
+    budgetUsed: joi.number().min(0).optional(),
+    groupId: joi.number().integer().positive().required(),
     leaderId: joi.number().integer().positive().optional()
 });
 

@@ -3,9 +3,7 @@
 let policy = require("../group_policy");
 const joi = require('joi');
 
-const schema = joi.object().keys({
-    groupId: joi.number().integer().positive()
-})
+const schema = joi.object().keys({})
 
 module.exports = (db) => async function (req, res) {
     if (isNaN(parseInt(req.params.groupId, 10))) {
@@ -21,17 +19,17 @@ module.exports = (db) => async function (req, res) {
         return res.boom.badRequest(validation.error);
     }
 
-    const allowed = policy.filterDelete(req.transaction);
-    if(!allowed) {
-        return res.boom.unauthorized();
-    }
-
     req.transaction.logger.info('Finding group');
     const group = await db.Group.findByPk(groupId);
 
     if (!group) {
         req.transaction.logger.info('Group not found');
         throw res.boom.notFound();
+    }
+
+    const allowed = policy.filterDelete(req.transaction, group);
+    if(!allowed) {
+        return res.boom.unauthorized();
     }
 
     req.transaction.logger.info('Destroying group');
