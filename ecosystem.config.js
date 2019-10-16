@@ -1,12 +1,12 @@
 module.exports = {
   apps : [{
     name: 'Backend API',
-    script: '/home/chris/ANNA-Backend/src/app.js',
+    script: '/src/app.js',
 
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     args: '',
     cwd: '/home/chris/ANNA-Backend/',
-    instances: 4,
+    instances: 2,
     autorestart: true,
     watch: false,
     max_memory_restart: '1G',

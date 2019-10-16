@@ -3,13 +3,7 @@ node_js:
 - 12
 services:
 - redis-server
-deploy:
-  skip-cleanup: true,
-  provider: script,
-  script: "./devops/build.sh"
-  on:
-    tags: true
-    all_branches: true
+
 before_install:
 - openssl aes-256-cbc -K $encrypted_f57c64a0b291_key -iv $encrypted_f57c64a0b291_iv
   -in ./travis_deploy_key.enc -out ~/travis_deploy_key -d
@@ -21,11 +15,5 @@ before_install:
 
 after_success:
 - npm install pm2 -g
-# Use BASH instead of DASH! see: https://ubuntuforums.org/showthread.php?t=1932504
-# - ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
-# - if [ $TRAVIS_PULL_REQUEST_BRANCH ]; then
-#     sh .bin/deploy.sh;
-#   fi
-# - sh ./bin/deploy.sh;
 - pm2 deploy ecosystem.config.js production update
 - pm2 deploy ecosystem.config.js production exec "pm2 reload all"
