@@ -14,5 +14,7 @@ before_install:
 - ssh -i ~/travis_deploy_key travis@ipsaone.space pwd
 
 after_success:
+  # use bash instead of dash, see https://github.com/nelsonic/hello-world-node-http-server/blob/master/.travis.yml#L13
+- ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
 - npm install pm2 -g
 - pm2 deploy ecosystem.config.js production
