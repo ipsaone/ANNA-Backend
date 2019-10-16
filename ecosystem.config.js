@@ -20,11 +20,11 @@ module.exports = {
 
   deploy : {
     production : {
-      user : 'node',
-      host : '212.83.163.1',
+      user : 'travis',
+      host : 'ipsaone.space',
       ref  : 'origin/master',
-      repo : 'git@github.com:repo.git',
-      path : '/var/www/production',
+      repo : 'git@github.com:ipsaone/ANNA-Backend.git',
+      path : '/home/travis/ANNA-Backend-prod',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
   }
