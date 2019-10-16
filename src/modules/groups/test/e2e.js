@@ -83,13 +83,12 @@ test('Delete default group', async t => {
     const group4 = await t.context.db.Group.create({ name: 'authors' });
 
     let res0 = await t.context.request.delete('/groups/'+t.context.group.id);
-    t.is(res0.status, 400); // because there are still users inside of it, it throws Foreign key constraint error
+    t.is(res0.status, 401);
 
     let res1 = await t.context.request.delete('/groups/'+group2.id);
     t.is(res1.status, 401);
 
     let res2 = await t.context.request.delete('/groups/'+group3.id);
-    console.error(res2.body);
     t.is(res2.status, 401);
 
     let res3 = await t.context.request.delete('/groups/'+group4.id);

@@ -5,8 +5,7 @@ const policy = require('../../policies/mission_task_policy');
 const joi = require('joi');
 const schema = joi.object().keys({
     name: joi.string().required(),
-    done: joi.bool().required(),
-    missionId: joi.number().integer().positive().required()
+    done: joi.bool().required()
 });
 
 

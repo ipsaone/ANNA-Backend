@@ -27,7 +27,7 @@ module.exports = (db) => async function (req, res) {
         throw res.boom.notFound();
     }
 
-    const allowed = policy.filterDelete(req.transaction, group);
+    const allowed = await policy.filterDelete(req.transaction, group);
     if(!allowed) {
         return res.boom.unauthorized();
     }
