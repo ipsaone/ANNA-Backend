@@ -4,8 +4,6 @@ module.exports = {
     script: '/src/app.js',
 
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
-    args: '',
-    cwd: '/home/chris/ANNA-Backend/',
     instances: 2,
     autorestart: true,
     watch: false,
@@ -26,6 +24,7 @@ module.exports = {
       repo : 'git@github.com:ipsaone/ANNA-Backend.git',
       path : '/home/travis/ANNA-Backend-prod',
       "ssh_options": "StrictHostKeyChecking=no",
+      "post-setup": "npm run test",
       "post-deploy" : "npm install && pm2 startOrRestart ecosystem.config.js --env production"
     }
   }
