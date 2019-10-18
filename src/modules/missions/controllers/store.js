@@ -5,7 +5,7 @@ const joi = require('joi');
 
 const schema = joi.object().keys({
     name: joi.string().trim(true).min(3).required(),
-    markdown: joi.string().trim(true).min(5),
+    markdown: joi.string().trim(true).min(5).optional(),
     description: joi.any().forbidden(),
     budgetAssigned: joi.number().min(0).optional(),
     budgetUsed: joi.number().min(0).optional(),

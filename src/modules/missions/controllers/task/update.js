@@ -3,8 +3,8 @@
 const policy = require('../../policies/mission_task_policy');
 const joi = require('joi');
 const schema = joi.object().keys({
-    name: joi.string(),
-    done: joi.bool(),
+    name: joi.string().optional(),
+    done: joi.bool().optional(),
 });
 
 module.exports = (db) => async function (req, res) {

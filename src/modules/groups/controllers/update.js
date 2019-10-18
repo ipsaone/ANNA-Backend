@@ -4,7 +4,7 @@ let policy = require("../group_policy");
 const joi = require('joi');
 
 const schema = joi.object().keys({
-    name: joi.string()
+    name: joi.string().optional()
 })
 
 module.exports = (db) => async function (req, res) {

@@ -9,7 +9,7 @@ const includeOptions = ['previous_data', 'serialNbr', 'name'];
 const schema = joi.object().keys({
     keyword: joi.string().required(),
     upperFolder: joi.number().integer(),
-    include: joi.array().items(joi.string().valid(includeOptions))
+    include: joi.array().items(joi.string().valid(includeOptions)).optional()
 
 });
 

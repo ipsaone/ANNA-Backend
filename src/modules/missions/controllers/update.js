@@ -4,13 +4,13 @@ const joi = require('joi');
 const policy = require('../policies/mission_policy.js');
 
 const schema = joi.object().keys({
-    name: joi.string().trim(true).min(3),
-    markdown: joi.string().trim(true).min(5),
+    name: joi.string().trim(true).min(3).optional(),
+    markdown: joi.string().trim(true).min(5).optional(),
     description: joi.any().forbidden(),
-    budgetAssigned: joi.number().min(0),
-    budgetUsed: joi.number().min(0),
-    groupId: joi.number().integer().positive(),
-    leaderId: joi.number().integer().positive()
+    budgetAssigned: joi.number().min(0).optional(),
+    budgetUsed: joi.number().min(0).optional(),
+    groupId: joi.number().integer().positive().optional(),
+    leaderId: joi.number().integer().positive().optional()
 });
 
 

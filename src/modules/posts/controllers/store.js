@@ -7,7 +7,7 @@ const schema = joi.object().keys({
     title : joi.string().trim(true).required(),
     markdown : joi.string().trim(true).required(),
     authorId : joi.number().required(),
-    published : joi.boolean()
+    published : joi.boolean().optional()
 });
 
 module.exports = (db) => async function (req, res) {

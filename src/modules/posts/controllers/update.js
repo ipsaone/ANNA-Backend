@@ -4,10 +4,10 @@ const policy = require('../post_policy');
 const joi = require('joi');
 
 const schema = joi.object().keys({
-    title : joi.string().trim(true),
-    markdown : joi.string().trim(true),
-    authorId : joi.number(),
-    published : joi.boolean()
+    title : joi.string().trim(true).min(10).required(),
+    markdown : joi.string().trim(true).min(10).required(),
+    authorId : joi.number().required(),
+    published : joi.boolean().optional()
 });
 
 

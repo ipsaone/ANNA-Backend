@@ -4,9 +4,9 @@ const joi = require('joi');
 const policy = require('../user_policy');
 
 const schema = joi.object().keys({
-    username: joi.string().min(4),
-    email: joi.string().min(5),
-    password: joi.string().min(6)
+    username: joi.string().min(4).required(),
+    email: joi.string().min(5).required(),
+    password: joi.string().min(6).required()
 });
 
 module.exports = (db) => async function (req, res) {
