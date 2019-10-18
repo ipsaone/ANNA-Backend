@@ -73,3 +73,5 @@ test('Login, logout, check', async t => {
     t.is(res3.status, 200);
     t.is(res3.body.logged, false);
 });
+
+test.todo("Get token, check it and reset password");
