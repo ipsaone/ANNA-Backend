@@ -17,8 +17,8 @@ const schema = joi.object().keys({
     groupRead: joi.boolean().optional(),
     groupWrite: joi.boolean().optional(),
     allRead: joi.boolean().optional(),
-    allWrite: joi.boolean().optional()
-    
+    allWrite: joi.boolean().optional(),
+    contents: joi.any().optional()
 });
 
 module.exports = (db) => async (req, res) => {
