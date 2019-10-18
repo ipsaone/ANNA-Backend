@@ -8,7 +8,7 @@ const schema = joi.object().keys({
     dirId: joi.number().integer().positive().required(),
     groupId: joi.number().integer().positive().optional(),
     isDir: joi.boolean().optional(),
-    serialNbr: joi.string().min(0).optional(),
+    serialNbr: joi.string().allow('').optional(),
     fileId: joi.number().integer().positive().optional(),
     ownerId: joi.number().integer().positive().optional(),
     name: joi.string().min(3).required(),
