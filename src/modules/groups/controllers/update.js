@@ -8,7 +8,7 @@ const schema = joi.object().keys({
 })
 
 module.exports = (db) => async function (req, res) {
-    if (typeof req.body.name !== 'string' || isNaN(parseInt(req.params.groupId, 10))) {
+    if (isNaN(parseInt(req.params.groupId, 10))) {
         req.transaction.logger.info('Group ID must be an integer');
         throw res.boom.badRequest('Group ID must be an integer');
     }
