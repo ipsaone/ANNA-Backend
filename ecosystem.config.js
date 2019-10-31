@@ -17,12 +17,21 @@ module.exports = {
   }],
 
   deploy : {
+    staging : {
+      user : 'travis',
+      host : 'ipsaone.space',
+      ref  : 'origin/staging',
+      repo : 'git@github.com:ipsaone/ANNA-Backend.git',
+      path : '/home/travis/ANNA-Backend-staging',
+      "ssh_options": "StrictHostKeyChecking=no",
+      "post-deploy" : "cp ~/.env ./ && npm install && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env staging"
+    },
     production : {
       user : 'travis',
       host : 'ipsaone.space',
       ref  : 'origin/dev',
       repo : 'git@github.com:ipsaone/ANNA-Backend.git',
-      path : '/home/travis/ANNA-Backend-prod',
+      path : '/home/travis/ANNA-Backend-master',
       "ssh_options": "StrictHostKeyChecking=no",
       "post-deploy" : "cp ~/.env ./ && npm install && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env production"
     }
