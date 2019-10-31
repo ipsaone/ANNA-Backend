@@ -13,23 +13,6 @@ const config = {
 
     password: {salt: 10},
 
-    email: {
-        sender: 'oneBugReporter',
-        password: 'oneBug_2018',
-        errorManagers: [
-            'declaverie@gmail.com',
-            'clement.chandon@gmail.com'
-        ],
-        auth: {
-            type: 'oauth2',
-            user: 'YOUR_GMAIL_ADDRESS',
-            clientId: 'YOUR_CLIENT_ID',
-            clientSecret: 'YOUR_CLIENT_SECRET',
-            refreshToken: 'YOUR_REFRESH_TOKEN',
-        }
-    },
-
-
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',

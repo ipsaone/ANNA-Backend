@@ -6,8 +6,7 @@ const minimatch = require('minimatch');
 
 let authorized_paths = [
     '/',
-    '/auth/login',
-    '/auth/check',
+    '/auth/*',
     '/storage/files/([0-9]+)'
 ]
 

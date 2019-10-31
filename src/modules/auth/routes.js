@@ -10,6 +10,7 @@ module.exports = function (db) {
     router.get('/check', require('./checkLogin')(db));
     router.get('/checkToken', require('./checkToken')(db));
     router.post('/resetPassword', require('./resetPassword')(db));
+    router.post('/getToken', require('./getToken')(db));
 
     return router;
 };

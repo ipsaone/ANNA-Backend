@@ -28,11 +28,7 @@ test.beforeEach(async t => {
 })
 
 test('Login, logout, check', async t => {
-
-    // CANNOT LOGOUT WITHOUT LOGGING IN BEFORE
-    let res1 = await t.context.request.get('/auth/logout')
-    t.is(res1.status, 401);
-
+    
     // LOGIN
     let SuccessRes = await t.context.request.post('/auth/login')
         .send({
@@ -74,4 +70,10 @@ test('Login, logout, check', async t => {
     t.is(res3.body.logged, false);
 });
 
-test.todo("Get token, check it and reset password");
+test("Get token, check it and reset password", async t => {
+    let tokenReq = await t.context.request.post('/auth/getToken').send({ email : 'test@test.com' });
+    t.is(tokenReq.status, 200);
+    t.is("token" in tokenReq.body, true);
+
+
+});
