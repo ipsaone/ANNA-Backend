@@ -73,3 +73,4 @@ test.beforeEach(async t => {
 test.todo('List files (base folder)');
 test.todo('List files (other folder)');
 test.todo('List files (scoped)');
+test.todo('List files (directory-tree)');
