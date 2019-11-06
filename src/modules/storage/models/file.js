@@ -23,13 +23,13 @@ module.exports = (sequelize, DataTypes) => {
 
     File.associate = function (db2) {
 
-        
+
         File.belongsToMany(db2.Log, {
             as: 'fileLogs',
             through: db2.FileLog,
             foreignKey: 'logId'
         });
-        
+
 
         File.prototype.addData = async function (transaction) {
             let db = transaction.db;
@@ -157,7 +157,7 @@ module.exports = (sequelize, DataTypes) => {
             try {
                 log.info("Checking uploaded file");
                 await access(filePath);
-                
+
                 log.info("Uploaded file found !");
                 fileChanges.exists = true;
 
@@ -186,7 +186,7 @@ module.exports = (sequelize, DataTypes) => {
                 log.info("Moving file", {filePath, dest});
                 const move = util.promisify(mv);
                 await move(filePath, dest, {mkdirp: true,  clobber: true});
-            } 
+            }
 
             log.info("Computing values from uploaded file");
             await data.computeValues(transaction);
@@ -248,7 +248,9 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             // Add own directory name
-            return fileDirTree.concat(data.name);
+            console.log('fileDirTree', fileDirTree);
+            fileDirTree.push({fileId: data.fileId, name: data.name});
+            return fileDirTree;
         };
 
 
@@ -265,7 +267,7 @@ module.exports = (sequelize, DataTypes) => {
             let data = await file.addData(transaction);
 
             return data;
-        
+
         };
 
     };
