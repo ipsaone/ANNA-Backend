@@ -6,9 +6,9 @@ const joi = require('joi');
 const schema = joi.object().keys({
     name: joi.string().optional(),
     markdown: joi.string().optional(),
-    maxRegistered: joi.number().integer().optional().allow(null),
+    maxRegistered: [joi.number().integer().optional(), joi.allow(null)],
     startDate: joi.string().optional(),
-    endDate: joi.string().optional().allow(null)
+    endDate: [joi.string().optional(), joi.allow(null)]
 });
 
 
