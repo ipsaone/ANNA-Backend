@@ -44,7 +44,7 @@ module.exports = {
     production : {
       user : 'travis',
       host : 'ipsaone.space',
-      ref  : 'origin/dev',
+      ref  : 'origin/master',
       repo : 'git@github.com:ipsaone/ANNA-Backend.git',
       path : '/home/travis/ANNA-Backend-master',
       "ssh_options": "StrictHostKeyChecking=no",

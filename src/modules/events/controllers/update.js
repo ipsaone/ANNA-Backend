@@ -4,11 +4,11 @@ const policy = require('../event_policy');
 const joi = require('joi');
 
 const schema = joi.object().keys({
-    name: joi.string(),
-    markdown: joi.string(),
-    maxRegistered: joi.number().integer(),
-    startDate: joi.string(),
-    endDate: joi.string()
+    name: joi.string().optional(),
+    markdown: joi.string().optional(),
+    maxRegistered: joi.number().integer().optional().allow(null),
+    startDate: joi.string().optional(),
+    endDate: joi.string().optional().allow(null)
 });
 
 
