@@ -52,7 +52,7 @@ module.exports = (db) =>
         // Additional checks
         req.transaction.logger.info('Checking new size');
         let registered = await event.getRegistered();
-        if(req.body.maxRegistered < registered.length) {
+        if(req.body.maxRegistered < registered.length && req.body.maxRegistered !== null) {
             req.transaction.logger.info('New size too small', {maxRegistered : req.body.maxRegistered, registered : registered.length});
             return res.boom.badRequest('Event size cannot be reduced (too many registered users)')
         }
