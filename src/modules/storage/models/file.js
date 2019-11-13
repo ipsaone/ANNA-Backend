@@ -248,7 +248,6 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             // Add own directory name
-            console.log('fileDirTree', fileDirTree);
             fileDirTree.push({fileId: data.fileId, name: data.name});
             return fileDirTree;
         };
