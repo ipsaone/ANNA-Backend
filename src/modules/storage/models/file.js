@@ -3,6 +3,7 @@
 const mv = require('mv');
 const fs = require('fs');
 const util = require('util');
+const hasha = require('hasha');
 
 
 module.exports = (sequelize, DataTypes) => {
@@ -22,19 +23,22 @@ module.exports = (sequelize, DataTypes) => {
 
     File.associate = function (db2) {
 
-        
+
         File.belongsToMany(db2.Log, {
             as: 'fileLogs',
             through: db2.FileLog,
             foreignKey: 'logId'
         });
-        
+
 
         File.prototype.addData = async function (transaction) {
             let db = transaction.db;
             let fileChanges = transaction.reqBody;
             let log = transaction.logger;
             const previousData = await this.getData(db);
+
+            log.info('Defining creatorId');
+            fileChanges.creatorId = transaction.info.userId;
 
             log.info("Finding group");
             if (isNaN(parseInt(fileChanges.groupId, 10))) {
@@ -98,6 +102,7 @@ module.exports = (sequelize, DataTypes) => {
                 'allWrite'
             ];
 
+            // TODO : Undefined rights should be true by default
             for (const i of rights) {
                 if (typeof fileChanges[i] !== 'undefined') {
                     log.info("New right needed");
@@ -152,9 +157,13 @@ module.exports = (sequelize, DataTypes) => {
             try {
                 log.info("Checking uploaded file");
                 await access(filePath);
-                
+
                 log.info("Uploaded file found !");
                 fileChanges.exists = true;
+
+                log.info("Computing sha1");
+                fileChanges.sha1 = await hasha.fromFile(filePath, {algorithm: 'sha1'});
+                log.debug("sha1 computed", fileChanges.sha1);
             } catch (err) {
                 log.info("Uploaded file not found", {err});
                 fileChanges.exists = false;
@@ -177,7 +186,7 @@ module.exports = (sequelize, DataTypes) => {
                 log.info("Moving file", {filePath, dest});
                 const move = util.promisify(mv);
                 await move(filePath, dest, {mkdirp: true,  clobber: true});
-            } 
+            }
 
             log.info("Computing values from uploaded file");
             await data.computeValues(transaction);
@@ -192,6 +201,10 @@ module.exports = (sequelize, DataTypes) => {
             return data;
 
         };
+
+        File.prototype.getDataById = function(db, id) {
+            return db.Data.findByPk(id, {include: ['rights']});
+        }
 
 
         File.prototype.getData = async function (db, offset = 0) {
@@ -235,7 +248,8 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             // Add own directory name
-            return fileDirTree.concat(data.name);
+            fileDirTree.push({fileId: data.fileId, name: data.name});
+            return fileDirTree;
         };
 
 
@@ -252,7 +266,7 @@ module.exports = (sequelize, DataTypes) => {
             let data = await file.addData(transaction);
 
             return data;
-        
+
         };
 
     };

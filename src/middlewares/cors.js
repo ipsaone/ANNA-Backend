@@ -5,8 +5,8 @@ const winston = require('winston');
 
 
 module.exports = cors({
-    origin: (origin, cb) => {
-        cb(null, true);
-    },
-    credentials: true
+    origin: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    optionsSuccessStatus: 200
 });

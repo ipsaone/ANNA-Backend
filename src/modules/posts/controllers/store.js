@@ -7,7 +7,7 @@ const schema = joi.object().keys({
     title : joi.string().trim(true).required(),
     markdown : joi.string().trim(true).required(),
     authorId : joi.number().required(),
-    published : joi.boolean()
+    published : joi.boolean().optional()
 });
 
 module.exports = (db) => async function (req, res) {
@@ -19,13 +19,6 @@ module.exports = (db) => async function (req, res) {
     if (validation.error) {
         req.transaction.logger.info('Input denied by validator');
         return res.boom.badRequest(validation.error);
-    }
-
-    req.transaction.logger.info('Checking store policies');
-    const allowed = await policy.filterStore(req.transaction, req.session.auth);
-    if (!allowed) {
-        req.transaction.logger.info('Post store denied');
-        return res.boom.unauthorized();
     }
 
     if(typeof req.body.title == 'string') {

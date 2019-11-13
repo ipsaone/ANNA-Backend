@@ -8,12 +8,7 @@ module.exports.login = async (transaction, username, password) => {
 
     // Find user in database
     const user = await transaction.db.User.findOne({
-        where: {username},
-        include: [
-            'groups',
-            'events',
-            'participatingMissions'
-        ]
+        where: {username}
     });
 
     // Check user was found
@@ -22,9 +17,11 @@ module.exports.login = async (transaction, username, password) => {
         return false;
     }
 
+    let secrets = await user.getSecrets();
+
     // Compare password to hash
     transaction.logger.debug('Comparing hashes');
-    const passwordAccepted = await bcrypt.compare(password, user.password);
+    const passwordAccepted = await bcrypt.compare(password, secrets.password);
 
     if (!passwordAccepted) {
         transaction.logger.debug('Password refused');

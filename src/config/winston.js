@@ -2,41 +2,65 @@ const winston = require('winston');
 const config = require('./config');
 const path = require('path');
 const fs = require('fs'); // File system
-
-
-const logdir = './logs';
-if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir);}
-
-
-const transports = [
-    new winston.transports.Console({
-        level: 'warn',
-        colorize: true
-    }), 
-
-    // SEE https://github.com/winstonjs/winston/issues/1573 
-    new winston.transports.File({
-        level: 'debug',
-        filename: path.join(logdir, 'debug.log'),
-    }),
-    new winston.transports.File({
-        level: 'info',
-        filename: path.join(logdir, 'info.log'),
-    })
-];
+require('winston-daily-rotate-file');
 
 
 
+module.exports = options => {
 
-if (!process.env.TEST || !process.env.NOEMAIL) {
-    
-}
+    const logdir = './logs';
+    if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir);}
 
-transports.forEach((el) => {
-    el.setMaxListeners(1e5);
-});
 
-module.exports = {
-    logdir,
-    transports
+    const transports = [
+        new winston.transports.Console({
+            level: 'warn',
+            colorize: true
+        }), 
+    ];
+
+
+    if(!options.test) {
+        transports.push(new winston.transports.DailyRotateFile({
+            level: 'debug',
+            filename: 'debug.log',
+            zippedArchive: true,
+            date_format: "YYYY-MM-DD",
+            maxSize: '2m',
+            maxFiles: '10d',
+            dirname: path.join(logdir, '%DATE%')
+        }));
+        transports.push(new winston.transports.DailyRotateFile({
+            level: 'info',
+            filename: 'info.log',
+            zippedArchive: true,
+            date_format: "YYYY-MM-DD",
+            maxSize: '2m',
+            maxFiles: '90d',
+            dirname: path.join(logdir,'%DATE%')
+        }));
+    } else {
+        let filename = "debug-unknown.log"
+        if(options.testfile) {
+            filename = "debug-"+options.testfile.split('/').splice(6).join("-")+".log"
+        }
+
+        transports.push(new winston.transports.DailyRotateFile({
+            level: 'debug',
+            filename: filename,
+            zippedArchive: true,
+            date_format: "YYYY-MM-DD",
+            maxSize: '2m',
+            maxFiles: '10d',
+            dirname: path.join(logdir, 'test')
+        }));
+    }
+
+
+    transports.forEach((el) => {
+        el.setMaxListeners(1e5);
+    });
+
+
+    return {logdir, transports};
 }

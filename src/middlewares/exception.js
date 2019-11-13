@@ -2,13 +2,17 @@
 
 const winston = require('winston');
 const sequelize = require('sequelize');
-const nodemailer = require('nodemailer');
 const config = require('../config/config');
+const fs = require('fs');
+const util = require('util');
+const { zip } = require('zip-a-folder');
+const findRoot = require('find-root');
+const path = require('path');
+const moment = require('moment');
+const request = require('request-promise-native');
+const rimraf = require('rimraf');
+const flatted = require('flatted');
 
-var transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: config.email.auth,
-  });
 
 const sendError = (res, err, type) => {
 
@@ -37,10 +41,99 @@ const logError = (req, err) => {
     }
 };
 
+const saveLogs = async (req, res, err) => {
+
+    if(req.transaction.options.test && !req.transaction.options.testSaveLogs) {
+        return true;
+    }
+
+    const root = findRoot(__dirname);
+    const date = moment().format('YYYY-MM-DD');
+    const time = moment().format('HH-mm-ss-SSS');
+
+    // Create crashes folder
+    try {
+        await (util.promisify(fs.mkdir))(path.join(root, 'crashes'), {recursive: true});
+    } catch (e) {
+        if(e.code != 'EEXIST') { throw e; }
+    }
+    // Create temp folder
+    const temp = path.join(root, 'crashes', 'temp-crash-' + date + '-' + time)
+    const mkdirP = util.promisify(fs.mkdir)
+    await mkdirP(temp);
+
+    // Copy files
+    const copyFileP = util.promisify(fs.copyFile)
+    const logs = path.join(root, 'logs', date);
+    await copyFileP(path.join(logs, 'debug.log'), path.join(temp, 'debug.log'))
+        .catch(e => console.error(e)); // Ignore errors
+    await copyFileP(path.join(logs, 'info.log'), path.join(temp, 'info.log'))
+        .catch(e => console.error(e)); // Ignore errors
+
+    // Create new file
+    // Note : we use flatted because JSON.stringify() throws errors with circular structures
+    await (util.promisify(fs.writeFile))(path.join(temp, 'crashinfo.log'),
+        "err : \n" + flatted.stringify(err) + "\nreq : \n" + flatted.stringify(req) + "\nres : \n" + flatted.stringify(res));
+
+    // Zip
+    await zip(temp, path.join(root, 'crashes', 'crash-' + date  + '-' + time + '.zip'));
+
+    // Delete crashes folder
+    await (util.promisify(rimraf))(temp);
+
+    // Upload on Trello
+    let list_id = process.env.TRELLO_LIST
+    if(!process.env.TRELLO_KEY || !process.env.TRELLO_TOKEN) {
+        let msg = "Cannot upload error zip to trello : need key and token !"
+        console.error(msg);
+        req.transaction.logger.error(msg);
+        return true;
+    }
+
+    const key = process.env.TRELLO_KEY;
+    const token = process.env.TRELLO_TOKEN;
+    let name = "ERROR 500 at "+req.originalUrl+" ("+date+' '+time+")";
+    if(req.transaction.options.test) {
+        name = "[TEST] ERROR";
+    }
+    let desc = JSON.stringify(err);
+    let card_res = await request({
+        method: "POST",
+        uri: "https://api.trello.com/1/cards/", 
+        json: true,
+        qs: {
+            name: name,
+            desc: desc,
+            idList: list_id,
+            key, token
+          }
+    });
+    let attachment_path = path.join(root, 'crashes', 'crash-' + date  + '-' + time + '.zip');
+    let upload_res = await request({
+        method: "POST",
+        uri: "https://api.trello.com/1/cards/"+card_res.id+"/attachments",
+        json: true,
+        qs: {
+            name: "CRASH LOGS",
+            key, token
+        },
+        headers: {
+            "Content-Type": "multipart/form-data"
+        },
+        formData : {
+            "file" : fs.createReadStream(attachment_path)
+        }
+    });
+
+    req.transaction.logger.error("Uploaded as card id "+upload_res.id);
+
+
+}
+
 
 // No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
-module.exports = (err, req, res, next) => {
+const handler = async (err, req, res) => {
 
     // Check a response has not been half-sent
     if (res.headersSent) {
@@ -67,11 +160,12 @@ module.exports = (err, req, res, next) => {
 
 
     } else { // Unknown error
-        sendError(res, err, 'badImplementation');
         logError(req, err);
-
+        await saveLogs(req, res, err);
+        sendError(res, err, 'badImplementation');
     }
+};
 
-    return true;
-
+module.exports = (err, req, res, next) => {
+    return Promise.resolve(handler(err, req, res)).catch(err => {console.error(err); return next(err, req, res);});
 };

@@ -14,7 +14,7 @@ const fs = require('fs');
 
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -65,7 +65,8 @@ test.beforeEach(async t => {
         groupId: 1,
         rightsId: 1,
         createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now())
+        updatedAt: new Date(Date.now()),
+        creatorId: 1,
     });
 });
 
@@ -76,9 +77,8 @@ test('Download file', async t => {
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id)
-        .field('ownerRead', true)
-
-        t.is(res.status, 200);
+        .field('ownerRead', true);
+    t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/storage/files/'+res.body.id);
     t.is(res2.status, 200);
@@ -91,3 +91,5 @@ test('Download file', async t => {
     t.is(res3.status, 200);
     t.true(res3.body instanceof Buffer);
 });
+
+test.todo('Download public file, unlogged');

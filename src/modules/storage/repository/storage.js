@@ -193,8 +193,10 @@ Storage.fileHasReadPermission = async (transaction, fileId, userId) => {
         return false;
     }
 
-    
-    if (userIsOwner === true && fileRights.ownerRead === true) {
+    if(fileRights.public) {
+        log.info('Read granted :file is public');
+        return true;
+    } else if (userIsOwner === true && fileRights.ownerRead === true) {
         log.info('Read granted : user is owner and owner can read');
         return true;
     } else if (userIsInGroup === true && fileRights.groupRead === true) {

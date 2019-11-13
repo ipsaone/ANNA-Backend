@@ -6,18 +6,6 @@ const path = require('path');
 
 const config = require(path.join(root, './src/config/config'));
 
-const bcrypt = require('bcrypt');
-
-
-const hashPassword = async (user) => {
-    if (!user.changed('password')) {
-        return user.getDataValue('password');
-    }
-
-    let hash = await bcrypt.hash(user.getDataValue('password'), config.password.salt)
-    return user.setDataValue('password', hash);
-
-};
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -30,21 +18,43 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         email: {
-            allowNull: false,
+            allowNull: false,   
             type: DataTypes.STRING,
             unique: true
         },
 
         password: {
-            allowNull: false,
-            type: DataTypes.STRING
-        }
-    }, {
-        hooks: {
-            beforeCreate: hashPassword,
-            beforeUpdate: hashPassword
+            allowNull: true,
+            type: DataTypes.VIRTUAL
         }
     });
+
+    let createSecretsHook = async (user, options) => {
+        const secrets = await sequelize.models.UserSecrets.create({
+            password: user.password,
+            userId: user.id
+        });
+
+        delete user.password;
+        
+    };
+
+    let removeSecretsHook = async  (user, options) => {
+        let secrets = await user.getSecrets();
+        await secrets.destroy();
+    };
+
+    let updateSecretsHook = async (user, options) => {
+        let secrets = await user.getSecrets();
+        await secrets.update(user);
+    }
+
+    // Maybe bulk hooks are needed ?
+    User.addHook('afterCreate', createSecretsHook);
+    User.addHook('afterDestroy', removeSecretsHook);
+    User.addHook('afterUpdate', updateSecretsHook);
+
+
 
     User.associate = function (models) {
 
@@ -105,6 +115,14 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
         });
+        
+        User.hasOne(models.UserSecrets, {
+            as: 'secrets',
+            foreignKey: 'userId',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+        
     };
 
     User.prototype.isRoot = async function () {

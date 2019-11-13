@@ -12,7 +12,7 @@ const supertest = require('supertest');
 
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -28,19 +28,24 @@ test.beforeEach(async t => {
         email: 'test@test.com'
     });
 
+   
+
+    t.context.group = await db.Group.create({
+        name: "root"
+    });
+    t.context.group2 = await db.Group.create({
+        name: "organizers"
+    });
+    t.context.group3 = await db.Group.create({
+        name: "default"
+    })
+    await t.context.user.addGroup(t.context.group3.id);
+
     let res = await request.post('/auth/login').send({
         username: 'login_test',
         password: 'password_test'
     });
     t.is(res.status, 200);
-
-    t.context.group = await db.Group.create({
-        name: "root"
-    });
-    
-    t.context.group2 = await db.Group.create({
-        name: "root"
-    });
 });
 
 
@@ -78,7 +83,7 @@ test('Events addition, list, details, edition and suppression (no group)', async
 
     t.is(res8.status, 201);
     t.is(res8.body.name, 'test');
-    await t.context.user.setGroups([]);
+    await t.context.user.setGroups([t.context.group3.id]);
 
     let res2 = await t.context.request.get('/events/'+res8.body.id);
     t.is(res2.status, 200);

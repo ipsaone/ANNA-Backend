@@ -13,20 +13,23 @@ const buildDB = require('./buildDB');
 
 module.exports = class ModuleFactory {
     constructor (options) {
-        let test = false;
-
+        this.test = false;
         if (options && options.test) {
-            test = true;
+            this.test = true;
+        }
+        
+        if(options && options.forceSync) {
+            this.forceSync = options.forceSync;
         }
 
         this.configPath = './config/sequelize';
-        if (test) {
+        if (this.test) {
             this.configPath = './config/sequelize_test';
         }
 
         const config = require(path.join(root, 'src', this.configPath));
 
-        if (test) {
+        if (this.test) {
             // For tests, load in-memory SQLite database !
             let uuid = uuidv4();
             this.db = buildDB(new Sequelize(`test${this.testDatabases}`, null, null, config));

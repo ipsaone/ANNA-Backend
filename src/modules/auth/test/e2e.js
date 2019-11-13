@@ -10,7 +10,7 @@ const path = require('path');
 
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -28,11 +28,7 @@ test.beforeEach(async t => {
 })
 
 test('Login, logout, check', async t => {
-
-    // CANNOT LOGOUT WITHOUT LOGGING IN BEFORE
-    let res1 = await t.context.request.get('/auth/logout')
-    t.is(res1.status, 401);
-
+    
     // LOGIN
     let SuccessRes = await t.context.request.post('/auth/login')
         .send({
@@ -72,4 +68,12 @@ test('Login, logout, check', async t => {
     let res3 = await t.context.request.get('/auth/check')
     t.is(res3.status, 200);
     t.is(res3.body.logged, false);
+});
+
+test("Get token, check it and reset password", async t => {
+    let tokenReq = await t.context.request.post('/auth/getToken').send({ email : 'test@test.com' });
+    t.is(tokenReq.status, 200);
+    t.is("token" in tokenReq.body, true);
+
+
 });

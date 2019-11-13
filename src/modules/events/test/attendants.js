@@ -12,7 +12,7 @@ const supertest = require('supertest');
 
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -31,6 +31,10 @@ test.beforeEach(async t => {
     t.context.group = await db.Group.create({
         name: "root"
     });
+    t.context.group2 = await db.Group.create({
+        name: "default"
+    });
+    await t.context.user.addGroup(t.context.group2.id);
     let res = await request.post('/auth/login').send({
         username: 'login_test',
         password: 'password_test'

@@ -27,7 +27,6 @@ exports.filterUploadNew = async (transaction, folderId) => {
 
     if (!folder) {
         transaction.logger.info(`no folder #${folderId}`);
-
         return false;
     }
 
@@ -46,7 +45,6 @@ exports.filterUploadRev = async (transaction, fileId) => {
 
     if (!file) {
         transaction.logger.info(`File not found : #${fileId}`);
-
         return false;
     }
 
@@ -55,6 +53,7 @@ exports.filterUploadRev = async (transaction, fileId) => {
 
     if (!lastData) {
         transaction.logger.warn(`No data for file #${fileId}`);
+        return false;
     }
 
     transaction.logger.info('Finding write permission');
@@ -73,7 +72,6 @@ exports.filterDownloadMeta = async (transaction, fileId, userId) => {
 
     if (!file) {
         transaction.logger.info(`No file with id ${fileId}`);
-
         return false;
     }
 
@@ -82,6 +80,7 @@ exports.filterDownloadMeta = async (transaction, fileId, userId) => {
 
     if (!lastData) {
         transaction.logger.warn(`No data for file #${fileId}`);
+        return false;
     }
 
     transaction.logger.info('Authorization granted if read permission');
@@ -123,6 +122,7 @@ exports.filterDelete = async (transaction, fileId, userId) => {
     const lastData = await file.getData(transaction.db);
     if (!lastData) {
         transaction.logger.warn(`No data for file #${fileId}`);
+        return false;
     }
 
     transaction.logger.info('Authorization granted on write permission');

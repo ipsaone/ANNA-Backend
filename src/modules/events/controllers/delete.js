@@ -1,9 +1,21 @@
 'use strict';
 
 const policy = require('../event_policy');
+const joi = require('joi');
+
+const schema = joi.object().keys({});
 
 
 module.exports = (db) => async function (req, res) {
+    // Validate user input
+    const validation = joi.validate(req.body, schema);
+    req.transaction.logger.debug('Validating schema');
+
+    if (validation.error) {
+        req.transaction.logger.debug('Bad input', {body : req.body});
+        return res.boom.badRequest(validation.error);
+    }
+    
     if (isNaN(parseInt(req.params.eventId, 10))) {
         req.transaction.logger.info('Event ID must be an integer');
         return res.boom.badRequest('Event ID must be an integer');

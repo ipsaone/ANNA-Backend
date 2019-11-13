@@ -3,6 +3,9 @@
 const policy = require('../storage_policy');
 const winston = require('winston');
 const getChildrenData = require('../repository/list');
+const joi = require('joi');
+
+const schema = joi.object().keys({});
 
 
 /**
@@ -18,6 +21,14 @@ const getChildrenData = require('../repository/list');
 
 module.exports = (db) => async (req, res) => {
     const folderId = parseInt(req.params.folderId, 10);
+
+     // Validate user input
+     req.transaction.logger.info('Validating schema');
+     const validation = joi.validate(req.body, schema);
+     if (validation.error) {
+         req.transaction.logger.info('Schema validation failed');
+         return res.boom.badRequest(validation.error);
+     }
 
     req.transaction.logger.debug('Finding requested file')
     let file = await db.File.findByPk(folderId);

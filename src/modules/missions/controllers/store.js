@@ -1,16 +1,15 @@
 'use strict';
 
 const joi = require('joi');
-const policy = require('../policies/mission_policy');
 
 
 const schema = joi.object().keys({
-    name: joi.string().trim(true).min(3),
-    markdown: joi.string().trim(true).min(5),
+    name: joi.string().trim(true).min(3).required(),
+    markdown: joi.string().trim(true).min(5).optional(),
     description: joi.any().forbidden(),
-    budgetAssigned: joi.number().min(0),
-    budgetUsed: joi.number().min(0),
-    groupId: joi.number().integer().positive(),
+    budgetAssigned: joi.number().min(0).optional(),
+    budgetUsed: joi.number().min(0).optional(),
+    groupId: joi.number().integer().positive().required(),
     leaderId: joi.number().integer().positive().optional()
 });
 
@@ -25,15 +24,6 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.info('Input denied by validator');
         return res.boom.badRequest(validation.error);
     }
-
-    // Check policies
-    req.transaction.logger.info('Invoking policies');
-    const authorized = await policy.filterStore(req.transaction, req.session.auth);
-    if (!authorized) {
-        req.transaction.logger.info('Policies denier mission store');
-        return res.boom.unauthorized();
-    }
-
 
     if (typeof req.body.leaderId === 'undefined') {
         req.transaction.logger.info('Setting automatic leaderId');

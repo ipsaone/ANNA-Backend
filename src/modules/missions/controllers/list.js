@@ -1,16 +1,18 @@
 'use strict';
 
-const policy = require('../policies/mission_policy');
-
-
+const joi = require('joi');
+const schema = joi.object().keys({});
 
 module.exports = (db) => async (req, res) => {
-    req.transaction.logger.info('Invoking policies');
-    const authorized = await policy.filterIndex(req.transaction);
-    if (!authorized) {
-        req.transaction.logger.info('Policies denied list');
-        return res.boom.unauthorized();
-    }
+
+     // Validate user input
+     const validation = joi.validate(req.body, schema);
+     req.transaction.logger.debug('Validating schema');
+
+     if (validation.error) {
+         req.transaction.logger.debug('Bad input', {body : req.body});
+         return res.boom.badRequest(validation.error);
+     }
     
     req.transaction.logger.info('Finding missions');
     const missions = await db.Mission.findAll({

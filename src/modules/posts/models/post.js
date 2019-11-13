@@ -46,7 +46,13 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
 
-        publishedAt: DataTypes.DATE
+        publishedAt: DataTypes.DATE,
+
+        pinned : {
+            allowNull: true,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }
     }, {
 
         scopes: {

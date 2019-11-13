@@ -15,7 +15,7 @@ const fs = require('fs');
 
 test.beforeEach(async t => {
     const loadApp = require(join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -44,8 +44,12 @@ test.beforeEach(async t => {
     t.context.group = await db.Group.create({
         name: "root"
     });
+    t.context.group2 = await db.Group.create({
+        name: "default"
+    })
 
     await t.context.user.addGroup(t.context.group.id);
+    await t.context.user.addGroup(t.context.group2.id);
     let res2 = await t.context.request.post('/missions')
         .send({
             name: "test", 
@@ -66,6 +70,7 @@ test('Add user to mission', async t => {
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id);
+    t.is(res2.status, 200);
     t.is(res2.body.participatingMissions.length, 1);
     t.is(res2.body.participatingMissions[0].name, 'test');
 });
@@ -75,6 +80,7 @@ test('Remove user from mission', async t => {
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id);
+    t.is(res2.status, 200);
     t.is(res2.body.participatingMissions.length, 1);
     t.is(res2.body.participatingMissions[0].name, 'test');
 
@@ -82,6 +88,7 @@ test('Remove user from mission', async t => {
     t.is(res3.status, 200);
 
     let res4 = await t.context.request.get('/users/'+t.context.user.id);
+    t.is(res4.status, 200);
     t.is(res4.body.participatingMissions.length, 0);
 });
 

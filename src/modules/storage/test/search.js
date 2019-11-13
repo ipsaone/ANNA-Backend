@@ -14,7 +14,7 @@ const fs = require('fs');
 
 test.beforeEach(async t => {
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -65,8 +65,10 @@ test.beforeEach(async t => {
         ownerId: 1,
         groupId: 1,
         rightsId: 1,
+        creatorId: 1,
         createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now())
+        updatedAt: new Date(Date.now()),
+        creatorId: 1,
     });
 });
 

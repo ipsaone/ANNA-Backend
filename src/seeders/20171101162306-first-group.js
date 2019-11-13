@@ -1,28 +1,25 @@
 'use strict';
 
 const ModulesFactory = require('../modules');
-const modules = new ModulesFactory();
-const db = modules.db;
 
 
 module.exports = {
-    up: (queryInterface) => queryInterface.bulkInsert('Groups', [
-        {name: 'root'},
-        {name: 'authors'},
-        {name : 'organizers'}
-    ])
-        .then(() => {
-            const rootUser = db.User.findOne({where: {username: 'root'}});
-
-            /* eslint-disable promise/no-nesting */
-            const addRootGroup = db.Group.findOne({where: {name: 'root'}})
-                .then((group) => rootUser.then((root) => root.addGroup(group.id)));
-
-            return Promise.all([
-                addRootGroup
-            ]);
-        })
-        .catch((err) => console.log(err)),
+    up: async (queryInterface) => {
+        await queryInterface.bulkInsert('Groups', [
+            {name: 'root', id: 1},
+            {name: 'authors', id: 2},
+            {name : 'organizers', id: 3},
+            {name: 'default', id: 4}
+        ])
+            
+        await queryInterface.bulkInsert('UserGroup', [
+            {id: 1, userId: 1, groupId: 1},
+            {id: 2, userId: 1, groupId: 2},
+            {id: 3, userId: 1, groupId: 3},
+            {id: 4, userId: 1, groupId: 4}
+        ])
+        
+    },
 
     down: (queryInterface) => queryInterface.bulkDelete('Groups', null, {})
 };

@@ -15,7 +15,7 @@ const fs = require('fs');
 
 test.beforeEach(async t => {
     const loadApp = require(join(root, 'src', './app'));
-    let {app, modules} = loadApp({test: true, noLog: true});
+    let {app, modules} = loadApp({test: true, noLog: true, testfile: __filename});
     const request = require('supertest').agent(app);
 
     const db = await modules.syncDB();
@@ -44,6 +44,10 @@ test.beforeEach(async t => {
     t.context.group = await db.Group.create({
         name: "root"
     });
+    t.context.group2 = await db.Group.create({
+        name: "default"
+    })
+    t.context.user.addGroup(t.context.group2.id);
     
 });
 
@@ -112,7 +116,11 @@ test('Add, show, list, edit and remove task from mission (leader, not root)', as
 
     t.is(res8.status, 200);  
     t.context.mission = res8.body;
-    await t.context.user.setGroups([]);
+
+    let def_group = await t.context.db.Group.create({
+        name: "default"
+    })
+    await t.context.user.setGroups(def_group.id);
 
     let res = await t.context.request.post('/missions/'+t.context.mission.id+'/tasks')
         .send({

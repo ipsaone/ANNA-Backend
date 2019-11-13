@@ -39,6 +39,7 @@ module.exports = function (db) {
         req.transaction.logger.info('Login successful', {userId : user.id});
         req.session.auth = user.id;
         req.session.save();
+        req.transaction.logger.debug('Post login session', {session: req.session});
 
         // Send response
         return res.status(200).json(user);

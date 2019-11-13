@@ -4,10 +4,10 @@ const policy = require('../post_policy');
 const joi = require('joi');
 
 const schema = joi.object().keys({
-    title : joi.string().trim(true),
-    markdown : joi.string().trim(true),
-    authorId : joi.number(),
-    published : joi.boolean()
+    title : joi.string().trim(true).min(10).optional(),
+    markdown : joi.string().trim(true).min(10).optional(),
+    authorId : joi.number().optional(),
+    published : joi.boolean().optional()
 });
 
 
@@ -21,13 +21,6 @@ module.exports = (db) => async function (req, res, handle) {
     if (validation.error) {
         req.transaction.logger.info('Input denied by validator');
         return res.boom.badRequest(validation.error);
-    }
-
-    req.transaction.logger.info('Checking policies');
-    let authorized = await policy.filterUpdate(req.transaction, req.session.auth);
-    if (!authorized) {
-        req.transaction.logger.info('Policies check failed, request denied');
-        return res.boom.unauthorized('You must be an author to edit a post');
     }
     
     req.transaction.logger.info('Updating post');

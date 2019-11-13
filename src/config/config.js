@@ -13,27 +13,12 @@ const config = {
 
     password: {salt: 10},
 
-    email: {
-        sender: 'oneBugReporter',
-        password: 'oneBug_2018',
-        errorManagers: [
-            'declaverie@gmail.com',
-            'clement.chandon@gmail.com'
-        ],
-        auth: {
-            type: 'oauth2',
-            user: 'YOUR_GMAIL_ADDRESS',
-            clientId: 'YOUR_CLIENT_ID',
-            clientSecret: 'YOUR_CLIENT_SECRET',
-            refreshToken: 'YOUR_REFRESH_TOKEN',
-        }
-    },
-
-
     session: {
         socket: '/var/run/redis/redis.sock',
         secret: 'HYlFhWoHBGPxVnHqP45K',
         check: process.env.CHECK_AUTH,
+        test_host: 'localhost',
+        test_port: '6379',
         timeout: 1000*60*1
     },
 
@@ -50,8 +35,10 @@ const config = {
             force: process.env.DB_FORCE_SYNC,
             dialectOptions: {socketPath: '/var/run/mysqld/mysqld.sock'},
             pool: {
-                min: 5,
-                max : 130,
+                min: 0,
+                max : 20,
+                idle: 1000,
+                evict: 1000
             }
         };
 

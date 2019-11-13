@@ -1,12 +1,22 @@
 'use strict';
 
 const policy = require('../post_policy');
-
+const joi = require('joi');
+const schema = joi.object().keys({});
 
 
 module.exports = (db) => async function (req, res) {
 
     req.transaction.logger.info('Listing posts');
+
+    // Validate user input
+    const validation = joi.validate(req.body, schema);
+    req.transaction.logger.debug('Validating schema');
+
+    if (validation.error) {
+        req.transaction.logger.debug('Bad input', {body : req.body});
+        return res.boom.badRequest(validation.error);
+    }
 
     let posts = db.Post;
 

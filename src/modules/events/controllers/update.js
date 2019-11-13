@@ -4,11 +4,11 @@ const policy = require('../event_policy');
 const joi = require('joi');
 
 const schema = joi.object().keys({
-    name: joi.string(),
-    markdown: joi.string(),
-    maxRegistered: joi.number().integer(),
-    startDate: joi.string(),
-    endDate: joi.string()
+    name: joi.string().optional(),
+    markdown: joi.string().optional(),
+    maxRegistered: [joi.number().integer().optional(), joi.allow(null)],
+    startDate: joi.string().optional(),
+    endDate: [joi.string().optional(), joi.allow(null)]
 });
 
 
@@ -38,6 +38,9 @@ module.exports = (db) =>
             return res.boom.badRequest(validation.error);
         }
 
+        // Adding creatorId
+        req.body.creatorId = req.transaction.info.userId;
+
         // Check authorization
         req.transaction.logger.info('Invoking policies');
         const authorized = await policy.filterUpdate(req.transaction, req.session.auth);
@@ -49,7 +52,7 @@ module.exports = (db) =>
         // Additional checks
         req.transaction.logger.info('Checking new size');
         let registered = await event.getRegistered();
-        if(req.body.maxRegistered < registered.length) {
+        if(req.body.maxRegistered < registered.length && req.body.maxRegistered !== null) {
             req.transaction.logger.info('New size too small', {maxRegistered : req.body.maxRegistered, registered : registered.length});
             return res.boom.badRequest('Event size cannot be reduced (too many registered users)')
         }

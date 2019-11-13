@@ -1,83 +1,19 @@
 'use strict';
 
 
-exports.filterIndex = async (transaction) => {
-    transaction.logger.info("Filtering events list");
-    return true;
-}
+exports.filterIndex = async (transaction) => true;
 
 
-exports.filterShow = async (transaction) => {
-    transaction.logger.info("Filtering events show");
-    return true;
-};
+exports.filterShow = async (transaction) => true;
 
 
-exports.filterStore = async (transaction, userId) => {
-    const db = transaction.db;
-    transaction.logger.info("Filtering events store");
-
-    transaction.logger.info("Finding user");
-    const user = await db.User.findByPk(userId);
-
-    transaction.logger.info("Checking if user is root");
-    if (user && await user.isRoot()) {
-        return true;
-    }
-
-    transaction.logger.info("Checking if user is organizer");
-    const groups = await user.getGroups();
-    if(groups.includes('organizers')) {
-        return true;
-    }
-
-    return false;
-};
+exports.filterStore = async (transaction, userId) => true;
 
 
-exports.filterUpdate = async (transaction, userId) => {
-    const db = transaction.db;
-    transaction.logger.info("Filtering events update");
-
-    transaction.logger.info("Finding user");
-    const user = await db.User.findByPk(userId);
-
-    transaction.logger.info("Checking if user is root");
-    if (user && await user.isRoot()) {
-        return true;
-    }
-    
-    transaction.logger.info("Checking if user is organizer");
-    const groups = await user.getGroups();
-    if(groups.includes('organizers')) {
-        return true;
-    }
-
-    return false;
-};
+exports.filterUpdate = async (transaction) => true;
 
 
-exports.filterDelete = async (transaction, userId) => {
-    const db = transaction.db;
-    transaction.logger.info("Filtering events delete");
-
-    transaction.logger.info("Finding user");
-    const user = await db.User.findByPk(userId);
-
-    transaction.logger.info("Checking if user is root");
-    if (user && await user.isRoot()) {
-        return true;
-    }
-    
-    transaction.logger.info("Checking if user is organizer");
-    const groups = await user.getGroups();
-    if(groups.includes('organizers')) {
-        return true;
-    }
-
-
-    return false;
-};
+exports.filterDelete = async (transaction, userId) => true;
 
 exports.filterStoreRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;
@@ -88,18 +24,7 @@ exports.filterStoreRegistered = async (transaction, targetId, userId) => {
         return true;
     }
 
-    transaction.logger.info("Finding user");
-    const user = await db.User.findByPk(userId);
-
-    transaction.logger.info("Checking if user is root");
-    const userIsAdmin = await user.isRoot();
-    if (userIsAdmin) {
-        return true;
-    }
-
-    transaction.logger.info("Checking if user is organizer");
-    const groups = await user.getGroups();
-    if(groups.includes('organizers')) {
+    if(transaction.info.isAuthorized) {
         return true;
     }
 
@@ -114,18 +39,7 @@ exports.filterDeleteRegistered = async (transaction, targetId, userId) => {
         return true;
     }
 
-    transaction.logger.info("Finding user");
-    const user = await db.User.findByPk(userId);
-
-    transaction.logger.info("Checking if user is root");
-    const userIsAdmin = await user.isRoot();
-    if (userIsAdmin) {
-        return true;
-    }
-
-    transaction.logger.info("Checking if user is organizer");
-    const groups = await user.getGroups();
-    if(groups.includes('organizers')) {
+    if(transaction.info.isAuthorized) {
         return true;
     }
 

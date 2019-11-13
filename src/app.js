@@ -25,8 +25,8 @@ const loadApp = (options = {}) => {
     const app = express();
     const {host, port} = config.app.getConnection();
     
-    if(!options.test) { // Listen only when out of testing settings
-        http.createServer(app).listen(port, host, function () {
+    if(!options.test && !options.noServ) { // Listen only when out of testing settings
+        let server = http.createServer(app).listen(port, host, function () {
             if (!options.noLog) {
                 console.log(`${config.app.name} v${config.app.version} listening on ${host}:${port}`);
                 const elapsedHrTime = process.hrtime(start);
@@ -34,6 +34,14 @@ const loadApp = (options = {}) => {
                 console.log("Started in", elapsed, "ms");
             }
 
+        });
+
+        process.on('SIGINT', function() {
+            console.log("\nCaught interrupt signal, exiting...");
+            server.close(() => {
+                console.log("All done !");
+                process.exit(0);
+            })
         });
     }
 
@@ -43,7 +51,7 @@ const loadApp = (options = {}) => {
     app.use(bodyParser.urlencoded({extended: true})); // POST parser
     app.use(bodyParser.json());
     app.use(require('express-request-id')({setHeader: true})); // Unique ID for every request
-    app.use(require('./middlewares/transaction')); // Build transaction object
+    app.use(require('./middlewares/transaction')(options)); // Build transaction object
     app.use(require('./middlewares/timing'));
     if (!options.noLog) {
         app.use(morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {immediate: true}));

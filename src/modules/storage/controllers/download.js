@@ -1,10 +1,22 @@
 'use strict';
 
 const policy = require('../storage_policy');
-const winston = require('winston');
+const fs = require('fs');
+const util = require('util');
+const joi = require('joi');
+
+const schema = joi.object().keys({});
 
 module.exports = (db) => async (req, res) => {
     const fileId = parseInt(req.params.fileId, 10);
+
+     // Validate user input
+     req.transaction.logger.info('Validating schema');
+     const validation = joi.validate(req.body, schema);
+     if (validation.error) {
+         req.transaction.logger.info('Schema validation failed');
+         return res.boom.badRequest(validation.error);
+     }
 
     // Download parameter, to get file metadata or contents
     const dl = req.query.download && req.query.download === 'true';
@@ -19,15 +31,30 @@ module.exports = (db) => async (req, res) => {
             return res.boom.notFound("file not found !");
         }
 
-        // Revision parameter, to get an older version
+
+        // Revision or data parameter, to get an older version
         let rev = 0;
+        let dataId = 0;
+        let hasRev = false;
+        let hasDId = false;
         if (!isNaN(parseInt(req.query.revision, 10))) {
             rev = parseInt(req.query.revision, 10);
+            hasRev = true;
             req.transaction.logger.debug('Successfully parsed revision request', {revision : rev});
+        } else if(!isNaN(parseInt(req.query.data, 10))) {
+            dataId = parseInt(req.query.data, 10);
+            hasDId = true;
+            req.transaction.logger.debug('Successfully parsed data request', {revision : rev});
         }
 
         req.transaction.logger.debug('Requesting target data', {revision: rev})
-        const data = await file.getData(db, rev);
+        let data;
+        if(hasDId) {
+            data = await file.getDataById(db, dataId);
+        } else {
+            data = await file.getData(db, rev);
+        }
+
         if (!data) {
             return res.boom.notFound('This revision doesn\'t exist');
         }
@@ -42,6 +69,19 @@ module.exports = (db) => async (req, res) => {
         req.transaction.logger.debug('Requesting data path');
         const dataPath = await data.getPath(true);
         req.transaction.logger.debug('Data path request successful', {path: dataPath});
+
+        
+        req.transaction.logger.debug('Checking file exists');
+        let accessP = util.promisify(fs.access);
+        try {
+            await accessP(dataPath, fs.constants.R_OK);
+            req.transaction.logger.debug('File access OK');
+            
+        } catch (e) {
+            req.transaction.logger.debug('File access denied');
+            console.error(e);
+            return res.boom.notFound('File not found on disk');
+        }   
 
         req.transaction.logger.info('Sending file', {data: data.name});
         return res.download(dataPath, data.name);
