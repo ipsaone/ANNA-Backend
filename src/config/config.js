@@ -68,10 +68,25 @@ const config = {
 };
 
 
-config.app.getConnection = () => ({
-    host: process.env.HOST,
-    port: process.env.PORT
-});
+config.app.getConnection = () => {
+    if(process.env.NODE_ENV === 'production') {
+        return {
+            host: process.env.PROD_HOST,
+            port: process.env.PROD_PORT
+        }
+    } else if(process.env.NODE_ENV === 'staging') {
+        return {
+            host: process.env.STAGING_HOST,
+            port: process.env.STAGING_PORT
+        }
+    } else {
+        return {
+            host: process.env.HOST,
+            port: process.env.PORT
+        }
+    }
+    
+};
 
 
 module.exports = config;
