@@ -11,6 +11,7 @@ module.exports = function (db) {
     router.get('/checkToken', require('./checkToken')(db));
     router.post('/resetPassword', require('./resetPassword')(db));
     router.post('/getToken', require('./getToken')(db));
+    router.post('/changePassword', require('./changePassword')(db));
 
     return router;
 };
