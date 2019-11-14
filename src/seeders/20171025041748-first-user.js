@@ -22,7 +22,9 @@ module.exports = {
                 {
                     id: 1,
                     password: bcrypt.hashSync('OneServ_2017', salt),
-                    userId: 1
+                    userId: 1,
+                    createdAt: new Date(Date.now()),
+                    updatedAt: new Date(Date.now()),
                 }
             ]),
         ]),

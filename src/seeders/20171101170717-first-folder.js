@@ -16,7 +16,7 @@ module.exports = {
                     ownerWrite: true,
                     ownerRead: true,
                     allWrite: true,
-                    allRead: true
+                    allRead: true,
                 }
             ]))
             .then(() => queryInterface.bulkInsert('Data', [
