@@ -16,7 +16,7 @@ test('Real startup smoke test', async t => {
     process.stdout.write = chunk => {}; // NOM NOM EAT ALL THE OUTPUT
 
     const loadApp = require(path.join(root, 'src', './app'));
-    let {app, modules} = loadApp();
+    let {app, modules} = loadApp({noServ: true}); // DISABLE THE SERVER : NO CHOICE FOR PRODUCTION
     
     const request = require('supertest').agent(app);
 

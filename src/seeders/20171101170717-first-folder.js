@@ -16,7 +16,7 @@ module.exports = {
                     ownerWrite: true,
                     ownerRead: true,
                     allWrite: true,
-                    allRead: true
+                    allRead: true,
                 }
             ]))
             .then(() => queryInterface.bulkInsert('Data', [
@@ -30,7 +30,8 @@ module.exports = {
                     groupId: 1,
                     rightsId: 1,
                     createdAt: new Date(Date.now()),
-                    updatedAt: new Date(Date.now())
+                    updatedAt: new Date(Date.now()),
+                    creatorId: 1
                 }
             ])),
 
