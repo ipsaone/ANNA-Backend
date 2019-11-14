@@ -11,7 +11,7 @@ const schema = joi.object().keys({
     serialNbr: joi.string().optional().allow('').optional(),
     fileId: joi.number().integer().positive().optional(),
     ownerId: joi.number().integer().positive().optional(),
-    name: joi.string().optional(),
+    name: joi.string().min(1).optional(),
     ownerRead : joi.boolean().optional(),
     ownerWrite: joi.boolean().optional(),
     groupRead: joi.boolean().optional(),
