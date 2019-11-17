@@ -174,7 +174,7 @@ async function mirror(localpath, remote_id) {
             let list_req = await request.get('/storage/files/list/'+remote_id);
             if(list_req.status != 200) { 
                 console.error("Couldn't list folder ( error", list_req.status, ":", list_req.body, ")"); 
-                process.exit(-1);
+                continue;
             }
             let list = list_req.body.children;
 
@@ -202,7 +202,7 @@ async function mirror(localpath, remote_id) {
                 if(meta_req.body.sha1 === local_sha1) {
                     // don't reupload
                     console.log("File already exists :", path.join(localpath, entry.name));
-
+                    continue;
                 }
 
                 else {
@@ -224,6 +224,7 @@ async function mirror(localpath, remote_id) {
                     
                     if(rev_req.status !== 200) {
                         console.error("Couldn't upload revision for file", path.join(localpath, entry.name), "(", rev_req.status, ":", rev_req.body, ")");
+                        continue;
                     }
 
                 }
@@ -246,8 +247,9 @@ async function mirror(localpath, remote_id) {
                     .attach('contents', path.join(localpath, entry.name));
                     
 
-                if(!upload_req.status === 200) {
+                if(upload_req.status !== 200) {
                     console.error("Couldn't upload new file ( error", upload_req.status, ":", upload_req.body, ")"); 
+                    continue;
                 }
 
 
@@ -262,7 +264,7 @@ async function mirror(localpath, remote_id) {
             let list_req = await request.get('/storage/files/list/'+remote_id);
             if(list_req.status != 200) { 
                 console.error("Couldn't list folder ( error", list_req.status, ":", list_req.body, ")"); 
-                process.exit(-1);
+                continue;
             }
             let list = list_req.body.children;
 
@@ -286,8 +288,9 @@ async function mirror(localpath, remote_id) {
                     .field('allWrite', true)
                     
                     
-                if(create_req.status != 200) {
+                if(create_req.status !== 200) {
                     console.error("Couldn't create new folder ( error", create_req.status, ":", create_req.body, ")"); 
+                    continue;
                 }
 
                 remote_folder = create_req.body;
@@ -300,6 +303,7 @@ async function mirror(localpath, remote_id) {
 
         else {
             console.error("Path is neither file nor directory :", path.join(localpath, entry.name));
+            continue;
         }
     }
 }
