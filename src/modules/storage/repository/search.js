@@ -12,8 +12,7 @@ let searchInFolder = async (folder, searches, transaction) => {
     for(let i = 0; i < childrenData.length; i++) {
         promises.push(searchInFolder(childrenData[i].fileId, searches, transaction));
     }
-    let otherSearches = Promise.all(promises);
-
+    let otherSearches = Promise.all(promises); // WILL BE AWAITED LATER
 
     const options = {
         [db.Sequelize.Op.and]: [

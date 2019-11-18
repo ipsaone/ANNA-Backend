@@ -20,10 +20,9 @@ const computeValues = async (data, transaction) => {
         data.type = 'folder';
         return data;
     }
+    
     if(!data.exists) {
-        transaction.logger.info("File is said not to exist, setting size and type as default");
-        data.size = -1;
-        data.type = ''
+        transaction.logger.info("File is said not to exist, Not touching size/type (computed in models/file/addData)");
         return data;
     }
 
