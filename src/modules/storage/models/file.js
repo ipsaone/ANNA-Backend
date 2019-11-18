@@ -167,6 +167,15 @@ module.exports = (sequelize, DataTypes) => {
             } catch (err) {
                 log.info("Uploaded file not found", {err});
                 fileChanges.exists = false;
+
+                if(previousData) {
+                    log.info("Setting size and type as previous");
+                    fileChanges.size = previousData.size;
+                    fileChanges.type = previousData.type;
+                } else {
+                    fileChanges.size = -1;
+                    fileChanges.type = "";
+                }
             }
 
             log.info("Creating data");

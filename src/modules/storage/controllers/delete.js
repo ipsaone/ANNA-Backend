@@ -1,7 +1,6 @@
 'use strict';
 
 const policy = require('../storage_policy');
-const winston = require('winston');
 const joi = require('joi');
 
 const schema = joi.object().keys({});
@@ -27,6 +26,9 @@ module.exports = (db) => async (req, res) => {
 
     req.transaction.logger.info('Destroying data', {fileId: fileId});
     await db.Data.destroy({where: {fileId: fileId}});
+
+    // req.transaction.logger.info('Destroying file', {fileId: fileId});
+    // await db.File.destroy({where: {id: fileId}});
 
     req.transaction.logger.debug('Returning 204');
     return res.status(204).send();

@@ -5,6 +5,7 @@ const joi = require('joi');
 const schema = joi.object().keys({
     name: joi.string().optional(),
     done: joi.bool().optional(),
+    id: joi.number().integer()
 });
 
 module.exports = (db) => async function (req, res) {
