@@ -27,33 +27,20 @@ module.exports = function (db) {
             return res.boom.badRequest(validation.error);
         }
 
-        console.log('ligne 28');
-
         // Find the corresponding UserSecret
         let user = await req.transaction.db.User.findByPk(req.transaction.info.userId);
-        if(!user) { return res.boom.badImplementation("Couldn't find user"); }
-
-        console.log('ligne 36');
+        if(!user) { return res.boom.badRequest("Couldn't find user"); }
 
         let secret = await user.getSecrets();
-        if(!secret) { return res.boom.badImplementation("Couldn't find user secrets"); }
-
-        console.log('ligne 41');
+        if(!secret) { return res.boom.badRequest("Couldn't find user secrets"); }
 
         // Compare password to hash
         req.transaction.logger.debug('Comparing hashes');
         const passwordAccepted = await bcrypt.compare(req.body.oldPassword, secret.password);
         if (!passwordAccepted) { return res.boom.badRequest("Old password is wrong"); }
 
-        console.log('ligne 48');
-
-        if(req.body.newPassword1 != req.body.newPassword2) { return res.boom.badRequest(); }
-
-        console.log('ligne 52');
-
+        if(req.body.newPassword1 != req.body.newPassword2) { return res.boom.badRequest("Passwords don't match"); }
         await secret.update({password: req.body.newPassword1});
-
-        console.log('ligne 56');
 
         return res.status(200).json({});
     };

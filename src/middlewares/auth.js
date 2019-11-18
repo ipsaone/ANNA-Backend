@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
     req.transaction.info.userId = req.session.auth ? req.session.auth : undefined;
     req.transaction.info.sessionId = req.session.id ? req.session.id : undefined;
 
-
     req.transaction.logger.debug('Check if user is logged in.', {reqid: req.id});
    // Checks if the requested path isn't in whitelist
     if ( authorized_paths.map(path => minimatch(req.path, path)).filter(match => (match === true)).length === 0 ) {
