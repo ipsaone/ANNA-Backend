@@ -6,7 +6,8 @@ const policy = require('../user_policy');
 const schema = joi.object().keys({
     username: joi.string().min(4).required(),
     email: joi.string().min(5).required(),
-    password: joi.string().min(6).required()
+    password: joi.string().min(6).required(),
+    sendEmail: joi.bool().optional()
 });
 
 module.exports = (db) => async function (req, res) {
@@ -32,8 +33,25 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Adding to default group');
     let group = await req.transaction.db.Group.findAll({where: {name: 'default'}});
     await user.addGroup(group);
+
+    let mailok = false;
+    if(req.body.sendEmail) {
+        // Send it by email
+        // send mail with defined transport object
+        let info = await req.transaction.mailer.sendMail({
+            from: '"IPSA ONE" <noreply@ipsaone.space>', // sender address
+            to: req.body.email, // list of receivers
+            subject: 'Password reset', // Subject line
+            text: 'Your reset link : http://ipsaone.space/login?resetToken='+token+'"', // plain text body
+            html: 'Your reset link : <a href="http://ipsaone.space/login?resetToken='+token+'">Click here !</a>' // html body
+        });
+
+        if(info.accepted.length == 1) {
+            mailok = true;
+        }
+    }
     
-    req.transaction.logger.info('Returning user');
-    return res.status(201).json(user);
+    req.transaction.logger.info('Returning response');
+    return res.status(201).json({id: user.id, mailSent: mailok});
 
 };

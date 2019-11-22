@@ -94,7 +94,7 @@ test('Add, edit and remove user', async t => {
             email: 'someEmail@mail.com'
         });
     t.is(res.status, 201);
-    t.is(res.body.username, 'someUser');
+    t.truthy(res.body.id);
 
     let res3 = await t.context.request.get('/users');
     t.is(res3.status, 200);
@@ -105,7 +105,7 @@ test('Add, edit and remove user', async t => {
             username: 'testEdited'
         });
     t.is(res5.status, 200);
-    t.is(res5.body.username, "testEdited")
+    t.truthy(res5.body.id)
 
     let res6 = await t.context.request.get('/users/'+res.body.id);
     t.is(res6.status, 200);
@@ -129,7 +129,7 @@ test('LeaderMissions', async t => {
             email: 'someEmail@mail.com'
         });
     t.is(res.status, 201);
-    t.is(res.body.username, 'someUser');
+    t.truthy(res.body.id);
 
     let res2 = await t.context.request.post('/missions')
         .send({
