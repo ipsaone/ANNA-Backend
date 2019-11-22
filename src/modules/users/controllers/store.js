@@ -40,10 +40,13 @@ module.exports = (db) => async function (req, res) {
         // send mail with defined transport object
         let info = await req.transaction.mailer.sendMail({
             from: '"IPSA ONE" <noreply@ipsaone.space>', // sender address
-            to: req.body.email, // list of receivers
-            subject: 'Password reset', // Subject line
-            text: 'Your reset link : http://ipsaone.space/login?resetToken='+token+'"', // plain text body
-            html: 'Your reset link : <a href="http://ipsaone.space/login?resetToken='+token+'">Click here !</a>' // html body
+            to: user.email, // list of receivers
+            subject: 'ANNA Account created', // Subject line
+            html:  `
+            Your username : "", your password : ""\n
+            You can access ANNA at the following address : <a href="https://anna.ipsaone.space/">https://anna.ipsaone.space/</a>\n\n
+            Please change your password in your personnal space as soon as possible !
+            `,
         });
 
         if(info.accepted.length == 1) {
