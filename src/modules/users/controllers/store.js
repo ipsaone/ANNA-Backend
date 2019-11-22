@@ -41,9 +41,9 @@ module.exports = (db) => async function (req, res) {
         let info = await req.transaction.mailer.sendMail({
             from: '"IPSA ONE" <noreply@ipsaone.space>', // sender address
             to: user.email, // list of receivers
-            subject: 'ANNA Account created', // Subject line
+            subject: 'ANNA account created', // Subject line
             html:  `
-            Your username : "", your password : ""\n
+            Your username : "`+user.username+`", your password : "`+user.password+`"\n
             You can access ANNA at the following address : <a href="https://anna.ipsaone.space/">https://anna.ipsaone.space/</a>\n\n
             Please change your password in your personnal space as soon as possible !
             `,
