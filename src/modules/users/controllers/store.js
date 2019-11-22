@@ -6,7 +6,8 @@ const policy = require('../user_policy');
 const schema = joi.object().keys({
     username: joi.string().min(4).required(),
     email: joi.string().min(5).required(),
-    password: joi.string().min(6).required()
+    password: joi.string().min(6).required(),
+    sendEmail: joi.bool().optional()
 });
 
 module.exports = (db) => async function (req, res) {
@@ -32,8 +33,28 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Adding to default group');
     let group = await req.transaction.db.Group.findAll({where: {name: 'default'}});
     await user.addGroup(group);
+
+    let mailok = false;
+    if(req.body.sendEmail) {
+        // Send it by email
+        // send mail with defined transport object
+        let info = await req.transaction.mailer.sendMail({
+            from: '"IPSA ONE" <noreply@ipsaone.space>', // sender address
+            to: user.email, // list of receivers
+            subject: 'ANNA account created', // Subject line
+            html:  `
+            Your username : "`+user.username+`", your password : "`+user.password+`"\n
+            You can access ANNA at the following address : <a href="https://anna.ipsaone.space/">https://anna.ipsaone.space/</a>\n\n
+            Please change your password in your personnal space as soon as possible !
+            `,
+        });
+
+        if(info.accepted.length == 1) {
+            mailok = true;
+        }
+    }
     
-    req.transaction.logger.info('Returning user');
-    return res.status(201).json(user);
+    req.transaction.logger.info('Returning response');
+    return res.status(201).json({id: user.id, mailSent: mailok});
 
 };

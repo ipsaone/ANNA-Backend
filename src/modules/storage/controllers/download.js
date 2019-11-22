@@ -4,6 +4,8 @@ const policy = require('../storage_policy');
 const fs = require('fs');
 const util = require('util');
 const joi = require('joi');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
 
 const schema = joi.object().keys({});
 
@@ -84,7 +86,7 @@ module.exports = (db) => async (req, res) => {
         }   
 
         req.transaction.logger.info('Sending file', {data: data.name});
-        return res.download(dataPath, data.name);
+        return res.sendFile(dataPath, {root: root}); // file name : data.name
     } else {
 
         req.transaction.logger.info('Starting metadata download routine');
