@@ -26,6 +26,7 @@ module.exports = (db) => {
 
     // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
     router.get('/files/:fileId([0-9]+)', storageController.download);
+    router.get('/files/:fileId([0-9]+)/meta', storageController.getMeta);
 
     router.delete('/files/:fileId([0-9]+)', storageController.delete);
 
