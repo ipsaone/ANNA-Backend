@@ -87,7 +87,6 @@ module.exports = (db) => async (req, res) => {
         headers: {
             'Content-Type' : data.type, 
             'Content-disposition': 'inline; filename="' + encodeURIComponent(data.name) + '"',
-
         }
     });
 
