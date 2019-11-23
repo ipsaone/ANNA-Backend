@@ -39,19 +39,39 @@ module.exports = function (db) {
         await secrets.update({resetToken: token, resetTokenDate: Date.now()});
 
         // Send it by email
-        // send mail with defined transport object
-        let info = await req.transaction.mailer.sendMail({
-            from: '"IPSA ONE" <noreply@ipsaone.space>', // sender address
-            to: req.body.email, // list of receivers
-            subject: 'Password reset', // Subject line
-            text: 'Your reset link : http://ipsaone.space/login?resetToken='+token+'"', // plain text body
-            html: 'Your reset link : <a href="http://ipsaone.space/login?resetToken='+token+'">Click here !</a>' // html body
-        });
+        if(req.body.sendEmail && req.transaction.mg) {
+            // Send it by email
+            // send mail with defined transport object
+            let data = {
+                from: '"IPSA ONE" <admin@mail.ipsaone.space>', // sender address
+                to: req.body.email, // list of receivers
+                subject: 'ANNA password reset', // Subject line
+                text:  `
+                    Dear user,
 
-        // Send response
-        let rep = {ok: info.accepted.length == 1};
-        if(process.env.TEST) { rep.token = token; }
-        return res.status(200).json(rep);
+                    Here is your password reset link : http://ipsaone.space/login?resetToken='+token+'"
+
+                    Cheers,
+                    The IPSA ONE Team
+                `,
+            };
+
+            req.transaction.mg.messages().send(data, (err, body) => {
+
+                // Send response
+                let rep = {ok: body.id ? true : false};
+                if(process.env.TEST) { rep.token = token; }
+                return res.status(200).json(rep);
+            });
+        } else {
+        
+            // Send response
+            let rep = {ok: false};
+            if(process.env.TEST) { rep.token = token; }
+            return res.status(200).json(rep);
+        }
+
+        
         
     };
 };

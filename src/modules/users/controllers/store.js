@@ -2,6 +2,7 @@
 
 const joi = require('joi');
 const policy = require('../user_policy');
+const util = require('util');
 
 const schema = joi.object().keys({
     username: joi.string().min(4).required(),
@@ -34,27 +35,36 @@ module.exports = (db) => async function (req, res) {
     let group = await req.transaction.db.Group.findAll({where: {name: 'default'}});
     await user.addGroup(group);
 
-    let mailok = false;
-    if(req.body.sendEmail) {
+    if(req.body.sendEmail && req.transaction.mg) {
         // Send it by email
         // send mail with defined transport object
-        let info = await req.transaction.mailer.sendMail({
-            from: '"IPSA ONE" <noreply@ipsaone.space>', // sender address
+        let data = {
+            from: '"IPSA ONE" <admin@mail.ipsaone.space>', // sender address
             to: user.email, // list of receivers
             subject: 'ANNA account created', // Subject line
-            html:  `
-            Your username : "`+user.username+`", your password : "`+user.password+`"\n
-            You can access ANNA at the following address : <a href="https://anna.ipsaone.space/">https://anna.ipsaone.space/</a>\n\n
-            Please change your password in your personnal space as soon as possible !
-            `,
-        });
+            text:  `
+                Dear user,
 
-        if(info.accepted.length == 1) {
-            mailok = true;
-        }
-    }
+                Your username : "`+user.username+`", your password : "`+user.password+`"
+                You can access ANNA at the following address : https://anna.ipsaone.space/
+
+                Please change your password in your personnal space as soon as possible !
+
+                In case of problem, feel free to contact your team leader !
+
+                Cheers,
+                The IPSA ONE team
+            `,
+        };
+
+        req.transaction.mg.messages().send(data, (err, body) => {
+            req.transaction.logger.info('Returning response');
+            return res.status(201).json({id: user.id, mailSent: body.id ? true : false});
+        });
+    } else {
     
-    req.transaction.logger.info('Returning response');
-    return res.status(201).json({id: user.id, mailSent: mailok});
+        req.transaction.logger.info('Returning response');
+        return res.status(201).json({id: user.id, mailSent: false});
+    }
 
 };
