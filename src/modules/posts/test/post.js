@@ -92,3 +92,5 @@ test('Incomplete post', async t => {
 
     t.is(res.status, 400);
 });
+
+test.todo('Pinned post');
