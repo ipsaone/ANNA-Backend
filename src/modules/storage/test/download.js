@@ -89,7 +89,7 @@ test('Download file', async t => {
 
     let res3 = await t.context.request.get('/storage/files/'+res.body.id);
     t.is(res3.status, 200);
-    t.true(res3.body instanceof Buffer);
+    t.truthy(res3.header['content-length'] > 2000);
 });
 
 test.todo('Download public file, unlogged');

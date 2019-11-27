@@ -1,11 +1,14 @@
 const winston = require('winston');
 const util = require('util');
-const nodemailer = require('nodemailer');
+const nodemailer = require('mailgun-js');
 const path = require('path');
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const config = require(path.join(root, './src/config/config'));
 
+const mailgun = require('mailgun-js');
+const mg_domain = "mail.ipsaone.space";
+const mg_apikey = process.env.MAILGUN_APIKEY;
 
 
 let done = false;
@@ -37,36 +40,10 @@ module.exports = options => {
         req.transaction.logger = winston.createLogger({transports: winston_cfg.transports, format});
         req.transaction.options = options;
 
-        let mail;
-        if(process.env.TEST) {
-            
-            // Generate test SMTP service account from ethereal.email
-            // Only needed if you don't have a real mail account for testing
-            let account = await util.promisify(nodemailer.createTestAccount)();
-                
-            // create reusable transporter object using the default SMTP transport
-            mail = {
-                host: 'smtp.ethereal.email',
-                port: 587,
-                secure: false, // true for 465, false for other ports
-                auth: {
-                    user: account.user, // generated ethereal user
-                    pass: account.pass // generated ethereal password
-                }
-            };
-        } else {
-            mail = {
-                host: 'smtp.eu.mailgun.org',
-                port: 587,
-                secure: false, // true for 465, false for other ports
-                auth: {
-                    user: process.env.MAILGUN_USER, // generated ethereal user
-                    pass: process.env.MAILGUN_PWD // generated ethereal password
-                }
-            };
+        if(mg_apikey) {
+            req.transaction.mg = mailgun({apiKey: mg_apikey, domain: mg_domain, host: "api.eu.mailgun.net"});
         }
-
-        req.transaction.mailer = nodemailer.createTransport(mail);
+        
 
         req.transaction.logger.debug('Transaction created successfully')
         return next();
