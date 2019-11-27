@@ -80,7 +80,7 @@ test('Download file', async t => {
         .field('ownerRead', true);
     t.is(res.status, 200);
 
-    let res2 = await t.context.request.get('/storage/files/'+res.body.id+"/meta");
+    let res2 = await t.context.request.get('/storage/files/'+res.body.id+'/meta');
     t.is(res2.status, 200);
     t.is(res2.body.length, 1);
     t.is(res2.body[0].name, 'test');
