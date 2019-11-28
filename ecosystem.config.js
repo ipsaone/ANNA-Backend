@@ -34,6 +34,10 @@ module.exports = {
       path : '/home/travis/ANNA-Backend-staging',
       ssh_options: "StrictHostKeyChecking=no",
       "pre-setup": `
+        if [[ -z "$encrypted_2861304911d5_key" && -z "$encrypted_2861304911d5_iv" ]]; then 
+          echo "The encrypted variables aren't set."
+          exit -1
+        fi
         openssl aes-256-cbc -K $encrypted_f57c64a0b291_key -iv $encrypted_f57c64a0b291_iv
         in ./travis_deploy_key.enc -out ~/travis_deploy_key -d
         eval "$(ssh-agent -s)"
@@ -51,6 +55,10 @@ module.exports = {
       path : '/home/travis/ANNA-Backend-master',
       "ssh_options": "StrictHostKeyChecking=no",
       "pre-setup": `
+        if [[ -z "$encrypted_2861304911d5_key" && -z "$encrypted_2861304911d5_iv" ]]; then 
+          echo "The encrypted variables aren't set."
+          exit -1
+        fi
         openssl aes-256-cbc -K $encrypted_f57c64a0b291_key -iv $encrypted_f57c64a0b291_iv
         in ./travis_deploy_key.enc -out ~/travis_deploy_key -d
         eval "$(ssh-agent -s)"
