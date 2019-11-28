@@ -1,4 +1,14 @@
 const winston = require('winston');
+const util = require('util');
+const nodemailer = require('mailgun-js');
+const path = require('path');
+const findRoot = require('find-root');
+const root = findRoot(__dirname);
+const config = require(path.join(root, './src/config/config'));
+
+const mailgun = require('mailgun-js');
+const mg_domain = "mail.ipsaone.space";
+const mg_apikey = process.env.MAILGUN_APIKEY;
 
 
 let done = false;
@@ -19,7 +29,7 @@ module.exports = options => {
         done = true;
     }
 
-    return (req, res, next) => {
+    return async (req, res, next) => {
         req.transaction = {boom : res.boom, reqParams: req.params, reqBody: req.body};
         req.transaction.info = {requestId : req.id, path : req.originalUrl};
 
@@ -29,6 +39,11 @@ module.exports = options => {
         let format = winston.format.combine(lbl_format, timestamp_format, json_format);
         req.transaction.logger = winston.createLogger({transports: winston_cfg.transports, format});
         req.transaction.options = options;
+
+        if(mg_apikey) {
+            req.transaction.mg = mailgun({apiKey: mg_apikey, domain: mg_domain, host: "api.eu.mailgun.net"});
+        }
+        
 
         req.transaction.logger.debug('Transaction created successfully')
         return next();
