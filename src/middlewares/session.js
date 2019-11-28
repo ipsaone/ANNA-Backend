@@ -7,7 +7,7 @@ const redis = require('redis');
 
 let session_conf = config.session;
 let client;
-if(process.env.travis) {
+if(process.env.TRAVIS) {
     client = redis.createClient({
         host: session_conf.test_host,
         port: session_conf.test_port

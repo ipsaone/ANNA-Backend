@@ -4,10 +4,11 @@ const policy = require('../post_policy');
 const joi = require('joi');
 
 const schema = joi.object().keys({
-    title : joi.string().trim(true).required(),
-    markdown : joi.string().trim(true).required(),
+    title : joi.string().trim(true).min(10).required(),
+    markdown : joi.string().trim(true).min(10).required(),
     authorId : joi.number().required(),
-    published : joi.boolean().optional()
+    published : joi.boolean().optional(),
+    pinned: joi.boolean().optional()
 });
 
 module.exports = (db) => async function (req, res) {

@@ -34,5 +34,5 @@ module.exports = (db) => async function (req, res) {
     await user.update(req.body);
 
     req.transaction.logger.info('Sending updated user');
-    return res.status(200).json(user);
+    return res.status(200).json({id: user.id});
 };
