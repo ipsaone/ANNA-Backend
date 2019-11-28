@@ -7,7 +7,8 @@ const schema = joi.object().keys({
     title : joi.string().trim(true).min(10).optional(),
     markdown : joi.string().trim(true).min(10).optional(),
     authorId : joi.number().optional(),
-    published : joi.boolean().optional()
+    published : joi.boolean().optional(),
+    pinned: joi.boolean().optional()
 });
 
 
