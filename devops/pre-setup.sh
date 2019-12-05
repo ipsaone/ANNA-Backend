@@ -1,11 +1,13 @@
 #!/bin/bash
 set -o verbose
 
+echo "Checking branch..."
 if [[ "$TRAVIS_BRANCH" != "master" || "$TRAVIS_BRANCH" != "staging" ]]; then
   echo "We're not on the master or staging branch."
   exit -1
 fi
 
+echo "Checking variables..."
 if [[ -z "$encrypted_f57c64a0b291_key" || -z "$encrypted_f57c64a0b291_iv" ]]; then
   echo "The encrypted variables aren't set."
   exit -1
