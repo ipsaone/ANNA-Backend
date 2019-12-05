@@ -34,7 +34,7 @@ module.exports = {
       path : '/home/travis/ANNA-Backend-staging',
       ssh_options: "StrictHostKeyChecking=no",
       "pre-deploy-local": "./devops/pre-setup.sh",
-      "post-deploy": "cp ~/.env ./ && npm install && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env staging"
+      "post-deploy": "cp ~/.env ./ && npm install  && npm run doc && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env staging"
     },
     production : {
       user : 'travis',
@@ -44,7 +44,7 @@ module.exports = {
       path : '/home/travis/ANNA-Backend-master',
       "ssh_options": "StrictHostKeyChecking=no",
       "pre-deploy-local": "./devops/pre-setup.sh",
-      "post-deploy": "cp ~/.env ./ && npm install && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env production"
+      "post-deploy": "cp ~/.env ./ && npm install  && npm run doc && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env production"
     }
   }
 };

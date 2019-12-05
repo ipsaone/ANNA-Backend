@@ -54,7 +54,6 @@ const loadApp = (options = {}) => {
     const factory = new ModulesFactory(factoryOptions);
     app.use(factory.router);
 
-
     /* ERROR HANDLING, MUST ALWAYS BE LAST MIDDLEWARE */
     app.use(require('./middlewares/exception')); // Error handling
     
