@@ -8,10 +8,10 @@
 
 /tmp/
 /out/
-/doc/
-/coverage/
 /crashes/
 /logs/
+/doc/
+/coverage/
 
 .env
 /.eslintcache
