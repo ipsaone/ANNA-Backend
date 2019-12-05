@@ -1,12 +1,12 @@
 #!/bin/bash
 set -o verbose
 
-if [[ "$TRAVIS_BRANCH" != "master" && "$TRAVIS_BRANCH" != "staging" ]]; then
+if [[ "$TRAVIS_BRANCH" != "master" || "$TRAVIS_BRANCH" != "staging" ]]; then
   echo "We're not on the master or staging branch."
   exit -1
 fi
 
-if [[ -z "$encrypted_2861304911d5_key" && -z "$encrypted_2861304911d5_iv" ]]; then
+if [[ -z "$encrypted_f57c64a0b291_key" || -z "$encrypted_f57c64a0b291_iv" ]]; then
   echo "The encrypted variables aren't set."
   exit -1
 fi
