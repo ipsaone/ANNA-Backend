@@ -2,8 +2,8 @@
 set -o verbose
 
 echo "Checking branch..."
-if [[ "$TRAVIS_BRANCH" != "master" || "$TRAVIS_BRANCH" != "staging" ]]; then
-  echo "We're not on the master or staging branch."
+if [[ "$TRAVIS_BRANCH" != "master" && "$TRAVIS_BRANCH" != "staging" ]]; then
+  echo "We're not on the master or staging branch (detected : $TRAVIS_BRANCH)."
   exit -1
 fi
 

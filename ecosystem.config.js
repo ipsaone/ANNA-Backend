@@ -43,7 +43,7 @@ module.exports = {
       repo : 'git@github.com:ipsaone/ANNA-Backend.git',
       path : '/home/travis/ANNA-Backend-master',
       "ssh_options": "StrictHostKeyChecking=no",
-      "pre-setup": "./devops/pre-setup.sh",
+      "pre-deploy-local": "./devops/pre-setup.sh",
       "post-deploy": "cp ~/.env ./ && npm install && npm run migrate && npm run test && pm2 startOrRestart ecosystem.config.js --env production"
     }
   }
