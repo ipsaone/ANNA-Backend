@@ -5,6 +5,8 @@
  * @api {get} /auth/check Check if the current user is logged in
  * @apiName checkLogin
  * @apiGroup Auth
+ * 
+ * @apiSuccess {boolean} logged Whether the user is logged or not
  */
 
 

@@ -1,5 +1,15 @@
 'use strict';
 
+/**
+ * @api {put} /events/:eventId/register/[:userId] Add an attendant
+ * @apiName addAttendant
+ * @apiGroup Events
+ * 
+ * @apiDescription If the userId is not specified, the current logged user will be added as an attendant to the event
+ * 
+ * @apiSuccess {object} event The event object
+ */
+
 const policy = require('../event_policy');
 const joi = require('joi');
 

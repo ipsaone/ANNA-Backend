@@ -6,6 +6,8 @@
  * @apiGroup Auth
  * 
  * @apiParam {string} token The reset token
+ * 
+ * @apiSuccess {boolean} found Whether the token is valid
  */
 
 

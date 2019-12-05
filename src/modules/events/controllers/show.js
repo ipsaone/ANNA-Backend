@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /events/:eventId Get an event's details
+ * @apiName show
+ * @apiGroup Events
+ * 
+ * @apiSuccess {object} event The event's details
+ */
+
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
