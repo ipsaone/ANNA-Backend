@@ -1,6 +1,15 @@
 'use strict';
 
 
+/**
+ * @api {get} /auth/check Check if the current user is logged in
+ * @apiName checkLogin
+ * @apiGroup Auth
+ */
+
+
+
+
 module.exports = function (db) {
 
     return async (req, res) => {

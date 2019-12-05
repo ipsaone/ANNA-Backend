@@ -1,5 +1,18 @@
 'use strict';
 
+/**
+ * @api {post} /auth/changePassword Change a user's own password
+ * @apiName changePassword
+ * @apiGroup Auth
+ * 
+ * @apiParam {string} oldPassword Previous user password
+ * @apiParam {string} newPassword1 New user password (first field)
+ * @apiParam {string} newPassword2 New user password (second field)
+ */
+
+
+
+
 let joi = require('joi');
 const bcrypt = require('bcrypt');
 

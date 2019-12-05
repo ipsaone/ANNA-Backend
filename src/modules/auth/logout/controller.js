@@ -1,6 +1,10 @@
 'use strict';
 
-
+/**
+ * @api {get} /auth/logout Log-out a user
+ * @apiName logout
+ * @apiGroup Auth
+ */
 
 module.exports = () => (req, res) => {
 

@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {post} /auth/getToken Send a password reset token by email
+ * @apiName getToken
+ * @apiGroup Auth
+ * 
+ * @apiParam {string} email The user's email address
+ */
+
 require('dotenv').config();
 let joi = require('joi');
 let crypto = require('crypto');
