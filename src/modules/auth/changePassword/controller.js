@@ -3,12 +3,6 @@
 let joi = require('joi');
 const bcrypt = require('bcrypt');
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-
-const config = require(path.join(root, './src/config/config'));
-
 let schema = joi.object().keys({
     oldPassword: joi.string().required(),
     newPassword1: joi.string().required(),

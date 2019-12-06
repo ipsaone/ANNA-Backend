@@ -23,6 +23,8 @@ module.exports = (db) => async function (req, res, handle) {
         req.transaction.logger.info('Input denied by validator');
         return res.boom.badRequest(validation.error);
     }
+
+    
     
     req.transaction.logger.info('Updating post');
     let post = await db.Post.update(req.body, {where: {id: postId}});

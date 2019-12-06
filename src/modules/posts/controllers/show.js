@@ -5,7 +5,7 @@ const joi = require('joi');
 const schema = joi.object().keys({});
 
 
-module.exports = (db) => async function (req, res, handle) {
+module.exports = (db) => async function (req, res) {
     // Validate user input
     const validation = joi.validate(req.body, schema);
     req.transaction.logger.debug('Validating schema');

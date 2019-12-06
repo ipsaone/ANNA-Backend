@@ -1,11 +1,7 @@
 'use strict';
 
 const policy = require('../storage_policy');
-const fs = require('fs');
-const util = require('util');
 const joi = require('joi');
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
 
 const schema = joi.object().keys({});
 

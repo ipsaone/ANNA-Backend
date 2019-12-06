@@ -1,7 +1,6 @@
 'use strict';
 
 const policy = require('../storage_policy');
-const winston = require('winston');
 const getChildrenData = require('../repository/list');
 const joi = require('joi');
 

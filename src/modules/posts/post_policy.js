@@ -36,7 +36,7 @@ exports.filterIndex = async (transaction, posts, userId) => {
     return [];
 }
 
-exports.filterShow = async (transaction, post, userId) =>{
+exports.filterShow = async (transaction, post) =>{
    
     if (post.published || transaction.info.isAuthorized) {
         // Only show drafts is user is an author.

@@ -2,7 +2,6 @@
 
 const joi = require('joi');
 const policy = require('../user_policy');
-const util = require('util');
 
 const schema = joi.object().keys({
     username: joi.string().min(4).required(),
