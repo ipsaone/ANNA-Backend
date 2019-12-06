@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     let createSecretsHook = async (user) => {
-        const secrets = await sequelize.models.UserSecrets.create({
+        await sequelize.models.UserSecrets.create({
             password: user.password,
             userId: user.id
         });

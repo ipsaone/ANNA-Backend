@@ -15,7 +15,7 @@ let schema = joi.object().keys({
 })
 
 
-module.exports = function (db) {
+module.exports = function () {
 
     return async (req, res) => {
         // Validate user input

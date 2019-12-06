@@ -1,7 +1,6 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const assert = require('assert');
 
 module.exports.login = async (transaction, username, password) => {
     transaction.logger.debug('Finding user', {username});
