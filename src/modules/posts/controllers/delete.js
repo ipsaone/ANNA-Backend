@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /posts/:postId Delete a blog post
+ * @apiName delete
+ * @apiGroup Posts
+ */
+
 const policy = require('../post_policy');
 const joi = require('joi');
 const schema = joi.object().keys({});

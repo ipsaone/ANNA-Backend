@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /posts/:postId Show blog post details
+ * @apiName show
+ * @apiGroup Posts
+ * 
+ * @apiSuccess post The blog post's details
+ */
+
 const policy = require('../post_policy');
 const joi = require('joi');
 const schema = joi.object().keys({});
