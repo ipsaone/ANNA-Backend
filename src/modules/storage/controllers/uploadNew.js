@@ -1,5 +1,26 @@
 'use strict';
 
+/**
+ * @api {post} /storage Upload a new file
+ * @apiName uploadNew
+ * @apiGroup Storage
+ * 
+ * @apiParam {integer} dirId The file ID of the parent directory
+ * @apiParam {integer} groupId The group ID of the owner group
+ * @apiParam {boolean} [isDir] Whether the created entry is a directory or a file
+ * @apiParam {string} [serialNbr] The file's serial number
+ * @apiParam {integer} [ownerId] The owner's ID. Defaults to current user.
+ * @apiParam {string} name The file's name
+ * @apiParam {boolean} ownerRead Whether the owner can read the file
+ * @apiParam {boolean} ownerWrite Whether the owner can write the file
+ * @apiParam {boolean} groupRead Whether the owner group can read the file
+ * @apiParam {boolean} ownerWrite Whether the owner group can write the file
+ * @apiParam {boolean} allRead Whether the other users can read the file
+ * @apiParam {boolean} allWrite Whether the other users can write the file
+ * 
+ * @apiSuccess {object} data The file data information
+ */
+
 const policy = require('../storage_policy');
 const winston = require('winston');
 const joi = require('joi');
@@ -9,7 +30,6 @@ const schema = joi.object().keys({
     groupId: joi.number().integer().positive().optional(),
     isDir: joi.boolean().optional(),
     serialNbr: joi.string().allow('').optional(),
-    fileId: joi.number().integer().positive().optional(),
     ownerId: joi.number().integer().positive().optional(),
     name: joi.string().min(1).required(),
     ownerRead : joi.boolean().optional(),

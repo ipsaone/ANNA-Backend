@@ -1,5 +1,17 @@
 'use strict';
 
+/**
+ * @api {post} /storage/search Search for a file
+ * @apiName search
+ * @apiGroup Storage
+ * 
+ * @apiParam {string} keyword The keyword(s) to search for
+ * @apiParam {integer} upperFolder The base folder in which to search
+ * @apiParam {array} [include] Fields in which to search for. Can be any combination of 'previous_data', 'serialNbr', 'name'.
+ * 
+ * @apiSuccess {object} results The search result list
+ */
+
 const joi = require('joi');
 const policy = require('../storage_policy');
 const search = require('../repository/search');

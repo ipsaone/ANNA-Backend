@@ -72,7 +72,7 @@ test.beforeEach(async t => {
 
 test.todo('Delete file');
 test('Delete folder', async t => {
-    let res = await t.context.request.post('/storage/upload')
+    let res = await t.context.request.post('/storage')
         .field('isDir', true)
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
@@ -83,13 +83,13 @@ test('Delete folder', async t => {
 
     t.is(res.status, 200);
 
-    let res88 = await t.context.request.get('/storage/files/list/'+t.context.folder.id);
+    let res88 = await t.context.request.get('/storage/'+t.context.folder.id+'/list');
     t.is(res88.body.children.length, 1);
 
 
-    let res2 = await t.context.request.delete('/storage/files/'+res.body.id);
+    let res2 = await t.context.request.delete('/storage/'+res.body.id);
     t.is(res2.status, 204);
 
-    let res_2 = await t.context.request.get('/storage/files/list/'+t.context.folder.id);
+    let res_2 = await t.context.request.get('/storage/'+t.context.folder.id+'/list');
     t.is(res_2.body.children.length, 0)
 });

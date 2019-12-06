@@ -15,20 +15,18 @@ module.exports = (db) => {
     const upload = multer({dest: config.storage.temp});
 
     // Upload a file or edit it (use ?revision=:id)
-    router.put('/upload/:fileId([0-9]+)', upload.single('contents'), storageController.uploadRev);
-    router.post('/upload', upload.single('contents'), storageController.uploadNew);
-
-    // List files in a folder
-    router.get('/files/list/:folderId([0-9]+)', storageController.list);
+    router.put('/:fileId([0-9]+)', upload.single('contents'), storageController.uploadRev);
+    router.post('/', upload.single('contents'), storageController.uploadNew);
 
     // Search for files
-    router.post('/files/search', storageController.search);
+    router.post('/search', storageController.search);
 
     // Download file data or contents (use ?rev=:revId for a special revision, ?download=true for contents)
-    router.get('/files/:fileId([0-9]+)', storageController.download);
-    router.get('/files/:fileId([0-9]+)/meta', storageController.getMeta);
+    router.get('/:fileId([0-9]+)', storageController.download);
+    router.get('/:fileId([0-9]+)/meta', storageController.getMeta);
+    router.get('/:folderId([0-9]+/list)', storageController.list);
 
-    router.delete('/files/:fileId([0-9]+)', storageController.delete);
+    router.delete('/:fileId([0-9]+)', storageController.delete);
 
     return router;
 };
