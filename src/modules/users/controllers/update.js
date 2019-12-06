@@ -1,5 +1,17 @@
 'use strict';
 
+// PROFILE PICTURE FLOW :
+// Upload picture here
+// If previous file ID not found 
+    // Find the folder at /internal/profiles in the drive
+        // Not found : create it (hidden)
+            // Failed : abort
+            // Success: continue
+    // Find the file /internal/:userId in the drive
+        // Not found : uploadNew with profile picture
+        // Found : continue
+// UploadRev with profile picture
+
 const joi = require('joi');
 const policy = require('../user_policy');
 
