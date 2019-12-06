@@ -8,7 +8,7 @@ const path = require('path');
 require('dotenv').config();
 const config = require(path.join(root, './src/config/config'));
 
-module.exports.setupPrototype = function (Data, sequelize) {
+module.exports.setupPrototype = function (Data) {
 
     
     Data.prototype.getUrl = function () {
@@ -23,7 +23,7 @@ module.exports.setupPrototype = function (Data, sequelize) {
     };
 
     
-    Data.prototype.getPath = async function (db) {
+    Data.prototype.getPath = async function () {
         let dataPath = '';
 
         if(!this.id) {

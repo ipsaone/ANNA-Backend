@@ -1,7 +1,6 @@
 'use strict';
 
 const policy = require('../storage_policy');
-const winston = require('winston');
 const joi = require('joi');
 
 const schema = joi.object().keys({

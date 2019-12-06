@@ -5,9 +5,9 @@ exports.filterIndex = async (transaction, users) => users;
 
 exports.filterShow = async (transaction, user) => user;
 
-exports.filterStore = async (transaction, userId) => true;
+exports.filterStore = async () => true;
 
-exports.filterUpdate = async (transaction, targetId, userId) => true;
+exports.filterUpdate = async () => true;
 
 exports.filterDelete = async (transaction, targetId, userId) => {
     if (targetId == userId || targetId == 1) {

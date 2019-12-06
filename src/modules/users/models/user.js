@@ -1,11 +1,5 @@
 'use strict';
 
-const findRoot = require('find-root');
-const root = findRoot(__dirname);
-const path = require('path');
-
-const config = require(path.join(root, './src/config/config'));
-
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -29,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    let createSecretsHook = async (user, options) => {
-        const secrets = await sequelize.models.UserSecrets.create({
+    let createSecretsHook = async (user) => {
+        await sequelize.models.UserSecrets.create({
             password: user.password,
             userId: user.id
         });
@@ -39,12 +33,12 @@ module.exports = (sequelize, DataTypes) => {
         
     };
 
-    let removeSecretsHook = async  (user, options) => {
+    let removeSecretsHook = async  (user) => {
         let secrets = await user.getSecrets();
         await secrets.destroy();
     };
 
-    let updateSecretsHook = async (user, options) => {
+    let updateSecretsHook = async (user) => {
         let secrets = await user.getSecrets();
         await secrets.update(user);
     }

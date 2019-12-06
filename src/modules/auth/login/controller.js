@@ -2,7 +2,6 @@
 
 const joi = require('joi');
 const repo = require('./repository');
-const winston = require('winston');
 
 const schema = joi.object().keys({
     username: joi.string().required(),

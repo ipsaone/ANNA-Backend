@@ -1,19 +1,19 @@
 'use strict';
 
 
-exports.filterIndex = async (transaction) => true;
+exports.filterIndex = async () => true;
 
 
-exports.filterShow = async (transaction) => true;
+exports.filterShow = async () => true;
 
 
-exports.filterStore = async (transaction, userId) => true;
+exports.filterStore = async () => true;
 
 
-exports.filterUpdate = async (transaction) => true;
+exports.filterUpdate = async () => true;
 
 
-exports.filterDelete = async (transaction, userId) => true;
+exports.filterDelete = async () => true;
 
 exports.filterStoreRegistered = async (transaction, targetId, userId) => {
     const db = transaction.db;

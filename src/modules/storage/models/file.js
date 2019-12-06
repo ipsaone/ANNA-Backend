@@ -143,8 +143,8 @@ module.exports = (sequelize, DataTypes) => {
                 }
 
                 if(!right) {
-                    log.error("No rights associated with data", {data : fileData});
-                    throw transaction.boom.badImplementation('Internal error : no rights associated with data #'+fileData.id);
+                    log.error("Error while getting rights");
+                    throw transaction.boom.badImplementation("Internal error : can't retrieve rights");
                 }
             }
 

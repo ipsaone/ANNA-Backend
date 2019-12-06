@@ -15,7 +15,7 @@ let schema = joi.object().keys({
 })
 
 
-module.exports = function (db) {
+module.exports = function () {
 
     return async (req, res) => {
         // Validate user input
@@ -41,7 +41,7 @@ module.exports = function (db) {
             return res.boom.badImplementation("Error while retrieving tokens");
         }
 
-        let hash = await bcrypt.hash(row.password, config.password.salt);
+        let hash = await bcrypt.hash(req.body.password, config.password.salt);
         await secret.update({password: hash});
 
         return res.status(204);
