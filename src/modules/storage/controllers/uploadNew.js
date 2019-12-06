@@ -11,12 +11,13 @@
  * @apiParam {string} [serialNbr] The file's serial number
  * @apiParam {integer} [ownerId] The owner's ID. Defaults to current user.
  * @apiParam {string} name The file's name
- * @apiParam {boolean} ownerRead Whether the owner can read the file
- * @apiParam {boolean} ownerWrite Whether the owner can write the file
- * @apiParam {boolean} groupRead Whether the owner group can read the file
- * @apiParam {boolean} ownerWrite Whether the owner group can write the file
- * @apiParam {boolean} allRead Whether the other users can read the file
- * @apiParam {boolean} allWrite Whether the other users can write the file
+ * @apiParam {boolean} [ownerRead] Whether the owner can read the file. Defaults to false.
+ * @apiParam {boolean} [ownerWrite] Whether the owner can write the file. Defaults to false.
+ * @apiParam {boolean} [groupRead] Whether the owner group can read the file. Defaults to false.
+ * @apiParam {boolean} [ownerWrite] Whether the owner group can write the file. Defaults to false.
+ * @apiParam {boolean} [allRead] Whether the other users can read the file. Defaults to false.
+ * @apiParam {boolean} [allWrite] Whether the other users can write the file. Defaults to false.
+ * @apiParam {boolean} [hidden] Whether the file is hidden. Defaults to false.
  * 
  * @apiSuccess {object} data The file data information
  */
@@ -38,6 +39,7 @@ const schema = joi.object().keys({
     groupWrite: joi.boolean().optional(),
     allRead: joi.boolean().optional(),
     allWrite: joi.boolean().optional(),
+    hidden: joi.boolean().optional()
     
 });
 

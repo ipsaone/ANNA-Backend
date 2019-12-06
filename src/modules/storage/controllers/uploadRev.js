@@ -16,6 +16,7 @@
  * @apiParam {boolean} [ownerWrite] Whether the owner group can write the file
  * @apiParam {boolean} [allRead] Whether the other users can read the file
  * @apiParam {boolean} [allWrite] Whether the other users can write the file
+ * @apiParamm {boolean} [hidden] Whether the file is hidden
  * 
  * @apiSuccess {object} data The file data information
  */
@@ -38,7 +39,8 @@ const schema = joi.object().keys({
     groupWrite: joi.boolean().optional(),
     allRead: joi.boolean().optional(),
     allWrite: joi.boolean().optional(),
-    contents: joi.any().optional()
+    contents: joi.any().optional(),
+    hidden: joi.boolean().optional()
 });
 
 module.exports = (db) => async (req, res) => {
