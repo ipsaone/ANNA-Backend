@@ -1,5 +1,16 @@
 'use strict';
 
+/**
+ * @api {put} /users/:userId Update a user
+ * @apiName update
+ * @apiGroup Users
+ * 
+ * @apiParam {string} [username] The user's name
+ * @apiParam {string} [email] The user's email
+ * 
+ * @apiSuccess {integer} id The user's ID
+ */
+
 const joi = require('joi');
 const policy = require('../user_policy');
 

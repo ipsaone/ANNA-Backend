@@ -113,7 +113,7 @@ test('Add, edit and remove user', async t => {
 
 
     let res2 = await t.context.request.delete('/users/'+res.body.id);
-    t.is(res2.status, 204);
+    t.is(res2.status, 200);
 
     let res4 = await t.context.request.get('/users');
     t.is(res4.status, 200);
@@ -232,7 +232,7 @@ test('Add user to group', async t => {
         name: "test"
     });
 
-    let res = await t.context.request.put('/users/'+t.context.user.id+'/group/'+group2.id);
+    let res = await t.context.request.post('/users/'+t.context.user.id+'/groups/'+group2.id);
     t.is(res.status, 204);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');
@@ -248,7 +248,7 @@ test('Add user to group', async t => {
 test('Remove user from group', async t => {
     await t.context.user.addGroup(t.context.group);
 
-    let res = await t.context.request.delete('/users/'+t.context.user.id+'/group/'+t.context.group.id);
+    let res = await t.context.request.delete('/users/'+t.context.user.id+'/groups/'+t.context.group.id);
     t.is(res.status, 204);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id+'/groups');

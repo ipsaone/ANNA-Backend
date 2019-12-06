@@ -25,8 +25,8 @@ module.exports = (db) => {
     router.route('/:userId([0-9]+)/groups')
         .get(acl("index-user-groups"), userController.getGroups);
 
-    router.route('/:userId([0-9]+)/group/:groupId([0-9]+)')
-        .put(acl("store-user-group"), userController.addGroup)
+    router.route('/:userId([0-9]+)/groups/:groupId([0-9]+)')
+        .post(acl("store-user-group"), userController.addGroup)
         .delete(acl("delete-user-group", true), userController.deleteGroup);
 
     return router;

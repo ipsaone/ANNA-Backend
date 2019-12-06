@@ -1,5 +1,19 @@
 'use strict';
 
+/**
+ * @api {post} /users Add a new user
+ * @apiName store
+ * @apiGroup Users
+ * 
+ * @apiParam {string} username The user's name
+ * @apiParam {string} email The user's email address
+ * @apiParam {string} password The user's password
+ * @apiParam {boolean} sendEmail Whether to notify the user that his account has been added to the system
+ * 
+ * @apiSuccess {integer} id The user's ID
+ * @apiSuccess {boolean} mailSent Whether an email was sent to the user
+ */
+
 const joi = require('joi');
 const policy = require('../user_policy');
 const util = require('util');

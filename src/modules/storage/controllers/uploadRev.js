@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @api {post} /storage/:fileId Upload a new file revision
+ * @api {post} /storage/:fileId Upload a file revision
  * @apiName uploadRev
  * @apiGroup Storage
  * 

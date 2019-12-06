@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /users/:userId/groups/:groupId Remove a user from a group
+ * @apiName deleteGroup
+ * @apiGroup Users
+ */
+
 const policy = require('../../user_policy');
 
 const joi = require('joi');
