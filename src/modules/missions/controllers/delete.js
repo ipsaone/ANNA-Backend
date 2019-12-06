@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /missions/:missionId Delete a mission
+ * @apiName delete
+ * @apiGroup Missions
+ */
+
 const joi = require('joi');
 const schema = joi.object().keys({});
 

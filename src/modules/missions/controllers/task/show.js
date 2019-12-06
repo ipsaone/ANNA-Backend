@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /missions/:missionId/tasks/:taskId Get a task's details
+ * @apiName showTask
+ * @apiGroup Missions
+ * 
+ * @apiSuccess tasks The task's information
+ */
+
 const policy = require('../../policies/mission_task_policy');
 const joi = require('joi');
 const schema = joi.object().keys({});

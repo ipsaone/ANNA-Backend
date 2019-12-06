@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /missions/:missionId Show mission details
+ * @apiName show
+ * @apiGroup Missions
+ * 
+ * @apiSuccess {object} mission The mission information
+ */
+
 const joi = require('joi');
 const schema = joi.object().keys({});
 

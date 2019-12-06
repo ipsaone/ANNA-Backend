@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {put} /missions/:missionId/members/:userId Add a member
+ * @apiName storeMember
+ * @apiGroup Missions
+ */
+
 const policy = require('../../policies/mission_member_policy');
 const joi = require('joi');
 const schema = joi.object().keys({});

@@ -1,11 +1,21 @@
 'use strict';
 
+/**
+ * @api {put} /missions/:missionId/tasks/:taskId Update a task
+ * @apiName updateTask
+ * @apiGroup Missions
+ * 
+ * @apiParam {string} [name] The task's name
+ * @apiParam {boolean} [done] The task's state (done or not)
+ * 
+ * @apiSuccess tasks The task information
+ */
+
 const policy = require('../../policies/mission_task_policy');
 const joi = require('joi');
 const schema = joi.object().keys({
     name: joi.string().optional(),
-    done: joi.bool().optional(),
-    id: joi.number().integer()
+    done: joi.bool().optional()
 });
 
 module.exports = (db) => async function (req, res) {

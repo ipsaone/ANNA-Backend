@@ -11,7 +11,7 @@ module.exports = (db) => {
     const missionController = require('./controllers')(db);
 
 
-    router.route('/:missionId([0-9]+)/task/:taskId([0-9]+)')
+    router.route('/:missionId([0-9]+)/tasks/:taskId([0-9]+)')
         .get(acl("show-task", true), missionController.showTask)
         .put(acl("update-task", true), missionController.updateTask)
         .delete(acl("delete-task", true), missionController.deleteTask);
@@ -22,7 +22,7 @@ module.exports = (db) => {
         .post(acl("store-task", true), missionController.storeTask);
 
     router.route('/:missionId([0-9]+)/members/:memberId([0-9]+)')
-        .put(acl("add-member-mission", true), missionController.storeMember)
+        .post(acl("add-member-mission", true), missionController.storeMember)
         .delete(acl("rem-member-mission", true), missionController.deleteMember);
 
 
