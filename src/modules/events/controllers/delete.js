@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /events/:eventId Delete an event
+ * @apiName delete
+ * @apiGroup Events
+ */
+
 const policy = require('../event_policy');
 const joi = require('joi');
 

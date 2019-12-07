@@ -1,5 +1,19 @@
 'use strict';
 
+/**
+ * @api {put} /events/:eventId Update an event
+ * @apiName update
+ * @apiGroup Events
+ * 
+ * @apiParam {string} [name] The event's name
+ * @apiParam {string} [markdown] The event's markdown
+ * @apiParam {integer} [maxRegistered] The event's maximum number of attendants
+ * @apiParam {string} [startDate] The start date as <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
+ * @apiParam {string} [endDate] The  end date as <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
+ * 
+ * @apiSuccess {object} event The event object
+ */
+
 const policy = require('../event_policy');
 const joi = require('joi');
 

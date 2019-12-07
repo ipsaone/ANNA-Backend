@@ -66,7 +66,7 @@ test.beforeEach(async t => {
 });
 
 test('Add user to mission', async t => {
-    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
+    let res = await t.context.request.post('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id);
@@ -76,7 +76,7 @@ test('Add user to mission', async t => {
 });
 
 test('Remove user from mission', async t => {
-    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
+    let res = await t.context.request.post('/missions/'+t.context.missionId+'/members/'+t.context.user.id);
     t.is(res.status, 200);
 
     let res2 = await t.context.request.get('/users/'+t.context.user.id);
@@ -93,7 +93,7 @@ test('Remove user from mission', async t => {
 });
 
 test('Add leader to mission', async t => {
-    let res = await t.context.request.put('/missions/'+t.context.missionId+'/members/'+t.context.leader.id);
+    let res = await t.context.request.post('/missions/'+t.context.missionId+'/members/'+t.context.leader.id);
     t.is(res.status, 400);
 
 });

@@ -7,7 +7,11 @@ const minimatch = require('minimatch');
 let authorized_paths = [
     '/',
     '/auth/*',
-    '/storage/files/([0-9]+)'
+    '/storage/files/([0-9]+)',
+    '/doc/**',
+    '/doc',
+    '/coverage/**',
+    '/coverage'
 ]
 
 module.exports = (req, res, next) => {

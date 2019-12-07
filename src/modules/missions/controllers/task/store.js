@@ -1,5 +1,15 @@
 'use strict';
 
+/**
+ * @api {post} /missions/:missionId/tasks Add a task
+ * @apiName storeTasks
+ * @apiGroup Missions
+ * 
+ * @apiParam {string} name The task's name
+ * @apiParam {boolean} [done] The task's state (done or not)
+ * 
+ * @apiSuccess tasks The task information
+ */
 
 const policy = require('../../policies/mission_task_policy');
 const joi = require('joi');

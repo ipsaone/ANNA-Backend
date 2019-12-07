@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /storage/:fileId Delete a file
+ * @apiName delete
+ * @apiGroup Storage
+ */
+
 const policy = require('../storage_policy');
 const joi = require('joi');
 

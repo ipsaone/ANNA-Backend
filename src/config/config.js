@@ -6,11 +6,6 @@ const fs = require('fs');
 require('dotenv').config();
 
 const config = {
-    app: {
-        name: 'A.N.N.A',
-        version: '1.1.0'
-    },
-
     password: {salt: 10},
 
     session: {
@@ -68,7 +63,7 @@ const config = {
 };
 
 
-config.app.getConnection = () => {
+config.getConnection = () => {
     if(process.env.NODE_ENV === 'production') {
         return {
             host: process.env.PROD_HOST,

@@ -1,5 +1,20 @@
 'use strict';
 
+/**
+ * @api {put} /missions/:missionId Update a mission
+ * @apiName update
+ * @apiGroup Missions
+ * 
+ * @apiParam {string} [name] The mission name
+ * @apiParam {string} [markdown] The mission description
+ * @apiParam {number} [budgetAssigned] The mission's assigned budget
+ * @apiParam {number} [budgetUsed] The mission's used budget
+ * @apiParam {integer} [groupId] The corresponding group ID
+ * @apiParam {integer} [leaderId] The leader user's ID
+ * 
+ * @apiSuccess {object} mission The mission information
+ */
+
 const joi = require('joi');
 const policy = require('../policies/mission_policy.js');
 

@@ -106,7 +106,7 @@ test('Add, edit and remove user', async t => {
 
 
     let res2 = await t.context.request.delete('/users/'+res.body.id);
-    t.is(res2.status, 204);
+    t.is(res2.status, 200);
 
     let res4 = await t.context.request.get('/users');
     t.is(res4.status, 200);
@@ -159,19 +159,19 @@ test('Add, list and remove another user\'s groups', async t => {
     t.is(res0.body.length, 1);
     t.is(res0.body[0].name, "default")
 
-    let res2 = await t.context.request.put('/users/'+user1.id+'/group/'+group.id);
+    let res2 = await t.context.request.post('/users/'+user1.id+'/groups/'+group.id);
     t.is(res2.status, 401); // We can't insert someone in some other group
 
     await t.context.user.addGroup(t.context.group.id); // become root
 
-    let res5 = await t.context.request.put('/users/'+user1.id+'/group/'+group.id);
+    let res5 = await t.context.request.post('/users/'+user1.id+'/groups/'+group.id);
     t.is(res5.status, 204); 
 
     let res1 = await t.context.request.get('/users/'+user1.id+'/groups');
     t.is(res1.status, 200);
     t.is(res1.body.length, 2);
     
-    let res3 = await t.context.request.delete('/users/'+user1.id+'/group/'+group.id);
+    let res3 = await t.context.request.delete('/users/'+user1.id+'/groups/'+group.id);
     t.is(res3.status, 204);
 
     let res4 = await t.context.request.get('/users/'+user1.id+'/groups');
@@ -185,7 +185,7 @@ test('Root cannot remove itself from default group', async t => {
 
     let res = await t.context.request.delete(
         '/users/'+t.context.user.id
-        +'/group/'+t.context.group2.id);
+        +'/groups/'+t.context.group2.id);
     t.is(res.status, 401);
 
 })

@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /storage/:fileId Get file metadata
+ * @apiName download
+ * @apiGroup Storage
+ * 
+ * @apiSuccess {file} file The file as inline attachment
+ */
+
 const policy = require('../storage_policy');
 const fs = require('fs');
 const util = require('util');

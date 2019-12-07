@@ -1,23 +1,19 @@
 'use strict';
 
+/**
+ * @api {get} /storage/:folderId/list List the contents of a directory
+ * @apiName list
+ * @apiGroup Storage
+ * 
+ * @apiSuccess {object} list The directory information
+ */
+
 const policy = require('../storage_policy');
 const winston = require('winston');
 const getChildrenData = require('../repository/list');
 const joi = require('joi');
 
 const schema = joi.object().keys({});
-
-
-/**
- *
- * List contents of a folder.
- *
- * @param {Object} req - The user request.
- * @param {Object} res - The response to be sent.
- *
- * @returns {Object} Promise.
- *
- */
 
 module.exports = (db) => async (req, res) => {
     const folderId = parseInt(req.params.folderId, 10);

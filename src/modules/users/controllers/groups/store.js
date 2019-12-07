@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {post} /users/:userId/groups/:groupId Add a user to a group
+ * @apiName addGroup
+ * @apiGroup Users
+ */
+
 const policy = require('../../user_policy');
 
 const joi = require('joi');

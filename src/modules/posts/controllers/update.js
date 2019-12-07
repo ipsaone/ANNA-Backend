@@ -1,5 +1,19 @@
 'use strict';
 
+/**
+ * @api {put} /posts/:postId Update a blog post
+ * @apiName update
+ * @apiGroup Posts
+ * 
+ * @apiParam {string} [title] The post's title
+ * @apiParam {string} [markdown] The post's contents as markdown
+ * @apiParam {integer} [authorId] The post's author ID
+ * @apiParam {boolean} [published] Whether the post is published or a draft
+ * @apiParam {boolean} [pinned] Whether the post is pinned to the top of the list
+ * 
+ * @apiSuccess post The blog post's information
+ */
+
 const policy = require('../post_policy');
 const joi = require('joi');
 

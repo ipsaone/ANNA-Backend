@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * @api {post} /auth/resetPassword Reset a user's password
+ * @apiName resetPassword
+ * @apiGroup Auth
+ * 
+ * @apiParam {string} token The reset token
+ * @apiParam {string} password The new user's password
+ */
+
 let joi = require('joi');
 const bcrypt = require('bcrypt');
 

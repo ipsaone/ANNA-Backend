@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /users/:userId Get a user's details
+ * @apiName show
+ * @apiGroup Users
+ * 
+ * @apiSuccess {object} user The user's information
+ */
+
 const policy = require('../user_policy');
 const joi = require('joi');
 

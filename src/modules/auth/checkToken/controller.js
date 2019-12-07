@@ -1,5 +1,16 @@
 'use strict';
 
+/**
+ * @api {get} /auth/checkToken Check a password reset token
+ * @apiName checkToken
+ * @apiGroup Auth
+ * 
+ * @apiParam {string} token The reset token
+ * 
+ * @apiSuccess {boolean} found Whether the token is valid
+ */
+
+
 let joi = require('joi');
 
 let schema = joi.object().keys({

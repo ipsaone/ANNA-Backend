@@ -79,11 +79,11 @@ test('Add, show, list, edit and remove task from mission (root, not leader)', as
     t.is(res2.body.length, 1);
     t.is(res2.body[0].name, 'test');
 
-    let res0 = await t.context.request.get('/missions/'+t.context.mission.id+'/task/'+res.body.id);
+    let res0 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks/'+res.body.id);
     t.is(res0.status, 200);
     t.is(res0.body.name, 'test');
 
-    let res6 = await t.context.request.put('/missions/'+t.context.mission.id+'/task/'+res.body.id)
+    let res6 = await t.context.request.put('/missions/'+t.context.mission.id+'/tasks/'+res.body.id)
         .send({
             name: 'testEdit'
         });
@@ -94,7 +94,7 @@ test('Add, show, list, edit and remove task from mission (root, not leader)', as
     t.is(res5.body.length, 1);
     t.is(res5.body[0].name, 'testEdit');
 
-    let res3 = await t.context.request.delete('/missions/'+t.context.mission.id+'/task/'+res.body.id);
+    let res3 = await t.context.request.delete('/missions/'+t.context.mission.id+'/tasks/'+res.body.id);
     t.is(res3.status, 204);
 
     let res4 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks');
@@ -134,11 +134,11 @@ test('Add, show, list, edit and remove task from mission (leader, not root)', as
     t.is(res2.body.length, 1);
     t.is(res2.body[0].name, 'test');
 
-    let res0 = await t.context.request.get('/missions/'+t.context.mission.id+'/task/'+res.body.id);
+    let res0 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks/'+res.body.id);
     t.is(res0.status, 200);
     t.is(res0.body.name, 'test');
 
-    let res6 = await t.context.request.put('/missions/'+t.context.mission.id+'/task/'+res.body.id)
+    let res6 = await t.context.request.put('/missions/'+t.context.mission.id+'/tasks/'+res.body.id)
         .send({
             name: 'testEdit'
         });
@@ -149,7 +149,7 @@ test('Add, show, list, edit and remove task from mission (leader, not root)', as
     t.is(res5.body.length, 1);
     t.is(res5.body[0].name, 'testEdit');
 
-    let res3 = await t.context.request.delete('/missions/'+t.context.mission.id+'/task/'+res.body.id);
+    let res3 = await t.context.request.delete('/missions/'+t.context.mission.id+'/tasks/'+res.body.id);
     t.is(res3.status, 204);
 
     let res4 = await t.context.request.get('/missions/'+t.context.mission.id+'/tasks');

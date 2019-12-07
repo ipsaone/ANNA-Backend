@@ -1,12 +1,13 @@
 {
   "name": "anna-backend",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Backend for ANNA intranet",
   "main": "app.js",
   "author": "IpsaOne DevTeam",
   "private": true,
   "license": "ISC",
   "dependencies": {
+    "apidoc": "^0.19.0",
     "async": "^3.1.0",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
@@ -96,6 +97,10 @@
     "babel": {},
     "concurrency": 8
   },
+  "apidoc": {
+    "title": "ANNA Backend API documentation",
+    "url": "backend.ipsaone.space"
+  },
   "scripts": {
     "start": "node ./src/app.js",
     "test": "bash ./test/test.sh",
@@ -109,7 +114,8 @@
     "coverage": "http-server ./coverage -p 8080 -c-1 -o",
     "load": "node --prof --no-logfile-per-isolate --logfile=./logs/v8_raw.log ./test/load.js && node --prof-process ./logs/v8_raw.log > ./logs/v8_proc.log",
     "linux-setup-ssh": "vagrant ssh-config > ~/.ssh/config",
-    "mirror-storage": "node ./devops/mirror_storage.js"
+    "mirror-storage": "node ./devops/mirror_storage.js",
+    "doc": "./node_modules/apidoc/bin/apidoc ."
   },
   "engines": {
     "node": ">=13"

@@ -1,5 +1,16 @@
 'use strict';
 
+/**
+ * @api {post} /auth/login Login a user
+ * @apiName login
+ * @apiGroup Auth
+ * 
+ * @apiParam {string} username The user name
+ * @apiParam {string} password The user password
+ * 
+ * @apiSuccess {object} user The user database object
+ */
+
 const joi = require('joi');
 const repo = require('./repository');
 const winston = require('winston');

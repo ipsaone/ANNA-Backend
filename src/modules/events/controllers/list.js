@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /events List all the events
+ * @apiName list
+ * @apiGroup Events
+ * 
+ * @apiSuccess {object} list The list of events
+ */
+
 const policy = require('../event_policy');
 const repo = require('../repositories');
 const joi = require('joi');

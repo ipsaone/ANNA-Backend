@@ -1,5 +1,15 @@
 'use strict';
 
+/**
+ * @api {put} /groups/:groupId Update a group
+ * @apiName update
+ * @apiGroup Groups
+ * 
+ * @apiParam {string} [name] The group name
+ * 
+ * @apiSuccess {object} group The group information
+ */
+
 let policy = require("../group_policy");
 const joi = require('joi');
 

@@ -1,5 +1,15 @@
 'use strict';
 
+/**
+ * @api {delete} /events/:eventId/register/[:userId] Remove an attendant
+ * @apiName removeAttendant
+ * @apiGroup Events
+ * 
+ * @apiDescription If the userId is not specified, the current logged user will be removed as an attendant to the event
+ * 
+ * @apiSuccess {object} event The event object
+ */
+
 const policy = require('../event_policy');
 
 const joi = require('joi');

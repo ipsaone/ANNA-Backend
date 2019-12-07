@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /groups/:groupId Show the details of a group
+ * @apiName show
+ * @apiGroup Groups
+ * 
+ * @apiSuccess {object} group The group information
+ */
+
 let policy = require("../group_policy");
 const joi = require('joi');
 

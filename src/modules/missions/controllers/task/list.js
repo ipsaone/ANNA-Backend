@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /missions/:missionId/tasks List a mission's tasks
+ * @apiName listTasks
+ * @apiGroup Missions
+ * 
+ * @apiSuccess tasks The mission's tasks
+ */
+
 const policy = require('../../policies/mission_task_policy');
 const joi = require('joi');
 

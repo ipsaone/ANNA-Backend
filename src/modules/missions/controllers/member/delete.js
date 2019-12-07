@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /missions/:missionId/members/:userId Remove a member
+ * @apiName deleteMember
+ * @apiGroup Missions
+ */
+
 const policy = require('../../policies/mission_member_policy');
 const joi = require('joi');
 const schema = joi.object().keys({});

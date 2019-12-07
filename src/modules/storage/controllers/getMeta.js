@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @api {get} /storage/:fileId/meta Get file metadata
+ * @apiName getMeta
+ * @apiGroup Storage
+ * 
+ * @apiSuccess {object} meta The file metadata
+ */
+
 const policy = require('../storage_policy');
 const fs = require('fs');
 const util = require('util');

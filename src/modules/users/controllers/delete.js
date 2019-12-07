@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @api {delete} /users/:userId Delete a user
+ * @apiName delete
+ * @apiGroup Users
+ */
+
 const policy = require('../user_policy');
 const joi = require('joi');
 
@@ -29,6 +35,6 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Destroying user');
     await db.User.destroy({where: {id: userId}});
 
-    req.transaction.logger.info('Sending empty response');
-    return res.status(204).send();
+    req.transaction.logger.info('Sending response');
+    return res.status(200).send({});
 };

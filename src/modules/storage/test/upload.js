@@ -71,7 +71,7 @@ test.beforeEach(async t => {
 });
 
 test('Upload file', async t => {
-    let res = await t.context.request.post('/storage/upload')
+    let res = await t.context.request.post('/storage')
         .attach('contents', path.join(root, 'src', './app.js'))
         .field('isDir', false)
         .field('name', 'test')
@@ -86,14 +86,14 @@ test('Upload file', async t => {
 });
 
 test('Upload revision', async t => {
-    let res1 = await t.context.request.post('/storage/upload')
+    let res1 = await t.context.request.post('/storage')
         .attach('contents', path.join(root, 'src', './app.js'))
         .field('isDir', false)
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
         .field('groupId', t.context.group.id)
 
-    let res2 = await t.context.request.put('/storage/upload/'+res1.body.id)
+    let res2 = await t.context.request.put('/storage/'+res1.body.id)
         .field('name', 'testEdited')
 
     t.is(res2.status, 200);
@@ -102,7 +102,7 @@ test('Upload revision', async t => {
     t.is(res2.body.exists, false);
    // t.is(res2.body.dirId, t.context.folder.id);
 
-    let res3 = await t.context.request.put('/storage/upload/'+res1.body.id)
+    let res3 = await t.context.request.put('/storage/'+res1.body.id)
         .attach('contents', path.join(root, './package.json'))
     
     t.is(res3.status, 200);
@@ -113,7 +113,7 @@ test('Upload revision', async t => {
 });
 
 test('Create folder', async t => {
-    let res = await t.context.request.post('/storage/upload')
+    let res = await t.context.request.post('/storage')
         .field('isDir', true)
         .field('name', 'test')
         .field('dirId', t.context.folder.id)
