@@ -187,13 +187,14 @@ module.exports = (sequelize, DataTypes) => {
             if (fileChanges.exists) {
 
                 if(fileChanges.isDir) {
-                    log.info("Uploaded file for folder !");
-                    throw transaction.boom.badRequest('Cannot handle an upload for a folder !')
-                }
+                    log.info("Ignoring file upload for folder...");
+                    fileChanges.exists = false;
+                } else {
 
-                log.info("Moving file", {filePath, dest});
-                const move = util.promisify(mv);
-                await move(filePath, dest, {mkdirp: true,  clobber: true});
+                    log.info("Moving file", {filePath, dest});
+                    const move = util.promisify(mv);
+                    await move(filePath, dest, {mkdirp: true,  clobber: true});
+                }
             }
 
             log.info("Computing values from uploaded file");

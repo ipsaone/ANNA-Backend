@@ -10,6 +10,7 @@ const schema = joi.object().keys({
 
 
 async function findInternalFolder(transaction) {
+    // TODO : Fix possible bug where '.internal' is the old name of a different folder 
     transaction.logger.info('Finding .internal folder in the root');
     let internalData = await transaction.db.Data.findOne(
         {
@@ -26,10 +27,13 @@ async function findInternalFolder(transaction) {
     }
 
     let internalFile = await internalData.getFile();
+
+    transaction.logger.debug('Found internal file ID', {internalFile});
     return internalFile.id;
 }
 
 async function findProfileFolder(transaction, internalFileId) {
+    // TODO : Fix possible bug where 'profiles' is the old name of a different folder 
     let profileData = await transaction.db.Data.findOne(
         {
             where: {
@@ -50,9 +54,9 @@ async function findProfileFolder(transaction, internalFileId) {
 
 async function createInternalFolder(transaction) {
     transaction.logger.info('Creating .internal folder');
-    const internalData = await transaction.db.File.createNew(transaction, {
-        dirId: 4, // default
-        groupId: 1,
+    let internalObj = {
+        dirId: 1, 
+        groupId: 4, // default
         isDir: true,
         serialNbr: '',
         ownerId: 1, // root
@@ -63,14 +67,18 @@ async function createInternalFolder(transaction) {
         groupWrite: true,
         allRead: true,
         allWrite: true,
-    });
+    };
 
-    return internalData;
+    transaction.logger.debug('Internal object', {internalObj});
+    const internalData = await transaction.db.File.createNew(transaction, internalObj);
+
+    const internalFile = await internalData.getFile();
+    return internalFile.id;
 }
 
 async function createProfileFolder(transaction, internalFileId) {
-    req.transaction.logger.info('Creating profiles folder');
-    const newProfileData = await transaction.db.File.createNew({
+    transaction.logger.info('Creating profiles folder', {fileId: internalFileId});
+    const profileObj = {
         dirId: internalFileId,
         groupId: 4, // default
         isDir: true,
@@ -83,7 +91,10 @@ async function createProfileFolder(transaction, internalFileId) {
         groupWrite: false,
         allRead: true,
         allWrite: false,
-    });
+    };
+
+    transaction.logger.debug('Profile object', {profileObj});
+    const newProfileData = await transaction.db.File.createNew(transaction, profileObj);
 
     if(!newProfileData) {
         return;
@@ -94,12 +105,12 @@ async function createProfileFolder(transaction, internalFileId) {
 }
 
 async function uploadNew(transaction, profileFileId) {
-    const imageData = await transaction.db.File.createNew({
+    const imageData = await transaction.db.File.createNew(transaction, {
         dirId: profileFileId,
-        groupId: 1,
+        groupId: 4,
         isDir: false,
         serialNbr: '',
-        ownerId: 1,
+        ownerId: transaction.info.userId,
         name: transaction.info.userId.toString(),
         ownerRead : true,
         ownerWrite: true,
@@ -198,7 +209,40 @@ module.exports = (db) => async function (req, res) {
             // FIND THE .INTERNAL FOLDER
             let internalFileId = await findInternalFolder(req.transaction);
 
-            if(internalFileId) {
+            if(!internalFileId) {
+                {
+                    // CREATE THE .INTERNAL FOLDER
+                    const internalFileId = await createInternalFolder(req.transaction);
+    
+                    if(!internalFileId) {
+                        req.transaction.logger.error('Couldn\'t create new .internal folder');
+                        return res.boom.badImplementation();
+    
+                    }
+    
+                    // CREATE THE PROFILES FOLDER
+                    req.transaction.logger.info('Creating profiles folder');
+                    const profileFileId = await createProfileFolder(req.transaction, internalFileId);
+    
+                    if(!profileFileId) {
+                        req.transaction.logger.error('Couldn\'t create new profiles folder');
+                        return res.boom.badImplementation();
+                    }
+                    
+    
+                    // UPLOADNEW
+                    const imageFileId = await uploadNew(req.transaction, profileFileId);
+    
+                    if(!imageFileId) {
+                        req.transaction.logger.error('Couldn\'t create new file for profile picture');
+                        return res.boom.badImplementation();
+                    } 
+    
+                    // SAVE THE FILE ID FOR LATER LOOKUP
+                    ProfilePictureFileId = imageFileId;
+    
+                }
+            } else {
                 req.transaction.logger.info('Finding profiles folder');
                 // FIND THE PROFILES FOLDER
                 let profileFileId = await findProfileFolder(req.transaction, internalFileId);
@@ -242,37 +286,6 @@ module.exports = (db) => async function (req, res) {
                     
 
                     
-            } else {
-                // CREATE THE .INTERNAL FOLDER
-                const internalFileId = await createInternalFolder(req.transaction);
-
-                if(!internalFileId) {
-                    req.transaction.logger.error('Couldn\'t create new .internal folder');
-                    return res.boom.badImplementation();
-
-                }
-
-                // CREATE THE PROFILES FOLDER
-                req.transaction.logger.info('Creating profiles folder');
-                const profileFileId = await createProfileFolder(req.transaction, profileFileId);
-
-                if(!profileFileId) {
-                    req.transaction.logger.error('Couldn\'t create new profiles folder');
-                    return res.boom.badImplementation();
-                }
-                
-
-                // UPLOADNEW
-                const imageFileId = await uploadNew(req.transaction, profileFileId);
-
-                if(!imageFileId) {
-                    req.transaction.logger.error('Couldn\'t create new file for profile picture');
-                    return res.boom.badImplementation();
-                } 
-
-                // SAVE THE FILE ID FOR LATER LOOKUP
-                ProfilePictureFileId = imageFileId;
-
             }
         }
     }
