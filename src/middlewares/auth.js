@@ -8,8 +8,10 @@ let authorized_paths = [
     '/',
     '/auth/*',
     '/storage/files/([0-9]+)',
-    '/doc/*',
-    '/coverage/*'
+    '/doc/**',
+    '/doc',
+    '/coverage/**',
+    '/coverage'
 ]
 
 module.exports = (req, res, next) => {
