@@ -40,14 +40,36 @@ module.exports = options => {
             dirname: path.join(logdir,'%DATE%')
         }));
     } else {
-        let filename = "debug-unknown.log"
+        let debugFilename = "debug-unknown.log"
         if(options.testfile) {
-            filename = "debug-"+options.testfile.split('/').splice(6).join("-")+".log"
+            debugFilename = "debug-"+options.testfile.split('/').splice(6).join("-")+".log"
+            infoFilename = "info-"+options.testfile.split('/').splice(6).join("-")+".log"
+            warnFilename = "warn-"+options.testfile.split('/').splice(6).join("-")+".log"
         }
 
         transports.push(new winston.transports.DailyRotateFile({
             level: 'debug',
-            filename: filename,
+            filename: debugFilename,
+            zippedArchive: true,
+            date_format: "YYYY-MM-DD",
+            maxSize: '2m',
+            maxFiles: '10d',
+            dirname: path.join(logdir, 'test')
+        }));
+
+        transports.push(new winston.transports.DailyRotateFile({
+            level: 'info',
+            filename: infoFilename,
+            zippedArchive: true,
+            date_format: "YYYY-MM-DD",
+            maxSize: '2m',
+            maxFiles: '10d',
+            dirname: path.join(logdir, 'test')
+        }));
+
+        transports.push(new winston.transports.DailyRotateFile({
+            level: 'warn',
+            filename: warnFilename,
             zippedArchive: true,
             date_format: "YYYY-MM-DD",
             maxSize: '2m',

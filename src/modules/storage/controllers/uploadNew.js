@@ -55,7 +55,7 @@ module.exports = (db) => async (req, res) => {
     }
 
     req.transaction.logger.info('Creating file')
-    const data = await db.File.createNew(req.transaction);
+    const data = await db.File.createNew(req.transaction, req.body);
 
 
     req.transaction.logger.info('Sending created data', {data});

@@ -7,6 +7,10 @@ const path = require('path');
 const root = findRoot(__dirname);
 const acl = require(path.join(root, 'src', 'middlewares', 'access-control.js'));
 
+const multer = require('multer');
+const config = require(path.join(root, 'src', './config/config'));
+const upload = multer({dest: config.storage.temp});
+
 module.exports = (db) => {
     const router = require('express').Router();
     const userController = require('./controllers')(db);
@@ -17,7 +21,7 @@ module.exports = (db) => {
 
     router.route('/:userId([0-9]+)')
         .get(acl("show-user"), userController.show)
-        .put(acl("update-user"), userController.update)
+        .put(acl("update-user"), upload.single('profilePicture'), userController.update)
         .delete(acl("delete-user"), userController.delete);
 
     router.get('/:userId([0-9]+)/posts', acl("index-user-posts"), userController.posts);

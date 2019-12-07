@@ -26,7 +26,7 @@ module.exports = [
     ["index-users", ["default"]],
     ["show-user", ["default"]],
     ["store-user", ["root"]],
-    ["update-user", ["root"]],
+    ["update-user", ["default"]],
     ["delete-user", ["root"]],
     ["index-user-posts", ["default"]],
     ["index-user-groups", ["default"]],

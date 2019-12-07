@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             allowNull: true,
             type: DataTypes.VIRTUAL
+        },
+
+        profilePictureFileId: {
+            allowNull: true,
+            type: DataTypes.INTEGER
         }
     });
 
@@ -115,6 +120,13 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
         });
+
+        User.belongsTo(models.File, {
+            as: 'profilePictureFile',
+            foreignKey: 'profilePictureFileId',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        })
         
         User.hasOne(models.UserSecrets, {
             as: 'secrets',
