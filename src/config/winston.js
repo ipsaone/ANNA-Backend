@@ -1,5 +1,4 @@
 const winston = require('winston');
-const config = require('./config');
 const path = require('path');
 const fs = require('fs'); // File system
 require('winston-daily-rotate-file');
@@ -39,13 +38,13 @@ module.exports = options => {
             maxFiles: '90d',
             dirname: path.join(logdir,'%DATE%')
         }));
-    } else {
+    } else if(options.testfile) {
+        
         let debugFilename = "debug-unknown.log"
-        if(options.testfile) {
-            debugFilename = "debug-"+options.testfile.split('/').splice(6).join("-")+".log"
-            infoFilename = "info-"+options.testfile.split('/').splice(6).join("-")+".log"
-            warnFilename = "warn-"+options.testfile.split('/').splice(6).join("-")+".log"
-        }
+        debugFilename = "debug-"+options.testfile.split('/').splice(6).join("-")+".log"
+        infoFilename = "info-"+options.testfile.split('/').splice(6).join("-")+".log"
+        warnFilename = "warn-"+options.testfile.split('/').splice(6).join("-")+".log"
+    
 
         transports.push(new winston.transports.DailyRotateFile({
             level: 'debug',
