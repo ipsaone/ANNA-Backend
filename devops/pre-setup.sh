@@ -19,3 +19,4 @@ chmod 600 ~/travis_deploy_key
 echo -e "Host ipsaone.space\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 ssh-add ~/travis_deploy_key
 ssh -i ~/travis_deploy_key travis@ipsaone.space pwd
+echo -e "Host ipsaone.space\n\tUser travis\n\tPort 22\n\tIdentitiesOnly yes\n\tIdentityFile ~/travis_deploy_key" >> ~/.ssh/config
