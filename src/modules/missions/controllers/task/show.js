@@ -1,13 +1,13 @@
 'use strict';
 
 const policy = require('../../policies/mission_task_policy');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 const schema = joi.object().keys({});
 
 
 module.exports = (db) => async function (req, res) {
      // Validate user input
-    const validation = joi.validate(req.body, schema);
+    const validation = schema.validate(req.body);
     req.transaction.logger.debug('Validating schema');
 
     if (validation.error) {

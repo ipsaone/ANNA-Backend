@@ -1,6 +1,6 @@
 'use strict';
 
-let joi = require('joi');
+let joi = require('@hapi/joi');
 
 let schema = joi.object().keys({
     token: joi.string().required()
@@ -12,7 +12,7 @@ module.exports = function (db) {
     return async (req, res) => {
         // Validate user input
         req.transaction.logger.info('Validating schema');
-        const validation = joi.validate(req.body, schema);
+        const validation = schema.validate(req.body);
         if (validation.error) {
             req.transaction.logger.info('Schema validation failed', {error : validation.error})
             return res.boom.badRequest(validation.error);

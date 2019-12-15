@@ -1,7 +1,7 @@
 'use strict';
 
 require('dotenv').config();
-let joi = require('joi');
+let joi = require('@hapi/joi');
 let crypto = require('crypto');
 const util = require('util');
 
@@ -17,7 +17,7 @@ module.exports = function (db) {
 
         // Validate user input
         req.transaction.logger.info('Validating schema');
-        const validation = joi.validate(req.body, schema);
+        const validation = schema.validate(req.body);
         if (validation.error) {
             req.transaction.logger.info('Schema validation failed', {error : validation.error})
             return res.boom.badRequest(validation.error);

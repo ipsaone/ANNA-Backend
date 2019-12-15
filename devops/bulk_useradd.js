@@ -7,7 +7,7 @@ const root = findRoot(__dirname);
 const fs = require('fs');
 const inquirer = require('inquirer');
 const superagent = require('superagent');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 
 let group;
