@@ -1,7 +1,7 @@
 'use strict';
 
 const policy = require('../post_policy');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 const schema = joi.object().keys({
     title : joi.string().trim(true).min(10).required(),
@@ -16,7 +16,7 @@ module.exports = (db) => async function (req, res) {
 
     // Validate user input
     req.transaction.logger.info('Validating input');
-    const validation = joi.validate(req.body, schema);
+    const validation = schema.validate(req.body);
     if (validation.error) {
         req.transaction.logger.info('Input denied by validator');
         return res.boom.badRequest(validation.error);

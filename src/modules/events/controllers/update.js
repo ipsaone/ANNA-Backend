@@ -1,14 +1,14 @@
 'use strict';
 
 const policy = require('../event_policy');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 const schema = joi.object().keys({
     name: joi.string().optional(),
     markdown: joi.string().optional(),
-    maxRegistered: [joi.number().integer().optional(), joi.allow(null)],
+    maxRegistered: [joi.number().integer().optional()],
     startDate: joi.string().optional(),
-    endDate: [joi.string().optional(), joi.allow(null)]
+    endDate: [joi.string().optional()]
 });
 
 
@@ -32,7 +32,7 @@ module.exports = (db) =>
 
         // Validate user input
         req.transaction.logger.info('Validating schema');
-        const validation = joi.validate(req.body, schema);
+        const validation = schema.validate(req.body);
         if (validation.error) {
             req.transaction.logger.info('Schema validation error', {error : validation.error});
             return res.boom.badRequest(validation.error);

@@ -2,14 +2,14 @@
 
 const policy = require('../user_policy');
 
-const joi = require('joi');
+const joi = require('@hapi/joi');
 const schema = joi.object().keys({});
 
 module.exports = (db) => async function (req, res) {
     
     // Validate user input
     req.transaction.logger.info('Validating schema');
-    const validation = joi.validate(req.body, schema);
+    const validation = schema.validate(req.body);
     if (validation.error) {
         req.transaction.logger.info('Schema validation failed');
         return res.boom.badRequest(validation.error);

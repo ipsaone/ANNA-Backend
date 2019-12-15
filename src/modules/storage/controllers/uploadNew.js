@@ -2,13 +2,13 @@
 
 const policy = require('../storage_policy');
 const winston = require('winston');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 const schema = joi.object().keys({
     dirId: joi.number().integer().positive().required(),
     groupId: joi.number().integer().positive().optional(),
     isDir: joi.boolean().optional(),
-    serialNbr: joi.string().allow('').optional(),
+    serialNbr: joi.string().optional(),
     fileId: joi.number().integer().positive().optional(),
     ownerId: joi.number().integer().positive().optional(),
     name: joi.string().min(1).required(),
@@ -30,7 +30,7 @@ module.exports = (db) => async (req, res) => {
 
      // Validate user input
      req.transaction.logger.info('Validating schema');
-     const validation = joi.validate(req.body, schema);
+     const validation = schema.validate(req.body);
      if (validation.error) {
          req.transaction.logger.info('Schema validation failed');
          return res.boom.badRequest(validation.error);
