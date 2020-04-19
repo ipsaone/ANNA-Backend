@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/debian-9.6"
+  config.vm.box = "bento/debian-9.11"
 
   config.vm.hostname = "ANNA-BACKEND"
   config.vm.define "ANNA-BACKEND"
