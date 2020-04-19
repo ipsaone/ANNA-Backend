@@ -6,9 +6,9 @@ The backend server for ANNA (Administration Network for Nanosatellite Associatio
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. The details of the architecture are pictured below.
 
-![Development environment](devops/DevEnvironment.png)
-![Backend architecture](devops/ANNA-Backend.png)
-![Server architecture](devops/ANNA.png)
+![Development environment](devops/media/DevEnvironment.png)
+![Backend architecture](devops/media/ANNA-backend.png)
+![Server architecture](devops/media/ANNA.png)
 
 ### Prerequisites
 
