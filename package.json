@@ -47,7 +47,7 @@
     "superagent": "^5.1.1",
     "superagent-throttle": "^1.0.1",
     "trello-node-api": "0.0.7",
-    "uuid": "^3.3.3",
+    "uuid": "^8.0.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.3.0",
     "zip-a-folder": "0.0.9"
