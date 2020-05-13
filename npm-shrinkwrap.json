@@ -5233,9 +5233,9 @@
       "integrity": "sha1-ICl+idhvb2QA8lDZ9Pa0wZRfzTU="
     },
     "nodemailer": {
-      "version": "6.3.1",
-      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-6.3.1.tgz",
-      "integrity": "sha512-j0BsSyaMlyadEDEypK/F+xlne2K5m6wzPYMXS/yxKI0s7jmT1kBx6GEKRVbZmyYfKOsjkeC/TiMVDJBI/w5gMQ=="
+      "version": "6.4.6",
+      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-6.4.6.tgz",
+      "integrity": "sha512-/kJ+FYVEm2HuUlw87hjSqTss+GU35D4giOpdSfGp7DO+5h6RlJj7R94YaYHOkoxu1CSaM0d3WRBtCzwXrY6MKA=="
     },
     "nodemon": {
       "version": "2.0.1",
