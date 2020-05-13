@@ -44,7 +44,7 @@
     "rimraf": "^3.0.0",
     "sequelize": "^5.21.8",
     "sqlite3": "^4.1.0",
-    "superagent": "^5.1.1",
+    "superagent": "^5.2.2",
     "superagent-throttle": "^1.0.1",
     "trello-node-api": "0.0.7",
     "uuid": "^8.0.0",
