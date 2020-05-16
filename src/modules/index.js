@@ -5,7 +5,7 @@
 const findRoot = require('find-root');
 const root = findRoot(__dirname);
 const path = require('path');
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 
 const Sequelize = require('sequelize');
 const buildRouter = require('./buildRouter');
