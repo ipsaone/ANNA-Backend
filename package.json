@@ -50,7 +50,7 @@
     "uuid": "^8.0.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.3.0",
-    "zip-a-folder": "0.0.9"
+    "zip-a-folder": "0.0.12"
   },
   "devDependencies": {
     "ava": "^3.8.2",
