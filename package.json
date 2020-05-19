@@ -46,7 +46,7 @@
     "sqlite3": "^4.2.0",
     "superagent": "^5.2.2",
     "superagent-throttle": "^1.0.1",
-    "trello-node-api": "0.0.7",
+    "trello-node-api": "0.0.9",
     "uuid": "^8.0.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.3.0",

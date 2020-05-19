@@ -4707,6 +4707,11 @@
       "integrity": "sha1-Tpho1FJXXXUK/9NYyXlUPcIO1Xc=",
       "dev": true
     },
+    "lodash.isplainobject": {
+      "version": "4.0.6",
+      "resolved": "https://registry.npmjs.org/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz",
+      "integrity": "sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs="
+    },
     "lodash.merge": {
       "version": "4.6.2",
       "resolved": "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz",
@@ -9070,49 +9075,21 @@
       }
     },
     "trello-node-api": {
-      "version": "0.0.7",
-      "resolved": "https://registry.npmjs.org/trello-node-api/-/trello-node-api-0.0.7.tgz",
-      "integrity": "sha512-2/VlfM3q0lTV6/nzP8L2KnVYssZqnYlWtEHMMJ6KGWy+xTonbXYEy0ZOAvXoodR5NEmVGyeujgXD0L5wSo/M6w==",
+      "version": "0.0.9",
+      "resolved": "https://registry.npmjs.org/trello-node-api/-/trello-node-api-0.0.9.tgz",
+      "integrity": "sha512-UVkn8rZV427i1tnn/flIkbmIzblEv868poTeOHhMrsblP3ogA6umgy2dh6+1QvjTvBQ1YiVpVUQQp/ZSBZlOMA==",
       "requires": {
-        "bluebird": "^3.5.0",
-        "debug": "^4.1.0",
+        "bluebird": "^3.7.2",
+        "debug": "^4.1.1",
         "lodash.isplainobject": "^4.0.6",
-        "qs": "~6.5.1",
-        "safe-buffer": "^5.1.1"
+        "qs": "~6.9.1",
+        "safe-buffer": "^5.2.0"
       },
       "dependencies": {
-        "bluebird": {
-          "version": "3.7.0",
-          "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.7.0.tgz",
-          "integrity": "sha512-aBQ1FxIa7kSWCcmKHlcHFlT2jt6J/l4FzC7KcPELkOJOsPOb/bccdhmIrKDfXhwFrmc7vDoDrrepFvGqjyXGJg=="
-        },
-        "debug": {
-          "version": "4.1.1",
-          "resolved": "https://registry.npmjs.org/debug/-/debug-4.1.1.tgz",
-          "integrity": "sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==",
-          "requires": {
-            "ms": "^2.1.1"
-          }
-        },
-        "lodash.isplainobject": {
-          "version": "4.0.6",
-          "resolved": "https://registry.npmjs.org/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz",
-          "integrity": "sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs="
-        },
-        "ms": {
-          "version": "2.1.2",
-          "resolved": "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz",
-          "integrity": "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w=="
-        },
-        "qs": {
-          "version": "6.5.2",
-          "resolved": "https://registry.npmjs.org/qs/-/qs-6.5.2.tgz",
-          "integrity": "sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA=="
-        },
         "safe-buffer": {
-          "version": "5.2.0",
-          "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.0.tgz",
-          "integrity": "sha512-fZEwUGbVl7kouZs1jCdMLdt95hdIv0ZeHg6L7qPeciMZhZ+/gdesW4wgTARkrFWEpspjEATAzUGPG8N2jJiwbg=="
+          "version": "5.2.1",
+          "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz",
+          "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
         }
       }
     },
