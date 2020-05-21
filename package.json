@@ -58,7 +58,7 @@
     "eslint": "^7.0.0",
     "eslint-plugin-promise": "^4.1.1",
     "jsdoc": "^3.6.4",
-    "nodemon": "^2.0.1",
+    "nodemon": "^2.0.4",
     "nyc": "^15.0.1",
     "sequelize-cli": "^5.5.1",
     "sequelize-mock": "^0.10.2",
