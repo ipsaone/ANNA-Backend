@@ -60,7 +60,7 @@
     "jsdoc": "^3.6.4",
     "nodemon": "^2.0.4",
     "nyc": "^15.1.0",
-    "sequelize-cli": "^5.5.1",
+    "sequelize-cli": "^6.0.0",
     "sequelize-mock": "^0.10.2",
     "supertest": "^4.0.2"
   },
