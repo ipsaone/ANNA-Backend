@@ -6540,9 +6540,9 @@
       "integrity": "sha1-1WgS4cAXpuTnw+Ojeh2m143TyT4="
     },
     "sequelize": {
-      "version": "6.2.0",
-      "resolved": "https://registry.npmjs.org/sequelize/-/sequelize-6.2.0.tgz",
-      "integrity": "sha512-lA1OpV539Befvvk3A1qIneO1wB7adDlsyxkKtVSoIO8paqARcDBDsxP8rTNSjT9MDX9Pq8SRxD6aFaxBjkkS1A==",
+      "version": "6.2.1",
+      "resolved": "https://registry.npmjs.org/sequelize/-/sequelize-6.2.1.tgz",
+      "integrity": "sha512-lgS7WEM0v0n+ziQaQH3GigW2ykWlArXZADC9mluDJ+2bn2mstAsKo667fRQd0M3+7/LzF1dg8Y0mCFLbUZhUzw==",
       "requires": {
         "debug": "^4.1.1",
         "dottie": "^2.0.0",
