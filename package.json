@@ -43,7 +43,7 @@
     "request-promise-native": "^1.0.8",
     "rimraf": "^3.0.2",
     "sequelize": "^6.2.3",
-    "sqlite3": "^4.2.0",
+    "sqlite3": "^5.0.0",
     "superagent": "^5.3.1",
     "superagent-throttle": "^1.0.1",
     "trello-node-api": "0.0.9",
