@@ -21,7 +21,7 @@
     "express-request-id": "^1.4.0",
     "express-session": "^1.17.1",
     "find-root": "^1.1.0",
-    "flatted": "^3.0.2",
+    "flatted": "^3.0.4",
     "glob": "^7.1.6",
     "hasha": "^5.2.0",
     "helmet": "^3.23.3",
