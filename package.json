@@ -53,7 +53,7 @@
     "zip-a-folder": "0.0.12"
   },
   "devDependencies": {
-    "ava": "^3.11.0",
+    "ava": "^3.11.1",
     "chance": "^1.1.6",
     "eslint": "^7.5.0",
     "eslint-plugin-promise": "^4.1.1",
