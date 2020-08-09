@@ -10,7 +10,7 @@ module.exports = (db) => async function (req, res) {
     req.transaction.logger.info('Post deletion controller invoked', {postId});
 
     // Validate user input
-    const validation = joi.validate(req.body, schema);
+    const validation = schema.validate(req.body);
     req.transaction.logger.debug('Validating schema');
 
     if (validation.error) {

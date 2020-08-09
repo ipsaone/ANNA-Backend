@@ -17,7 +17,7 @@ module.exports = function (db) {
         req.transaction.logger.info('Login controller invoked');
 
         // Validate user input
-        const validation = joi.validate(req.body, schema);
+        const validation = schema.validate(req.body);
         req.transaction.logger.debug('Validating schema');
 
         if (validation.error) {
