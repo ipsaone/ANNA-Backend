@@ -93,7 +93,7 @@
     "cache": true,
     "failFast": true,
     "verbose": true,
-    "babel": {},
+    "@ava/babel": {},
     "concurrency": 8
   },
   "scripts": {

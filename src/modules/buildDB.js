@@ -1,3 +1,5 @@
+const { Sequelize } = require('sequelize');
+
 module.exports = (sequelize) => {
     const db = {};
 
@@ -10,7 +12,7 @@ module.exports = (sequelize) => {
     const moduleFiles = require('glob').sync('./src/modules/**/models/*.js', options);
 
     modelFiles.concat(moduleFiles).forEach((file) => {
-        const model = sequelize.import(file);
+        const model = require(file)(sequelize, Sequelize.DataTypes)
 
         db[model.name] = model;
     });
