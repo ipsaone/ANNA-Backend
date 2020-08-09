@@ -29,10 +29,8 @@ module.exports = function (db) {
         }
 
         // Generate new token (1 round of SHA-256 from a 128-bit random value)
-        // See : https://security.stackexchange.com/questions/213975
-        let value = await util.promisify(crypto.randomBytes)(128);
-        let secret = await util.promisify(crypto.randomBytes)(128);
-        let token = crypto.createHmac('sha256', secret).update(value).digest('hex');
+        let secret = await util.promisify(crypto.randomBytes)(16);
+        let token = crypto.createHash('sha256').update(secret).digest('hex');
 
         // Save it
         let secrets = await user.getSecrets()
@@ -49,7 +47,7 @@ module.exports = function (db) {
                 text:  `
                     Dear user,
 
-                    Here is your password reset link : http://ipsaone.space/login?resetToken='+token+'"
+                    Here is your password reset link: https://ipsaone.space/login?secret=${secret}
 
                     Cheers,
                     The IPSA ONE Team

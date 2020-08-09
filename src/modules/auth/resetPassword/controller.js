@@ -10,8 +10,8 @@ const path = require('path');
 const config = require(path.join(root, './src/config/config'));
 
 let schema = joi.object().keys({
-    token: joi.string().required(),
-    password: joi.string().min(6).required()
+    secret: joi.string().required(),
+    password: joi.string().min(6).max(72).required()
 })
 
 
@@ -26,11 +26,10 @@ module.exports = function (db) {
             return res.boom.badRequest(validation.error);
         }
 
-        // Find the corresponding UserSecret
-        let secret;
+        const token = crypto.createHash('sha256').update(req.body.secret).digest('hex');
         let rows = await req.transaction.db.UserSecrets.find({
             where: {
-                resetToken: req.body.token
+                resetToken: token
             }
         });
         if (rows == 1) {

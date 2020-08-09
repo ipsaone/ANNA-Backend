@@ -7,7 +7,7 @@ const util = require('util');
 const schema = joi.object().keys({
     username: joi.string().min(4).required(),
     email: joi.string().min(5).required(),
-    password: joi.string().min(6).required(),
+    password: joi.string().min(6).max(72).required(),
     sendEmail: joi.bool().optional()
 });
 
