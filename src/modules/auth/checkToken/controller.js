@@ -1,9 +1,10 @@
 'use strict';
 
 let joi = require('joi');
+let crypto = require('crypto');
 
 let schema = joi.object().keys({
-    token: joi.string().required()
+    secret: joi.string().required()
 })
 
 
@@ -18,9 +19,10 @@ module.exports = function (db) {
             return res.boom.badRequest(validation.error);
         }
 
+        const token = crypto.createHash('sha256').update(req.body.secret).digest('hex');
         let rows = await req.transaction.db.UserSecrets.find({
             where: {
-                resetToken: req.body.token
+                resetToken: token
             }
         });
         if (rows == 1) {
