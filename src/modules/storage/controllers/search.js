@@ -9,7 +9,7 @@ const includeOptions = ['previous_data', 'serialNbr', 'name'];
 const schema = joi.object().keys({
     keyword: joi.string().required(),
     upperFolder: joi.number().integer(),
-    include: joi.array().items(joi.string().valid(includeOptions)).optional()
+    include: joi.array().items(joi.string().valid(...includeOptions)).optional()
 
 });
 
@@ -17,7 +17,7 @@ module.exports = (db) => async (req, res) => {
 
     // Validate user input
     req.transaction.logger.debug('Validating request')
-    const validation = joi.validate(req.body, schema);
+    const validation = schema.validate(req.body);
     if (validation.error) {
         req.transaction.logger.info('Request failed validation', {body: req.body, error: validation.error});
         return res.boom.badRequest(validation.error);

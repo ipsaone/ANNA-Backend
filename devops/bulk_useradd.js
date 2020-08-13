@@ -88,7 +88,7 @@ async function main() {
     // Read users and check
     let users = JSON.parse(await util.promisify(fs.readFile)(file));
     users = users.filter(u => {
-        const validation = joi.validate(u, schema);
+        const validation = schema.validate(u);
         if (validation.error) {
             console.log('Schema validation failed for user', u.username, ":", validation.error);
             return false;

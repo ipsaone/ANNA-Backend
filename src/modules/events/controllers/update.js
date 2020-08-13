@@ -32,7 +32,7 @@ module.exports = (db) =>
 
         // Validate user input
         req.transaction.logger.info('Validating schema');
-        const validation = joi.validate(req.body, schema);
+        const validation = schema.validate(req.body);
         if (validation.error) {
             req.transaction.logger.info('Schema validation error', {error : validation.error});
             return res.boom.badRequest(validation.error);

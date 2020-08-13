@@ -19,7 +19,7 @@ module.exports = (db) => async function (req, res) {
     const missionId = parseInt(req.params.missionId, 10);
 
     req.transaction.logger.info('Validating input') ;
-    const validation = joi.validate(req.body, schema);
+    const validation = schema.validate(req.body);
     if (validation.error) {
         req.transaction.logger.info('Input refused by validator');
         return res.boom.badRequest(validation.error);
