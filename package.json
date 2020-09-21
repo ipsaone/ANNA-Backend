@@ -57,7 +57,7 @@
     "chance": "^1.1.7",
     "eslint": "^7.9.0",
     "eslint-plugin-promise": "^4.1.1",
-    "jsdoc": "^3.6.5",
+    "jsdoc": "^3.6.6",
     "nodemon": "^2.0.4",
     "nyc": "^15.1.0",
     "sequelize-cli": "^6.2.0",
