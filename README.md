@@ -1,23 +1,22 @@
 # ANNA-Backend
 
-The backend server for ANNA (Administration Network for Nanosatellite Associations)
+The backend server for ANNA (Administration Network for Nanosatellite Associations), which is IPSA ONE's internal team management tool.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. The details of the architecture are pictured below.
+
+![Development environment](devops/DevEnvironment.png)
+![Backend architecture](devops/ANNA-Backend.png)
+![Server architecture](devops/ANNA.png)
 
 ### Prerequisites
 
 - Vagrant + Virtualbox
  
 
-```
-Give examples
-```
-
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
 
 Clone the repository
 
@@ -32,7 +31,7 @@ cd ANNA-Backend
 vagrant up
 ```
 
-Wait for it to boot, and finally start the server
+Wait for it to boot (will take a while at first), and finally start the server
 
 ```
 vagrant ssh
@@ -48,33 +47,24 @@ It should output a message containing the IP and port the server is listening to
 npm run test
 ```
 
-
-### Coding style
-
-[TODO]
-
-## Deployment
-
-Depencencies are :
-- Redis server
-- MySQL (SQLite3 to run the tests)
-
 ## Built With
 
 * [Express](https://expressjs.com/) - The web framework used
 * [NodeJS & NPM](https://nodejs.org/en/) - Dependency Management
+* [Redis](https://redis.io/) - Cache & session store
+* [MySQL](https://www.mysql.com/fr/) - Database
+* [Virtualbox & Vagrant](https://www.vagrantup.com/) - Development environment
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Any pull request is welcome !
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. 
 
 ## Authors
 
-* **MagixInTheAir** - *Project leader* - [MagixInTheAir](https://github.com/MagixInTheAir)
 * **IPSA ONE** - *Development team* - [ANNA Development team](https://github.com/orgs/ipsaone/teams/anna)
 
 See also the list of [contributors](https://github.com/ipsaone/ANNA-Backend/graphs/contributors) who participated in this project.
@@ -82,9 +72,3 @@ See also the list of [contributors](https://github.com/ipsaone/ANNA-Backend/grap
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
