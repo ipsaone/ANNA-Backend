@@ -28,7 +28,7 @@
     "inquirer": "^7.3.3",
     "joi": "^17.2.1",
     "mailgun-js": "^0.22.0",
-    "marked": "^1.2.0",
+    "marked": "^1.2.2",
     "minimatch": "^3.0.4",
     "mmmagic": "^0.5.3",
     "moment": "^2.29.0",
