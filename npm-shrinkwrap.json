@@ -5771,9 +5771,9 @@
       }
     },
     "nodemailer": {
-      "version": "6.4.13",
-      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-6.4.13.tgz",
-      "integrity": "sha512-XmtiiKza2Cqtr+ZRMchMZn9s2nmwQDeakbf+yL0ODsIXOv58UZgk/MKPOkDKqY+mvxHs87PrJK7Nf/tcpKHqYQ=="
+      "version": "6.4.17",
+      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-6.4.17.tgz",
+      "integrity": "sha512-89ps+SBGpo0D4Bi5ZrxcrCiRFaMmkCt+gItMXQGzEtZVR3uAD3QAQIDoxTWnx3ky0Dwwy/dhFrQ+6NNGXpw/qQ=="
     },
     "nodemon": {
       "version": "2.0.4",
