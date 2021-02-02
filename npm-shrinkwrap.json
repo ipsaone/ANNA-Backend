@@ -1673,19 +1673,37 @@
       "integrity": "sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA=="
     },
     "chokidar": {
-      "version": "3.4.0",
-      "resolved": "https://registry.npmjs.org/chokidar/-/chokidar-3.4.0.tgz",
-      "integrity": "sha512-aXAaho2VJtisB/1fg1+3nlLJqGOuewTzQpd/Tz0yTg2R0e4IGtshYvtjowyEumcBv2z+y4+kc75Mz7j5xJskcQ==",
+      "version": "3.5.1",
+      "resolved": "https://registry.npmjs.org/chokidar/-/chokidar-3.5.1.tgz",
+      "integrity": "sha512-9+s+Od+W0VJJzawDma/gvBNQqkTiqYTWLuZoyAsivsI4AaWTCzHG06/TMjsf1cYe9Cb97UCEhjz7HvnPk2p/tw==",
       "dev": true,
       "requires": {
         "anymatch": "~3.1.1",
         "braces": "~3.0.2",
-        "fsevents": "~2.1.2",
+        "fsevents": "~2.3.1",
         "glob-parent": "~5.1.0",
         "is-binary-path": "~2.1.0",
         "is-glob": "~4.0.1",
         "normalize-path": "~3.0.0",
-        "readdirp": "~3.4.0"
+        "readdirp": "~3.5.0"
+      },
+      "dependencies": {
+        "fsevents": {
+          "version": "2.3.1",
+          "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.1.tgz",
+          "integrity": "sha512-YR47Eg4hChJGAB1O3yEAOkGO+rlzutoICGqGo9EZ4lKWokzZRSyIW1QmTzqjtw8MJdj9srP869CuWw/hyzSiBw==",
+          "dev": true,
+          "optional": true
+        },
+        "readdirp": {
+          "version": "3.5.0",
+          "resolved": "https://registry.npmjs.org/readdirp/-/readdirp-3.5.0.tgz",
+          "integrity": "sha512-cMhu7c/8rdhkHXWsY+osBhfSy0JikwpHK/5+imo+LpeasTF8ouErHrlYkwT0++njiyuDvc7OFY5T3ukvZ8qmFQ==",
+          "dev": true,
+          "requires": {
+            "picomatch": "^2.2.1"
+          }
+        }
       }
     },
     "chownr": {
@@ -5804,9 +5822,9 @@
       "integrity": "sha512-XmtiiKza2Cqtr+ZRMchMZn9s2nmwQDeakbf+yL0ODsIXOv58UZgk/MKPOkDKqY+mvxHs87PrJK7Nf/tcpKHqYQ=="
     },
     "nodemon": {
-      "version": "2.0.4",
-      "resolved": "https://registry.npmjs.org/nodemon/-/nodemon-2.0.4.tgz",
-      "integrity": "sha512-Ltced+hIfTmaS28Zjv1BM552oQ3dbwPqI4+zI0SLgq+wpJhSyqgYude/aZa/3i31VCQWMfXJVxvu86abcam3uQ==",
+      "version": "2.0.7",
+      "resolved": "https://registry.npmjs.org/nodemon/-/nodemon-2.0.7.tgz",
+      "integrity": "sha512-XHzK69Awgnec9UzHr1kc8EomQh4sjTQ8oRf8TsGrSmHDx9/UmiGG9E/mM3BuTfNeFwdNBvrqQq/RHL0xIeyFOA==",
       "dev": true,
       "requires": {
         "chokidar": "^3.2.2",
@@ -5817,14 +5835,14 @@
         "semver": "^5.7.1",
         "supports-color": "^5.5.0",
         "touch": "^3.1.0",
-        "undefsafe": "^2.0.2",
-        "update-notifier": "^4.0.0"
+        "undefsafe": "^2.0.3",
+        "update-notifier": "^4.1.0"
       },
       "dependencies": {
         "debug": {
-          "version": "3.2.6",
-          "resolved": "https://registry.npmjs.org/debug/-/debug-3.2.6.tgz",
-          "integrity": "sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==",
+          "version": "3.2.7",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-3.2.7.tgz",
+          "integrity": "sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==",
           "dev": true,
           "requires": {
             "ms": "^2.1.1"
@@ -8021,9 +8039,9 @@
       "integrity": "sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw="
     },
     "update-notifier": {
-      "version": "4.1.0",
-      "resolved": "https://registry.npmjs.org/update-notifier/-/update-notifier-4.1.0.tgz",
-      "integrity": "sha512-w3doE1qtI0/ZmgeoDoARmI5fjDoT93IfKgEGqm26dGUOh8oNpaSTsGNdYRN/SjOuo10jcJGwkEL3mroKzktkew==",
+      "version": "4.1.3",
+      "resolved": "https://registry.npmjs.org/update-notifier/-/update-notifier-4.1.3.tgz",
+      "integrity": "sha512-Yld6Z0RyCYGB6ckIjffGOSOmHXj1gMeE7aROz4MG+XMkmixBX4jUngrGXNYz7wPKBmtoD4MnBa2Anu7RSKht/A==",
       "dev": true,
       "requires": {
         "boxen": "^4.2.0",
