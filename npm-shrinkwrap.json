@@ -1218,12 +1218,6 @@
             "strip-ansi": "^6.0.0"
           }
         },
-        "y18n": {
-          "version": "5.0.1",
-          "resolved": "https://registry.npmjs.org/y18n/-/y18n-5.0.1.tgz",
-          "integrity": "sha512-/jJ831jEs4vGDbYPQp4yGKDYPSCCEQ45uZWJHE1AoYBzqdZi8+LDWas0z4HrmJXmKdpFsTiowSHXdxyFhpmdMg==",
-          "dev": true
-        },
         "yargs": {
           "version": "16.0.3",
           "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.0.3.tgz",
@@ -7058,6 +7052,12 @@
             "strip-ansi": "^5.0.0"
           }
         },
+        "y18n": {
+          "version": "4.0.3",
+          "resolved": "https://registry.npmjs.org/y18n/-/y18n-4.0.3.tgz",
+          "integrity": "sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==",
+          "dev": true
+        },
         "yargs": {
           "version": "13.3.2",
           "resolved": "https://registry.npmjs.org/yargs/-/yargs-13.3.2.tgz",
@@ -8416,9 +8416,9 @@
       "integrity": "sha1-UqY+VsoLhKfzpfPWGHLxJq16WUM="
     },
     "y18n": {
-      "version": "4.0.0",
-      "resolved": "https://registry.npmjs.org/y18n/-/y18n-4.0.0.tgz",
-      "integrity": "sha512-r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w==",
+      "version": "5.0.8",
+      "resolved": "https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz",
+      "integrity": "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==",
       "dev": true
     },
     "yallist": {
@@ -8443,6 +8443,14 @@
         "which-module": "^2.0.0",
         "y18n": "^4.0.0",
         "yargs-parser": "^18.1.1"
+      },
+      "dependencies": {
+        "y18n": {
+          "version": "4.0.3",
+          "resolved": "https://registry.npmjs.org/y18n/-/y18n-4.0.3.tgz",
+          "integrity": "sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==",
+          "dev": true
+        }
       }
     },
     "yargs-parser": {
