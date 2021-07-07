@@ -31,9 +31,8 @@ module.exports = (sequelize, DataTypes) => {
         });
 
 
-        File.prototype.addData = async function (transaction) {
+        File.prototype.addData = async function (transaction, fileChanges) {
             let db = transaction.db;
-            let fileChanges = transaction.reqBody;
             let log = transaction.logger;
             const previousData = await this.getData(db);
 
@@ -124,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
             const groups = await user.getGroups(db);
 
             if (!groups.map((grp) => grp.id).includes(fileChanges.groupId)) {
-                log.info("Couldn't find requested group in owner user groups");
+                log.info("Couldn't find requested group in owner user groups", {requestedGroup: fileChanges.groupId, userGroups: groups});
                 throw transaction.boom.badRequest('Invalid group');
             }
 
@@ -188,13 +187,14 @@ module.exports = (sequelize, DataTypes) => {
             if (fileChanges.exists) {
 
                 if(fileChanges.isDir) {
-                    log.info("Uploaded file for folder !");
-                    throw transaction.boom.badRequest('Cannot handle an upload for a folder !')
-                }
+                    log.info("Ignoring file upload for folder...");
+                    fileChanges.exists = false;
+                } else {
 
-                log.info("Moving file", {filePath, dest});
-                const move = util.promisify(mv);
-                await move(filePath, dest, {mkdirp: true,  clobber: true});
+                    log.info("Moving file", {filePath, dest});
+                    const move = util.promisify(mv);
+                    await move(filePath, dest, {mkdirp: true,  clobber: true});
+                }
             }
 
             log.info("Computing values from uploaded file");
@@ -262,8 +262,7 @@ module.exports = (sequelize, DataTypes) => {
         };
 
 
-        File.createNew = async function (transaction) {
-            let changes = transaction.reqBody;
+        File.createNew = async function (transaction, changes) {
             let db = transaction.db;
 
             let isDir = false;
@@ -272,7 +271,7 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             let file = await db.File.create({isDir})
-            let data = await file.addData(transaction);
+            let data = await file.addData(transaction, changes);
 
             return data;
 

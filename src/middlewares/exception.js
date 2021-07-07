@@ -133,7 +133,7 @@ const saveLogs = async (req, res, err) => {
 
 // No choice, it's Express' default error handler parameters ...
 // eslint-disable-next-line max-params
-const handler = async (err, req, res) => {
+const handler = async (err, req, res, next) => {
 
     // Check a response has not been half-sent
     if (res.headersSent) {
@@ -167,5 +167,5 @@ const handler = async (err, req, res) => {
 };
 
 module.exports = (err, req, res, next) => {
-    return Promise.resolve(handler(err, req, res)).catch(err => {console.error(err); return next(err, req, res);});
+    return Promise.resolve(handler(err, req, res, next)).catch(err => {console.error(err); return next(err, req, res);});
 };

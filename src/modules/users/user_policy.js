@@ -7,7 +7,18 @@ exports.filterShow = async (transaction, user) => user;
 
 exports.filterStore = async (transaction, userId) => true;
 
-exports.filterUpdate = async (transaction, targetId, userId) => true;
+exports.filterUpdate = async (transaction, targetId, userId) => {
+    const user = await transaction.db.User.findByPk(userId);
+    if(user && await user.isRoot()) {
+        return true;
+    } 
+
+    if(targetId == userId) {
+        return true;
+    }
+
+    return false;
+};
 
 exports.filterDelete = async (transaction, targetId, userId) => {
     if (targetId == userId || targetId == 1) {
